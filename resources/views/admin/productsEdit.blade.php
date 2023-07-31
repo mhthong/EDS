@@ -74,7 +74,7 @@
 
     <section class="panel important">
         <h2>Update a post</h2>
-        <form name="add-blog-post-form" id="add-blog-post-form" method="post" action="{{route('products.update', ['id' => $products->id]);}}" enctype="multipart/form-data">
+        <form name="add-blog-post-form" id="add-blog-post-form" method="post" action="{{route('products.update', ['id' => $products->id])}}" enctype="multipart/form-data">
           @csrf
             <div class="containerInput twothirds">
                 <label for="name">Product Name:</label>

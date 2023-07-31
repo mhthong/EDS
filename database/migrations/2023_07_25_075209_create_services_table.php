@@ -18,9 +18,9 @@ class CreateServicesTable extends Migration
             $table->string('Name'); // Name column
             $table->decimal('Price', 10, 2); // Price column (decimal with 10 digits and 2 decimal places)
             $table->string('Description'); // Description column
-            $table->decimal('Sale Price', 10, 2)->nullable(); // Sale Price column (nullable decimal with 10 digits and 2 decimal places)
-            $table->string('Value'); // Value column
-            $table->string('Group'); // Group column
+            $table->decimal('Sale_Price', 10, 2)->nullable(); // Sale Price column (nullable decimal with 10 digits and 2 decimal places)
+            $table->string('Time'); // Group column
+            $table->string('status',60); // Group column
             
             $table->timestamps(); // Created_at and updated_at timestamps
         });

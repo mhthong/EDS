@@ -12,7 +12,7 @@ class Service extends Model
        // Define the table associated with the model
        protected $table = 'services';
 
-       protected $fillable = ['Name', 'Price', 'Description', 'Sale Price', 'Value', 'Group'];
+       protected $fillable = ['Name', 'Price', 'Description', 'Sale_Price', 'Time' , 'status' ,'group_service_id'];
 
        // Define the relationships
        public function bookings()
@@ -29,4 +29,10 @@ class Service extends Model
        {
            return $this->belongsToMany(Artists::class, 'artist_service');
        }
+
+       public function groupService()
+       {
+           return $this->belongsTo(GroupService::class, 'group_service_id');
+       }
+   
 }

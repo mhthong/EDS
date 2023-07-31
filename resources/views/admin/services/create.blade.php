@@ -43,58 +43,39 @@
                         <div class="flexb-col-c bg-ad-1">
                             <form class="p-0 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
                                 name="add-blog-post-form" id="add-blog-post-form" method="post"
-                                action="{{ route('artist.store') }}" enctype="multipart/form-data">
+                                action="{{ route('services.store') }}" enctype="multipart/form-data">
                                 @csrf
                                 <div class="flexb-c col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
                                     style="align-items: flex-start; justify-content: space-between;">
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
                                         <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
 
-                                            <!-- artists/create.blade.php -->
-
                                             <div class="form-group">
-                                                <label for="name">UserName:</label>
-                                                <input type="text" name="name" id="name" class="form-control"
-                                                    placeholder=" Username" required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="fullname">Full Name:</label>
-                                                <input type="text" name="fullname" id="fullname" class="form-control"
-                                                    placeholder="fullname" required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="password">Password:</label>
-                                                <input type="password" name="password" id="password" class="form-control"
-                                                    placeholder="Authentication" required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="phone">Phone:</label>
-                                                <input type="text" name="phone" id="phone" class="form-control"
-                                                    placeholder="Phone Number" required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="email">Email:</label>
-                                                <input type="email" name="email" id="email" class="form-control"
-                                                    placeholder="Artist email address" required>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label for="description">Description:</label>
-                                                <textarea name="description" id="description" class="form-control" placeholder=" Description"></textarea>
+                                                <label for="Name">Name</label>
+                                                <input type="text" class="form-control" id="Name" name="Name" required>
                                             </div>
                                             <div class="form-group">
-                                                <label for="artist_levelID">Artist Level:</label>
-                                                <select name="artist_levelID" id="artist_levelID" class="form-control"
-                                                    required>
-                                                    <!-- Populate options based on artist levels in the database -->
-
-                                                    @foreach ($artistLevels as $artistLevel)
-                                                        <option value="{{ $artistLevel->id }}">{{ $artistLevel->Name }}
-                                                        </option>
+                                                <label for="Price">Price</label>
+                                                <input type="number" class="form-control" id="Price" name="Price" min="0" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Description">Description</label>
+                                                <textarea class="form-control" id="Description" name="Description"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Sale_Price">Sale Price</label>
+                                                <textarea type="number" class="form-control" id="Sale_Price" name="Sale_Price"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="Time">Work Time </label>
+                                                <textarea type ="time" class="form-control" id="Time" name="Time"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="group_service_id">Group</label>
+                                                <select class="form-control" id="group_service_id" name="group_service_id" required>
+                                                    <option value="">Select a group</option>
+                                                    @foreach ($groupServices as $groupService)
+                                                        <option value="{{ $groupService->id }}">{{ $groupService->Name }}</option>
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -102,6 +83,7 @@
 
                                         </div>
 
+                                    
                                     </div>
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
                                         <div class="bg-ad-form right-sidebar ">
@@ -147,38 +129,6 @@
                                             </div>
                                         </div>
 
-
-                                        <div class="bg-ad-form right-sidebar mt-3">
-                                            <div class="widget meta-boxes">
-                                                <div class="widget-title">
-                                                    <h4><label for="image" class="control-label required m-0"
-                                                            aria-required="true">Image (600*400 px)</label></h4>
-                                                </div>
-                                                <div class="widget-body">
-
-                                                    <div class="form-group mt-4 ">
-                                                        <div class="holder image-category" id="image-category"
-                                                            value="">
-                                                        </div>
-                                                        <div class="-space-y-px mb-4">
-                                                            <div class="containerInput input-group">
-                                                                <span class="input-group-btn ">
-                                                                    <a class="text-primary" id="image_manager"
-                                                                        data-input="image" data-preview="image-category">
-                                                                        Select Image
-                                                                    </a>
-                                                                </span>
-
-                                                                <input class="form-control" id="image"
-                                                                    style="display: none" type="text" name="avatar">
-                                                            </div>
-
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </form>
@@ -195,36 +145,7 @@
     @include('layouts.footerad')
 @endsection
 @section('script')
-    <script src={{ asset('ckeditor/ckeditor.js') }}></script>
-
-    <script>
-        var options = {
-            filebrowserImageBrowseUrl: 'laravel-filemanager?type=Images',
-            /*                 filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token=',
-                    filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
-                            filebrowserUploadUrl: "{{ route('ckeditor.upload', ['_token' => csrf_token()]) }}",
-                            filebrowserUploadMethod: 'form' */
-        };
-    </script>
-    <script>
-        CKEDITOR.replace('editor1', options);
-        /*  $('textarea.editor1').ckeditor(options); */
-    </script>
-    <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
-    <script>
-  
-        var route_prefix = "/admin/laravel-filemanager";
-
-        $('#image_manager').click(function(e) {
-            e.preventDefault();
-            // Replace 'filemanager' with the actual route URL for the file manager
-            var fileManagerUrl = route_prefix + "?type=image";
-            window.open(fileManagerUrl, 'FileManager', 'width=800,height=600');
-        });
-
-    </script>
-
-
+    
     <script>
         $(".btn-trigger-show-seo-detail").click(function() {
             $('.seo-edit-section').toggleClass('hidden-active');

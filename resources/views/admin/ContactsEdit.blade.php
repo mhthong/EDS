@@ -75,7 +75,7 @@
 <main>
     <section class="panel important">
         <h2>Update a Contact</h2>
-        <form name="add-blog-post-form" id="add-blog-post-form" method="post" action="{{route('contacts.update');}}" enctype="multipart/form-data">
+        <form name="add-blog-post-form" id="add-blog-post-form" method="post" action="{{ route('contacts.update') }}" enctype="multipart/form-data">
           @csrf
             <div class="twothirds">
                 <label for="textarea" class="m:1rem">Contact Link:</label>

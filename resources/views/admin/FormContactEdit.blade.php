@@ -85,7 +85,7 @@
         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 flexb-c">
             <div class="bg-ad flexb-col-c">
              <h2 class="text-center pt-3">Cập Nhật Bài Viết</h2>
-        <form class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12" name="add-blog-post-form" id="add-blog-post-form" method="post" action="{{route('new.update', ['id' => $news->id]);}}" enctype="multipart/form-data">
+        <form class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12" name="add-blog-post-form" id="add-blog-post-form" method="post" action="{{ route('new.update', ['id' => $news->id]) }}" enctype="multipart/form-data">
           @csrf
             <div class="containerInput twothirds">
                 <label for="name">Tiêu Đề Bài Viết</label>

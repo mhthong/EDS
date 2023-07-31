@@ -36,11 +36,13 @@ use SebastianBergmann\CodeCoverage\Report\Xml\Tests;
 use App\Http\Controllers\TagsController;
 use App\Models\StaticPosts;
 use App\Http\Controllers\SitemapController;
-use  App\Http\Controllers\SlugController;
+use App\Http\Controllers\SlugController;
 use Spatie\Analytics\AnalyticsFacade as Analytics; //Change here
 use Spatie\Analytics\Period;
 use App\Http\Controllers\ArtistLevelController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\GroupServiceController;
+use App\Http\Controllers\ServiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,7 +78,7 @@ Route::get('/generate', function () {
     echo 'ok';
 });
 
-Route::get('product-detail/{table}-{id}',  [PublicController::class, 'show'])->name('product-detail');
+Route::get('product-detail/{table}-{id}', [PublicController::class, 'show'])->name('product-detail');
 
 Auth::routes();
 
@@ -136,19 +138,19 @@ Route::middleware('auth:user')->prefix('user')->group(
 
 );
 
-Route::get('/login',  [LoginController::class, 'showLoginForm']);
-Route::post('/login',  [LoginController::class, 'login'])->name('login');
+Route::get('/login', [LoginController::class, 'showLoginForm']);
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::post('email', [EmailConfigurationController::class, 'sendEmail'])->name('composer.email');
 
 Route::middleware('auth:admin')->prefix('admin')->group(
     function () {
 
-     
 
-        Route::get('/',  [AdminController::class, 'index']);
-        Route::get('/your-setting',  [AdminController::class, 'YourSetting'])->name('your-setting');
-        Route::post('/reset-password',  [AdminController::class, 'ResetPassword'])->name('reset-password');
+
+        Route::get('/', [AdminController::class, 'index']);
+        Route::get('/your-setting', [AdminController::class, 'YourSetting'])->name('your-setting');
+        Route::post('/reset-password', [AdminController::class, 'ResetPassword'])->name('reset-password');
         Route::post('/update-avatar', [AdminController::class, 'updateAvatar'])->name('admin.updateAvatar');
         Route::post('/update-infomation', [AdminController::class, 'updateInfomation'])->name('admin.updateInfomation');
 
@@ -156,74 +158,110 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         /*
         FormContact */
-        Route::get('FormContact',  [FormContactController::class, 'FormContact'])->name('FormContact-admin');
-        Route::get('search',  [FormContactController::class, 'search'])->name('search');
-        Route::get('FormContact/{id}',  [FormContactController::class, 'show'])->name('FormContact.show');
-        Route::DELETE('FormContact/delete/{id}',  [FormContactController::class, 'destroy'])->name('FormContact.delete');
+        Route::get('FormContact', [FormContactController::class, 'FormContact'])->name('FormContact-admin');
+        Route::get('search', [FormContactController::class, 'search'])->name('search');
+        Route::get('FormContact/{id}', [FormContactController::class, 'show'])->name('FormContact.show');
+        Route::DELETE('FormContact/delete/{id}', [FormContactController::class, 'destroy'])->name('FormContact.delete');
 
 
 
         Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
             \UniSharp\LaravelFilemanager\Lfm::routes();
         });
-       
+
         /*  */
         Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
 
         ////
+    
 
 
-
-        Route::get('simple-slider',  [SimpleSliderController::class, 'SimpleSlider'])->name('simple-slider');
+        Route::get('simple-slider', [SimpleSliderController::class, 'SimpleSlider'])->name('simple-slider');
         Route::get('simple-slider/edit/{id}', [SimpleSliderController::class, 'edit'])->name('SimpleSlider.edit');
         Route::post('update-simple-slider/{id}', [SimpleSliderController::class, 'update'])->name('update-simple-slider');
-        Route::DELETE('simple-slider-item/delete/{id}',  [SimpleSliderController::class, 'destroy'])->name('simple-slider-item.delete');
+        Route::DELETE('simple-slider-item/delete/{id}', [SimpleSliderController::class, 'destroy'])->name('simple-slider-item.delete');
         Route::post('update-simple-slider-item/{id}', [SimpleSliderController::class, 'updateitem'])->name('update-simple-slider-item');
         Route::post('created-simple-slider-item/{id_simple}', [SimpleSliderController::class, 'createditem'])->name('created-simple-slider-item');
 
         //caregory
         Route::prefix('category')->group(
             function () {
-                Route::get('/',  [MenuController::class, 'index'])->name('category');
-                Route::post('category-post', [MenuController::class, 'store'])->name('category-up');
-                Route::DELETE('delete/{id}',  [MenuController::class, 'destroy'])->name('category.delete');
-                Route::post('update-menu/{id}', [MenuController::class, 'update'])->name('update-menu');
-            }
+            Route::get('/', [MenuController::class, 'index'])->name('category');
+            Route::post('category-post', [MenuController::class, 'store'])->name('category-up');
+            Route::DELETE('delete/{id}', [MenuController::class, 'destroy'])->name('category.delete');
+            Route::post('update-menu/{id}', [MenuController::class, 'update'])->name('update-menu');
+        }
         );
 
-/*         Route::prefix('contacts')->group(
-            function () {
-                Route::get('/',  [StaticPostsController::class, 'index'])->name('contacts');
-                Route::get('create', [StaticPostsController::class, 'create_index'])->name('contacts.create');
-                Route::post('store', [StaticPostsController::class, 'store'])->name('contacts.store');
-                Route::DELETE('delete/{id}',  [StaticPostsController::class, 'destroy'])->name('contacts.delete');
-            }
-        ); */
+        /*         Route::prefix('contacts')->group(
+                    function () {
+                        Route::get('/',  [StaticPostsController::class, 'index'])->name('contacts');
+                        Route::get('create', [StaticPostsController::class, 'create_index'])->name('contacts.create');
+                        Route::post('store', [StaticPostsController::class, 'store'])->name('contacts.store');
+                        Route::DELETE('delete/{id}',  [StaticPostsController::class, 'destroy'])->name('contacts.delete');
+                    }
+                ); */
 
         Route::resource('artist-levels', 'ArtistLevelController');
 
         Route::prefix('artist-levels')->group(
             function () {
-                Route::get('/',  [ArtistLevelController::class, 'index'])->name('artist-levels.index');
+                Route::get('/', [ArtistLevelController::class, 'index'])->name('artist-levels.index');
                 Route::post('/store', [ArtistLevelController::class, 'store'])->name('artist-levels.store');
                 Route::put('/{artist_level}', [ArtistLevelController::class, 'update'])->name('artist-levels.update');
-                Route::DELETE('/{artist_level}',  [ArtistLevelController::class, 'destroy'])->name('artist-levels.destroy');
+                Route::DELETE('/{artist_level}', [ArtistLevelController::class, 'destroy'])->name('artist-levels.destroy');
+
+            }
+        );
+
+        Route::prefix('group')->group(
+            function () {
+                Route::get('/', [GroupServiceController::class, 'index'])->name('groups.index');
+                Route::post('/store', [GroupServiceController::class, 'store'])->name('groups.store');
+                Route::put('/{group}', [GroupServiceController::class, 'update'])->name('groups.update');
+                Route::DELETE('/{group}', [GroupServiceController::class, 'destroy'])->name('groups.destroy');
 
             }
         );
 
 
+        Route::prefix('services')->group(
+            function () {
+                // Index page - Display a list of all services
+                Route::get('', [ServiceController::class, 'index'])->name('services.index');
+
+                // Create page - Show the form for creating a new service
+                Route::get('/create', [ServiceController::class, 'create'])->name('services.create');
+
+                // Store - Store a newly created service in the database
+                Route::post('/store', [ServiceController::class, 'store'])->name('services.store');
+
+                // Edit page - Show the form for editing an existing service
+                Route::get('/{service}/edit', [ServiceController::class, 'edit'])->name('services.edit');
+
+                // Update - Update the specified service in the database
+                Route::put('/{service}', [ServiceController::class, 'update'])->name('services.update');
+
+                // Destroy - Remove the specified service from the database
+                Route::delete('/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
+
+            }
+        );
+
+
+
+
         Route::prefix('artist')->group(
             function () {
-                Route::get('/',  [ArtistController::class, 'index'])->name('artist.index');
+                Route::get('/', [ArtistController::class, 'index'])->name('artist.index');
                 Route::get('show/{artist}', [ArtistController::class, 'show'])->name('artist.show');
                 Route::get('edit/{artist}', [ArtistController::class, 'edit'])->name('artist.edit', true);
                 Route::put('update/{artist}', [ArtistController::class, 'update'])->name('artist.update');
-                Route::DELETE('delete/{artist}',  [ArtistController::class, 'destroy'])->name('artist.destroy');
+                Route::DELETE('delete/{artist}', [ArtistController::class, 'destroy'])->name('artist.destroy');
                 Route::get('create', [ArtistController::class, 'create'])->name('artist.create', true);
                 Route::post('store', [ArtistController::class, 'store'])->name('artist.store', true);
-             
+
 
             }
         );
@@ -232,10 +270,10 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         Route::prefix('pages')->group(
             function () {
-                Route::get('/',  [BlockController::class, 'index'])->name('blocks');
+                Route::get('/', [BlockController::class, 'index'])->name('blocks');
                 Route::get('create', [BlockController::class, 'create_index'])->name('block.create');
                 Route::post('store', [BlockController::class, 'store'])->name('block-store');
-                Route::DELETE('delete/{id}',  [BlockController::class, 'destroy'])->name('blocks.delete');
+                Route::DELETE('delete/{id}', [BlockController::class, 'destroy'])->name('blocks.delete');
                 Route::get('edit/{id}', [BlockController::class, 'edit'])->name('blocks.edit');
                 Route::post('update-block/{id}', [BlockController::class, 'update'])->name('blocks.update');
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
@@ -250,10 +288,10 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         Route::prefix('blocks')->group(
             function () {
-                Route::get('/',  [StaticPostsController::class, 'index'])->name('statics');
+                Route::get('/', [StaticPostsController::class, 'index'])->name('statics');
                 Route::get('create', [StaticPostsController::class, 'create_index'])->name('static.create');
                 Route::post('store', [StaticPostsController::class, 'store'])->name('static-store');
-                Route::DELETE('delete/{id}',  [StaticPostsController::class, 'destroy'])->name('statics.delete');
+                Route::DELETE('delete/{id}', [StaticPostsController::class, 'destroy'])->name('statics.delete');
                 Route::get('edit/{id}', [StaticPostsController::class, 'edit'])->name('statics.edit');
                 Route::post('update-static/{id}', [StaticPostsController::class, 'update'])->name('statics.update');
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
@@ -268,10 +306,10 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         Route::prefix('posts')->group(
             function () {
-                Route::get('/',  [PostController::class, 'index'])->name('posts');
+                Route::get('/', [PostController::class, 'index'])->name('posts');
                 Route::get('create', [PostController::class, 'create_index'])->name('create');
                 Route::post('store', [PostController::class, 'store'])->name('posts-up');
-                Route::DELETE('delete/{id}',  [PostController::class, 'destroy'])->name('posts.delete');
+                Route::DELETE('delete/{id}', [PostController::class, 'destroy'])->name('posts.delete');
                 Route::get('edit/{id}', [PostController::class, 'edit'])->name('edit-posts');
                 Route::post('update-posts/{id}', [PostController::class, 'update'])->name('update-posts');
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
@@ -284,10 +322,10 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         Route::prefix('tags')->group(
             function () {
-                Route::get('/',  [TagsController::class, 'index'])->name('tags');
+                Route::get('/', [TagsController::class, 'index'])->name('tags');
                 Route::get('create', [TagsController::class, 'create_index'])->name('tag-create');
                 Route::post('store', [TagsController::class, 'store'])->name('tag-store');
-                Route::DELETE('delete/{id}',  [TagsController::class, 'destroy'])->name('tag.delete');
+                Route::DELETE('delete/{id}', [TagsController::class, 'destroy'])->name('tag.delete');
                 Route::get('edit/{id}', [TagsController::class, 'edit'])->name('edit-tag');
                 Route::post('update-tag/{id}', [TagsController::class, 'update'])->name('update.tag');
 
@@ -302,7 +340,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         Route::prefix('theme')->group(
             function () {
-                Route::get('option',  [SettingController::class, 'SettingValue'])->name('setting');
+                Route::get('option', [SettingController::class, 'SettingValue'])->name('setting');
                 Route::post('option-post', [SettingController::class, 'Setting'])->name('setting-up');
 
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
@@ -315,10 +353,10 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         Route::prefix('setting')->group(
             function () {
-                Route::get('general',  [SettingController::class, 'general'])->name('general');
+                Route::get('general', [SettingController::class, 'general'])->name('general');
                 Route::post('general-post', [SettingController::class, 'Setting'])->name('general.post');
 
-                Route::get('email',  [SettingController::class, 'email'])->name('email');
+                Route::get('email', [SettingController::class, 'email'])->name('email');
                 Route::post('email-post', [SettingController::class, 'Setting'])->name('email.post');
                 /* email */
                 Route::post('compose-email', [EmailConfigurationController::class, 'sendEmail_ad'])->name('compose-email-form');
@@ -348,7 +386,7 @@ Route::post('update-contact', [ContactsController::class, 'update'])->name('cont
 /* news */
 
 /* Route::get('add-blog-post-form', [PostController::class, 'index']); */
-Route::get('informations-post',  [InformationController::class, 'Post'])->name('informations-post');
+Route::get('informations-post', [InformationController::class, 'Post'])->name('informations-post');
 Route::post('insert-informations', [InformationController::class, 'Insert'])->name('informations.upload');
 /* Route::get('news/{tittle}{id}', [PublicController::class, 'show'])->name('news_detail')->where('id", "[0-9]+"); */
 
@@ -382,5 +420,3 @@ Route::prefix('page')->group(
         Route::get('{slug}', [SitemapController::class, 'page'])->name('page');
     }
 );
-
-
