@@ -12,7 +12,7 @@ class Showroom extends Model
     // Define the table associated with the model
     protected $table = 'showrooms';
 
-    protected $fillable = ['Name', 'Address', 'Phone', 'Description'];
+    protected $fillable = ['Name', 'Address', 'Phone', 'Description' ,'maps' ,'status' ];
 
     // Define the relationships
     public function artists()

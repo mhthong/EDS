@@ -65,7 +65,12 @@
                         <li><a href=" {{ route('groups.index') }} ">Services Group</a></li>
                     </ul>
                 </li>
-                <li><a href="#">Showroom</a></li>
+                <li><a href="#">Showroom <i class="ph-caret-right-fill"></i></a>
+                    <ul class="sidebar__dropdown-menu">
+                        <li><a href=" {{ route('showrooms.index') }} ">All Showrooms</a></li>
+                        <li><a href="{{ route('showrooms.create') }}">Add New Showrooms </a></li>
+                    </ul>
+                </li>
                 <li>
                     <a href="#">Artist <i class="ph-caret-right-fill"></i></a>
                     <ul class="sidebar__dropdown-menu">

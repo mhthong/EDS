@@ -19,6 +19,8 @@ class CreateShowroomsTable extends Migration
             $table->string('Address'); // Address column
             $table->string('Phone'); // Phone column
             $table->string('Description'); // Description column
+            $table->string('maps'); // Description column
+            $table->string('status'); // Description column
             
             $table->timestamps(); // Created_at and updated_at timestamps
         });

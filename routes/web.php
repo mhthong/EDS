@@ -43,6 +43,7 @@ use App\Http\Controllers\ArtistLevelController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\GroupServiceController;
 use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\ShowroomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -172,11 +173,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
         /*  */
         Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
-
-        ////
-    
-
-
         Route::get('simple-slider', [SimpleSliderController::class, 'SimpleSlider'])->name('simple-slider');
         Route::get('simple-slider/edit/{id}', [SimpleSliderController::class, 'edit'])->name('SimpleSlider.edit');
         Route::post('update-simple-slider/{id}', [SimpleSliderController::class, 'update'])->name('update-simple-slider');
@@ -245,6 +241,31 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
                 // Destroy - Remove the specified service from the database
                 Route::delete('/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
+
+            }
+        );
+
+
+
+        Route::prefix('showrooms')->group(
+            function () {
+                // Index page - Display a list of all services
+                Route::get('', [ShowroomController::class, 'index'])->name('showrooms.index');
+
+                // Create page - Show the form for creating a new service
+                Route::get('/create', [ShowroomController::class, 'create'])->name('showrooms.create');
+
+                // Store - Store a newly created service in the database
+                Route::post('/store', [ShowroomController::class, 'store'])->name('showrooms.store');
+
+                // Edit page - Show the form for editing an existing service
+                Route::get('/{showroom}/edit', [ShowroomController::class, 'edit'])->name('showrooms.edit');
+
+                // Update - Update the specified service in the database
+                Route::put('/{showroom}', [ShowroomController::class, 'update'])->name('showrooms.update');
+
+                // Destroy - Remove the specified service from the database
+                Route::delete('/{showroom}', [ShowroomController::class, 'destroy'])->name('showrooms.destroy');
 
             }
         );

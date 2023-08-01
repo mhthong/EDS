@@ -38,57 +38,43 @@
 
                 <div class="main__body__data">
 
-                    @isset($service)
+                    @isset($showroom)
                         <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 flexb-c">
                             <div class="flexb-col-c bg-ad-1">
                                 <form class="p-0 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
                                     name="add-blog-post-form" id="add-blog-post-form" method="post"
-                                    action="{{ route('services.update', ['service' => $service->id]) }}"
+                                    action="{{ route('showrooms.update', ['showroom' => $showroom->id]) }}"
                                     enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
-
 
                                     <div class="flexb-c col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
                                         style="align-items: flex-start; justify-content: space-between;">
                                         <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
                                             <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
 
-                                                <!-- servicess/edit.blade.php -->
+                                                <!-- showroomss/edit.blade.php -->
 
                                                 <div class="form-group">
                                                     <label for="Name">Name</label>
-                                                    <input type="text" class="form-control" id="Name" name="Name" value="{{ $service->Name}}" required>
+                                                    <input type="text" class="form-control" id="Name" name="Name" value="{{ $showroom ->Name}}" required>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="Price">Price</label>
-                                                    <input type="number" class="form-control" id="Price" name="Price" min="0" value="{{ $service->Price}}" required>
+                                                    <label for="Address">Address</label>
+                                                    <input type="text" class="form-control" id="Address" name="Address"  value="{{ $showroom ->Address}}" required>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="Phone">Phone</label>
+                                                    <input type="text" class="form-control" id="Phone" name="Phone"  value="{{ $showroom ->Phone}}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="Description">Description</label>
-                                                    <textarea class="form-control" id="Description" name="Description">{{ $service->Description}}</textarea>
+                                                    <textarea class="form-control" id="Description" name="Description"> {{ $showroom ->Description}}</textarea>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="Sale_Price">Sale Price</label>
-                                                    <textarea type="number" class="form-control" id="Sale_Price" name="Sale_Price">{{ $service->Sale_Price}}</textarea>
+                                                    <label for="maps">Maps</label>
+                                                    <textarea type="text" class="form-control" col="30" rows="10" id="maps" name="maps">{{ $showroom ->maps}}</textarea>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label for="Time">Work Time </label>
-                                                    <textarea type ="time" class="form-control" id="Time" name="Time">{{ $service->Time}}</textarea>
-                                                </div>
-                                           
-                                                <div class="form-group">
-
-                                                    <label for="group_service_id">Group</label>
-                                                        <select class="form-control" id="group_service_id" name="group_service_id" required>
-                                                            <option value="">Select a group</option>
-                                                            @foreach ($groupServices as $groupService)
-                                                                <option value="{{ $groupService->id }}" @if ($groupService->id == $service->group_service_id) selected @endif>{{ $groupService->Name }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                </div>
-
-
                                             </div>
 
                                         </div>
@@ -127,13 +113,13 @@
                                                             <select class="form-control ui-select ui-select" id="status"
                                                                 name="status">
                                                                 <option value="published"
-                                                                    {{ $service->status === 'published' ? 'selected' : '' }}>
+                                                                    {{ $showroom->status === 'published' ? 'selected' : '' }}>
                                                                     Published</option>
                                                                 <option value="pending"
-                                                                    {{ $service->status === 'pending' ? 'selected' : '' }}>
+                                                                    {{ $showroom->status === 'pending' ? 'selected' : '' }}>
                                                                     Pending</option>
                                                                 <option value="draft"
-                                                                    {{ $service->status === 'draft' ? 'selected' : '' }}>Draft
+                                                                    {{ $showroom->status === 'draft' ? 'selected' : '' }}>Draft
                                                                 </option>
 
                                                             </select>
