@@ -30,4 +30,9 @@ class Showroom extends Model
     {
         return $this->hasMany(Booking::class, 'ShowroomID');
     }
+    public function showroomSchedules()
+    {
+        return $this->hasMany(ShowroomSchedule::class);
+    }
+
 }

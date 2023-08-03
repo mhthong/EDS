@@ -9,7 +9,7 @@ class ShowroomSchedule extends Model
 {
     use HasFactory;
     protected $table ='showroom_schedules';
-    protected $fillable = ['day', 'active'];
+    protected $fillable = ['showroom_id','day', 'active','workingvalue'];
 
     public function workingHours()
     {

@@ -129,6 +129,42 @@
                                             </div>
 
 
+                                            <div class="bg-ad-form right-sidebar mt-3">
+                                                <div class="widget meta-boxes">
+                                                    <div class="widget-title">
+                                                        <h4><label for="status" class="m-0 control-label required"
+                                                                aria-required="true">Showroom Schedules</label></h4>
+                                                    </div>
+                                                    <div class="widget-body p-3">
+                                                        <div class="ui-select-wrapper form-group mt-4">
+                                                            @foreach ($daysOfWeek as $day)
+                                                            <div class="form-group">
+                                                                <label for="active_{{ $day }}">{{ __('Active on ') . $day }}</label>
+                                                                <input type="checkbox" name="active_{{ $day }}" id="active_{{ $day }}" onchange="toggleWorkingFields(this)" {{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? 'checked' : '' }}>
+                                                            </div>
+                                                            <div class="form-group working-value-group" id="workingvalue_group_{{ $day }}" style="{{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? '' : 'display: none' }}">
+                                                                <label for="workingvalue_{{ $day }}">{{ __('Working Value on ') . $day }}</label>
+                                                                <input type="number" name="workingvalue_{{ $day }}" id="workingvalue_{{ $day }}" min="0" max="30" value="{{ old("workingvalue_{$day}", optional($showroom_schedules->where('day', $day)->first())->workingvalue) }}" onchange="generateWorkingHours(this)">
+                                                            </div>
+                                                            <div class="form-group working-hours-group" id="{{ $day }}" style="{{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? '' : 'display: none' }}">
+                                                                <label for="{{ $day }}">Working Hours on {{ $day }}</label>
+                                                                <div class="working-hours">
+                                                                    @foreach (optional($showroom_schedules->where('day', $day)->first())->workingHours ?? [] as $index => $workingHour)
+                                                                        <input type="time" name="{{ $day }}[{{ $index }}][start_time]" value="{{ old("{$day}.{$index}.start_time", $workingHour->start_time) }}" required>
+                                                                        <input type="time" name="{{ $day }}[{{ $index }}][end_time]" value="{{ old("{$day}.{$index}.end_time", $workingHour->end_time) }}" required>
+                                                                    @endforeach
+                                                                </div>
+                                                            </div>
+                                                            <input type="hidden" name="{{ $day }}[]" id="{{ $day }}_hidden">
+                                                        @endforeach
+                                                        
+                                                        
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
                                         </div>
                                     </div>
 
@@ -183,6 +219,55 @@
     <script>
         $(".btn-trigger-show-seo-detail").click(function() {
             $('.seo-edit-section').toggleClass('hidden-active');
+        });
+
+        function toggleWorkingFields(checkbox) {
+            const day = checkbox.id.replace('active_', '');
+            const workingValueGroup = document.getElementById(`workingvalue_group_${day}`);
+            const workingHoursGroup = document.getElementById(day);
+
+            if (checkbox.checked) {
+                workingValueGroup.style.display = 'block';
+                workingHoursGroup.style.display = 'block';
+                generateWorkingHours(workingValueGroup.querySelector(`#workingvalue_${day}`));
+            } else {
+                workingValueGroup.style.display = 'none';
+                workingHoursGroup.style.display = 'none';
+                document.getElementById(`${day}_hidden`).disabled = false;
+            }
+        }
+
+
+        function generateWorkingHours(input) {
+            const day = input.id.replace('workingvalue_', '');
+            const workingHoursContainer = document.querySelector(`#${day} .working-hours`);
+            workingHoursContainer.innerHTML = '';
+
+            const maxWorkingHours = parseInt(input.value);
+            if (maxWorkingHours > 0) {
+                for (let i = 0; i < maxWorkingHours; i++) {
+                    const startTimeInput = document.createElement('input');
+                    startTimeInput.type = 'time';
+                    startTimeInput.name = `${day}[${i}][start_time]`;
+                    startTimeInput.required = true;
+
+                    const endTimeInput = document.createElement('input');
+                    endTimeInput.type = 'time';
+                    endTimeInput.name = `${day}[${i}][end_time]`;
+                    endTimeInput.required = true;
+
+                    workingHoursContainer.appendChild(startTimeInput);
+                    workingHoursContainer.appendChild(endTimeInput);
+                }
+            }
+        }
+
+
+        // Attach event listeners to the checkboxes
+        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        daysOfWeek.forEach(day => {
+            const checkbox = document.getElementById(`active_${day}`);
+            checkbox.addEventListener('change', () => toggleWorkingFields(checkbox));
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>

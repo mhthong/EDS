@@ -17,3 +17,4 @@ $('.notify').click( function() {
       $('.support-content').slideUp();
     });
 });
+

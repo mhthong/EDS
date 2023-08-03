@@ -11,7 +11,7 @@ class WorkingHour extends Model
 
     protected $table = 'working_hours';
 
-    protected $fillable = ['start_time', 'end_time'];
+    protected $fillable = ['showroom_schedule_id','start_time', 'end_time'];
 
     public function showroomSchedule()
     {

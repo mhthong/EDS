@@ -19,6 +19,7 @@ class CreateShowroomSchedulesTable extends Migration
             $table->foreign('showroom_id')->references('id')->on('showrooms')->onDelete('cascade');
             $table->enum('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday','Sunday'])->onDelete('cascade');
             $table->boolean('active')->default(true);
+            $table->unsignedTinyInteger('workingvalue')->default(4); // Default to 4 working hours per day
             $table->timestamps();
         });
     }

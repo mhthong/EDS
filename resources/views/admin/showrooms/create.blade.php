@@ -51,15 +51,18 @@
                                         <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
                                             <div class="form-group">
                                                 <label for="Name">Name</label>
-                                                <input type="text" class="form-control" id="Name" name="Name" required>
+                                                <input type="text" class="form-control" id="Name" name="Name"
+                                                    required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="Address">Address</label>
-                                                <input type="text" class="form-control" id="Address" name="Address" required>
+                                                <input type="text" class="form-control" id="Address" name="Address"
+                                                    required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="Phone">Phone</label>
-                                                <input type="text" class="form-control" id="Phone" name="Phone" required>
+                                                <input type="text" class="form-control" id="Phone" name="Phone"
+                                                    required>
                                             </div>
                                             <div class="form-group">
                                                 <label for="Description">Description</label>
@@ -69,8 +72,10 @@
                                                 <label for="maps">Maps</label>
                                                 <textarea type="text" class="form-control" col="30" rows="10" id="maps" name="maps"></textarea>
                                             </div>
+
+
                                         </div>
-                                    
+
                                     </div>
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
                                         <div class="bg-ad-form right-sidebar ">
@@ -116,6 +121,47 @@
                                             </div>
                                         </div>
 
+                                        <div class="bg-ad-form right-sidebar mt-3">
+                                            <div class="widget meta-boxes">
+                                                <div class="widget-title">
+                                                    <h4><label for="status" class="m-0 control-label required"
+                                                            aria-required="true">Status</label></h4>
+                                                </div>
+
+                                                @foreach ($daysOfWeek as $day)
+                                                    <div class="form-group">
+                                                        <label
+                                                            for="active_{{ $day }}">{{ __('Active on ') . $day }}</label>
+                                                        <input type="checkbox" name="active_{{ $day }}"
+                                                            id="active_{{ $day }}"
+                                                            onchange="toggleWorkingFields(this)">
+                                                    </div>
+                                                    <div class="form-group working-value-group"
+                                                        id="workingvalue_group_{{ $day }}">
+                                                        <label
+                                                            for="workingvalue_{{ $day }}">{{ __('Working Value on ') . $day }}</label>
+                                                        <input type="number" name="workingvalue_{{ $day }}"
+                                                            id="workingvalue_{{ $day }}" min="0"
+                                                            max="4" value="1"
+                                                            onchange="generateWorkingHours(this)">
+                                                    </div>
+                                                    <div class="form-group working-hours-group" id="{{ $day }}">
+                                                        <label for="{{ $day }}">Working Hours on
+                                                            {{ $day }}</label>
+                                                        <div class="working-hours"></div>
+                                                    </div>
+                                                    <input type="hidden" name="{{ $day }}[]"
+                                                        id="{{ $day }}_hidden">
+                                                @endforeach
+
+
+                                                <!-- ... -->
+
+
+
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                             </form>
@@ -132,14 +178,66 @@
     @include('layouts.footerad')
 @endsection
 @section('script')
-    
     <script>
         $(".btn-trigger-show-seo-detail").click(function() {
             $('.seo-edit-section').toggleClass('hidden-active');
         });
+
+
+        function toggleWorkingFields(checkbox) {
+            const day = checkbox.id.replace('active_', '');
+            const workingValueGroup = document.getElementById(`workingvalue_group_${day}`);
+            const workingHoursGroup = document.getElementById(day);
+
+            if (checkbox.checked) {
+                workingValueGroup.style.display = 'block';
+                workingHoursGroup.style.display = 'block';
+                generateWorkingHours(workingValueGroup.querySelector(`#workingvalue_${day}`));
+            } else {
+                workingValueGroup.style.display = 'none';
+                workingHoursGroup.style.display = 'none';
+                document.getElementById(`${day}_hidden`).disabled = false;
+            }
+        }
+
+
+        function generateWorkingHours(input) {
+            const day = input.id.replace('workingvalue_', '');
+            const workingHoursContainer = document.querySelector(`#${day} .working-hours`);
+            workingHoursContainer.innerHTML = '';
+
+            const maxWorkingHours = parseInt(input.value);
+            if (maxWorkingHours > 0) {
+                for (let i = 0; i < maxWorkingHours; i++) {
+                    const startTimeInput = document.createElement('input');
+                    startTimeInput.type = 'time';
+                    startTimeInput.name = `${day}[${i}][start_time]`;
+                    startTimeInput.required = true;
+
+                    const endTimeInput = document.createElement('input');
+                    endTimeInput.type = 'time';
+                    endTimeInput.name = `${day}[${i}][end_time]`;
+                    endTimeInput.required = true;
+
+                    workingHoursContainer.appendChild(startTimeInput);
+                    workingHoursContainer.appendChild(endTimeInput);
+                }
+            }
+        }
+
+
+        // Attach event listeners to the checkboxes
+        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        daysOfWeek.forEach(day => {
+            const checkbox = document.getElementById(`active_${day}`);
+            checkbox.addEventListener('change', () => toggleWorkingFields(checkbox));
+        });
     </script>
 
 
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="/js/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js" defer></script>
-@endsection
+    <script src="/js/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js" defer>
+        < /scrip>
+    @endsection
