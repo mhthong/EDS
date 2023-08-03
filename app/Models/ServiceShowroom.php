@@ -11,11 +11,11 @@ class ServiceShowroom extends Model
 
     protected $table = 'service_showroom';
 
-    protected $fillable = ['service_id', 'showroom_id'];
+    protected $fillable = ['groupservice_id', 'showroom_id'];
 
-    public function service()
+    public function groupservice()
     {
-        return $this->belongsTo(Service::class, 'service_id');
+        return $this->belongsTo(GroupService::class, 'groupservice_id');
     }
 
     public function showroom()
