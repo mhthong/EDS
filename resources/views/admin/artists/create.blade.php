@@ -215,11 +215,8 @@
   
         var route_prefix = "/admin/laravel-filemanager";
 
-        $('#image_manager').click(function(e) {
-            e.preventDefault();
-            // Replace 'filemanager' with the actual route URL for the file manager
-            var fileManagerUrl = route_prefix + "?type=image";
-            window.open(fileManagerUrl, 'FileManager', 'width=800,height=600');
+        $('#image_manager').filemanager('image', {
+            prefix: route_prefix
         });
 
     </script>
