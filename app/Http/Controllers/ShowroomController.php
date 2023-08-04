@@ -143,7 +143,6 @@ class ShowroomController extends Controller
     
                 $workingHoursData = $request->input($workingHoursKey);
 
-                dd($request->all());
     
                 foreach ($workingHoursData as $workingHourData) {
                     if ($workingHourData !== null) {

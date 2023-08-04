@@ -11,7 +11,7 @@ class ServiceBooking extends Model
 
     protected $table = 'service_booking';
 
-    protected $fillable = ['service_id', 'booking_id'];
+    protected $fillable = ['service_id', 'booking_id','artist_levelID'];
 
     public function service()
     {
@@ -22,4 +22,10 @@ class ServiceBooking extends Model
     {
         return $this->belongsTo(Booking::class, 'booking_id');
     }
+    
+    public function artistLevel()
+    {
+        return $this->belongsTo(ArtistLevel::class, 'artist_levelID');
+    }
+
 }

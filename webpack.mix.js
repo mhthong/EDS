@@ -21,4 +21,6 @@ mix.copyDirectory('resources/images', 'public/images');
 mix.js('resources/js/style.js', 'public/js');
 
 mix.js('resources/js/add-new-form.js', 'public/js');
+mix.js('resources/js/showrooms.js', 'public/js');
+
 

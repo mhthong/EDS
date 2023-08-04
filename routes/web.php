@@ -68,6 +68,9 @@ Route::get('', function () {
 });
 
 
+Route::get('/booking-form', function () {
+    return view('booking-form'); // Tên của view bạn muốn hiển thị
+});
 
 
 /* Route::get('caretoties/{slug}', [SlugController::class, 'index'])->name('slug'); */

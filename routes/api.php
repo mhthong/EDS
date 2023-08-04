@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\APIBookingController;
 
 
 /*
@@ -20,3 +21,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('find', 'SearchController@find');
+
+
+
+
+Route::get('/showrooms', [APIBookingController::class, 'getShowrooms']);
+Route::get('/group-services/{showroomId}', [APIBookingController::class, 'getGroupServices']);
+Route::get('/services/{groupId}', [APIBookingController::class, 'getServices']);
