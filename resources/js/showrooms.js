@@ -1,9 +1,9 @@
 import Vue from 'vue';
-import BookingForm from './components/BookingForm.vue'; // Update the path
+import BookingForm from './components/BookingForm.vue';
 
 new Vue({
     el: '#app',
     components: {
-        BookingForm
+        BookingForm,
     }
 });

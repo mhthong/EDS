@@ -1,8 +1,4 @@
-
 @extends('layouts.app')
-
-@section('header')
-@endsection
 
 @section('content')
 <main>
@@ -11,9 +7,36 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="container">
-                        <div id="app">
-                            <booking-form></booking-form>
+
+                        <button type="button" class="bg-none" data-bs-toggle="modal" data-bs-target="#createModal">
+                            BOOK NOW
+                        </button>
+        
+        
+                           <!-- Create popup modal -->
+                           <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <!-- Add form for Create action -->
+                                    
+                                        <div class="modal-header">   
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Add form fields here -->
+                                            <div id="app">
+                                                <booking-form></booking-form>
+                                            
+                                            </div>
+                                            <!-- Add more fields as needed -->
+                                        </div>
+                                 
+                                
+                                </div>
+                            </div>
                         </div>
+             
+                  
                     </div>
                 </div>
             </div>
@@ -21,17 +44,14 @@
     </div>
 </main>
 
-<script> 
-import Vue from 'vue';
-import BookingForm from './components/BookingForm.vue'; // Update the path
 
-new Vue({
-    el: '#app',
-    components: {
-        BookingForm
-    }
-});
-</script>
 
+           
 @endsection
 
+@section('footer')
+@endsection
+
+@section('script')
+<script src="/js/showrooms.js" defer></script>
+@endsection
