@@ -26,7 +26,6 @@ Route::get('find', 'SearchController@find');
 
 
 Route::get('/showrooms', [APIBookingController::class, 'getShowrooms']);
-/* Route::get('/group-services/{showroomId}', [APIBookingController::class, 'getGroupServices']); */
 Route::get('/group-services/{showroomId}', [APIBookingController::class, 'getGroupServices']);
-Route::get('/services/{groupId}', [APIBookingController::class, 'getServices']);
+Route::get('/services', [APIBookingController::class, 'getServices']);
 

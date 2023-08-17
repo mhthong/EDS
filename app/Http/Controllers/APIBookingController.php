@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Showroom;
 use App\Models\GroupService;
 use App\Models\ServiceShowroom;
+use App\Models\Service;
 
 class APIBookingController extends Controller
 {
@@ -18,16 +19,26 @@ class APIBookingController extends Controller
     }
 
     public function getGroupServices($showroomId){
-   
-        $serviceShowrooms = ServiceShowroom::with('groupservice')->where('showroom_id',$showroomId)->get();
-
+        $serviceShowrooms = ServiceShowroom::with('groupservice')->where('showroom_id', $showroomId)->get();
+    
+        $groupServiceData = []; // Initialize an array to store group service data
+    
         foreach ($serviceShowrooms as $serviceShowroom) {
-            $groupService[] = $serviceShowroom->groupservice; // Thông tin GroupService liên kết với mỗi ServiceShowroom
-            // Thực hiện xử lý với thông tin từ bảng GroupService
+            $groupService = $serviceShowroom->groupservice; // Get the GroupService related to the ServiceShowroom
+    
+            // Check if the group service exists and retrieve its services
+            if ($groupService) {
+                $services = $groupService->services; // Assuming 'services' is a relationship in the GroupService model
+                
+                $groupServiceData[] = [
+                    'groupService' => $groupService,
+                ];
+            }
         }
-
-        return response()->json($groupService);
+    
+        return response()->json($groupServiceData);
     }
+    
 
 /*     public function getGroupServices($showroomId)
     {
@@ -35,9 +46,9 @@ class APIBookingController extends Controller
         return response()->json($groupServices);
     } */
 
-    public function getServices($groupId)
+    public function getServices()
     {
-        $services = GroupService::find($groupId)->services;
+        $services = Service::where('status', 'published')->get();
         return response()->json($services);
     }
 

@@ -1,51 +1,46 @@
 @extends('layouts.app')
 
 @section('content')
-<main>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="container">
 
-                        <button type="button" class="bg-none" data-bs-toggle="modal" data-bs-target="#createModal">
-                            BOOK NOW
-                        </button>
-        
-        
-                           <!-- Create popup modal -->
-                           <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <!-- Add form for Create action -->
-                                    
-                                        <div class="modal-header">   
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <!-- Add form fields here -->
-                                            <div id="app">
-                                                <booking-form></booking-form>
-                                            
-                                            </div>
-                                            <!-- Add more fields as needed -->
-                                        </div>
-                                 
-                                
-                                </div>
-                            </div>
-                        </div>
-             
-                  
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
+<div class="container">
+    <div id="booking-form"></div>
+</div>
+<style>
+    /* Define styles for the modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+    }
+  </style>
+  
+{{-- <script>
+    var showrooms = @json($showrooms);
+    var groupServices = @json($groupServices);
+    var services = @json($services);
+</script>
+ --}}
+<script src="{{ mix('js/app.js') }}"></script>
 
+<script>
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import BookingForm from './components/BookingForm';
 
-
+    ReactDOM.render(<BookingForm showrooms={showrooms} groupServices={groupServices} services={services} />, document.getElementById('booking-form'));
+</script>
            
 @endsection
 
