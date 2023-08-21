@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LoginController;
@@ -44,6 +45,7 @@ use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\GroupServiceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ShowroomController;
+use App\Http\Controllers\AuthAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -142,6 +144,13 @@ Route::middleware('auth:user')->prefix('user')->group(
 
 );
 
+Route::middleware('auth:artists')->prefix('artist')->group(
+    function () {
+        Route::get('/', [HomeController::class, 'index'])->name('artists');
+    }
+
+);
+
 Route::get('/login', [LoginController::class, 'showLoginForm']);
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 
@@ -151,6 +160,17 @@ Route::middleware('auth:admin')->prefix('admin')->group(
     function () {
 
 
+        Route::prefix('auth-admin')->group(
+            function () {
+                Route::get('/', [AuthAdminController::class, 'index'])->name('auth-admin.index');
+                Route::post('/store', [AuthAdminController::class, 'store'])->name('auth-admin.store');
+                Route::put('/{auth_admin}', [AuthAdminController::class, 'update'])->name('auth-admin.update');
+                Route::DELETE('/{auth_admin}', [AuthAdminController::class, 'destroy'])->name('auth-admin.destroy');
+
+            }
+        );
+
+        Route::get('/', [AdminController::class, 'test'])->name('auth-admin.index');
 
         Route::get('/', [AdminController::class, 'index']);
         Route::get('/your-setting', [AdminController::class, 'YourSetting'])->name('your-setting');

@@ -81,6 +81,9 @@
                 </li>
             </ul>
         </li>
+        <li>
+            <a href="{{ route ('auth-admin.index')}}"><i class="fa-solid fa-user"></i></a>
+        </li>
         <li class="divider"></li>
         <li>
             <a href="#"><i class="ph-gear-fill"></i></a>

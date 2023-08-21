@@ -7,6 +7,7 @@ use App\Models\Showroom;
 use App\Models\GroupService;
 use App\Models\ServiceShowroom;
 use App\Models\Service;
+use App\Models\ArtistLevel;
 
 class APIBookingController extends Controller
 {
@@ -50,6 +51,13 @@ class APIBookingController extends Controller
     {
         $services = Service::where('status', 'published')->get();
         return response()->json($services);
+    }
+
+
+    public function ArtistLevel()
+    {
+        $artistLevels = ArtistLevel::all();
+        return response()->json($artistLevels);
     }
 
 }

@@ -45,13 +45,4 @@ import './wow.min.js';
 import './dashboards.js';
 
 
-require('./components/Example');
-
-
-// resources/js/app.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import BookingPopup from './components/BookingPopup';
-
-ReactDOM.render(<BookingPopup />, document.getElementById('booking-popup'));
 

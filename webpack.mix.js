@@ -12,5 +12,13 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/js/app.js', 'public/js')
-    .react()
-    .sass('resources/sass/app.scss', 'public/css');
+    .vue()
+    .sass('resources/sass/app.scss', 'public/css').options({ quiet: true });
+
+mix.copyDirectory('resources/images', 'public/images');
+
+mix.js('resources/js/style.js', 'public/js');
+
+mix.js('resources/js/add-new-form.js', 'public/js');
+
+mix.js('resources/js/book.js', 'public/js');

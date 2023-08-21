@@ -1,4 +1,4 @@
-/* import Vue from 'vue';
+import Vue from 'vue';
 import BookingForm from './components/BookingForm.vue';
 
 new Vue({
@@ -7,5 +7,3 @@ new Vue({
         BookingForm,
     }
 });
- */
-
