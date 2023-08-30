@@ -14,7 +14,7 @@ class Booking extends Model
       // Define the table associated with the model
     protected $table = 'bookings';
 
-    protected $fillable = ['ArtistID', 'ShowroomID', 'time', 'date', 'GetID', 'content'];
+    protected $fillable = ['ArtistID', 'ShowroomID', 'time', 'date', 'GetID','price_id', 'content','status'];
 
     public function artist()
     {
@@ -35,5 +35,21 @@ class Booking extends Model
     {
         return $this->belongsToMany(Service::class, 'service_booking');
     }
+
+    public function price()
+    {
+        return $this->belongsTo(Price::class, 'price_id');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'BookingID');
+    }
+
+    public function sourceBookings()
+{
+    return $this->hasMany(SourceBooking::class, 'booking_id');
+}
+
 
 }

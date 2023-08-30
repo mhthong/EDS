@@ -19,8 +19,15 @@ class Categories extends Model
    /**
     * @var array
     */
-   protected $fillable = [
-       'posts_id',
-       'categories_id',
-   ];
+    protected $fillable = ['posts_id', 'menu_id'];
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class, 'posts_id');
+    }
+
+    public function menu()
+    {
+        return $this->belongsTo(Menu::class, 'menu_id');
+    }
 }

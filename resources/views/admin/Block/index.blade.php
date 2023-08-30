@@ -67,10 +67,11 @@
                                     </td>
                                   </tr>
                                   @endforeach
+                             
                                   @endisset
                                 </tbody>
                               </table>
- 
+                              {{ $Block->links() }}
                           </div>
                           
                     

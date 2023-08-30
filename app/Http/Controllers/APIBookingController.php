@@ -40,7 +40,6 @@ class APIBookingController extends Controller
         return response()->json($groupServiceData);
     }
     
-
 /*     public function getGroupServices($showroomId)
     {
         $groupServices = Showroom::find($showroomId)->groupServices;

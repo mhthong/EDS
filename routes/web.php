@@ -46,7 +46,9 @@ use App\Http\Controllers\GroupServiceController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ShowroomController;
 use App\Http\Controllers\AuthAdminController;
-
+use App\Http\Controllers\ArtistAuthController;
+use App\Http\Controllers\GetController;
+use App\Http\Controllers\BookingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -73,6 +75,8 @@ Route::get('', function () {
 Route::get('/booking-form', function () {
     return view('booking-form'); // Tên của view bạn muốn hiển thị
 });
+
+
 
 
 /* Route::get('caretoties/{slug}', [SlugController::class, 'index'])->name('slug'); */
@@ -144,12 +148,26 @@ Route::middleware('auth:user')->prefix('user')->group(
 
 );
 
-Route::middleware('auth:artists')->prefix('artist')->group(
+
+Route::middleware('auth:artists')->prefix('artists')->group(
     function () {
-        Route::get('/', [HomeController::class, 'index'])->name('artists');
+        Route::get('/', [ArtistAuthController::class, 'index'])->name('artists');
+        Route::get('/your-setting', [ArtistAuthController::class, 'YourSetting'])->name('artists.your-setting');
+        Route::post('/reset-password', [ArtistAuthController::class, 'ResetPassword'])->name('artists.reset-password');
+        Route::post('/update-avatar', [ArtistAuthController::class, 'updateAvatar'])->name('artists.updateAvatar');
+        Route::post('/update-infomation', [ArtistAuthController::class, 'updateInfomation'])->name('artists.updateInfomation');
+        
+        Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['artists', 'auth']], function() {
+            \UniSharp\LaravelFilemanager\Lfm::routes();
+        });
+
+    
+      
     }
 
 );
+
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm']);
 Route::post('/login', [LoginController::class, 'login'])->name('login');
@@ -165,21 +183,19 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::get('/', [AuthAdminController::class, 'index'])->name('auth-admin.index');
                 Route::post('/store', [AuthAdminController::class, 'store'])->name('auth-admin.store');
                 Route::put('/{auth_admin}', [AuthAdminController::class, 'update'])->name('auth-admin.update');
+
                 Route::DELETE('/{auth_admin}', [AuthAdminController::class, 'destroy'])->name('auth-admin.destroy');
 
             }
         );
 
         Route::get('/', [AdminController::class, 'test'])->name('auth-admin.index');
-
         Route::get('/', [AdminController::class, 'index']);
         Route::get('/your-setting', [AdminController::class, 'YourSetting'])->name('your-setting');
         Route::post('/reset-password', [AdminController::class, 'ResetPassword'])->name('reset-password');
         Route::post('/update-avatar', [AdminController::class, 'updateAvatar'])->name('admin.updateAvatar');
         Route::post('/update-infomation', [AdminController::class, 'updateInfomation'])->name('admin.updateInfomation');
-
         Route::post('insert-new', [NewsController::class, 'Insert_New'])->name('ckeditor.upload');
-
         /*
         FormContact */
         Route::get('FormContact', [FormContactController::class, 'FormContact'])->name('FormContact-admin');
@@ -213,7 +229,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
         }
         );
 
-        /*         Route::prefix('contacts')->group(
+        /* Route::prefix('contacts')->group(
                     function () {
                         Route::get('/',  [StaticPostsController::class, 'index'])->name('contacts');
                         Route::get('create', [StaticPostsController::class, 'create_index'])->name('contacts.create');
@@ -230,6 +246,31 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::post('/store', [ArtistLevelController::class, 'store'])->name('artist-levels.store');
                 Route::put('/{artist_level}', [ArtistLevelController::class, 'update'])->name('artist-levels.update');
                 Route::DELETE('/{artist_level}', [ArtistLevelController::class, 'destroy'])->name('artist-levels.destroy');
+
+            }
+        );
+
+
+
+        Route::prefix('get')->group(
+            function () {
+                // Index page - Display a list of all services
+                Route::get('', [GetController::class, 'index'])->name('get.index');
+
+                // Create page - Show the form for creating a new service
+                Route::get('/create', [GetController::class, 'create'])->name('get.create');
+
+                // Store - Store a newly created service in the database
+                Route::post('/get', [GetController::class, 'store'])->name('get.store');
+
+                // Edit page - Show the form for editing an existing service
+                Route::get('/{get}/edit', [GetController::class, 'edit'])->name('get.edit');
+
+                // Update - Update the specified service in the database
+                Route::put('/{get}', [GetController::class, 'update'])->name('get.update');
+
+                // Destroy - Remove the specified service from the database
+                Route::delete('/{get}', [GetController::class, 'destroy'])->name('get.destroy');
 
             }
         );
@@ -311,6 +352,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(
         );
 
 
+        Route::get('/booking', function () {return view('admin.book.index');})->name('book.index');;
+
 
         Route::prefix('pages')->group(
             function () {
@@ -329,7 +372,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
         );
 
 
-
         Route::prefix('blocks')->group(
             function () {
                 Route::get('/', [StaticPostsController::class, 'index'])->name('statics');
@@ -346,12 +388,11 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             }
         );
 
-
-
         Route::prefix('posts')->group(
             function () {
                 Route::get('/', [PostController::class, 'index'])->name('posts');
                 Route::get('create', [PostController::class, 'create_index'])->name('create');
+                Route::get('multidelete', [PostController::class, 'create_index'])->name('post.multi.delete');
                 Route::post('store', [PostController::class, 'store'])->name('posts-up');
                 Route::DELETE('delete/{id}', [PostController::class, 'destroy'])->name('posts.delete');
                 Route::get('edit/{id}', [PostController::class, 'edit'])->name('edit-posts');
@@ -364,7 +405,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             }
         );
 
-        Route::prefix('tags')->group(
+/*         Route::prefix('tags')->group(
             function () {
                 Route::get('/', [TagsController::class, 'index'])->name('tags');
                 Route::get('create', [TagsController::class, 'create_index'])->name('tag-create');
@@ -376,11 +417,11 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
                     \UniSharp\LaravelFilemanager\Lfm::routes();
                 });
-                /*  */
+        
                 Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
             }
         );
-
+ */
 
         Route::prefix('theme')->group(
             function () {

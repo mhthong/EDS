@@ -19,15 +19,10 @@ class Block extends Model
    /**
     * @var array
     */
+
    protected $fillable = [
-       'name',
-       'alias',
-       'description',
-       'content',
-       'status',
-       'image',
-       'slug',
-       'target'
-   ];
+    'name', 'target', 'slug', 'description', 'content', 'status', 'user_id',
+];
+
 }
 

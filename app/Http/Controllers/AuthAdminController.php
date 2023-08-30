@@ -15,13 +15,24 @@ class AuthAdminController extends Controller
     // ... (other CRUD methods)
     public function index()
     {
-        $admins = Admin::where('id', '!=', Auth::id())
+
+        $loggedInUser = Auth::user();
+
+        if ($loggedInUser->manage_supers == 0 && $loggedInUser->super_user == 0) {
+            // User does not have permission
+            $admins = Admin::where('id', '!=', Auth::id())
             ->where('manage_supers', '!=', 0)
             ->where('super_user', '!=', 0)
             ->get();
 
         $stt = 1;
         return view('admin.auth-admin.index', compact('admins', 'stt'));
+        }
+        else {
+            return view('admin.auth-admin.index', compact('none', 'stt'));
+        }
+
+    
     }
 
 
@@ -52,11 +63,15 @@ class AuthAdminController extends Controller
         $admin->manage_supers = 1 ;
         $admin->super_user = 1 ;
 
-        // Set other properties
+        $refun = $admin->save();
 
-        $admin->save();
-
-        return redirect()->route('admins.index')->with('success', 'Admin created successfully.');
+        if (isset($refun) && $refun == true) {
+            // If the artist was successfully created, redirect with success message
+            return redirect()->route('auth-admin.index')->with('success', 'User created successfully.');
+        } else {
+            // If the artist creation failed, redirect back with an error message
+            return redirect()->back()->with('failed', 'Failed to create user.');
+        }
 
     }
 
@@ -70,18 +85,17 @@ class AuthAdminController extends Controller
     public function update(Request $request, Admin $auth_admin)
     {
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'level_price' => 'required|numeric',
-        ]);
-
-
+            // Validate the inpu
         $auth_admin->update([
-            'Name' => $request->name,
-            'Level_price' => $request->level_price,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
         ]);
+   
+         // If the admin was successfully updated, redirect with success message
+            return redirect()->route('auth-admin.index')->with('success', 'User updated successfully.');
 
-        return redirect()->route('auth-admin.index')->with('success', 'Artist Level updated successfully.');
+       
     }
 
 
@@ -94,10 +108,10 @@ class AuthAdminController extends Controller
             $auth_admin->delete();
 
             // Return a success message
-            return redirect()->route('auth-admin.index')->with('success', 'Artist level deleted successfully');
+            return redirect()->route('auth-admin.index')->with('success', 'User deleted successfully');
         } catch (\Exception $e) {
             // Return an error message in case of failure
-            return redirect()->route('auth-admin.index')->with('failed', 'Failed to delete artist level');
+            return redirect()->route('auth-admin.index')->with('failed', 'Failed to delete user');
         }
     }
     // ... (other CRUD methods)

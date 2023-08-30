@@ -588,18 +588,24 @@ p:before {
 
 
 .published{
-    padding: 5px;
+    i{
+        padding: 5px;
     background: aquamarine;
+    }
 }
 
 .pending{
+   i{
     padding: 5px;
     background: rgb(250, 235, 137);
+   }
 }
 
 .draft{
-    padding: 5px;
-    background: rgb(255, 94, 83);
+    i{
+        padding: 5px;
+        background: rgb(255, 94, 83);
+    }
 }
 
 .right-sidebar{

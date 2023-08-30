@@ -34,11 +34,19 @@
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
                                         <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
                         
-                                            <div class="form-group mt-4">
-                                                <label for="control-label required name mt-0">Name</label>
-                                                <input class="form-control" type="text" name="name" id="name" placeholder="" required
-                                                    value="" required />
-                                            </div>
+                                      
+                                                <div class="form-group mt-4">
+                                                    <label for="name" class="control-label required name mt-0">Name</label>
+                                                    <input class="form-control" type="text" name="name" id="name" placeholder="" required />
+                                                </div>
+                               
+                                                <div class="form-group">
+                                                    <label for="slug" class="control-label">Edit URL</label>
+                                                    <div id="slugContainer" class="editable-link">
+                                                        <input id="slug" class="form-control" type="text" name="slug" placeholder="" />
+                                                    </div>
+                                                </div>
+                                         
                                             <div class="form-group mt-4">
                                                 <label for="name">Description</label>
                                                 <textarea class="form-control" cols="30" rows="3" type="text" name="description" id="description" placeholder="" required></textarea>
@@ -55,9 +63,7 @@
                                                         <span class="slider"></span>
                                                     </label>
                                                 </div>
-                        
                                             </div>
-                        
                                             <div class="form-group mt-4">
                                                 <label for="name">Content</label>
                                                 <textarea cols="2" rows="2" name="content" id="editor1" placeholder="Content" required value=""></textarea>
@@ -201,4 +207,5 @@
                 $('.seo-edit-section').toggleClass('hidden-active');
             });
         </script>
+
     @endsection

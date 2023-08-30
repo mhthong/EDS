@@ -77,9 +77,17 @@
                                     <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
                                         <div class="form-group">
                                             <label for="name" class="control-label required" aria-required="true">Static Page Name</label>
-                                            <input class="form-control is-valid" placeholder="Page Name" data-counter="120"
-                                                readonly="" name="name" type="text" value="{{$Blocks->name}}"
+                                            <input class="form-control" placeholder="Page Name" data-counter="120"
+                                               name="name" type="text" value="{{$Blocks->name}}"
                                                 id="name" aria-invalid="false" aria-describedby="alias-error">
+                                        </div>
+
+                                                        
+                                        <div class="form-group">
+                                            <label for="slug" class="control-label">Edit URL</label>
+                                            <div id="slugContainer" class="editable-link">
+                                                <input id="slug" class="form-control" type="text" value="{{$Blocks->slug}}" name="slug" placeholder="" />
+                                            </div>
                                         </div>
         
                                         <div class="form-group mt-4">

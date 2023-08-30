@@ -20,45 +20,11 @@ class PostController extends Controller
 {
     public function index()
     {
-        $Posts = Post::paginate(10);
-        $Menus_category = [];
-
-        $Post = Post::select("*")->get();
-
-        foreach ($Post  as   $Post) {
-            # code...
-            $Categories = Categories::where('posts_id', $Post->id)->get();
-
-            if (!is_null($Categories)) {
-                foreach ($Categories as $key) {
-                    if (!is_null($key->categories_id)) {
-                        $decodedCategories = json_decode($key->categories_id);
-                        if (is_array($decodedCategories) || is_object($decodedCategories)) {
-                            foreach ($decodedCategories as $categories_key => $value) {
-                                $Menus_category[$Post->id][] = Menu::where('id', $value)->get();
-                            }
-                        } else {
-                            // Handle the case when $key->categories_id is not a valid JSON array or object
-                        }
-                    } else {
-                        // Handle the case when $key->categories_id is null
-                    }
-                    
-                }
-            } else {
-                // Handle the case when $Categories is null
-                // You can either skip the foreach loop or perform appropriate error handling
-            }
-            
-            
-
-        }
-
-
-
+        $Posts = Post::all();
+       // Lấy tất cả các bản ghi Post
         $stt = 1;
-        $pageNames = 'Tên Trang - Posts';
-        return view('admin.Posts.index', compact('Posts', 'Menus_category', 'pageNames', 'stt'));
+        $pageNames = 'Posts';
+        return view('admin.Posts.index', compact('Posts' , 'pageNames', 'stt'));
     }
 
     public function create_index()
@@ -68,133 +34,115 @@ class PostController extends Controller
 
     public function update(Request $request, $id)
     {
+         $reference_type = __CLASS__;
+         $img = $request->image;
+         $eror_img = explode(env('APP_ENV'), $img);
+         $image = end($eror_img);
+    
+        $originalSlug = Str::slug($request->slug, '-');
+        $slug = $this->generateUniqueSlug($originalSlug);
+    
+         $exists = Post::where('slug', $slug)
+             ->where('id', '!=', $id)
+             ->exists();
+    
+         if ($exists) {
+             // Exist, need to add random numbers to slug
+             do {
+                 $randomNumber = rand(1000, 9999); // Random number between 1000 and 9999
+                 $newSlug = $slug . '-' . $randomNumber;
+                 $exists = Post::where('slug', $newSlug)->exists();
+             } while ($exists);
+    
+             $slug = $newSlug;
+         }
+    
+         $postData = [
+             "name" => $request->name,
+             "slug" => $slug,
+             "status" => $request->status,
+             "title" => $request->title,
+             "content" => $request->content,
+             "description" => $request->description,
+             "image" => $image,
+             "target" => $request->is_featured,
+             "reference_type" => $reference_type,
+             "tag" => $request->tag,
+         ];
+    
+         $updatePost = Post::where('id', $id)->update($postData);
+    
 
 
-        $reference_type = __CLASS__;
+         $metaData = [
+             "meta_key" => "seo_meta",
+             "meta_value" => json_encode($request->seo_meta),
+         ];
+    
+         $updateMetaBoxes = MetaBoxes::where('reference_id', $id)
+             ->where('reference_type', $reference_type)
+             ->update($metaData);
 
-        $img = $request->image;
+         $updateSlug = Slug::where('reference_id', $id)
+             ->where('reference_type', $reference_type)
+             ->update(["key" => $slug]);
+    
+         $newCategories = $request->categories;
+    
+                    // Lấy danh sách các menu_id hiện tại trong bài viết
+                $currentMenuIds = Categories::where('posts_id', $id)->pluck('menu_id')->toArray();
 
-        $eror_img = explode(env('APP_ENV'), $img);
-        $image = end($eror_img);
+                // Lặp qua các menu_id mới từ $newCategories
+                foreach ($newCategories as $menuId) {
+                    // Kiểm tra xem menu_id đã tồn tại trong danh sách hiện tại hay chưa
+                    if (!in_array($menuId, $currentMenuIds)) {
+                        // Nếu chưa tồn tại, thêm mới bản ghi
+                        Categories::create([
+                            "posts_id" => $id,
+                            "menu_id" => $menuId,
+                        ]);
+                    }
+                }
 
+                // Xóa các bản ghi có menu_id không tồn tại trong danh sách mới
+                Categories::where('posts_id', $id)
+                    ->whereNotIn('menu_id', $newCategories)
+                    ->delete();
 
-
-        $slug = Str::slug($request->name, '-');
-
-        $exists = Post::where('slug', $slug)
-            ->where('id', $id)
-            ->exists();
-        $exists_slug = Post::where('slug', $slug)
-            ->exists();
-
-        if ($exists) {
-            # code...
-            $Post  =   Post::where('id', $id)->update([
-                "status" =>  $request->status,
-                "title" =>  $request->title,
-                "content" =>  $request->content,
-                "image" =>  $image,
-                "target" =>   $request->is_featured,
-                "tag" =>  $request->tag,
-                "description" =>  $request->description,
-                "prefix" =>  "posts",
-            ]);
-
-            $MetaBoxes  =   MetaBoxes::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "meta_key" =>  "seo_meta",
-                    "meta_value" =>  json_encode($request->seo_meta),
-                ]);
-
-            $Slug  =   Slug::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "key" => $slug,
-                ]);
-
-
-            $Categories  =   Categories::where('posts_id', $id)->update([
-                "categories_id" => json_encode($request->categories),
-            ]);
-
-            if (!is_null($Categories) &&  !is_null($Post) && !is_null($MetaBoxes) && !is_null($Slug)) {
-
-                return back()->with("success", "Cập nhật thông tin thành công.");
-            } else {
-                return back()->with("failed", "Không Thể cập nhật . Vui lòng kiểm tra thông tin thành công.");
-            }
-
-            // Kiểm tra xem người dùng có upload file nên không
-        } elseif ($exists_slug) {
-            return back()->with("failed", "Tên bài viết của bạn đã tồn tại.Vui lòng kiểm tra lại !");
-        } else {
-            # code...
-            $Post  =   Post::where('id', $id)->update([
-                "name" => $request->name,
-                "slug" =>  $slug,
-                "status" =>  $request->status,
-                "title" =>  $request->title,
-                "content" =>  $request->content,
-                "image" =>  $image,
-                "target" =>   $request->is_featured,
-                "tag" =>  $request->tag,
-                "description" =>  $request->description,
-                "prefix" =>  "posts",
-            ]);
-
-            $MetaBoxes  =   MetaBoxes::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "meta_key" =>  "seo_meta",
-                    "meta_value" =>  json_encode($request->seo_meta),
-                ]);
-
-            $Slug  =   Slug::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "key" => $slug,
-                ]);
-
-
-            $Categories  =   Categories::where('posts_id', $id)->update([
-                "categories_id" => json_encode($request->categories),
-            ]);
-
-
-
-            if (!is_null($Categories) &&  !is_null($Post) && !is_null($MetaBoxes) && !is_null($Slug)) {
-
-                return back()->with("success", "Cập nhật thông tin thành công.");
-            } else {
-                return back()->with("failed", "Không Thể cập nhật . Vui lòng kiểm tra thông tin thành công.");
-            }
-        }
+    
+         if (!is_null($updatePost) && !is_null($updateMetaBoxes) && !is_null($updateSlug)) {
+             return back()->with("success", "Update successful.");
+         } else {
+             return back()->with("failed", "Unable to update. Please check the information.");
+         }
     }
+    
 
 
     public function edit($id)
     {
-        $back = back();
-        $Posts = Post::findOrFail($id);
-        $exists = Categories::where('posts_id', $id)->exists();
+    
+    $back = back();
+    $Posts = Post::findOrFail($id);
+    
+    $categories = Categories::where('posts_id', $id)->get();
 
-        if ($exists) {
-            $Categories = Categories::where('posts_id', $id)->get();
-            foreach ($Categories as $key => $value) {
+    $metaBox = MetaBoxes::where('reference_id', $id)
+    ->where('reference_type', __CLASS__)
+    ->first();
 
-                if (empty(json_decode($value->categories_id))) {
-                    $pageName = 'Posts - Update';
-                    return view('admin.Posts.edit', compact('Posts', 'back', 'pageName'));
-                } else {
-                    foreach (json_decode($value->categories_id) as $key_categories_id => $menu_id) {
-                        $menu_check[$menu_id] = Menu::where('id', $menu_id)->first();
-                    }
-                    $pageName = 'Posts - Update';
-                    return view('admin.Posts.edit', compact('Posts', 'back', 'pageName', 'menu_check'));
-                }
-            }
+    $menu_check = [];
+
+    foreach ($categories as $category) {
+        $menu_id = $category->menu_id;
+        $menu = Menu::where('id', $menu_id)->first();
+        if ($menu) {
+            $menu_check[$menu_id] = $menu;
         }
+    }
+
+    $pageName = 'Posts - Update';
+    return view('admin.Posts.edit', compact('Posts',  'metaBox' , 'back', 'pageName', 'menu_check'));
     }
 
 
@@ -202,65 +150,83 @@ class PostController extends Controller
     {
     }
 
-
     public function store(Request $request)
     {
-
         $reference_type = __CLASS__;
-
         $img = $request->image;
         $eror_img = explode(env('APP_ENV'), $img);
         $image = end($eror_img);
-
-        $slug = Str::slug($request->name, '-');
-
-        $Post  =   Post::create([
+        $tag = $request->tag ?? '';
+    
+        $originalSlug = Str::slug($request->slug, '-');
+        $slug = $this->generateUniqueSlug($originalSlug);
+    
+        $postData = [
             "name" => $request->name,
-            "slug" =>  $slug,
-            "status" =>  $request->status,
-            "title" =>  $request->title,
-            "content" =>  $request->content,
-            "image" =>  $image,
-            "target" =>   $request->is_featured,
-            "reference_type" =>   $reference_type,
-            "tag" =>  $request->tag,
-            "description" =>  $request->description,
-            "prefix" =>  "posts",
-        ]);
+            "slug" => $slug,
+            "status" => $request->status,
+            "title" => $request->title,
+            "content" => $request->content,
+            "description" => $request->description,
+            "image" => $image,
+            "target" => $request->is_featured,
+            "reference_type" => $reference_type,
+            "tag" =>   $tag ,
+        ];
+    
+        $Post = Post::create($postData);
 
-        $MetaBoxes  =   MetaBoxes::create([
-            "reference_id"  =>  $Post->id,
-            "meta_key" =>  "seo_meta",
-            "meta_value" =>  json_encode($request->seo_meta),
-            "reference_type" =>  $reference_type,
-        ]);
+       
 
-        $Slug  =   Slug::create([
+        $metaData = [
+            "reference_id" => $Post->id,
+            "meta_key" => "seo_meta",
+            "meta_value" => json_encode($request->seo_meta),
+            "reference_type" => $reference_type,
+        ];
+    
+        $MetaBoxes = MetaBoxes::create($metaData);
+    
+        $slugData = [
             "key" => $slug,
             "reference_id" => $Post->id,
             "reference_type" => $reference_type,
             "prefix" => "posts",
-        ]);
-
-
-        $Categories  =   Categories::create([
-            "posts_id" => $Post->id,
-            "categories_id" => json_encode($request->categories),
-        ]);
-
-
-        if (!is_null($Post) && !is_null($Categories) && !is_null($MetaBoxes) && !is_null($Slug)) {
-
-            return back()->with("success", "Cập nhật thông tin thành công.");
-        } else {
-            return back()->with("failed", "Không Thể cập nhật . Vui lòng kiểm tra thông tin thành công.");
+        ];
+    
+        $Slug = Slug::create($slugData);
+    
+        $categories = $request->categories;
+    
+        if (!empty($categories)) {
+        foreach ($categories as $menuId) {
+            Categories::create([
+                "posts_id" => $Post->id,
+                "menu_id" => $menuId,
+            ]);
         }
-
-        // Kiểm tra xem người dùng có upload file nên không
-
     }
-
-
+    
+        if (!is_null($Post) && !is_null($MetaBoxes) && !is_null($Slug)) {
+            return back()->with("success", "Thêm bài viết thành công.");
+        } else {
+            return back()->with("failed", "Không thể thêm bài viết. Vui lòng kiểm tra thông tin.");
+        }
+    }
+    
+    private function generateUniqueSlug($originalSlug)
+    {
+        $slug = $originalSlug;
+        $count = 1;
+        
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+    
+        return $slug;
+    }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -270,35 +236,34 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-
-
-        $Post = Post::where('id', $id)->first();
-
-        $MetaBoxes  =   MetaBoxes::where('reference_id', $id)
-            ->where('reference_type',  __CLASS__)
-            ->first();
-
-        $Slug  =   Slug::where('reference_id', $id)
+        $Post = Post::find($id);
+        
+        if (!$Post) {
+            return back()->with("failed", "Không tìm thấy bài viết.");
+        }
+    
+        // Xóa các bản ghi Categories có cùng posts_id
+        Categories::where('posts_id', $id)->delete();
+    
+        $MetaBoxes = MetaBoxes::where('reference_id', $id)
             ->where('reference_type', __CLASS__)
             ->first();
-
-        $Categories  =   Categories::where('posts_id', $id)->first();
-
-
-
-
-        $Categories->delete();
-        $Slug->delete();
-        $Post->delete();
-        $MetaBoxes->delete();
-
-        if (!is_null($Categories) && !is_null($Slug) && !is_null($Post) && !is_null($MetaBoxes)) {
-
-            return back()->with("success", "Cập nhật thông tin thành công.");
-        } else {
-            return back()->with("failed", "Không Thể cập nhật . Vui lòng kiểm tra thông tin thành công.");
+    
+        $Slug = Slug::where('reference_id', $id)
+            ->where('reference_type', __CLASS__)
+            ->first();
+    
+        if ($MetaBoxes) {
+            $MetaBoxes->delete();
         }
-
-        //
+    
+        if ($Slug) {
+            $Slug->delete();
+        }
+    
+        $Post->delete();
+    
+        return back()->with("success", "Xóa bài viết và liên quan thành công.");
     }
+    
 }

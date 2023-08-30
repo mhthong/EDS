@@ -67,4 +67,9 @@ class Menu extends Model
             MenuNode::where('menu_id', $menu->id)->delete();
         });
     }
+
+    public function categories()
+    {
+        return $this->hasMany(Categories::class, 'menu_id');
+    }
 }

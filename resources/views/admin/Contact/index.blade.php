@@ -73,10 +73,11 @@
                                     </td>
                                 </tr>
                                 @endforeach
+                          
                                 @endisset
                             </tbody>
                         </table>
-
+                        {{ $Tags->links() }}
                     </div>
                 </div>
             </div>

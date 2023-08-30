@@ -1,7 +1,6 @@
 @extends('layouts.app')
 @section('head')
 
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput.css" integrity="sha512-xmGTNt20S0t62wHLmQec2DauG9T+owP9e6VU8GigI0anN7OXLip9i7IwEhelasml2osdxX71XcYm6BQunTQeQg==" crossorigin="anonymous" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha256-OFRAJNoaD8L3Br5lglV7VyLRf0itmoBzWUoM+Sji4/8=" crossorigin="anonymous"></script>
@@ -34,7 +33,9 @@
             <div class="main__body__data">
 
         @isset($Posts)
- 
+        
+    
+
             <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 flexb-c">
                 <div class="flexb-col-c bg-ad-1">
                     <form class="p-0 col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12" name="add-blog-post-form"
@@ -49,6 +50,12 @@
                                     <input class="form-control" type="text" name="name" id="name" placeholder="" required
                                         value="{{$Posts->name}}" required />
                                    </div>
+                                   <div class="form-group">
+                                    <label for="slug" class="control-label">Edit URL</label>
+                                    <div id="slugContainer" class="editable-link">
+                                        <input id="slug" value="{{$Posts->slug}}" class="form-control" type="text" name="slug" placeholder="" />
+                                    </div>
+                                </div>
                                    <div class="form-group mt-4">
                                     <label for="name">Tiêu đề</label>
                                     <input class="form-control"  type="text" name="title" id="title" placeholder="" required
@@ -115,6 +122,28 @@
                                         </div>
                                         <div class="seo-edit-section hidden">
                                             <hr>
+                             
+                                            @if ($metaBox)
+                                            @php
+                                                $metaValue = json_decode($metaBox->meta_value, true);
+                                            @endphp
+                                    
+                                            <div class="form-group">
+                                                <label for="seo_title" class="control-label">Tiêu đề trang</label>
+                                                <input class="form-control" id="seo_title" placeholder="Tiêu đề trang"
+                                                    data-counter="120" name="seo_meta[seo_title]" type="text"
+                                                    value="{{ isset($metaValue['seo_title']) ? $metaValue['seo_title'] : '' }}">
+                                            </div>
+                                    
+                                            <div class="form-group">
+                                                <label for="seo_description" class="control-label">Mô tả trang</label>
+                                                <textarea class="form-control" rows="3" id="seo_description" placeholder="Mô tả trang" data-counter="160"
+                                                    name="seo_meta[seo_description]" cols="50">
+                                                    {{ isset($metaValue['seo_description']) ? $metaValue['seo_description'] : '' }}
+                                                </textarea>
+                                            </div>
+                                        @else
+                                    
                                             <div class="form-group">
                                                 <label for="seo_title" class="control-label">Tiêu đề trang</label>
                                                 <input class="form-control" id="seo_title" placeholder="Tiêu đề trang"
@@ -128,6 +157,7 @@
                                                 <textarea class="form-control" rows="3" id="seo_description" placeholder="Mô tả trang" data-counter="160"
                                                     name="seo_meta[seo_description]" cols="50"></textarea>
                                             </div>
+                                        @endif
                                         </div>
                                     </div>
                                 </div>
@@ -191,7 +221,7 @@
 
                                     </div>
                                 </div>
-
+                         
                                 <div class="bg-ad-form right-sidebar mt-3">
                                     <div class="widget meta-boxes">
                                         <div class="widget-title">
@@ -202,51 +232,56 @@
                                             style=" max-height: 400px;
                                         overflow: auto;
                                         padding-left: 10px;">
-                  @if(isset($data))
-                  @if(isset($data['Menus_parent']))
 
-                      @foreach ($data['Menus_parent'] as $Menus => $Menu)
-                          @foreach ($Menu as $Menus_name)
-                              <li class="checkbox-style ps-0" value="{{ $Menus_name->id }}" data-tab="" style="">
-                                  <label for="">
-                                      @isset($menu_check[$Menus_name->id])
-                                          @foreach ($menu_check as $key=>$value)
-                                          @if ($value && $value->id == $Menus_name->id)
-                                          <input type="checkbox" value="{{$value->id}}" name="categories[]" checked>
-                                      @endif
-                                          @endforeach
-                                      @endisset
-                                      @empty($menu_check[$Menus_name->id])
-                                          <input type="checkbox" value="{{$Menus_name->id}}" name="categories[]">
-                                      @endempty
-                                      {{ $Menus_name->name }}
-                                  </label>
-                              </li>
-                              @isset($data['parent_id'][$Menus_name->id])
-                                  @if (is_array($data['parent_id'][$Menus_name->id]) || is_object($data['parent_id'][$Menus_name->id]))
-                                      @foreach ($data['parent_id'][$Menus_name->id] as $parent_id => $mp_value)
-                                          <li class="checkbox-style ps-0" value="{{ $mp_value }}" data-tab="" style="">
-                                              <label class="ps-4" for="">
-                                                  @isset($menu_check[$mp_value])
-                                                      @foreach ($menu_check as $key => $value)
-                                                      @if ($value && $value->id == $mp_value)
-                                                      <input type="checkbox" value="{{$value->id}}" name="categories[]" checked>
-                                                  @endif
-                                                      @endforeach
-                                                  @endisset
-                                                  @empty($menu_check[$mp_value])
-                                                      <input type="checkbox" value="{{ $mp_value }}" name="categories[]">
-                                                  @endempty
-                                                  {{ $data['Menu_child_name'][$mp_value] }}
-                                              </label>
-                                          </li>
-                                      @endforeach
-                                  @endif
-                              @endisset
-                          @endforeach
-                      @endforeach
-                  @endif
-              @endif
+                             @if (isset($data))
+                             @if (isset($data['Menus_parent']))
+                                 @foreach ($data['Menus_parent'] as $Menus => $Menu)
+                                     @foreach ($Menu as $Menus_name)
+                                         <li class="checkbox-style ps-0" value="{{ $Menus_name->id }}" data-tab="" style="">
+                                             <label for="">
+                                                 @php
+                                                     $isChecked = false;
+                                                     if (isset($menu_check[$Menus_name->id])) {
+                                                         foreach ($menu_check as $key => $value) {
+                                                             if ($value && $value->id == $Menus_name->id) {
+                                                                 $isChecked = true;
+                                                                 break;
+                                                             }
+                                                         }
+                                                     }
+                                                 @endphp
+                                                 <input type="checkbox" value="{{ $Menus_name->id }}" name="categories[]" @if($isChecked) checked @endif>
+                                                 {{ $Menus_name->name }}
+                                             </label>
+                                         </li>
+                                         @isset($data['parent_id'][$Menus_name->id])
+                                             @if (is_array($data['parent_id'][$Menus_name->id]) || is_object($data['parent_id'][$Menus_name->id]))
+                                                 @foreach ($data['parent_id'][$Menus_name->id] as $parent_id => $mp_value)
+                                                     <li class="checkbox-style ps-0" value="{{ $mp_value }}" data-tab="" style="">
+                                                         <label class="ps-4" for="">
+                                                             @php
+                                                                 $isChecked = false;
+                                                                 if (isset($menu_check[$mp_value])) {
+                                                                     foreach ($menu_check as $key => $value) {
+                                                                         if ($value && $value->id == $mp_value) {
+                                                                             $isChecked = true;
+                                                                             break;
+                                                                         }
+                                                                     }
+                                                                 }
+                                                             @endphp
+                                                             <input type="checkbox" value="{{ $mp_value }}" name="categories[]" @if($isChecked) checked @endif>
+                                                             {{ $data['Menu_child_name'][$mp_value] }}
+                                                         </label>
+                                                     </li>
+                                                 @endforeach
+                                             @endif
+                                         @endisset
+                                     @endforeach
+                                 @endforeach
+                             @endif
+                            @endif
+                         
               
                                         </div>
                                     </div>

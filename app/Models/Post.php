@@ -29,7 +29,12 @@ class Post extends Model
        'target',
        'reference_type',
        'reference_id',
-       'prefix',
+       'tag',
        'description',
    ];
+
+   public function categories()
+   {
+       return $this->hasMany(Categories::class, 'posts_id');
+   }
 }

@@ -1,13 +1,29 @@
 <div class="main__top__title">
     <h3>Dashboard</h3>
     <ul class="breadcrumbs">
-        <li><a href="#">Home</a></li>
+        @if (Auth::check())
+   
+    @if (Auth::user() instanceof \App\Models\Artists)
+    <li><a href="{{ url(env('APP_URL')) }}/artist">Home</a></li>
+    @elseif (Auth::user() instanceof \App\Models\Admin)
+    <li><a href="{{ url(env('APP_URL')) }}/admin">Home</a></li>
+        <!-- Hiển thị nội dung dành riêng cho admins -->
+    @endif
+    @else
+        <p>Welcome, Guest!</p>
+        <!-- Hiển thị nội dung dành cho khách truy cập -->
+    @endif
+
+        
         <li class="divider">/</li>
-        <li><a href="#" class="active">Dashboard</a></li>
+       
+        <li>@isset($pageNames)
+            {{$pageNames}}
+        @endisset</li>
     </ul>
 </div>
 <ul class="main__top__menu">
-    <li class="search">
+{{--     <li class="search">
         <a href="#">
             <i class="ph-magnifying-glass"></i>
         </a>
@@ -61,7 +77,7 @@
                 </li>
             </ul>
         </div>
-    </li>
+    </li> --}}
     <li class="notification">
         <a href="#">
             <i class="ph-bell"></i>
@@ -155,10 +171,24 @@
                     <p>Web Developer</p>
                 </div>
             </div>
-            <ul class="profile__menu">
-                <li><a href="{{route('your-setting')}}"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
-                <li><a href="#"><i class="ph-gear-fill"></i> Settings</a></li>
-            </ul>
+          
+
+@if (Auth::check())
+   
+    @if (Auth::user() instanceof \App\Models\Artists)
+    <ul class="profile__menu">
+        <li><a href="{{route('artists.your-setting')}}"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
+    </ul>
+    @elseif (Auth::user() instanceof \App\Models\Admin)
+    <ul class="profile__menu">
+        <li><a href="{{route('your-setting')}}"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
+    </ul>
+        <!-- Hiển thị nội dung dành riêng cho admins -->
+    @endif
+@else
+    <p>Welcome, Guest!</p>
+    <!-- Hiển thị nội dung dành cho khách truy cập -->
+@endif
         </div>
     </li>
 </ul>

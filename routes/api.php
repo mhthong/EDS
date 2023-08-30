@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APIBookingController;
+use App\Http\Controllers\BookingController;
+
 
 
 /*
@@ -29,4 +31,7 @@ Route::get('/showrooms', [APIBookingController::class, 'getShowrooms']);
 Route::get('/group-services/{showroomId}', [APIBookingController::class, 'getGroupServices']);
 Route::get('/services', [APIBookingController::class, 'getServices']);
 Route::get('/artist-levels', [APIBookingController::class, 'ArtistLevel']);
+
+
+Route::get('all-data', [BookingController::class, 'getAllData']);
 

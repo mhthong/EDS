@@ -49,6 +49,12 @@
                                             <input class="form-control" type="text" name="name" id="name" placeholder="" required
                                                 value="" required />
                                         </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="slug" class="control-label">Edit URL</label>
+                                            <div id="slugContainer" class="editable-link">
+                                                <input id="slug" class="form-control" type="text" name="slug" placeholder="" />
+                                            </div>
 
                                         <div class="form-group mt-4">
                                             <label for="name">Title</label>
@@ -128,6 +134,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
                                 </div>
                                 <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
                                     <div class="bg-ad-form right-sidebar ">

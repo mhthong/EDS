@@ -17,6 +17,7 @@ class CreateBlocksTable extends Migration
             $table->id();
             $table->string('name', 191);
             $table->string('alias', 191);
+            $table->string('slug', 191);
             $table->string('description', 1000);
             $table->text("content");
             $table->string('status', 60)->default('published');

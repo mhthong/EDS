@@ -7,13 +7,12 @@ use App\Models\Block;
 use App\Models\MetaBoxes;
 use App\Models\Slug;
 use Illuminate\Support\Str;
+use Auth;
 
 
 class BlockController extends Controller
 {
     //
-
-
 
     public function page($slug){
 
@@ -22,7 +21,6 @@ class BlockController extends Controller
             'page' => $page,
         ])->header('Content-Type', 'text/html');
     }
-
 
 
     public function index()
@@ -37,107 +35,62 @@ class BlockController extends Controller
     {
         return view('admin.Block.create');
     }
-
     public function update(Request $request, $id)
     {
-        $reference_type = __CLASS__;
-
-        if(empty($request->image))
-            {
-                $img = $request->image;
-                $eror_img = explode(env('APP_ENV'), $img);
-                $image = end($eror_img);
-            }
-        else{
-                $image = $request->image;
-            }
-
-        $slug = Str::slug($request->name, '-');
-
-        $exists = Block::where('slug', $slug)
-            ->where('id', $id)
-            ->exists();
-
-
-            $exists_slug = Block::where('slug', $slug)
-            ->exists();
-
-        if ($exists) {
-            # code...
-            $Block  =   Block::where('id', $id)->update([
-                "name" => $request->name,
-                "slug" =>  $slug,
-                "status" =>  $request->status,
-                "description" =>  $request->description,
-                "content" =>  $request->content,
-                "image" =>  $image,
-                "target" =>   $request->is_featured,
-            ]);
-
-            $MetaBoxes  =   MetaBoxes::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "meta_key" =>  "seo_meta",
-                    "meta_value" =>  json_encode($request->seo_meta),
-                ]);
-
-            $Slug  =   Slug::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "key" => $slug,
-                ]);
-
-            if (!is_null($Block) && !is_null($MetaBoxes) && !is_null($Slug)) {
-
-                return back()->with("success", "Cập nhật thông tin thành công.");
-            } else {
-                return back()->with("failed", "Không Thể cập nhật . Vui lòng kiểm tra thông tin thành công.");
-            }
-
-            // Kiểm tra xem người dùng có upload file nên không
-        }
-        elseif($exists_slug)
-        {
-            return back()->with("failed", "Tên bài viết của bạn đã tồn tại.Vui lòng kiểm tra lại !");
-        }
-        else{
- /*            dd($request->all()); */
-            # code...
-            $Block  =   Block::where('id', $id)->update([
-                "name" => $request->name,
-                "slug" =>  $slug,
-                "status" =>  $request->status,
-                "description" =>  $request->description,
-                "content" =>  $request->content,
-                "image" =>  $image,
-                "target" =>   $request->is_featured,
-            ]);
-
-            $MetaBoxes  =   MetaBoxes::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "meta_key" =>  "seo_meta",
-                    "meta_value" =>  json_encode($request->seo_meta),
-                ]);
-
-            $Slug  =   Slug::where('reference_id', $id)
-                ->where('reference_type', $reference_type)
-                ->update([
-                    "key" => $slug,
-                ]);
-
-
-
-
-            if (!is_null($Block) && !is_null($MetaBoxes) && !is_null($Slug)) {
-
-                return back()->with("success", "Cập nhật thông tin thành công.");
-            } else {
-                return back()->with("failed", "Không Thể cập nhật . Vui lòng kiểm tra thông tin thành công.");
-            }
-        }
-
-
+         // Define reference type for MetaBoxes
+         $reference_type = __CLASS__;
+    
+         // Create slug from post name
+         
+        $originalSlug = Str::slug($request->slug, '-');
+        $slug = $this->generateUniqueSlug($originalSlug);
+    
+    
+         // Check if the slug already exists (not counting the post itself being edited)
+         $exists_slug = Block::where('slug', $slug)
+             ->where('id', '!=', $id)
+             ->exists();
+    
+         // If slug already exists, show error message
+         if ($exists_slug) {
+             return back()->with("failed", "Your post name already exists. Please check again !");
+         }
+         // Prepare the data array to be updated for the "blocks" table
+         $dataToUpdate = [
+             "name" => $request->name,
+             "slug" => $slug,
+             "status" => $request->status,
+             "description" => $request->description,
+             "content" => $request->content,
+             "target" => $request->is_featured,
+             "user_id" => Auth::id(),
+         ];
+    
+         // Update information in the "blocks" table
+         $Block = Block::where('id', $id)->update($dataToUpdate);
+    
+         // Prepare the data array to update for the table "MetaBoxes"
+         $metaDataToUpdate = [
+             "meta_key" => "seo_meta",
+             "meta_value" => json_encode($request->seo_meta),
+         ];
+    
+         // Update information in table "MetaBoxes"
+         MetaBoxes::where('reference_id', $id)
+             ->where('reference_type', $reference_type)
+             ->update($metaDataToUpdate);
+    
+         // Update information in "Slug" table
+         Slug::where('reference_id', $id)
+             ->where('reference_type', $reference_type)
+             ->update(["key" => $slug]);
+    
+         // Check if the update was successful or not
+         if (!is_null($Block)) {
+             return back()->with("success", "Update successful.");
+         } else {
+             return back()->with("failed", "Unable to update. Please check the information and try again.");
+         }
     }
 
 
@@ -160,63 +113,68 @@ class BlockController extends Controller
 
     public function store(Request $request)
     {
-
-
         $reference_type = __CLASS__;
-
-        if(empty($request->image))
-            {
-                $img = $request->image;
-                $eror_img = explode(env('APP_ENV'), $img);
-                $image = end($eror_img);
-            }
-        else{
-                $image = $request->image;
-            }
-
-        $slug = Str::slug($request->name, '-');
-
-        $Block  =   Block::create([
+    
+        if (empty($request->image)) {
+            // ... (image handling logic)
+            $image = ""; // Set image to an empty string
+        } else {
+            $image = $request->image;
+        }
+    
+        
+        $originalSlug = Str::slug($request->slug, '-');
+        $slug = $this->generateUniqueSlug($originalSlug);
+    
+    
+        $Block = Block::create([
             "name" => $request->name,
-            "slug" =>  $slug,
-            "alias"=> "",
-            "status" =>  $request->status,
-            "description" =>  $request->description,
-            "content" =>  $request->content,
-            "image" =>  $image,
-            "target" =>   $request->is_featured,
-
+            "slug" => $slug,
+            "status" => $request->status,
+            "description" => $request->description,
+            "content" => $request->content,
+            "target" => $request->is_featured,
+            "user_id" => Auth::id(),
         ]);
-
-        $MetaBoxes  =   MetaBoxes::create([
-            "reference_id"  =>  $Block->id,
-            "meta_key" =>  "seo_meta",
-            "meta_value" =>  json_encode($request->seo_meta),
-            "reference_type" =>  $reference_type,
+    
+        $MetaBoxes = MetaBoxes::create([
+            "reference_id" => $Block->id,
+            "meta_key" => "seo_meta",
+            "meta_value" => json_encode($request->seo_meta),
+            "reference_type" => $reference_type,
         ]);
-
-        $seo_meta=$request->seo_meta;
-
-        $Slug  =   Slug::create([
+    
+        $seo_meta = $request->seo_meta;
+    
+        $Slug = Slug::create([
             "key" => $slug,
             "reference_id" => $Block->id,
             "reference_type" => $reference_type,
             "prefix" => "page",
         ]);
-
-
-
+    
         if (!is_null($Block) && !is_null($MetaBoxes) && !is_null($Slug)) {
-
             return back()->with("success", "Cập nhật thông tin thành công.");
         } else {
-            return back()->with("failed", "Không Thể cập nhật . Vui lòng kiểm tra thông tin thành công.");
+            return back()->with("failed", "Không Thể cập nhật. Vui lòng kiểm tra thông tin thành công.");
         }
-
-        // Kiểm tra xem người dùng có upload file nên không
     }
+    
 
 
+    private function generateUniqueSlug($originalSlug)
+    {
+        $slug = $originalSlug;
+        $count = 1;
+        
+        while (Block::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+    
+        return $slug;
+    }
+    
 
         /**
      * Remove the specified resource from storage.

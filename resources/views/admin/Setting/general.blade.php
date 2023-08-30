@@ -37,10 +37,10 @@
                                         <div class="flexbox-annotated-section">
                                             <div class="flexbox-annotated-section-annotation col-3">
                                                 <div class="annotated-section-title pd-all-20">
-                                                    <h4>Thông tin chung</h4>
+                                                    <h4>General Information</h4>
                                                 </div>
                                                 <div class="annotated-section-description pd-all-20 p-none-t">
-                                                    <p class="color-note">Cấu hình những thông tin cài đặt website.</p>
+                                                    <p class="color-note">Configure website settings information.</p>
                                                 </div>
                                             </div>
 
@@ -48,8 +48,8 @@
                                                 <div class="wrapper-content pd-all-20">
                                                     <div class="form-group" id="admin_email_wrapper"
                                                         data-emails="" data-max="4">
-                                                        <label class="text-title-field" for="admin_email">Email quản trị
-                                                            viên</label>
+                                                        <label class="text-title-field" for="admin_email">Admin Email
+                                                            tablets</label>
                                                         <div class="d-flex mt-2 more-email align-items-center">
                                                             <input type="email" class="next-input form-control"
                                                                 placeholder="" name="admin_email"
@@ -78,19 +78,19 @@
                                             <div class="flexbox-annotated-section-content bg-ad-form col-9">
                                                 <div class="wrapper-content pd-all-20">
                                                     <div class="form-group">
-                                                        <label class="text-title-field" for="admin-logo">Logo trang quản
-                                                            trị
+                                                        <label class="text-title-field" for="admin-logo">Admin Logo
+                                                            treat
                                                         </label>
                                                         <div class="form-group ">
                                                             <div class="holder holder1" id="data-preview-admin-logo" value="">
                                                             </div>
                                                             <div class="-space-y-px mb-4">
                                                                 <div class="containerInput input-group">
-                                                                    <span class="input-group-btn ">
+                                                                    <span class="input-group-btn">
                                                                         <a class="text-primary data-image" id="admin-logo"
                                                                             data-input="data-input-admin-logo"
                                                                             data-preview="data-preview-admin-logo">
-                                                                            Chọn ảnh
+                                                                            Choose a photo
                                                                         </a>
                                                                     </span>
 
@@ -111,11 +111,11 @@
                                                             </div>
                                                             <div class="-space-y-px mb-4">
                                                                 <div class="containerInput input-group">
-                                                                    <span class="input-group-btn ">
+                                                                    <span class="input-group-btn">
                                                                         <a class="text-primary data-image" id="admin-favicon"
                                                                             data-input="data-input-admin-favicon"
                                                                             data-preview="data-preview-admin-favicon">
-                                                                            Chọn ảnh
+                                                                            Choose a photo
                                                                         </a>
                                                                     </span>
 
@@ -127,7 +127,6 @@
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                     <div class="form-group">
                                                         <label class="text-title-field"
                                                             for="admin-login-screen-backgrounds">Login screen backgrounds
@@ -138,11 +137,11 @@
                                                             </div>
                                                             <div class="-space-y-px mb-4">
                                                                 <div class="containerInput input-group">
-                                                                    <span class="input-group-btn ">
+                                                                    <span class="input-group-btn">
                                                                         <a class="text-primary data-image" id="admin-login-screen-backgrounds"
                                                                             data-input="data-input-admin-login-screen-backgrounds"
                                                                             data-preview="data-preview-admin-login-screen-backgrounds">
-                                                                            Chọn ảnh
+                                                                            Choose a photo
                                                                         </a>
                                                                     </span>
 
@@ -155,13 +154,13 @@
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group">
-                                                        <label class="text-title-field" for="admin_title">Tiêu đề trang
-                                                            quản trị</label>
-                                                        <input class="form-control" data-counter="120" type="text" class="next-input"
-                                                            name="admin_title" id="admin_title"
-                                                            value="PHẾ LIỆU PHÚC LỘC">
-                                                    </div>
+                                        <div class="form-group">
+                                                         <label class="text-title-field" for="admin_title">Page Title
+                                                             admin</label>
+                                                         <input class="form-control" data-counter="120" type="text" class="next-input"
+                                                             name="admin_title" id="admin_title"
+                                                             value="PHUC LOC SCRAP">
+                                                     </div>
 
                                                 </div>
                                             </div>
@@ -270,19 +269,19 @@
                                     <div class="widget meta-boxes form-actions form-actions-default action-horizontal ">
                                         <div class="widget-title">
                                             <h4>
-                                                <span>Xuất bản</span>
+                                                <span>Publish</span>
                                             </h4>
                                         </div>
                                         <div class="widget-body">
                                             <div class="btn-set">
                                                 <button type="submit" name="submit" value="save"
                                                     class="btn btn-info">
-                                                    <i class="fa fa-save"></i> Lưu
+                                                    <i class="fa fa-save"></i> Save
                                                 </button>
                                                 &nbsp;
                                                 <button type="submit" name="submit" value="apply"
                                                     class="btn btn-success">
-                                                    <i class="fa fa-check-circle"></i> Lưu &amp; chỉnh sửa
+                                                    <i class="fa fa-check-circle"></i> Save &amp; edit
                                                 </button>
                                             </div>
                                         </div>

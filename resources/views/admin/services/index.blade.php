@@ -81,9 +81,7 @@
 
                                 </tbody>
                             </table>
-
-
-
+              
                             <style>
                                 nav[role=navigation] {
                                     position: absolute;

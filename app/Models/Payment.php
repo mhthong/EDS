@@ -9,7 +9,7 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['PricelD', 'BookingID', 'date'];
+    protected $fillable = ['PricelD', 'BookingID', 'date', 'payment_type'];
 
     public function price()
     {

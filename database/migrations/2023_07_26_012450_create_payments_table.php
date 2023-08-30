@@ -18,6 +18,7 @@ class CreatePaymentsTable extends Migration
             $table->unsignedBigInteger('PricelD');
             $table->unsignedBigInteger('BookingID');
             $table->timestamp('date');
+            $table->string('payment_type');
 
             // Define foreign key constraint
             $table->foreign('PricelD')->references('id')->on('prices');

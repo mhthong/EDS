@@ -56,7 +56,6 @@
                                         <span class="draft">Draft</span>
                                         @endif
                                         @endisset</td>
-
                                     <td>
                                         <button class="btn btn-primary ">
                                             <a href="{{ route('edit-tag', ['id' => $row->id]) }}">

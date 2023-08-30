@@ -7,7 +7,13 @@
       var route_prefix = (options && options.prefix) ? options.prefix : '/filemanager';
       var target_input = $('#' + $(this).data('input'));
       var target_preview = $('#' + $(this).data('preview'));
-      window.open(route_prefix + '?type=' + type, 'FileManager', 'width=900,height=600');
+      var popupWidth = 600; // Kích thước rộng của cửa sổ popup
+      var popupHeight = 400; // Kích thước cao của cửa sổ popup
+      var left = (screen.width - popupWidth) / 2;
+      var top = (screen.height - popupHeight) / 2;
+      
+      var popupWindow = window.open(route_prefix + '?type=' + type, 'FileManager', 'width=' + popupWidth + ',height=' + popupHeight + ',top=' + top + ',left=' + left);
+      
       window.SetUrl = function (items) {
         var file_path = items.map(function (item) {
           return item.url;

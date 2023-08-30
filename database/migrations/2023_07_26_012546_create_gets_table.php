@@ -16,7 +16,7 @@ class CreateGetsTable extends Migration
         Schema::create('gets', function (Blueprint $table) {
             $table->id(); // Auto-incrementing primary key
             $table->string('Name'); // Name column
-            $table->string('Gmail'); // Gmail column
+            $table->string('Email'); // Gmail column
             $table->string('Address'); // Address column
             $table->string('Phone'); // Phone column
             

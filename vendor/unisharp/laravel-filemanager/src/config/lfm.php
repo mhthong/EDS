@@ -96,6 +96,7 @@ return [
 
     'disk'                     => 'public',
 
+
     'rename_file'              => false,
 
     'rename_duplicates'        => false,
@@ -176,4 +177,6 @@ return [
     'php_ini_overrides'        => [
         'memory_limit' => '256M',
     ],
+
+  
 ];
