@@ -29,9 +29,17 @@ Route::get('find', 'SearchController@find');
 
 Route::get('/showrooms', [APIBookingController::class, 'getShowrooms']);
 Route::get('/group-services/{showroomId}', [APIBookingController::class, 'getGroupServices']);
+Route::get('/showroomschedule/{showroomId}', [APIBookingController::class, 'ShowroomSchedule']);
 Route::get('/services', [APIBookingController::class, 'getServices']);
 Route::get('/artist-levels', [APIBookingController::class, 'ArtistLevel']);
 
 
 Route::get('all-data', [BookingController::class, 'getAllData']);
+
+Route::get('/bookings/showroom/{showroomId}', [BookingController::class, 'getBookShowroomData']);
+
+
+
+
+
 

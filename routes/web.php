@@ -77,7 +77,7 @@ Route::get('/booking-form', function () {
 });
 
 
-
+Route::post('/bookings-store', [BookingController::class, 'store'])->name('bookings.store');
 
 /* Route::get('caretoties/{slug}', [SlugController::class, 'index'])->name('slug'); */
 
@@ -96,6 +96,8 @@ Auth::routes();
 Route::get('/forgot-password', function () {
     return view('auth.forgot-password');
 })->middleware('guest')->name('forgot-password');
+
+
 
 Route::post('/forgot-password', function (Request $request) {
     $request->validate(['email' => 'required|email']);

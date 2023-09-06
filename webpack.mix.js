@@ -22,3 +22,5 @@ mix.js('resources/js/style.js', 'public/js');
 mix.js('resources/js/add-new-form.js', 'public/js');
 
 mix.js('resources/js/book.js', 'public/js');
+
+mix.js('resources/js/bookcreate.js', 'public/js');

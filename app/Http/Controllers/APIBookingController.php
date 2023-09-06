@@ -8,6 +8,7 @@ use App\Models\GroupService;
 use App\Models\ServiceShowroom;
 use App\Models\Service;
 use App\Models\ArtistLevel;
+use App\Models\ShowroomSchedule;
 
 class APIBookingController extends Controller
 {
@@ -39,6 +40,16 @@ class APIBookingController extends Controller
     
         return response()->json($groupServiceData);
     }
+
+    public function ShowroomSchedule($showroomId){
+        
+        $showroomSchedules = ShowroomSchedule::with('workingHours')->where('showroom_id', $showroomId)->get();
+
+        return response()->json($showroomSchedules);
+    
+    }
+
+    
     
 /*     public function getGroupServices($showroomId)
     {

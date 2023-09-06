@@ -128,7 +128,7 @@
 
                     if (selectedStatus !== "") {
 
-                        if (startDate === "" || endDate === "") {
+                        if (startDate === "" || endDate === "" || startDate > endDate) {
                             if (selectedStatus === status) {
                                 return true;
                             }
@@ -140,7 +140,7 @@
                             return false;
                         }
 
-                    } else if(startDate === "" || endDate === ""){
+                    } else if(startDate === "" || endDate === "" ){
 
                         return true;
           

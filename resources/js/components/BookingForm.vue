@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <!-- Hiển thị tên và giá của các dịch vụ đã chọn -->
     <div v-if="selectedShowroom">
       Selected Showroom Maps: {{ selectedShowroomMap }}
@@ -37,29 +38,8 @@
         {{ showroom.Name }}
       </div>
       <span>Đã chọn: {{ selectedShowroom }}</span>
-      <button @click="nextStep" :disabled="!selectedShowroom">Next</button>
-    </template>
 
-    <template v-if="step === 'artistlevels'">
-      <ul>
-        <li v-for="artistLevel in artistlevels" :key="artistLevel.id">
-          <label>
-            <input
-              type="radio"
-              :value="artistLevel.id"
-              v-model="selectedArtistlevel"
-              @change="calculateTotalSelectedServicesPrice"
-            />
-            {{ artistLevel.Name }}
-            <p>
-              <i>{{ formatCurrency(artistLevel.Level_price) }}</i>
-            </p>
-          </label>
-        </li>
-      </ul>
-      <button @click="prevStep">Back</button>
-      <button @click="nextStep" :disabled="!selectedArtistlevel">Next</button>
-      <button @click="submit" :disabled="!selectedArtistlevel">Submit</button>
+      <button @click="nextStep" :disabled="!selectedShowroom">Next</button>
     </template>
 
     <template>
@@ -101,28 +81,88 @@
         </template>
       </div>
     </template>
+
+    <template v-if="step === 'artistlevels'">
+      <ul>
+        <li v-for="artistLevel in artistlevels" :key="artistLevel.id">
+          <label>
+            <input
+              type="radio"
+              :value="artistLevel.id"
+              v-model="selectedArtistlevel"
+              @change="calculateTotalSelectedServicesPrice"
+            />
+            {{ artistLevel.Name }}
+            <p>
+              <i>{{ formatCurrency(artistLevel.Level_price) }}</i>
+            </p>
+          </label>
+        </li>
+      </ul>
+      <button @click="prevStep">Back</button>
+      <button @click="nextStep" :disabled="!selectedArtistlevel">Next</button>
+    </template>
+
+    <template v-if="step === 'showroomschedule'">
+      <!--       <ul>
+        <li
+          v-for="showroomschedule in showroomSchedules"
+          :key="showroomschedule.id"
+        >
+          <label>
+            <input type="date" v-model="selectedshowroomschedule" />
+            {{ showroomschedule.day }}
+          </label>
+        </li>
+      </ul> -->
+      <ul>
+        <FullCalendar :options="calendarOptions" />
+      </ul>
+      <button @click="prevStep">Back</button>
+      <button @click="nextStep" :disabled="!selectedshowroomschedule">
+        Next
+      </button>
+      <button @click="submit" :disabled="!selectedshowroomschedule">
+        Submit
+      </button>
+    </template>
+
     <!--      -->
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { Calendar } from "@fullcalendar/core";
+import FullCalendar from "@fullcalendar/vue";
+import dayGridPlugin from "@fullcalendar/daygrid";
 
 export default {
+  components: {
+    FullCalendar, // make the <FullCalendar> tag available
+  },
   data() {
     return {
       showrooms: [],
       showroomspath: [],
       selectedShowroom: null,
       groupServices: [],
+      showroomSchedules: [],
       services: [],
       artistlevels: [],
       selectedArtistlevel: null,
+      selectedshowroomschedule: null,
       selectedGroupService: "",
       selectedGroupServiceServices: [],
       step: "showroom",
       selectedServices: [],
       totalPrice: 0,
+      calendarOptions: {
+        plugins: [dayGridPlugin],
+        initialView: "dayGridMonth",
+        weekends: true,
+        events: [], // Sự kiện sẽ được thêm vào đây
+      },
       /*   selectedOption: "option1", */
     };
   },
@@ -201,6 +241,33 @@ export default {
         });
     },
 
+    fetchShowroomSchedule() {
+      axios
+        .get(`/api/showroomschedule/${this.selectedShowroom}`)
+        .then((response) => {
+          this.showroomSchedules = response.data;
+          // Cập nhật sự kiện trong FullCalendar sau khi nhận dữ liệu từ API
+          this.updateCalendarEvents();
+        })
+        .catch((error) => {
+          console.error("Error fetching showroomschedule:", error);
+        });
+    },
+    updateCalendarEvents() {
+      const visibleDates = this.calendar.getDates();
+
+        for (const date of visibleDates) {
+          const dayOfWeek = date.getDay();
+          const dayOfMonth = date.getDate();
+          const month = date.getMonth();
+          const year = date.getFullYear();
+
+          console.log(`Ngày: ${dayOfMonth}, Tháng: ${month + 1}, Năm: ${year}, Thứ: ${this.getDayName(dayOfWeek)}`);
+        }
+    },
+
+
+
     fetchServices() {
       axios
         .get("/api/services")
@@ -261,38 +328,6 @@ export default {
       return 0;
     },
 
-    /*     calculateTotalPrice() {
-      this.totalSelectedServicesPrice = this.selectedServices.reduce(
-        (totalPrice, serviceId) => {
-          const servicePrice = this.getServicePrice(serviceId);
-          totalPrice += parseFloat(servicePrice);
-          return totalPrice;
-        },
-        0
-      );
-    }, */
-
-    /*     calculateTotalPrice() {
-      this.totalSelectedServicesPrice = this.selectedServices.reduce(
-        (totalPrice, serviceId) => {
-          const servicePrice = this.getServicePrice(serviceId);
-          const serviceSalePrice = this.getServiceSalePrice(serviceId);
-          totalPrice += parseFloat(servicePrice) - parseFloat(serviceSalePrice);
-          return totalPrice;
-        },
-        0
-      );
-    }, */
-
-    /*     calculateTotalSelectedServicesPrice() {
-      return this.selectedServices.reduce((totalPrice, serviceId  ) => {
-        const servicePrice = this.getServicePrice(serviceId);
-        const serviceSalePrice = this.getServiceSalePrice(serviceId);
-        totalPrice += parseFloat(servicePrice) - parseFloat(serviceSalePrice);
-        return totalPrice;   
-      }, 0);
-    }, */
-
     calculateTotalSelectedServicesPrice() {
       const serviceTotalPrice = this.selectedServices.reduce(
         (totalPrice, serviceId) => {
@@ -319,6 +354,11 @@ export default {
           this.fetchArtistlevels();
           this.step = "artistlevels";
         }
+      } else if (this.step === "artistlevels") {
+        if (this.selectedShowroom) {
+          this.fetchShowroomSchedule();
+          this.step = "showroomschedule";
+        }
       }
     },
 
@@ -334,6 +374,9 @@ export default {
         this.step = "groupService";
         this.selectedArtistlevel = [];
         this.totalSelectedServicesPrice = 0;
+      } else if (this.step === "showroomschedule") {
+        this.step = "artistlevels";
+        this.selectedshowroomschedule = [];
       }
     },
 
@@ -354,27 +397,20 @@ export default {
     this.fetchShowrooms();
     this.fetchServices();
     this.fetchArtistlevels();
+    this.fetchShowroomSchedule();
+
+
+       // Khởi tạo FullCalendar
+       this.calendar = new FullCalendar.Calendar(this.$refs.calendar, {
+      plugins: [dayGridPlugin],
+      // Cấu hình khác của FullCalendar
+    });
+
+    // Render lịch
+    this.calendar.render();
+
+    // Lấy thông tin các ngày trong tháng hiện tại
+    this.getVisibleDatesInfo();
   },
 };
 </script>
-
-<!-- Display services for selected group service -->
-<!--       <div v-if="selectedGroupService">
-        <div v-for="service in services" :key="service.id">
-        <input type="checkbox" :value="service.id" v-model="selectedServices" />
-        {{ service.Name }}
-        {{ formatCurrency(service.Price) }}
-      </div>
-      <div v-if="selectedServices.length > 0">
-        <div>Selected Services Prices:</div>
-        <div v-for="serviceId in selectedServices" :key="serviceId">
-          <span>{{ getServiceName(serviceId) }}: </span>
-          <span>{{ formatCurrency(getServicePrice(serviceId)) }}</span>
-        </div>
-        <div>Total Price: {{ formatCurrency(calculateTotalPrice) }}</div>
-      </div>
-      </div> -->
-<!-- 
-      <button @click="prevStep">Back</button>
-      <button @click="submit" :disabled="!selectedServices">Submit</button> -->
-<!-- ... -->
