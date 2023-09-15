@@ -16,7 +16,7 @@ class ArtistController extends Controller
      */
     public function index()
     {
-        $artists = Artists::all();
+        $artists = Artists::where('name', '!=','N/A' )->get();
         $stt = 1 ;
         return view('admin.artists.index', compact('artists' , 'stt'));
     }
@@ -84,7 +84,7 @@ class ArtistController extends Controller
      */
     public function show(Artists $artist)
     {
-        $artistLevels = ArtistLevel::all();
+        $artistLevels = ArtistLevel::where('name', '!=','N/A' )->get();
         return view('admin.artists.show', compact('artist', 'artistLevels'));
     }
 
@@ -97,7 +97,7 @@ class ArtistController extends Controller
     public function edit(Artists $artist)
     {
       // Fetch all artist levels from the database
-      $artistLevels = ArtistLevel::all();
+      $artistLevels = ArtistLevel::where('name', '!=','N/A' )->get();
 
       return view('admin.artists.edit', compact('artist', 'artistLevels'));
     }
@@ -111,36 +111,54 @@ class ArtistController extends Controller
      */
     public function update(Request $request, Artists $artist)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'fullname' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'required|string|email|max:255|unique:artists,email,' . $artist->id,
-            'avatar' => 'nullable|string',
-            'description' => 'nullable|string',
-            'status' => 'required|in:published,pending,draft',
-            'artist_levelID' => 'required|exists:artists_levels,id',
-        ]);
 
-        $data = $request->all();
-        $data['password'] = Hash::make($request->input('password'));
-        
-        // Assuming avatar contains the full URL, extract the path from the URL
-        $avatarPath = parse_url($request->input('avatar'), PHP_URL_PATH);
-        $data['avatar'] = $avatarPath;
-
-      
-        // Create the artist using the validated and processed data
-        $updateArtist =   $artist->update($data);
-
-    
-        if ($updateArtist) {
-            // If the artist was successfully update, redirect with success message
-            return redirect()->route('artist.index')->with('success', 'Artist update successfully.');
-        } else {
-            // If the artist creation failed, redirect back with an error message
-            return redirect()->back()->with('failed', 'Failed to update artist.');
+        if($artist->name == "N/A")
+        {
+            return redirect()->route('artist.index')->with('failed', 'Failed to update artist.');
         }
+        else{
+
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'fullname' => 'required|string|max:255',
+                'phone' => 'required|string|max:20',
+                'email' => 'required|string|email|max:255|unique:artists,email,' . $artist->id,
+                'avatar' => 'nullable|string',
+                'description' => 'nullable|string',
+                'status' => 'required|in:published,pending,draft',
+                'artist_levelID' => 'required|exists:artists_levels,id',
+            ]);
+    
+       
+            $data = $request->all();
+           
+            if( $artist->password == $request->input('password'))
+            {
+                $data['password'] = $request->input('password');
+
+            }
+            else{
+
+                $data['password'] = Hash::make($request->input('password'));
+            }
+
+            // Assuming avatar contains the full URL, extract the path from the URL
+            $avatarPath = parse_url($request->input('avatar'), PHP_URL_PATH);
+            $data['avatar'] = $avatarPath;
+          
+            // Create the artist using the validated and processed data
+            $updateArtist =   $artist->update($data);
+    
+        
+            if ($updateArtist) {
+                // If the artist was successfully update, redirect with success message
+                return redirect()->route('artist.index')->with('success', 'Artist update successfully.');
+            } else {
+                // If the artist creation failed, redirect back with an error message
+                return redirect()->back()->with('failed', 'Failed to update artist.');
+            }
+        }
+
 
     }
 

@@ -4,6 +4,8 @@
  * building robust, powerful web applications using React + Laravel.
  */
 
+
+
 require('./bootstrap');
 
 /**
@@ -43,5 +45,7 @@ import './fullpage.min.js';
 import './wow.min.js';
 
 import './dashboards.js';
+
+import './ziggy.js';
 
 

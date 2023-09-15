@@ -58,6 +58,11 @@ return [
                 'provider' => 'artists_provider',
             ],
 
+            'employee' => [
+                'driver' => 'session',
+                'provider' => 'employee_provider',
+            ],
+
             /*
             'shop' => [
                 'driver' => 'session',
@@ -110,6 +115,10 @@ return [
         'artists_provider' => [
             'driver' => 'eloquent',
             'model' => App\Models\Artists::class,
+        ],
+        'employee_provider' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Employee::class,
         ],
 /*         'shop_provider' => [
             'driver' => 'eloquent',

@@ -17424,8 +17424,132 @@ textarea.form-control-lg {
   background: rgb(255, 94, 83);
 }
 
+.error-message i {
+  margin: 1rem;
+  color: rgb(255, 94, 83);
+}
+
 .right-sidebar {
   padding: 1rem;
+}
+
+.main__body__data__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  margin: 1rem 0;
+}
+
+.dataTables_scroll {
+  padding-top: 1rem;
+}
+
+.controls {
+  text-align: left;
+  position: relative;
+}
+.controls input[type=text],
+.controls input[type=email],
+.controls input[type=number],
+.controls input[type=date],
+.controls input[type=tel],
+.controls input[type=time],
+.controls textarea,
+.controls button,
+.controls select {
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid #c6c6c6;
+  width: 100%;
+  margin-bottom: 10px;
+  color: #888;
+  font-size: 16px;
+  font-weight: 300;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+.controls input[type=text]:focus, .controls input[type=text]:hover,
+.controls input[type=email]:focus,
+.controls input[type=email]:hover,
+.controls input[type=number]:focus,
+.controls input[type=number]:hover,
+.controls input[type=date]:focus,
+.controls input[type=date]:hover,
+.controls input[type=tel]:focus,
+.controls input[type=tel]:hover,
+.controls input[type=time]:focus,
+.controls input[type=time]:hover,
+.controls textarea:focus,
+.controls textarea:hover,
+.controls button:focus,
+.controls button:hover,
+.controls select:focus,
+.controls select:hover {
+  outline: none;
+  border-color: #9FB1C1;
+}
+.controls input[type=text]:focus + label, .controls input[type=text]:hover + label,
+.controls input[type=email]:focus + label,
+.controls input[type=email]:hover + label,
+.controls input[type=number]:focus + label,
+.controls input[type=number]:hover + label,
+.controls input[type=date]:focus + label,
+.controls input[type=date]:hover + label,
+.controls input[type=tel]:focus + label,
+.controls input[type=tel]:hover + label,
+.controls input[type=time]:focus + label,
+.controls input[type=time]:hover + label,
+.controls textarea:focus + label,
+.controls textarea:hover + label,
+.controls button:focus + label,
+.controls button:hover + label,
+.controls select:focus + label,
+.controls select:hover + label {
+  color: #bdcc00;
+  cursor: text;
+}
+.controls .fa-sort {
+  position: absolute;
+  right: 10px;
+  top: 17px;
+  color: #999;
+}
+.controls select {
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  cursor: pointer;
+}
+.controls label {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  width: 60%;
+  color: #999;
+  font-size: 16px;
+  display: inline-block;
+  padding: 4px 10px;
+  font-weight: 400;
+  background-color: rgba(255, 255, 255, 0);
+  transition: color 0.3s, top 0.3s, background-color 0.8s;
+  background-color: rgb(255, 255, 255);
+}
+.controls label.active {
+  top: -20px;
+  color: #555;
+  background-color: rgb(255, 255, 255);
+  width: auto;
+}
+.controls textarea {
+  resize: none;
+  height: 200px;
+}
+
+.working-hours-flex input {
+  width: 46% !important;
+  padding: 5px !important;
+  margin: 2%;
 }
 
 /* tao dau X */

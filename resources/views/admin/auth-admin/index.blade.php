@@ -23,162 +23,200 @@
                 <div class="main__body__data">
 
                     @isset($admins)
-                        
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 flexb-c">
-                        <div class="bg-ad">
+                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 flexb-c">
+                            <div class="bg-ad">
 
-                            <!-- Add button to trigger Create popup modal -->
-                            <button type="button" class="btn-sub btn btn-info" data-bs-toggle="modal"
-                                data-bs-target="#createModal">
-                                Add New
-                            </button>
+                                <!-- Add button to trigger Create popup modal -->
+                                <button type="button" class="btn-sub btn btn-info" data-bs-toggle="modal"
+                                    data-bs-target="#createModal">
+                                    Add New
+                                </button>
 
-                            <!-- Add table to display admins data -->
-                            <table class="table table-striped table-reponsive">
-                                <thead>
-                                    <tr>
-                                        <th>No.</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($admins as $admin)
+                                <!-- Add table to display admins data -->
+                                <table class="table table-striped table-reponsive">
+                                    <thead>
                                         <tr>
-                                            <td> <input type="checkbox" name="check[]" value="{{ $admin->id }}"
-                                                    id=""> {{ $loop->index + 1 }}</td>
-                                            <td>{{ $admin->name }}</td>
-                                            <td>{{ $admin->email }}</td>
-
-                                            <td>
-                                                <!-- Add button to trigger Edit popup modal -->
-                                                <button type="button" class="bg-none" data-bs-toggle="modal"
-                                                    data-bs-target="#editModal{{ $admin->id }}">
-                                                    <i class="fa-sharp fa-solid fa-pen-to-square"></i>
-                                                </button>
-
-                                                <form method="POST"
-                                                    action=" {{ route('auth-admin.destroy', ['auth_admin' => $admin->id]) }} "
-                                                    onsubmit="return ConfirmDelete(this)" class="p-0"
-                                                    style="display: inline;">
-                                                    @method('DELETE')
-                                                    @csrf
-                                                    <button class="bg-none" type="submit"><i
-                                                            class="fa-solid fa-trash"></i></button>
-                                                </form>
-                                            </td>
+                                            <th>No.</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($admins as $admin)
+                                            <tr>
+                                                <td> <input type="checkbox" name="check[]" value="{{ $admin->id }}"
+                                                        id=""> {{ $loop->index + 1 }}</td>
+                                                <td>{{ $admin->name }}</td>
+                                                <td>{{ $admin->email }}</td>
+                                                <td>{{ $admin->status }}</td>
 
-                            <!-- Create popup modal -->
-                            <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
-                                aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <!-- Add form for Create action -->
-                                        <form method="POST" action="{{ route('auth-admin.store') }}">
-                                            @csrf
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="createModalLabel">Create Artist Level</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <!-- Add form fields here -->
-                                                <div class="form-group">
-                                                    <label for="name">Name</label>
-                                                    <input type="text" class="form-control" id="name" name="name"
-                                                        required>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="Level Price">Email</label>
-                                                    <input type="email" class="form-control" id="email" name="email"
-                                                        required>
-                                                </div>
+                                                <td>
+                                                    <!-- Add button to trigger Edit popup modal -->
+                                                    <button type="button" class="bg-none" data-bs-toggle="modal"
+                                                        data-bs-target="#editModal{{ $admin->id }}">
+                                                        <i class="fa-sharp fa-solid fa-pen-to-square"></i>
+                                                    </button>
 
+                                                    <form method="POST"
+                                                        action=" {{ route('auth-admin.destroy', ['auth_admin' => $admin->id]) }} "
+                                                        onsubmit="return ConfirmDelete(this)" class="p-0"
+                                                        style="display: inline;">
+                                                        @method('DELETE')
+                                                        @csrf
+                                                        <button class="bg-none" type="submit"><i
+                                                                class="fa-solid fa-trash"></i></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
 
-                                                <div class="form-group">
-                                                    <label for="password">Password</label>
-                                                    <input type="password" name="password" class="form-control" required>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="password_confirmation">Confirm Password</label>
-                                                    <input type="password" name="password_confirmation" class="form-control"
-                                                        required>
-                                                </div>
-                                                <!-- Add more fields as needed -->
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-sub btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn-sub btn btn-info">Create</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-
-                            @foreach ($admins as $admin)
-                                <div class="modal fade" id="editModal{{ $admin->id }}" tabindex="-1"
-                                    aria-labelledby="editModalLabel{{ $admin->id }}" aria-hidden="true">
+                                <!-- Create popup modal -->
+                                <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel"
+                                    aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <!-- Add form for Edit action -->
-                                            <form method="POST"
-                                                action="{{ route('auth-admin.update', ['auth_admin' => $admin->id]) }}">
+                                            <!-- Add form for Create action -->
+                                            <form method="POST" action="{{ route('auth-admin.store') }}">
                                                 @csrf
-                                                @method('PUT')
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="editModalLabel{{ $admin->id }}">Edit
-                                                        Artist Level {{ $admin->id }}</h5>
+                                                    <h5 class="modal-title" id="createModalLabel">Create User</h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <!-- Add form fields here -->
                                                     <div class="form-group">
-                                                        <label for="name">Name</label>
-                                                        <input type="text" class="form-control" id="name"
-                                                            name="name" required>
+                                                        <label for="name">User name</label>
+                                                        <input type="text" class="form-control" id="name" name="name"
+                                                            required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="Level Price">Email</label>
-                                                        <input type="email" class="form-control" id="email"
-                                                            name="email" required>
-                                                    </div>
-
-
-                                                    <div class="form-group">
-                                                        <label for="password">Password</label>
-                                                        <input type="password" name="password" class="form-control"
+                                                        <input type="email" class="form-control" id="email" name="email"
                                                             required>
                                                     </div>
 
+
+                                                    <div class="form-group" style="position: relative;">
+
+                                                        <small></small>
+                                                        <a class="eyes" onclick="passwordshow()"><i
+                                                                class="fa-solid fa-eye"></i></a>
+                                                        <label for="pass">Password (8 characters minimum):</label>
+                                                        <input id="password-new" minlength="8" name="password" type="password"
+                                                            required
+                                                            class=" form-control appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                                            placeholder="password">
+
+                                                    </div>
+
                                                     <div class="form-group">
-                                                        <label for="password_confirmation">Confirm Password</label>
-                                                        <input type="password" name="password_confirmation"
-                                                            class="form-control" required>
+                                                        <label for="status" class="" aria-required="true">Status</label>
+                                                        <select class="form-control ui-select ui-select" id="status"
+                                                            name="status">
+                                                            <option value="published" selected="selected">Published
+                                                            </option>
+                                                            <option value="draft">Draft</option>
+                                                            <option value="pending">Pending</option>
+                                                        </select>
+
                                                     </div>
                                                     <!-- Add more fields as needed -->
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn-sub btn btn-secondary"
+                                                    <button type="button" class="btn btn-sub btn-secondary"
                                                         data-bs-dismiss="modal">Close</button>
-                                                    <button type="submit" class="btn-sub btn btn-info">Save
-                                                        Changes</button>
+                                                    <button type="submit" class="btn-sub btn btn-info">Create</button>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
 
+                                @foreach ($admins as $admin)
+                                    <div class="modal fade" id="editModal{{ $admin->id }}" tabindex="-1"
+                                        aria-labelledby="editModalLabel{{ $admin->id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <!-- Add form for Edit action -->
+                                                <form method="POST"
+                                                    action="{{ route('auth-admin.update', ['auth_admin' => $admin->id]) }}">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editModalLabel{{ $admin->id }}">Update
+                                                            User {{ $admin->id }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!-- Add form fields here -->
+                                                        <div class="form-group">
+                                                            <label for="name">User name</label>
+                                                            <input type="text" class="form-control" id="name"
+                                                                name="name" value="{{ $admin->name }}" required>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="Level Price">Email</label>
+                                                            <input type="email" class="form-control" id="email"
+                                                                name="email" value="{{ $admin->email }}" required>
+                                                        </div>
+
+
+        
+
+                                                        <div class="form-group" style="position: relative;">
+
+                                                            <small></small>
+                                                            <a class="eyes" onclick="repasswordshow()"><i
+                                                                    class="fa-solid fa-eye"></i></a>
+                                                            <label for="pass">Password (8 characters minimum):</label>
+                                                            <input minlength="8" name="password" value="{{ $admin->password }}" type="password"
+                                                                required
+                                                                class="password-renew form-control appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                                                                placeholder="password">
+
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label for="status" class=""
+                                                                aria-required="true">Status</label>
+                                                            <select class="form-control ui-select ui-select" id="status"
+                                                                name="status">
+                                                                <option value="published"
+                                                                    {{ $admin->status === 'published' ? 'selected' : '' }}>
+                                                                    Published</option>
+                                                                <option value="pending"
+                                                                    {{ $admin->status === 'pending' ? 'selected' : '' }}>
+                                                                    Pending</option>
+                                                                <option value="draft"
+                                                                    {{ $admin->status === 'draft' ? 'selected' : '' }}>Draft
+                                                                </option>
+                                                            </select>
+                                                        </div>
+
+
+
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn-sub btn btn-secondary"
+                                                            data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn-sub btn btn-info">Save
+                                                            Changes</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                            </div>
                         </div>
-                    </div>
                     @endisset
 
                     @isset($none)
@@ -197,4 +235,22 @@
 @endsection
 
 @section('script')
+    <script type="text/javascript">
+        function passwordshow() {
+            if (document.getElementById('password-new').type == 'text') {
+                document.getElementById('password-new').type = 'password';
+            } else {
+                document.getElementById('password-new').type = 'text';
+            }
+        }
+
+        function repasswordshow() {
+
+            if (document.getElementByclassName('password-renew').type == 'text') {
+                document.getElementByclassName('password-renew').type = 'password';
+            } else {
+                document.getElementByclassName('password-renew').type = 'text';
+            }
+        }
+    </script>
 @endsection

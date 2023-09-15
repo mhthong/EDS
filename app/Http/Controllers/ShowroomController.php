@@ -5,13 +5,16 @@ use App\Models\Showroom;
 use Illuminate\Http\Request;
 use App\Models\ShowroomSchedule;
 use App\Models\WorkingHour;
+use App\Models\ServiceShowroom;
+use App\Models\GroupService;
 
 class ShowroomController extends Controller
 {
     public function index()
     {
         $showrooms = Showroom::all();
-        return view('admin.showrooms.index', compact('showrooms'));
+        $allGroupServices = GroupService::all();
+        return view('admin.showrooms.index', compact('showrooms','allGroupServices'));
     }
 
     public function create()
@@ -19,7 +22,9 @@ class ShowroomController extends Controller
 
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-        return view('admin.showrooms.create', compact('daysOfWeek'));
+        $allGroupServices = GroupService::all();
+
+        return view('admin.showrooms.create', compact('daysOfWeek','allGroupServices'));
     }
 
     public function store(Request $request)
@@ -31,7 +36,7 @@ class ShowroomController extends Controller
             'Address' => 'required|string|max:255',
             'Phone' => 'required|string|max:255',
             'Description' => 'required|string|max:255',
-            'maps' => 'nullable|string|max:255',
+            'maps' => 'required',
             'status' => 'nullable|string|max:60',
         ]);
 
@@ -73,6 +78,9 @@ class ShowroomController extends Controller
             }
         }
 
+        $selectedGroupServices = $request->input('groupservices', []);
+        $Showroom->groupservices()->sync($selectedGroupServices);
+
         try {
 
             $Showroom->save();
@@ -91,10 +99,14 @@ class ShowroomController extends Controller
 
     public function edit(Showroom $showroom)
     {
+        $showroom->load('groupservices'); // Load the groupservices relationship
+        $selectedGroupServices = $showroom->groupservices->pluck('id')->toArray();
+        $allGroupServices = GroupService::all();
         $showroom_schedules = $showroom->showroomSchedules()->with('workingHours')->get();
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        return view('admin.showrooms.edit', compact('showroom', 'showroom_schedules', 'daysOfWeek'));
+        return view('admin.showrooms.edit', compact('showroom', 'showroom_schedules', 'daysOfWeek', 'allGroupServices', 'selectedGroupServices'));
     }
+    
     
 
     public function update(Request $request, Showroom $showroom)
@@ -106,7 +118,7 @@ class ShowroomController extends Controller
             'Address' => 'required|string|max:255',
             'Phone' => 'required|string|max:255',
             'Description' => 'required|string|max:255',
-            'maps' => 'nullable|string|max:255',
+            'maps' => 'required',
             'status' => 'nullable|string|max:60',
         ]);
 
@@ -161,7 +173,10 @@ class ShowroomController extends Controller
                 }
             }
         }
-    
+
+        $selectedGroupServices = $request->input('groupservices', []);
+        $showroom->groupservices()->sync($selectedGroupServices);
+
         // Update the service record using the validated data
 
         try {

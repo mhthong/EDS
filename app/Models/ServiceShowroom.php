@@ -18,6 +18,7 @@ class ServiceShowroom extends Model
         return $this->belongsTo(GroupService::class, 'groupservice_id');
     }
 
+
     public function showroom()
     {
         return $this->belongsTo(Showroom::class, 'showroom_id');

@@ -13,7 +13,7 @@ class GetController extends Controller
     // Display a list of all get
     public function index()
     {
-        $gets = Get::paginate(10);
+        $gets = Get::all();
 
         return view('admin.get.index', compact('gets'));
     }

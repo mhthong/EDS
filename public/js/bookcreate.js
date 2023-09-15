@@ -18,8 +18,9 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       showrooms: [],
-      showroomspath: [],
+      showroomspath: "N/A",
       selectedShowroom: null,
+      selectedArtist: 0,
       groupServices: [],
       showroomSchedules: [],
       services: [],
@@ -29,14 +30,16 @@ __webpack_require__.r(__webpack_exports__);
       selectedGroupService: "",
       selectedGroupServiceServices: [],
       step: "showroom",
-      selectedServices: [],
+      selectedServices: null,
       totalPrice: 0,
       selectedDate: "",
       showWarning: false,
       // Ngày tối thiểu cho trường input
       filteredDays: [],
       selectedWorkingHour: "",
+      selectedWorkingHour_end_time: "",
       apiData: [],
+      artists: [],
       formData: {
         name: "",
         email: "",
@@ -47,14 +50,32 @@ __webpack_require__.r(__webpack_exports__);
       // Dữ liệu từ API
       jsonData: "",
       bookingData: "",
-      selectedDepositPrice: "",
+      selectedDiscountPrice: 0,
+      selectedDepositPrice: 100,
       maxDepositPrice: 0,
-      inputError: false
+      maxDiscountPrice: 0,
+      minDepositPrice: 100,
+      minDiscountPrice: 0,
+      inputError: false,
+      inputError_01: false,
+      selectedStatus: "Waiting",
+      selectedPaymentType: "N/A",
+      htmlData: "",
+      groupServiceStates: {},
+      isLabelActive: false,
+      isIconActive: false
+
       /*   selectedOption: "option1", */
     };
   },
 
-  watch: {},
+  watch: {
+    selectedArtist: function selectedArtist(newValue, oldValue) {
+      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
+      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
+    }
+  },
+
   computed: {
     selectedShowroomMap: function selectedShowroomMap() {
       var _this = this;
@@ -67,11 +88,22 @@ __webpack_require__.r(__webpack_exports__);
       }
       return "";
     },
-    selectedArtistlevelDetails: function selectedArtistlevelDetails() {
+    selectedShowroomName: function selectedShowroomName() {
       var _this2 = this;
+      // Lấy thông tin maps của showroom được chọn
+      if (this.selectedShowroom) {
+        var selectedShowroom = this.showrooms.find(function (showroom) {
+          return showroom.id === _this2.selectedShowroom;
+        });
+        return selectedShowroom ? selectedShowroom.Name : "";
+      }
+      return "";
+    },
+    selectedArtistlevelDetails: function selectedArtistlevelDetails() {
+      var _this3 = this;
       if (this.selectedArtistlevel) {
         var selectedLevel = this.artistlevels.find(function (level) {
-          return level.id === _this2.selectedArtistlevel;
+          return level.id === _this3.selectedArtistlevel;
         });
         return selectedLevel ? {
           Name: selectedLevel.Name,
@@ -81,17 +113,17 @@ __webpack_require__.r(__webpack_exports__);
       return null;
     },
     totalLevelPrice: function totalLevelPrice() {
-      if (this.selectedServices.length > 0 && this.selectedArtistlevelDetails) {
+      if (this.selectedArtistlevelDetails) {
         var levelPrice = parseFloat(this.selectedArtistlevelDetails.Level_price);
-        return this.selectedServices.length * levelPrice;
+        return levelPrice;
       }
       return 0;
     },
     selectedServicesPriced: function selectedServicesPriced() {
-      var _this3 = this;
+      var _this4 = this;
       if (this.selectedServices) {
         var selectedServices = this.services.filter(function (service) {
-          return _this3.selectedServices.includes(service.id);
+          return _this4.selectedServices.includes(service.id);
         });
         return selectedServices.map(function (service) {
           return service.Price;
@@ -99,47 +131,51 @@ __webpack_require__.r(__webpack_exports__);
       }
       return null;
     },
-    selectedDay: function selectedDay() {
-      // Chuyển đổi giá trị selectedshowroomschedule thành thứ
-      var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      var selectedDate = new Date(this.selectedshowroomschedule);
-      var dayIndex = selectedDate.getDay();
-      return daysOfWeek[dayIndex];
+    isNextButtonDisabled: function isNextButtonDisabled() {
+      return this.inputError || this.inputError_01 || this.selectedArtistlevel === null ||
+      // Check if an artist level is selected
+      this.selectedArtistlevel === undefined;
     }
-    /*     totalSelectedServicesPrice() {
-    return this.calculateTotalPrice(); // Tính tổng giá trị dịch vụ đã chọn
-    }, */
   },
   methods: {
     fetchShowrooms: function fetchShowrooms() {
-      var _this4 = this;
+      var _this5 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showrooms").then(function (response) {
-        _this4.showrooms = response.data;
+        _this5.showrooms = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
     fetchGroupServices: function fetchGroupServices() {
-      var _this5 = this;
+      var _this6 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/group-services/".concat(this.selectedShowroom)).then(function (response) {
-        _this5.groupServices = response.data;
+        _this6.groupServices = response.data;
       })["catch"](function (error) {
         console.error("Error fetching group services:", error);
       });
     },
     fetchApiData: function fetchApiData() {
-      var _this6 = this;
+      var _this7 = this;
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(this.selectedShowroom)).then(function (response) {
-        _this6.apiData = response.data;
+        _this7.apiData = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchArtists: function fetchArtists() {
+      var _this8 = this;
+      // Gọi API và cập nhật biến apiData với dữ liệu từ API
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
+        _this8.artists = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
     fetchShowroomSchedule: function fetchShowroomSchedule() {
-      var _this7 = this;
+      var _this9 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
-        _this7.showroomSchedules = response.data;
+        _this9.showroomSchedules = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showroomschedule:", error);
       });
@@ -158,11 +194,12 @@ __webpack_require__.r(__webpack_exports__);
       return daysOfWeek[date.getDay()];
     },
     // ... (Phần methods và các hàm đã có)
-    isDisabled: function isDisabled(day, workingHourStartTime, selectedDate) {
+    isDisabled: function isDisabled(day, workingHourStartTime, workingHourEndTime, selectedDate, selectedArtist) {
       // Kiểm tra xem giờ và ngày từ API có trùng với workingHour và selectedDate hay không
       // Nếu trùng và trạng thái là "Waiting", trả về true để vô hiệu hóa input radio, ngược lại trả về false
+
       var matchingApiData = this.apiData.find(function (data) {
-        return data.time === workingHourStartTime && data.date === selectedDate;
+        return data.time === workingHourStartTime && data.date === selectedDate && data.time_end === workingHourEndTime && data.ArtistID === selectedArtist;
       });
       return matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom;
     },
@@ -170,6 +207,7 @@ __webpack_require__.r(__webpack_exports__);
       // Xử lý sự kiện khi ngày được chọn thay đổi
       var currentDate = new Date();
       var selectedDate = new Date(this.selectedDate);
+      this.isLabelActive = true;
 
       // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
       var timeDiff = selectedDate - currentDate;
@@ -184,17 +222,17 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     fetchServices: function fetchServices() {
-      var _this8 = this;
+      var _this10 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
-        _this8.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+        _this10.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
       })["catch"](function (error) {
         console.error("Error fetching services:", error);
       });
     },
     fetchArtistlevels: function fetchArtistlevels() {
-      var _this9 = this;
+      var _this11 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
-        _this9.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+        _this11.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
       })["catch"](function (error) {
         console.error("Error fetching artist levels:", error);
       });
@@ -236,24 +274,35 @@ __webpack_require__.r(__webpack_exports__);
       return 0;
     },
     checkInputValue: function checkInputValue() {
-      if (this.selectedDepositPrice > this.maxDepositPrice) {
+      if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
         this.inputError = true;
       } else {
         this.inputError = false;
       }
     },
+    checkInputValueDiscount: function checkInputValueDiscount() {
+      var max = this.maxDiscountPrice - this.selectedDepositPrice;
+      if (this.selectedDiscountPrice > max || this.selectedDiscountPrice < this.minDiscountPrice || this.selectedDiscountPrice === "") {
+        this.inputError_01 = true;
+      } else {
+        this.inputError_01 = false;
+      }
+    },
     calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
-      var _this10 = this;
-      var serviceTotalPrice = this.selectedServices.reduce(function (totalPrice, serviceId) {
-        var servicePrice = _this10.getServicePrice(serviceId);
-        var serviceSalePrice = _this10.getServiceSalePrice(serviceId);
-        totalPrice += parseFloat(servicePrice) - parseFloat(serviceSalePrice);
-        return totalPrice;
-      }, 0);
+      var serviceTotalPrice = 0;
+      if (this.selectedServices !== null) {
+        // Tìm dịch vụ được chọn trong danh sách dịch vụ
+        var servicePrice = this.getServicePrice(this.selectedServices);
+        var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
+        serviceTotalPrice = parseFloat(servicePrice);
+        console.log(serviceTotalPrice);
+      }
       this.maxDepositPrice = serviceTotalPrice;
-      if (this.selectedDepositPrice !== "") {
+      this.maxDiscountPrice = serviceTotalPrice;
+      if (this.selectedDepositPrice !== "" || this.selectedDiscountPrice !== "") {
         var selectedDepositPrice = this.selectedDepositPrice;
-        return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice);
+        var selectedDiscountPrice = this.selectedDiscountPrice;
+        return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice) - parseFloat(selectedDiscountPrice);
       } else {
         return serviceTotalPrice + this.totalLevelPrice;
       }
@@ -279,27 +328,38 @@ __webpack_require__.r(__webpack_exports__);
           this.step = "showroomschedule";
         }
       } else if (this.step === "showroomschedule") {
-        console.log(this.selectedDate, this.selectedWorkingHour);
+        this.fetchArtists();
         if (this.selectedDate && this.selectedWorkingHour) {
           this.step = "getShow";
           var bookingDatavalue = {
             showroomId: this.selectedShowroom,
             groupServiceId: this.selectedGroupService,
             serviceIds: this.selectedServices,
-            Artistlevel: this.selectedArtistlevelDetails,
-            totalPrice: this.calculateTotalSelectedServicesPrice(),
+            Artist_levelID: this.selectedArtistlevel,
+            ArtistID: this.selectedArtist,
+            Level_price: this.totalLevelPrice,
+            Remaining_price: this.calculateTotalSelectedServicesPrice(),
+            Deposit_price: this.selectedDepositPrice,
+            Total_price: parseFloat(this.calculateTotalSelectedServicesPrice()) + parseFloat(this.selectedDepositPrice),
             Date: this.selectedDate,
-            workingHour: this.selectedWorkingHour
+            workingHour: this.selectedWorkingHour.start_time,
+            WorkingHour_end_time: this.selectedWorkingHour.end_time,
+            Status: this.selectedStatus,
+            PaymentType: this.selectedPaymentType
           };
+          console.log(bookingDatavalue);
           this.bookingData = JSON.stringify(bookingDatavalue);
         }
       }
+    },
+    checkselectedArtist: function checkselectedArtist() {
+      this.isIconActive = true;
     },
     prevStep: function prevStep() {
       if (this.step === "groupService") {
         this.step = "showroom";
         this.selectedGroupService = null;
-        this.selectedServices = [];
+        this.selectedServices = null;
         this.selectedArtistlevel = [];
         this.totalSelectedServicesPrice = 0;
         // Xóa dữ liệu đã chọn
@@ -317,7 +377,9 @@ __webpack_require__.r(__webpack_exports__);
         this.formData = "";
         this.selectedshowroomschedule = [];
         this.selectedDate = "";
+        this.selectedArtist = "";
         this.selectedWorkingHour = "";
+        this.bookingDatavalue = "";
       }
     },
     isNameValid: function isNameValid(name) {
@@ -335,6 +397,10 @@ __webpack_require__.r(__webpack_exports__);
     isPhoneValid: function isPhoneValid(phone) {
       // Kiểm tra dữ liệu số điện thoại (ví dụ: 10 chữ số)
       return /^\d{10}$/.test(phone);
+    },
+    toggleGroupService: function toggleGroupService(groupId) {
+      // Sử dụng Vue.set để đảm bảo Vue.js theo dõi sự thay đổi trong trường dữ liệu groupServiceStates
+      this.$set(this.groupServiceStates, groupId, !this.groupServiceStates[groupId]);
     }
   },
   mounted: function mounted() {
@@ -343,6 +409,966 @@ __webpack_require__.r(__webpack_exports__);
     this.fetchArtistlevels();
     this.fetchShowroomSchedule();
     this.fetchApiData();
+    this.fetchArtists();
+    this.htmlData = this.selectedShowroomMap;
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return { value: void 0, done: !0 }; } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable || "" === iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } throw new TypeError(_typeof(iterable) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      showrooms: [],
+      showroomspath: "N/A",
+      selectedShowroom: null,
+      selectedArtist: 0,
+      groupServices: [],
+      showroomSchedules: [],
+      services: [],
+      artistlevels: [],
+      selectedArtistlevel: null,
+      selectedshowroomschedule: null,
+      selectedGroupService: "",
+      selectedGroupServiceServices: [],
+      step: "showroom",
+      selectedServices: null,
+      selectedServicesName: null,
+      totalPrice: 0,
+      selectedDate: "",
+      showWarning: false,
+      // Ngày tối thiểu cho trường input
+      filteredDays: [],
+      selectedWorkingHour: "",
+      selectedWorkingHour_end_time: "",
+      apiData: [],
+      artists: [],
+      formData: {
+        name: "",
+        email: "",
+        address: "",
+        phone: ""
+      },
+      InputSelectedStatus: "",
+      errorMessage: "",
+      // Dữ liệu từ API
+      jsonData: "",
+      bookingData: "",
+      selectedDepositPrice: 0,
+      maxDepositPrice: 0,
+      minDepositPrice: 0,
+      inputError: false,
+      selectedStatus: "Waiting",
+      selectedPaymentType: "N/A",
+      content: "",
+      id: "",
+      currentURL: "",
+      apiData_id: [],
+      GetID: [],
+      startTime: "",
+      // Initialize with empty values
+      endTime: "",
+      action: "",
+      errorMessagesubmitted: "",
+      submitted: false,
+      groupServiceStates: {},
+      isLabelActive: false,
+      isIconActive: false,
+      selectedStartTime: "",
+      selectedEndTime: ""
+      /*   selectedOption: "option1", */
+    };
+  },
+  created: function created() {
+    // Lấy URL hiện tại và gán cho biến currentURL
+    this.currentURL = window.location.href;
+
+    // Sử dụng biểu thức chính quy để trích xuất ID từ URL
+    var idMatch = this.currentURL.match(/\/(\d+)\/edit$/);
+    if (idMatch && idMatch[1]) {
+      // Nếu có khớp và tìm thấy ID, bạn có thể lấy nó và chuyển thành số nguyên
+      this.id = parseInt(idMatch[1]);
+    }
+    // Call the method to fetch data when the component is created
+  },
+
+  watch: {
+    selectedArtist: function selectedArtist(newValue, oldValue) {
+      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
+      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
+    },
+
+    selectedWorkingHour: function selectedWorkingHour(newWorkingHour, oldWorkingHour) {
+      // Update selectedStartTime when selectedWorkingHour changes
+      if (newWorkingHour) {
+        this.selectedStartTime = newWorkingHour.start_time;
+        this.selectedEndTime = newWorkingHour.end_time;
+      } else {
+        // Handle the case when nothing is selected
+        this.selectedStartTime = "";
+        this.selectedEndTime = "";
+      }
+    }
+  },
+  computed: {
+    selectedShowroomMap: function selectedShowroomMap() {
+      var _this = this;
+      // Lấy thông tin maps của showroom được chọn
+      if (this.selectedShowroom) {
+        var selectedShowroom = this.showrooms.find(function (showroom) {
+          return showroom.id === _this.selectedShowroom;
+        });
+        return selectedShowroom ? selectedShowroom.maps : "";
+      }
+      return "";
+    },
+    selectedArtistlevelDetails: function selectedArtistlevelDetails() {
+      var _this2 = this;
+      if (this.selectedArtistlevel) {
+        var selectedLevel = this.artistlevels.find(function (level) {
+          return level.id === _this2.selectedArtistlevel;
+        });
+        return selectedLevel ? {
+          Name: selectedLevel.Name,
+          Level_price: selectedLevel.Level_price
+        } : null;
+      }
+      return null;
+    },
+    totalLevelPrice: function totalLevelPrice() {
+      if (this.selectedArtistlevelDetails) {
+        var levelPrice = parseFloat(this.selectedArtistlevelDetails.Level_price);
+        return levelPrice;
+      }
+      return 0;
+    },
+    selectedServicesPriced: function selectedServicesPriced() {
+      var _this3 = this;
+      if (this.selectedServices) {
+        var selectedServices = this.services.filter(function (service) {
+          return _this3.selectedServices.includes(service.id);
+        });
+        return selectedServices.map(function (service) {
+          return service.Price;
+        });
+      }
+      return null;
+    }
+  },
+  methods: {
+    fetchapiData_id: function fetchapiData_id() {
+      var _this4 = this;
+      // Gọi API và cập nhật biến apiData với dữ liệu từ API
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/data-bookings/".concat(this.id)).then(function (response) {
+        _this4.apiData_id = response.data;
+        _this4.selectedShowroom = _this4.apiData_id[0].ShowroomID;
+        _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
+        _this4.GetID = _this4.apiData_id[0].GetID;
+        _this4.selectedStatus = _this4.apiData_id[0].status;
+        _this4.selectedDate = _this4.apiData_id[0].date;
+        _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
+        _this4.startTime = _this4.apiData_id[0].time;
+        _this4.endTime = _this4.apiData_id[0].time_end;
+        _this4.selectedServices = _this4.apiData_id[0].services[0].id;
+        _this4.selectedServicesName = _this4.apiData_id[0].services[0].Name;
+        if (_this4.apiData_id[0].ArtistID === 7) {
+          _this4.selectedArtist = 0;
+        } else {
+          _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
+        }
+        // Check if the payment object exists in the data
+        if (_this4.apiData_id[0] && _this4.apiData_id[0].payment) {
+          // Set this.selectedPaymentType to the value of payment_type
+          _this4.selectedPaymentType = _this4.apiData_id[0].payment.payment_type;
+        } else {
+          // Handle the case where payment data is not available
+          _this4.selectedPaymentType = "N/A";
+        }
+        _this4.action = _this4.apiData_id[0].action;
+        _this4.formData = {
+          name: _this4.apiData_id[0].get.Name,
+          email: _this4.apiData_id[0].get.Email,
+          address: _this4.apiData_id[0].get.Address,
+          phone: _this4.apiData_id[0].get.Phone
+        };
+        _this4.fetchApiData();
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchShowrooms: function fetchShowrooms() {
+      var _this5 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showrooms").then(function (response) {
+        _this5.showrooms = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching showrooms:", error);
+      });
+    },
+    fetchGroupServices: function fetchGroupServices() {
+      var _this6 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/group-services/".concat(this.selectedShowroom)).then(function (response) {
+        _this6.groupServices = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching group services:", error);
+      });
+    },
+    fetchApiData: function fetchApiData() {
+      var _this7 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              _context.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(_this7.selectedShowroom));
+            case 3:
+              response = _context.sent;
+              _this7.apiData = response.data;
+              console.log(_this7.selectedShowroom);
+              console.log("API data fetched:", _this7.apiData);
+              _context.next = 12;
+              break;
+            case 9:
+              _context.prev = 9;
+              _context.t0 = _context["catch"](0);
+              console.error("Error fetching API data:", _context.t0);
+            case 12:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee, null, [[0, 9]]);
+      }))();
+    },
+    fetchArtists: function fetchArtists() {
+      var _this8 = this;
+      // Gọi API và cập nhật biến apiData với dữ liệu từ API
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
+        _this8.artists = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchShowroomSchedule: function fetchShowroomSchedule() {
+      var _this9 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.id)).then(function (response) {
+        _this9.showroomSchedules = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching showroomschedule:", error);
+      });
+    },
+    filterActiveDays: function filterActiveDays() {
+      if (!this.selectedDate) return;
+      var selectedDay = this.selectedDateToDay(this.selectedDate);
+      var selectedShowroomSchedule = this.showroomSchedules.find(function (schedule) {
+        return schedule.day === selectedDay && schedule.active === 1;
+      });
+      this.filteredDays = selectedShowroomSchedule ? [selectedShowroomSchedule] : [];
+    },
+    selectedDateToDay: function selectedDateToDay(dateString) {
+      var date = new Date(dateString);
+      var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      return daysOfWeek[date.getDay()];
+    },
+    inputSelectedStatus: function inputSelectedStatus() {
+      // Handle input change event if needed
+    },
+    // ... (Phần methods và các hàm đã có)
+    isDisabled: function isDisabled(day, workingHourStartTime, workingHourEndTime, selectedDate, selectedArtist) {
+      // Check if API data has already been fetched
+
+      // Fetch API data if it hasn't been fetched yet
+      // Set the flag to true to indicate that data has been fetched
+      var matchingApiData = this.apiData.find(function (data) {
+        return data.time === workingHourStartTime && data.date === selectedDate && data.time_end === workingHourEndTime && data.ArtistID === selectedArtist;
+      });
+      return matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom;
+    },
+    checkSelectedDate: function checkSelectedDate() {
+      // Xử lý sự kiện khi ngày được chọn thay đổi
+      var apiData = this.apiData_id[0];
+      var currentDateISO = apiData.created_at;
+      var currentDate = new Date(currentDateISO); // Convert to JavaScript Date object
+
+      var selectedDate = new Date(this.selectedDate);
+
+      // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
+      var timeDiff = selectedDate - currentDate;
+
+      // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
+      if (timeDiff < 0 || timeDiff < 7 * 24 * 60 * 60 * 1000) {
+        // Ngày không hợp lệ, hiển thị thông báo
+        this.showWarning = true;
+      } else {
+        // Ngày hợp lệ, ẩn thông báo
+        this.showWarning = false;
+      }
+    },
+    fetchServices: function fetchServices() {
+      var _this10 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
+        _this10.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+      })["catch"](function (error) {
+        console.error("Error fetching services:", error);
+      });
+    },
+    fetchArtistlevels: function fetchArtistlevels() {
+      var _this11 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
+        _this11.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+      })["catch"](function (error) {
+        console.error("Error fetching artist levels:", error);
+      });
+    },
+    updateTotalPrice: function updateTotalPrice() {
+      this.totalPrice = this.calculateTotalPrice;
+    },
+    formatCurrency: function formatCurrency(value) {
+      var formatter = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "UAD"
+      });
+      return formatter.format(value);
+    },
+    getServiceName: function getServiceName(id) {
+      var service = this.services.find(function (service) {
+        return service.id === id;
+      });
+      return service ? service.Name : "";
+    },
+    getServicePrice: function getServicePrice(id) {
+      var service = this.services.find(function (service) {
+        return service.id === id;
+      });
+      if (service) {
+        var priceString = service.Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
+        return parseFloat(priceString);
+      }
+      return 0;
+    },
+    getServiceSalePrice: function getServiceSalePrice(id) {
+      var service = this.services.find(function (service) {
+        return service.id === id;
+      });
+      if (service) {
+        var Sale_PricepriceString = service.Sale_Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
+        return parseFloat(Sale_PricepriceString);
+      }
+      return 0;
+    },
+    checkInputValue: function checkInputValue() {
+      if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
+        this.inputError = true;
+      } else {
+        this.inputError = false;
+      }
+    },
+    calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
+      var serviceTotalPrice = 0;
+      if (this.selectedServices !== null) {
+        // Tìm dịch vụ được chọn trong danh sách dịch vụ
+        var servicePrice = this.getServicePrice(this.selectedServices);
+        var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
+        serviceTotalPrice = parseFloat(servicePrice);
+      }
+      this.maxDepositPrice = serviceTotalPrice;
+      this.maxDiscountPrice = serviceTotalPrice;
+      if (this.selectedDepositPrice !== "") {
+        var selectedDepositPrice = this.selectedDepositPrice;
+        return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice);
+      } else {
+        return serviceTotalPrice + this.totalLevelPrice;
+      }
+    },
+    nextStep: function nextStep() {
+      if (this.step === "showroom") {
+        if (this.selectedServices) {
+          this.fetchArtistlevels();
+          this.fetchGroupServices();
+          this.fetchApiData();
+          this.step = "groupService";
+        }
+      }
+    },
+    prevStep: function prevStep() {
+      if (this.step === "groupService") {
+        this.step = "showroom";
+        this.bookingDatavalue = "";
+        this.selectedGroupService = null;
+        this.selectedServices = this.apiData_id[0].services[0].id;
+        this.selectedArtistlevel = [];
+        this.totalSelectedServicesPrice = 0;
+        // Xóa dữ liệu đã chọn
+      }
+    },
+    checkselectedArtist: function checkselectedArtist() {
+      this.isIconActive = true;
+    },
+    SubmitEvent: function SubmitEvent() {
+      if (this.step === "groupService") {
+        if (this.validateForm()) {
+          // If the form is valid, proceed with submission
+          // Your existing code here to submit the data
+          // After successful submission, you can set this.submitted = true;
+          var bookingDatavalue = {
+            showroomId: this.selectedShowroom,
+            groupServiceId: this.selectedGroupService,
+            serviceIds: this.selectedServices,
+            Artist_levelID: this.selectedArtistlevel,
+            ArtistID: this.selectedArtist,
+            Level_price: this.totalLevelPrice,
+            Remaining_price: this.calculateTotalSelectedServicesPrice(),
+            Deposit_price: this.selectedDepositPrice,
+            Total_price: parseFloat(this.calculateTotalSelectedServicesPrice()) + parseFloat(this.selectedDepositPrice)
+          };
+          this.bookingData = JSON.stringify(bookingDatavalue);
+        } else {
+          // If the form is not valid, do not submit and display an error message
+          this.submitted = false;
+        }
+      } else {
+        this.step = "showroom";
+      }
+    },
+    submitFormSendMail: function submitFormSendMail() {
+      if (this.content.trim() === "") {
+        // Check if content is empty or contains only whitespace
+        alert("Textarea cannot be empty.");
+        return false; // You can show an alert or any other error handling here
+      } else {
+        // Proceed with form submission
+        // You can use axios or any other method to send the data to the server
+        return true;
+      }
+    },
+    validateTime: function validateTime() {
+      // Parse the time inputs into Date objects
+      var startTime = new Date("1970-01-01T".concat(this.startTime));
+      var endTime = new Date("1970-01-01T".concat(this.endTime));
+
+      // Check if the end time is later than the start time
+      if (startTime >= endTime) {
+        alert("End time must be later than start time.");
+        // You can reset the end time or handle the error as needed
+        this.endTime = "";
+      }
+    },
+    isNameValid: function isNameValid(name) {
+      // Kiểm tra dữ liệu tên (có thể có các yêu cầu riêng cho trường này)
+      return name.trim().length > 0;
+    },
+    isEmailValid: function isEmailValid(email) {
+      // Kiểm tra dữ liệu email (đơn giản kiểm tra định dạng)
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    },
+    isAddressValid: function isAddressValid(address) {
+      // Kiểm tra dữ liệu địa chỉ (có thể có các yêu cầu riêng cho trường này)
+      return address.trim().length > 0;
+    },
+    isPhoneValid: function isPhoneValid(phone) {
+      // Kiểm tra dữ liệu số điện thoại (ví dụ: 10 chữ số)
+      return /^\d{10}$/.test(phone);
+    },
+    toggleGroupService: function toggleGroupService(groupId) {
+      // Sử dụng Vue.set để đảm bảo Vue.js theo dõi sự thay đổi trong trường dữ liệu groupServiceStates
+      this.$set(this.groupServiceStates, groupId, !this.groupServiceStates[groupId]);
+    }
+  },
+  mounted: function mounted() {
+    this.fetchShowrooms();
+    this.fetchServices();
+    this.fetchArtistlevels();
+    this.fetchShowroomSchedule();
+    this.fetchApiData();
+    this.fetchArtists();
+    this.fetchapiData_id();
+    this.fetchGroupServices();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      id: "",
+      currentURL: "",
+      apiData_id: [],
+      Total_price: "",
+      Deposit_price: "",
+      Remaining_price: "",
+      servies_price: ""
+      /*   selectedOption: "option1", */
+    };
+  },
+  created: function created() {
+    // Lấy URL hiện tại và gán cho biến currentURL
+    this.currentURL = window.location.href;
+
+    // Sử dụng biểu thức chính quy để trích xuất ID từ URL
+    var idMatch = this.currentURL.match(/\/(\d+)\/edit$/);
+    if (idMatch && idMatch[1]) {
+      // Nếu có khớp và tìm thấy ID, bạn có thể lấy nó và chuyển thành số nguyên
+      this.id = parseInt(idMatch[1]);
+    }
+  },
+  watch: {},
+  computed: {},
+  methods: {
+    fetchapiData_id: function fetchapiData_id() {
+      var _this = this;
+      // Gọi API và cập nhật biến apiData với dữ liệu từ API
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/data-bookings/".concat(this.id)).then(function (response) {
+        _this.apiData_id = response.data;
+        _this.Total_price = _this.apiData_id[0].price.Total_price;
+        _this.Deposit_price = _this.apiData_id[0].price.Deposit_price;
+        _this.Remaining_price = _this.apiData_id[0].price.Remaining_price;
+        _this.servies_price = _this.apiData_id[0].price.servies_price;
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.fetchapiData_id();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      id: "",
+      currentURL: "",
+      apiData_id: [],
+      Total_price: "",
+      Deposit_price: "",
+      Remaining_price: "",
+      servies_price: "",
+      userId: null,
+      currentMonth: null,
+      currentYear: null,
+      isTransitioning: false,
+      disableNextButton: false,
+      numberOfBooks: 0
+      // Không vô hiệu hóa nút "Xem các tháng sau" ban đầu
+    };
+  },
+
+  computed: {
+    totalBookings: function totalBookings() {
+      // Trả về tổng số booking bằng cách sử dụng thuộc tính length của mảng filteredData
+      return this.filteredData.length;
+    }
+  },
+  methods: {
+    fetchapiData_id: function fetchapiData_id() {
+      var _this = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/all-data").then(function (response) {
+        _this.apiData_id = response.data;
+        _this.calculateTotal(); // Gọi hàm tính tổng sau khi lấy dữ liệu API
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    calculateTotal: function calculateTotal() {
+      var _this2 = this;
+      // Lọc các bản ghi thuộc tháng và năm hiện tại
+      var filteredData = this.apiData_id.filter(function (booking) {
+        var updatedAtDate = new Date(booking.price.updated_at);
+        var updatedMonth = updatedAtDate.getMonth() + 1;
+        var updatedYear = updatedAtDate.getFullYear();
+        return updatedMonth === _this2.currentMonth && updatedYear === _this2.currentYear;
+      });
+
+      // Tính tổng các giá trị từ dữ liệu đã lọc
+      this.Total_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Total_price);
+      }, 0).toFixed(2);
+      this.Deposit_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Deposit_price);
+      }, 0).toFixed(2);
+      this.Remaining_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Remaining_price);
+      }, 0).toFixed(2);
+      this.servies_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.servies_price);
+      }, 0).toFixed(2);
+      this.numberOfBooks = filteredData.length;
+    },
+    showPreviousMonths: function showPreviousMonths() {
+      var _this3 = this;
+      this.isTransitioning = true; // Bắt đầu hiệu ứng
+      setTimeout(function () {
+        _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
+        // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
+        _this3.currentMonth = _this3.currentMonth - 1;
+        console.log(_this3.currentMonth);
+
+        // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
+        if (_this3.currentMonth === 0) {
+          _this3.currentMonth = 12;
+          _this3.currentYear = _this3.currentYear - 1;
+        }
+        _this3.calculateTotal();
+        _this3.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
+      }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
+    },
+    showNextMonths: function showNextMonths() {
+      var _this4 = this;
+      if (this.currentMonth < 12) {
+        this.isTransitioning = true; // Bắt đầu hiệu ứng
+        setTimeout(function () {
+          _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
+          // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
+          _this4.currentMonth = _this4.currentMonth + 1;
+          console.log(_this4.currentMonth);
+
+          // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
+          if (_this4.currentMonth === 12) {
+            _this4.currentMonth = 1;
+            _this4.currentYear = _this4.currentYear + 1;
+          }
+          _this4.calculateTotal();
+          _this4.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
+        }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
+      }
+    },
+    checkDisableNextButton: function checkDisableNextButton() {
+      var currentDate = new Date();
+      var currentMonth = currentDate.getMonth() + 1;
+      var currentYear = currentDate.getFullYear();
+      // Nút "Xem các tháng sau" sẽ bị vô hiệu hóa nếu tháng hiện tại là tháng cuối cùng trong danh sách
+      if (this.currentMonth >= currentMonth && this.currentYear >= currentYear) {
+        this.disableNextButton = true;
+      } else {
+        this.disableNextButton = false;
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.userId = this.$root.userId;
+    var currentDate = new Date();
+    this.currentMonth = currentDate.getMonth() + 1;
+    this.currentYear = currentDate.getFullYear();
+    this.fetchapiData_id();
+    this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau" khi ban đầu tải trang
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      id: "",
+      currentURL: "",
+      apiData_id: [],
+      Total_price: "",
+      Deposit_price: "",
+      Remaining_price: "",
+      servies_price: "",
+      userId: null,
+      currentMonth: null,
+      currentYear: null,
+      isTransitioning: false,
+      disableNextButton: false,
+      numberOfBooks: 0
+      // Không vô hiệu hóa nút "Xem các tháng sau" ban đầu
+    };
+  },
+
+  computed: {
+    totalBookings: function totalBookings() {
+      // Trả về tổng số booking bằng cách sử dụng thuộc tính length của mảng filteredData
+      return this.filteredData.length;
+    }
+  },
+  methods: {
+    fetchapiData_id: function fetchapiData_id() {
+      var _this = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookingsDataArtists/".concat(this.userId)).then(function (response) {
+        _this.apiData_id = response.data;
+        _this.calculateTotal(); // Gọi hàm tính tổng sau khi lấy dữ liệu API
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    calculateTotal: function calculateTotal() {
+      var _this2 = this;
+      // Lọc các bản ghi thuộc tháng và năm hiện tại
+      var filteredData = this.apiData_id.filter(function (booking) {
+        var updatedAtDate = new Date(booking.price.updated_at);
+        var updatedMonth = updatedAtDate.getMonth() + 1;
+        var updatedYear = updatedAtDate.getFullYear();
+        return updatedMonth === _this2.currentMonth && updatedYear === _this2.currentYear;
+      });
+
+      // Tính tổng các giá trị từ dữ liệu đã lọc
+      this.Total_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Total_price);
+      }, 0).toFixed(2);
+      this.Deposit_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Deposit_price);
+      }, 0).toFixed(2);
+      this.Remaining_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Remaining_price);
+      }, 0).toFixed(2);
+      this.servies_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.servies_price);
+      }, 0).toFixed(2);
+      this.numberOfBooks = filteredData.length;
+    },
+    showPreviousMonths: function showPreviousMonths() {
+      var _this3 = this;
+      this.isTransitioning = true; // Bắt đầu hiệu ứng
+      setTimeout(function () {
+        _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
+        // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
+        _this3.currentMonth = _this3.currentMonth - 1;
+        console.log(_this3.currentMonth);
+
+        // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
+        if (_this3.currentMonth === 0) {
+          _this3.currentMonth = 12;
+          _this3.currentYear = _this3.currentYear - 1;
+        }
+        _this3.calculateTotal();
+        _this3.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
+      }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
+    },
+    showNextMonths: function showNextMonths() {
+      var _this4 = this;
+      if (this.currentMonth < 12) {
+        this.isTransitioning = true; // Bắt đầu hiệu ứng
+        setTimeout(function () {
+          _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
+          // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
+          _this4.currentMonth = _this4.currentMonth + 1;
+          console.log(_this4.currentMonth);
+
+          // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
+          if (_this4.currentMonth === 12) {
+            _this4.currentMonth = 1;
+            _this4.currentYear = _this4.currentYear + 1;
+          }
+          _this4.calculateTotal();
+          _this4.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
+        }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
+      }
+    },
+    checkDisableNextButton: function checkDisableNextButton() {
+      var currentDate = new Date();
+      var currentMonth = currentDate.getMonth() + 1;
+      var currentYear = currentDate.getFullYear();
+      // Nút "Xem các tháng sau" sẽ bị vô hiệu hóa nếu tháng hiện tại là tháng cuối cùng trong danh sách
+      if (this.currentMonth >= currentMonth && this.currentYear >= currentYear) {
+        this.disableNextButton = true;
+      } else {
+        this.disableNextButton = false;
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.userId = this.$root.userId;
+    var currentDate = new Date();
+    this.currentMonth = currentDate.getMonth() + 1;
+    this.currentYear = currentDate.getFullYear();
+    this.fetchapiData_id();
+    this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau" khi ban đầu tải trang
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      id: "",
+      currentURL: "",
+      apiData_id: [],
+      Total_price: "",
+      Deposit_price: "",
+      Remaining_price: "",
+      servies_price: "",
+      userId: null,
+      currentMonth: null,
+      currentYear: null,
+      isTransitioning: false,
+      disableNextButton: false,
+      numberOfBooks: 0
+      // Không vô hiệu hóa nút "Xem các tháng sau" ban đầu
+    };
+  },
+
+  computed: {
+    totalBookings: function totalBookings() {
+      // Trả về tổng số booking bằng cách sử dụng thuộc tính length của mảng filteredData
+      return this.filteredData.length;
+    }
+  },
+  methods: {
+    fetchapiData_id: function fetchapiData_id() {
+      var _this = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookingsDataEmployee/".concat(this.userId)).then(function (response) {
+        _this.apiData_id = response.data;
+        _this.calculateTotal(); // Gọi hàm tính tổng sau khi lấy dữ liệu API
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    calculateTotal: function calculateTotal() {
+      var _this2 = this;
+      // Lọc các bản ghi thuộc tháng và năm hiện tại
+      var filteredData = this.apiData_id.filter(function (booking) {
+        var updatedAtDate = new Date(booking.price.updated_at);
+        var updatedMonth = updatedAtDate.getMonth() + 1;
+        var updatedYear = updatedAtDate.getFullYear();
+        return updatedMonth === _this2.currentMonth && updatedYear === _this2.currentYear;
+      });
+
+      // Tính tổng các giá trị từ dữ liệu đã lọc
+      this.Total_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Total_price);
+      }, 0).toFixed(2);
+      this.Deposit_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Deposit_price);
+      }, 0).toFixed(2);
+      this.Remaining_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.Remaining_price);
+      }, 0).toFixed(2);
+      this.servies_price = filteredData.reduce(function (total, booking) {
+        return total + parseFloat(booking.price.servies_price);
+      }, 0).toFixed(2);
+      this.numberOfBooks = filteredData.length;
+    },
+    showPreviousMonths: function showPreviousMonths() {
+      var _this3 = this;
+      this.isTransitioning = true; // Bắt đầu hiệu ứng
+      setTimeout(function () {
+        _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
+        // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
+        _this3.currentMonth = _this3.currentMonth - 1;
+        console.log(_this3.currentMonth);
+
+        // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
+        if (_this3.currentMonth === 0) {
+          _this3.currentMonth = 12;
+          _this3.currentYear = _this3.currentYear - 1;
+        }
+        _this3.calculateTotal();
+        _this3.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
+      }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
+    },
+    showNextMonths: function showNextMonths() {
+      var _this4 = this;
+      if (this.currentMonth < 12) {
+        this.isTransitioning = true; // Bắt đầu hiệu ứng
+        setTimeout(function () {
+          _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
+          // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
+          _this4.currentMonth = _this4.currentMonth + 1;
+          console.log(_this4.currentMonth);
+
+          // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
+          if (_this4.currentMonth === 12) {
+            _this4.currentMonth = 1;
+            _this4.currentYear = _this4.currentYear + 1;
+          }
+          _this4.calculateTotal();
+          _this4.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
+        }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
+      }
+    },
+    checkDisableNextButton: function checkDisableNextButton() {
+      var currentDate = new Date();
+      var currentMonth = currentDate.getMonth() + 1;
+      var currentYear = currentDate.getFullYear();
+      // Nút "Xem các tháng sau" sẽ bị vô hiệu hóa nếu tháng hiện tại là tháng cuối cùng trong danh sách
+      if (this.currentMonth >= currentMonth && this.currentYear >= currentYear) {
+        this.disableNextButton = true;
+      } else {
+        this.disableNextButton = false;
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.userId = this.$root.userId;
+    var currentDate = new Date();
+    this.currentMonth = currentDate.getMonth() + 1;
+    this.currentYear = currentDate.getFullYear();
+    this.fetchapiData_id();
+    this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau" khi ban đầu tải trang
   }
 });
 
@@ -363,17 +1389,49 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", [_vm.selectedShowroom ? _c("div", [_vm._v("\n    Selected Showroom Maps: " + _vm._s(_vm.selectedShowroomMap) + "\n  ")]) : _vm._e(), _vm._v(" "), _vm.selectedServices.length > 0 ? _c("div", [_c("p", [_vm._v("Selected Services:")]), _vm._v(" "), _c("ul", _vm._l(_vm.selectedServices, function (serviceId) {
-    return _c("li", {
-      key: serviceId
-    }, [_c("p", [_vm._v("\n          Name: " + _vm._s(_vm.getServiceName(serviceId)) + " -- Price:\n          " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(serviceId))) + " -- SalePrice :\n          " + _vm._s(_vm.formatCurrency(_vm.getServiceSalePrice(serviceId))) + "\n        ")])]);
-  }), 0), _vm._v(" "), _vm.selectedArtistlevelDetails ? _c("ul", [_c("li", [_vm._v("\n        " + _vm._s(_vm.selectedArtistlevelDetails.Name) + "\n        "), _c("p", [_c("i", [_vm._v(_vm._s(_vm.formatCurrency(_vm.selectedArtistlevelDetails.Level_price)))])]), _vm._v("\n\n        Total Level Price: " + _vm._s(_vm.formatCurrency(_vm.totalLevelPrice)) + "\n      ")])]) : _c("p", [_vm._v("No selected level")]), _vm._v("\n    Total Price: " + _vm._s(_vm.formatCurrency(_vm.calculateTotalSelectedServicesPrice())) + "\n  ")]) : _vm._e(), _vm._v(" "), _vm.step === "showroom" ? [_c("label", {
-    attrs: {
-      "for": ""
+  return _c("div", [_vm.selectedShowroom ? _c("div", {
+    staticClass: "selectedShowroom"
+  }, [_c("div", {
+    staticClass: "form-control mb-4"
+  }, [_c("div", {
+    staticClass: "book_detail"
+  }, [_c("i", {
+    staticClass: "fa-solid fa-location-dot"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v(_vm._s(_vm.selectedShowroomName))])]), _vm._v(" "), this.selectedServices !== null ? _c("div", [_c("div", {
+    staticClass: "book_detail"
+  }, [_vm._m(0), _vm._v(" "), _c("ul", {
+    staticClass: "m-0"
+  }, [_c("li", {
+    staticClass: "book-title"
+  }, [_c("p", {
+    staticClass: "radio-text"
+  }, [_vm._v("\n                " + _vm._s(_vm.getServiceName(_vm.selectedServices)) + " -- Price:\n                " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(_vm.selectedServices))) + "\n                ")])])]), _vm._v(" "), _vm.selectedArtistlevelDetails ? _c("div", [_c("div", {}, [_c("p", [_c("i", {
+    staticClass: "fa-solid fa-user",
+    staticStyle: {
+      color: "#944747"
     }
-  }, [_vm._v("Choose location")]), _vm._v(" "), _vm._l(_vm.showrooms, function (showroom) {
+  }), _vm._v(" "), _c("span", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v(_vm._s(_vm.selectedArtistlevelDetails.Name))])]), _vm._v(" "), _c("ul", [_c("li", [_c("p", {
+    staticClass: "radio-text"
+  }, [_c("i", [_vm._v(_vm._s(_vm.formatCurrency(_vm.selectedArtistlevelDetails.Level_price)))])]), _vm._v(" "), _c("p", {
+    staticClass: "radio-text"
+  }, [_vm._v("\n                    Level Price: " + _vm._s(_vm.formatCurrency(_vm.totalLevelPrice)) + "\n                  ")])])])])]) : _c("p", {
+    staticClass: "radio-text"
+  }, [_vm._v("No selected level")]), _vm._v(" "), _c("p", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("\n            Remaining Price:\n            " + _vm._s(_vm.formatCurrency(_vm.calculateTotalSelectedServicesPrice())) + "\n          ")])])]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _vm.step === "showroom" ? [_c("div", {
+    staticClass: "radio-section"
+  }, _vm._l(_vm.showrooms, function (showroom) {
     return _c("div", {
       key: showroom.id
+    }, [_c("label", {
+      staticClass: "label",
+      attrs: {
+        "for": ""
+      }
     }, [_c("input", {
       directives: [{
         name: "model",
@@ -393,8 +1451,11 @@ var render = function render() {
           _vm.selectedShowroom = showroom.id;
         }
       }
-    }), _vm._v("\n      " + _vm._s(showroom.Name) + "\n    ")]);
-  }), _vm._v(" "), _c("span", [_vm._v("Đã chọn: " + _vm._s(_vm.selectedShowroom))]), _vm._v(" "), _c("button", {
+    }), _vm._v(" "), _c("div", {
+      staticClass: "radio-header radio-text"
+    }, [_vm._v(_vm._s(showroom.Name))])])]);
+  }), 0), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
       type: "button",
       disabled: !_vm.selectedShowroom
@@ -402,13 +1463,28 @@ var render = function render() {
     on: {
       click: _vm.nextStep
     }
-  }, [_vm._v("Next")])] : _vm._e(), _vm._v(" "), _vm.step === "groupService" ? [_vm._l(_vm.groupServices, function (groupService) {
+  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "groupService" ? [_vm._l(_vm.groupServices, function (groupService) {
     return _c("div", {
-      key: groupService.groupService.id
-    }, [_c("p", [_vm._v("groupService: " + _vm._s(groupService.groupService.Name))]), _vm._v(" "), _c("ul", _vm._l(groupService.groupService.services, function (service) {
+      key: groupService.groupService.id,
+      staticClass: "label groupService"
+    }, [_c("div", {
+      staticClass: "radio-header radio-text",
+      "class": {
+        active: _vm.groupServiceStates[groupService.groupService.id]
+      },
+      on: {
+        click: function click($event) {
+          return _vm.toggleGroupService(groupService.groupService.id);
+        }
+      }
+    }, [_vm._v("\n        " + _vm._s(groupService.groupService.Name) + "\n      ")]), _vm._v(" "), _vm.groupServiceStates[groupService.groupService.id] ? _c("ul", {
+      staticClass: "m-0"
+    }, _vm._l(groupService.groupService.services, function (service) {
       return _c("li", {
         key: service.id
-      }, [_c("label", [_c("input", {
+      }, [_c("label", {
+        staticClass: "flex-groupService"
+      }, [_c("input", {
         directives: [{
           name: "model",
           rawName: "v-model",
@@ -416,57 +1492,56 @@ var render = function render() {
           expression: "selectedServices"
         }],
         attrs: {
-          type: "checkbox"
+          type: "radio"
         },
         domProps: {
           value: service.id,
-          checked: Array.isArray(_vm.selectedServices) ? _vm._i(_vm.selectedServices, service.id) > -1 : _vm.selectedServices
+          checked: _vm._q(_vm.selectedServices, service.id)
         },
         on: {
           change: [function ($event) {
-            var $$a = _vm.selectedServices,
-              $$el = $event.target,
-              $$c = $$el.checked ? true : false;
-            if (Array.isArray($$a)) {
-              var $$v = service.id,
-                $$i = _vm._i($$a, $$v);
-              if ($$el.checked) {
-                $$i < 0 && (_vm.selectedServices = $$a.concat([$$v]));
-              } else {
-                $$i > -1 && (_vm.selectedServices = $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
-              }
-            } else {
-              _vm.selectedServices = $$c;
-            }
-          }, _vm.calculateTotalSelectedServicesPrice]
+            _vm.selectedServices = service.id;
+          }, function ($event) {
+            return _vm.calculateTotalSelectedServicesPrice();
+          }]
         }
-      }), _vm._v(" "), _c("p", [_vm._v("\n              Service: " + _vm._s(service.Name) + " -- Price:\n              " + _vm._s(_vm.formatCurrency(service.Price)) + "\n            ")])])]);
-    }), 0)]);
+      }), _vm._v(" "), _c("div", {
+        staticClass: "radio-header radio-text"
+      }, [_vm._v("\n              " + _vm._s(service.Name) + " -- Price: " + _vm._s(_vm.formatCurrency(service.Price)) + "\n            ")])])]);
+    }), 0) : _vm._e()]);
   }), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
       type: "button"
     },
     on: {
       click: _vm.prevStep
     }
-  }, [_vm._v("Back")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
       type: "button",
-      disabled: _vm.selectedServices.length === 0
+      disabled: _vm.selectedServices === null
     },
     on: {
       click: _vm.nextStep
     }
-  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "artistlevels" ? [_c("ul", [_c("li", [_vm._v("\n        selectedDepositPrice\n        "), _c("label", [_c("input", {
+  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "artistlevels" ? [_c("ul", [_c("li", {
+    staticClass: "mt-3 mb-3"
+  }, [_c("div", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Deposit Price")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.selectedDepositPrice,
       expression: "selectedDepositPrice"
     }],
+    staticClass: "deposit",
     attrs: {
       type: "number",
-      max: _vm.maxDepositPrice
+      max: _vm.maxDepositPrice,
+      min: _vm.minDepositPrice
     },
     domProps: {
       value: _vm.selectedDepositPrice
@@ -478,12 +1553,46 @@ var render = function render() {
         _vm.selectedDepositPrice = $event.target.value;
       }, _vm.checkInputValue]
     }
-  }), _vm._v("\n          " + _vm._s(_vm.maxDepositPrice) + "\n          "), _vm.inputError ? _c("p", {
+  }), _vm._v(" "), _vm.inputError ? _c("p", {
     staticClass: "error-message"
-  }, [_vm._v("Value exceeds limit.")]) : _vm._e()])]), _vm._v(" "), _vm._l(_vm.artistlevels, function (artistLevel) {
+  }, [_vm._v("\n          Value exceeds limit min 100.\n        ")]) : _vm._e()]), _vm._v(" "), _c("li", {
+    staticClass: "mt-3 mb-3"
+  }, [_c("div", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Discount Price")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedDiscountPrice,
+      expression: "selectedDiscountPrice"
+    }],
+    staticClass: "deposit",
+    attrs: {
+      type: "number",
+      max: _vm.maxDiscountPrice,
+      min: _vm.minDiscountPrice
+    },
+    domProps: {
+      value: _vm.selectedDiscountPrice
+    },
+    on: {
+      change: _vm.calculateTotalSelectedServicesPrice,
+      input: [function ($event) {
+        if ($event.target.composing) return;
+        _vm.selectedDiscountPrice = $event.target.value;
+      }, _vm.checkInputValueDiscount]
+    }
+  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
+    staticClass: "error-message"
+  }, [_vm._v("Value exceeds limit.")]) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Select Level Artist")]), _vm._v(" "), _vm._l(_vm.artistlevels, function (artistLevel) {
     return _c("li", {
-      key: artistLevel.id
-    }, [_c("label", [_c("input", {
+      key: artistLevel.id,
+      staticClass: "mt-3 mb-3"
+    }, [_c("label", {
+      staticClass: "label"
+    }, [_c("input", {
       directives: [{
         name: "model",
         rawName: "v-model",
@@ -502,30 +1611,44 @@ var render = function render() {
           _vm.selectedArtistlevel = artistLevel.id;
         }, _vm.calculateTotalSelectedServicesPrice]
       }
-    }), _vm._v(" "), _c("p", [_c("i", [_vm._v(_vm._s(_vm.formatCurrency(artistLevel.Level_price)))])])])]);
+    }), _vm._v(" "), _c("div", {
+      staticClass: "radio-header radio-text"
+    }, [_vm._v(_vm._s(artistLevel.Name))]), _vm._v(" "), _c("i", {
+      staticClass: "radio-text"
+    }, [_vm._v(_vm._s(_vm.formatCurrency(artistLevel.Level_price)))])])]);
   })], 2), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
       type: "button"
     },
     on: {
       click: _vm.prevStep
     }
-  }, [_vm._v("Back")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
-      disabled: _vm.inputError || _vm.selectedArtistlevel === null || _vm.selectedArtistlevel === undefined,
+      disabled: _vm.isNextButtonDisabled,
       type: "button"
     },
     on: {
       click: _vm.nextStep
     }
-  }, [_vm._v("Next")])] : _vm._e(), _vm._v(" "), _vm.step === "showroomschedule" ? [_c("ul", [_c("label", [_vm._v("\n        Select Date:\n        "), _c("input", {
+  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "showroomschedule" ? [_c("div", {
+    staticClass: "col-12"
+  }, [_c("div", {
+    staticClass: "col-12 col-sm-12 col-lg-12 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
       value: _vm.selectedDate,
       expression: "selectedDate"
     }],
+    staticClass: "floatLabel",
     attrs: {
+      id: "depart",
       type: "date"
     },
     domProps: {
@@ -538,15 +1661,149 @@ var render = function render() {
         _vm.selectedDate = $event.target.value;
       }, _vm.checkSelectedDate]
     }
-  }), _vm._v(" "), _vm.showWarning ? _c("div", {
-    staticClass: "warning"
-  }, [_vm._v("\n          Please select a date 7 days from today.\n        ")]) : _vm._e()]), _vm._v(" "), !_vm.showWarning && _vm.filteredDays.length > 0 ? _c("div", [_c("ul", _vm._l(_vm.filteredDays, function (day) {
-    return _c("li", {
-      key: day.id
+  }), _vm._v(" "), _c("label", {
+    staticClass: "label-date",
+    "class": {
+      active: _vm.isLabelActive
+    },
+    attrs: {
+      "for": "selectedDate"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-calendar"
+  }), _vm._v("  Date")]), _vm._v(" "), _vm.showWarning ? _c("div", {
+    staticClass: "error-message"
+  }, [_vm._v("\n            Please select a date 7 days from today.\n          ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12"
+  }, [_c("div", {
+    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("i", {
+    staticClass: "fa fa-sort"
+  }), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedArtist,
+      expression: "selectedArtist"
+    }],
+    staticClass: "floatLabel",
+    attrs: {
+      id: "artistSelect"
+    },
+    on: {
+      input: _vm.checkselectedArtist,
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedArtist = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    domProps: {
+      value: 0
+    }
+  }, [_vm._v("N/A")]), _vm._v(" "), _vm._l(_vm.artists, function (artist) {
+    return _c("option", {
+      key: artist.id,
+      domProps: {
+        value: artist.id
+      }
+    }, [_vm._v("\n              " + _vm._s(artist.name) + "\n            ")]);
+  })], 2), _vm._v(" "), _vm._m(1)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("i", {
+    staticClass: "fa fa-sort"
+  }), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedStatus,
+      expression: "selectedStatus"
+    }],
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "Waiting",
+      selected: ""
+    }
+  }, [_vm._v("Waiting")])]), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "artistSelect"
+    }
+  }, [_vm._v("  Status")])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("i", {
+    staticClass: "fa fa-sort"
+  }), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedPaymentType,
+      expression: "selectedPaymentType"
+    }],
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedPaymentType = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "N/A",
+      selected: ""
+    }
+  }, [_vm._v("N/A")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Bank transfer"
+    }
+  }, [_vm._v("Bank transfer")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "After Pay"
+    }
+  }, [_vm._v("After Pay")])]), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "artistSelect"
+    }
+  }, [_vm._v("  Payment Type")])])])]), _vm._v(" "), !_vm.showWarning && _vm.filteredDays.length > 0 ? _c("div", {
+    staticClass: "col-12"
+  }, _vm._l(_vm.filteredDays, function (day) {
+    return _c("div", {
+      key: day.id,
+      staticClass: "col-12"
     }, _vm._l(day.working_hours, function (workingHour) {
       return _c("div", {
-        key: workingHour.id
-      }, [_c("label", [_c("input", {
+        key: workingHour.id,
+        staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
+      }, [_c("div", {}, [_c("label", {
+        staticClass: "label m-0"
+      }, [_c("input", {
         directives: [{
           name: "model",
           rawName: "v-model",
@@ -555,37 +1812,42 @@ var render = function render() {
         }],
         attrs: {
           type: "radio",
-          disabled: _vm.isDisabled(day.day, workingHour.start_time, _vm.selectedDate)
+          disabled: _vm.isDisabled(day.day, workingHour.start_time, workingHour.end_time, _vm.selectedDate, _vm.selectedArtist)
         },
         domProps: {
-          value: workingHour.start_time,
-          checked: _vm._q(_vm.selectedWorkingHour, workingHour.start_time)
+          value: workingHour,
+          checked: _vm._q(_vm.selectedWorkingHour, workingHour)
         },
         on: {
           change: function change($event) {
-            _vm.selectedWorkingHour = workingHour.start_time;
+            _vm.selectedWorkingHour = workingHour;
           }
         }
-      }), _vm._v("\n                " + _vm._s(workingHour.start_time) + " - " + _vm._s(workingHour.end_time) + "\n              ")])]);
+      }), _vm._v(" "), _c("span", {
+        staticClass: "radio-header radio-text"
+      }, [_vm._v("\n                " + _vm._s(workingHour.start_time) + " -\n                " + _vm._s(workingHour.end_time))])])])]);
     }), 0);
-  }), 0)]) : _c("p", [_vm._v("No active days for the selected showroom and date.")])]), _vm._v(" "), _c("button", {
+  }), 0) : _vm._e(), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
       type: "button"
     },
     on: {
       click: _vm.prevStep
     }
-  }, [_vm._v("Back")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
-      type: "button",
-      disabled: !_vm.selectedWorkingHour
+      disabled: !_vm.selectedWorkingHour,
+      type: "button"
     },
     on: {
-      click: _vm.nextStep
+      click: function click($event) {
+        $event.preventDefault();
+        return _vm.nextStep.apply(null, arguments);
+      }
     }
-  }, [_vm._v("Next")])] : _vm._e(), _vm._v(" "), _vm.step === "getShow" ? [_c("div", {
-    staticClass: "form-group"
-  }, [_c("input", {
+  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "getShow" ? [_c("input", {
     staticClass: "form-control",
     staticStyle: {
       display: "none"
@@ -599,11 +1861,9 @@ var render = function render() {
     domProps: {
       value: _vm.bookingData
     }
-  }), _vm._v(" "), _c("label", {
-    attrs: {
-      "for": "name"
-    }
-  }, [_vm._v("Name:")]), _vm._v(" "), _c("input", {
+  }), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -614,7 +1874,8 @@ var render = function render() {
     attrs: {
       type: "text",
       id: "name",
-      name: "name"
+      name: "name",
+      required: ""
     },
     domProps: {
       value: _vm.formData.name
@@ -626,10 +1887,13 @@ var render = function render() {
       }
     }
   }), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
     attrs: {
-      "for": "email"
+      "for": "name"
     }
-  }, [_vm._v("Email:")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("Name:")])]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -652,6 +1916,14 @@ var render = function render() {
       }
     }
   }), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "email"
+    }
+  }, [_vm._v("Email:")])]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("label", {
+    staticClass: "label-date active",
     attrs: {
       "for": "address"
     }
@@ -677,7 +1949,10 @@ var render = function render() {
         _vm.$set(_vm.formData, "address", $event.target.value);
       }
     }
-  }), _vm._v(" "), _c("label", {
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("label", {
+    staticClass: "label-date active",
     attrs: {
       "for": "phone"
     }
@@ -704,19 +1979,1009 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _vm.errorMessage ? _c("p", {
-    staticClass: "error"
+    staticClass: "error-message"
   }, [_vm._v(_vm._s(_vm.errorMessage))]) : _vm._e(), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
       type: "button"
     },
     on: {
       click: _vm.prevStep
     }
-  }, [_vm._v("Back")]), _vm._v(" "), _c("button", {
+  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
     attrs: {
       type: "submit"
     }
   }, [_vm._v("Submit")])] : _vm._e()], 2);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("p", [_c("i", {
+    staticClass: "fa-brands fa-servicestack",
+    staticStyle: {
+      color: "#eab3e0"
+    }
+  }), _vm._v(" "), _c("span", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Selected Services:")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "artistSelect"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-male"
+  }), _vm._v("  Artist")]);
+}];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render),
+/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "flexb-c col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12",
+    staticStyle: {
+      "align-items": "flex-start",
+      "justify-content": "space-between"
+    }
+  }, [_c("div", {
+    staticClass: "col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9"
+  }, [_c("div", [_c("h4", {
+    staticClass: "col-12"
+  }, [_c("p", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v(" Service :  " + _vm._s(_vm.selectedServicesName))])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12"
+  }, [_c("div", {
+    staticClass: "col-12 col-sm-12 col-lg-12 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedDate,
+      expression: "selectedDate"
+    }],
+    staticClass: "floatLabel pointer-events-a",
+    attrs: {
+      id: "depart",
+      type: "date",
+      name: "date"
+    },
+    domProps: {
+      value: _vm.selectedDate
+    },
+    on: {
+      change: _vm.filterActiveDays,
+      input: [function ($event) {
+        if ($event.target.composing) return;
+        _vm.selectedDate = $event.target.value;
+      }, _vm.checkSelectedDate]
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
+    "class": {
+      active: _vm.isLabelActive
+    },
+    attrs: {
+      "for": "selectedDate"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-calendar"
+  }), _vm._v("  Treament Date")]), _vm._v(" "), _vm.showWarning ? _c("div", {
+    staticClass: "error-message"
+  }, [_vm._v("\n              Please select a date 7 days from today.\n            ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12"
+  }, [_c("div", {
+    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("i", {
+    staticClass: "fa fa-sort"
+  }), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedArtist,
+      expression: "selectedArtist"
+    }],
+    staticClass: "floatLabel pointer-events-a",
+    attrs: {
+      id: "artistSelect",
+      name: "artist"
+    },
+    on: {
+      input: _vm.checkselectedArtist,
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedArtist = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    domProps: {
+      value: 0
+    }
+  }, [_vm._v("N/A")]), _vm._v(" "), _vm._l(_vm.artists, function (artist) {
+    return _c("option", {
+      key: artist.id,
+      domProps: {
+        value: artist.id
+      }
+    }, [_vm._v("\n                " + _vm._s(artist.name) + "\n              ")]);
+  })], 2), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.startTime,
+      expression: "startTime"
+    }],
+    staticClass: "floatLabe",
+    staticStyle: {
+      "pointer-events": "none"
+    },
+    attrs: {
+      type: "time",
+      id: "start-time"
+    },
+    domProps: {
+      value: _vm.startTime
+    },
+    on: {
+      input: [function ($event) {
+        if ($event.target.composing) return;
+        _vm.startTime = $event.target.value;
+      }, _vm.validateTime]
+    }
+  }), _vm._v(" "), _vm._m(1)])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
+  }, [_c("div", {
+    staticClass: "controls"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.endTime,
+      expression: "endTime"
+    }],
+    staticClass: "floatLabel",
+    staticStyle: {
+      "pointer-events": "none"
+    },
+    attrs: {
+      type: "time",
+      id: "end_time"
+    },
+    domProps: {
+      value: _vm.endTime
+    },
+    on: {
+      input: [function ($event) {
+        if ($event.target.composing) return;
+        _vm.endTime = $event.target.value;
+      }, _vm.validateTime]
+    }
+  }), _vm._v(" "), _vm._m(2)])])]), _vm._v(" "), !_vm.showWarning && _vm.filteredDays.length > 0 ? _c("div", {
+    staticClass: "col-12"
+  }, _vm._l(_vm.filteredDays, function (day) {
+    return _c("div", {
+      key: day.id,
+      staticClass: "col-12"
+    }, _vm._l(day.working_hours, function (workingHour) {
+      return _c("div", {
+        key: workingHour.id,
+        staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
+      }, [_c("div", {}, [_c("label", {
+        staticClass: "label m-0"
+      }, [_c("input", {
+        directives: [{
+          name: "model",
+          rawName: "v-model",
+          value: _vm.selectedWorkingHour,
+          expression: "selectedWorkingHour"
+        }],
+        staticClass: "pointer-events-a",
+        attrs: {
+          type: "radio",
+          disabled: _vm.isDisabled(day.day, workingHour.start_time, workingHour.end_time, _vm.selectedDate, _vm.selectedArtist)
+        },
+        domProps: {
+          value: workingHour,
+          checked: _vm._q(_vm.selectedWorkingHour, workingHour)
+        },
+        on: {
+          change: function change($event) {
+            _vm.selectedWorkingHour = workingHour;
+          }
+        }
+      }), _vm._v(" "), _c("input", {
+        staticClass: "floatLabel pointer-events-a",
+        staticStyle: {
+          display: "none"
+        },
+        attrs: {
+          type: "time",
+          id: "start-time",
+          name: "start_time"
+        },
+        domProps: {
+          value: _vm.selectedStartTime
+        }
+      }), _vm._v(" "), _c("input", {
+        staticClass: "floatLabel pointer-events-a",
+        staticStyle: {
+          display: "none"
+        },
+        attrs: {
+          type: "time",
+          id: "start-time",
+          name: "end_time"
+        },
+        domProps: {
+          value: _vm.selectedEndTime
+        }
+      }), _vm._v(" "), _c("span", {
+        staticClass: "radio-header radio-text"
+      }, [_vm._v("\n                  " + _vm._s(workingHour.start_time) + " -\n                  " + _vm._s(workingHour.end_time))])])])]);
+    }), 0);
+  }), 0) : _vm._e()]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
+  }, [_c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.name,
+      expression: "formData.name"
+    }],
+    staticClass: "form-control pointer-events-a",
+    attrs: {
+      type: "text",
+      id: "name",
+      name: "name",
+      required: ""
+    },
+    domProps: {
+      value: _vm.formData.name
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formData, "name", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "name"
+    }
+  }, [_vm._v("Name:")])]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.email,
+      expression: "formData.email"
+    }],
+    staticClass: "form-control pointer-events-a",
+    attrs: {
+      type: "email",
+      id: "email",
+      name: "email"
+    },
+    domProps: {
+      value: _vm.formData.email
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formData, "email", $event.target.value);
+      }
+    }
+  }), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "email"
+    }
+  }, [_vm._v("Email:")])]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "address"
+    }
+  }, [_vm._v("Address:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.address,
+      expression: "formData.address"
+    }],
+    staticClass: "form-control pointer-events-a",
+    attrs: {
+      type: "text",
+      id: "address",
+      name: "address"
+    },
+    domProps: {
+      value: _vm.formData.address
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formData, "address", $event.target.value);
+      }
+    }
+  })]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "phone"
+    }
+  }, [_vm._v("Phone:")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.phone,
+      expression: "formData.phone"
+    }],
+    staticClass: "form-control pointer-events-a",
+    attrs: {
+      type: "tel",
+      id: "phone",
+      name: "phone"
+    },
+    domProps: {
+      value: _vm.formData.phone
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.$set(_vm.formData, "phone", $event.target.value);
+      }
+    }
+  })])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
+  }, [_vm.step === "showroom" ? [_c("button", {
+    staticClass: "custom-btn btn-16",
+    attrs: {
+      type: "button",
+      disabled: !_vm.selectedShowroom
+    },
+    on: {
+      click: _vm.nextStep
+    }
+  }, [_vm._v("\n          Service\n        ")])] : _vm._e(), _vm._v(" "), _vm.step === "groupService" ? [_vm._l(_vm.groupServices, function (groupService) {
+    return _c("div", {
+      key: groupService.groupService.id,
+      staticClass: "label groupService"
+    }, [_c("div", {
+      staticClass: "radio-header radio-text",
+      "class": {
+        active: _vm.groupServiceStates[groupService.groupService.id]
+      },
+      on: {
+        click: function click($event) {
+          return _vm.toggleGroupService(groupService.groupService.id);
+        }
+      }
+    }, [_vm._v("\n            " + _vm._s(groupService.groupService.Name) + "\n          ")]), _vm._v(" "), _vm.groupServiceStates[groupService.groupService.id] ? _c("ul", {
+      staticClass: "m-0"
+    }, _vm._l(groupService.groupService.services, function (service) {
+      return _c("li", {
+        key: service.id
+      }, [_c("label", {
+        staticClass: "flex-groupService"
+      }, [_c("input", {
+        directives: [{
+          name: "model",
+          rawName: "v-model",
+          value: _vm.selectedServices,
+          expression: "selectedServices"
+        }],
+        staticClass: "pointer-events-a",
+        attrs: {
+          name: "service_id",
+          type: "radio"
+        },
+        domProps: {
+          value: service.id,
+          checked: _vm._q(_vm.selectedServices, service.id)
+        },
+        on: {
+          change: [function ($event) {
+            _vm.selectedServices = service.id;
+          }, function ($event) {
+            return _vm.calculateTotalSelectedServicesPrice();
+          }]
+        }
+      }), _vm._v(" "), _c("div", {
+        staticClass: "radio-header radio-text"
+      }, [_vm._v("\n                  " + _vm._s(service.Name) + " -- Price:\n                  " + _vm._s(_vm.formatCurrency(service.Price)) + "\n                ")])])]);
+    }), 0) : _vm._e()]);
+  }), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: _vm.prevStep
+    }
+  }, [_vm._v("\n          Back\n        ")])] : _vm._e()], 2)]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3"
+  }, [_c("div", {
+    staticClass: "bg-ad-form right-sidebar"
+  }, [_c("div", {
+    staticClass: "widget meta-boxes form-actions form-actions-default action-horizontal"
+  }, [_vm._m(3), _vm._v(" "), _c("div", {
+    staticClass: "widget-body"
+  }, [_c("div", {
+    staticClass: "btn-set"
+  }, [_c("button", {
+    staticClass: "btn btn-info",
+    attrs: {
+      type: "submit",
+      name: "submit",
+      value: "save",
+      disabled: _vm.submitted
+    },
+    on: {
+      click: _vm.SubmitEvent
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-save"
+  }), _vm._v(" Save\n            ")]), _vm._v("\n             \n            "), _c("button", {
+    staticClass: "btn btn-success",
+    attrs: {
+      type: "submit",
+      name: "submit",
+      value: "apply",
+      disabled: _vm.submitted
+    },
+    on: {
+      click: _vm.SubmitEvent
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-check-circle"
+  }), _vm._v(" Save & Edit\n            ")]), _vm._v(" "), _vm.errorMessagesubmitted ? _c("div", {
+    staticClass: "error-message"
+  }, [_vm._v("\n              " + _vm._s(_vm.errorMessage) + "\n            ")]) : _vm._e()])])])]), _vm._v(" "), _c("div", {
+    staticClass: "bg-ad-form right-sidebar mt-3"
+  }, [_c("div", {
+    staticClass: "widget meta-boxes"
+  }, [_vm._m(4), _vm._v(" "), _c("div", {
+    staticClass: "widget-body p-3"
+  }, [_c("div", {
+    staticClass: "ui-select-wrapper form-group"
+  }, [_c("div", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedStatus,
+      expression: "selectedStatus"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "status"
+    },
+    on: {
+      input: _vm.InputSelectedStatus,
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "Waiting",
+      selected: ""
+    }
+  }, [_vm._v("Waiting")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Done"
+    }
+  }, [_vm._v("Done")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Cancel"
+    }
+  }, [_vm._v("Cancel")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Refund"
+    }
+  }, [_vm._v("Refund")])]), _vm._v(" "), _vm.selectedStatus === "Cancel" || _vm.selectedStatus === "Refund" ? _c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Note")]), _vm._v(" "), _c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.content,
+      expression: "content"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "text",
+      name: "content",
+      required: ""
+    },
+    domProps: {
+      value: _vm.content
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.content = $event.target.value;
+      }
+    }
+  })]) : _vm._e()])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "bg-ad-form right-sidebar mt-3"
+  }, [_c("div", {
+    staticClass: "widget meta-boxes"
+  }, [_vm._m(5), _vm._v(" "), _c("div", {
+    staticClass: "widget-body p-3"
+  }, [_c("div", {
+    staticClass: "ui-select-wrapper form-group"
+  }, [_c("div", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedPaymentType,
+      expression: "selectedPaymentType"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "payment_type"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedPaymentType = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "N/A"
+    }
+  }, [_vm._v("N/A")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Bank transfer"
+    }
+  }, [_vm._v("Bank transfer")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "After Pay"
+    }
+  }, [_vm._v("After Pay")])])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "bg-ad-form right-sidebar mt-3"
+  }, [_c("div", {
+    staticClass: "widget meta-boxes"
+  }, [_vm._m(6), _vm._v(" "), _c("div", {
+    staticClass: "widget-body p-3"
+  }, [_c("div", {
+    staticClass: "ui-select-wrapper form-group"
+  }, [_c("div", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.action,
+      expression: "action"
+    }],
+    staticClass: "form-control pointer-events-a pointer-events-p",
+    attrs: {
+      name: "action"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.action = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "pending"
+    }
+  }, [_vm._v("Pending")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "approved"
+    }
+  }, [_vm._v("Approved")])]), _vm._v(" "), _c("div", {
+    staticClass: "form-group"
+  }, [_c("label", {
+    attrs: {
+      "for": ""
+    }
+  }, [_vm._v("Note")]), _vm._v(" "), _c("textarea", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.content,
+      expression: "content"
+    }],
+    staticClass: "form-control pointer-events-a pointer-events-p",
+    attrs: {
+      type: "text",
+      name: "sendmail"
+    },
+    domProps: {
+      value: _vm.content
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.content = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "btn-set"
+  }, [_c("button", {
+    staticClass: "btn btn-info pointer-events-a pointer-events-p",
+    attrs: {
+      type: "submit",
+      name: "submit",
+      value: "sendmail",
+      disabled: _vm.content.trim() === "" || _vm.submitted || !_vm.submitFormSendMail()
+    },
+    on: {
+      click: _vm.submitFormSendMail
+    }
+  }, [_c("i", {
+    staticClass: "fa-regular fa-paper-plane"
+  }), _vm._v("\n                    Send Mail\n                  ")])])])])])])])])])]);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "artistSelect"
+    }
+  }, [_c("i", {
+    staticClass: "fa fa-male"
+  }), _vm._v("  Artist")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "artistSelect"
+    }
+  }, [_c("i", {
+    staticClass: "fa-regular fa-clock"
+  }), _vm._v("  Start Time")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "artistSelect"
+    }
+  }, [_c("i", {
+    staticClass: "fa-regular fa-clock"
+  }), _vm._v("  End Time")]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "widget-title"
+  }, [_c("h4", [_c("span", [_vm._v("Publish")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "widget-title"
+  }, [_c("h4", [_c("label", {
+    staticClass: "m-0 control-label required",
+    attrs: {
+      "for": "status",
+      "aria-required": "true"
+    }
+  }, [_vm._v("Status")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "widget-title"
+  }, [_c("h4", [_c("label", {
+    staticClass: "m-0 control-label required",
+    attrs: {
+      "for": "status",
+      "aria-required": "true"
+    }
+  }, [_vm._v("PaymentType")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "widget-title"
+  }, [_c("h4", [_c("label", {
+    staticClass: "m-0 control-label required",
+    attrs: {
+      "for": "status",
+      "aria-required": "true"
+    }
+  }, [_vm._v("Action")])])]);
+}];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render),
+/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", [_c("ul", {
+    staticClass: "main__body__box-info"
+  }, [_c("li", [_c("i", {
+    staticClass: "fa-solid fa-money-bill-trend-up",
+    staticStyle: {
+      color: "#ff6666"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-wallet-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "fa-brands fa-servicestack",
+    staticStyle: {
+      color: "#eab3e0"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price")])])])]);
+};
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&":
+/*!**************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render),
+/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", [_c("ul", {
+    staticClass: "main__body__box-info",
+    "class": {
+      fade: _vm.isTransitioning
+    }
+  }, [_c("li", [_c("i", {
+    staticClass: "fa-solid fa-money-bill-trend-up",
+    staticStyle: {
+      color: "#ff6666"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-wallet-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "fa-brands fa-servicestack",
+    staticStyle: {
+      color: "#eab3e0"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "fa-regular fa-calendar",
+    staticStyle: {
+      color: "#3498db"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v(_vm._s(_vm.numberOfBooks))]), _vm._v(" "), _c("p", [_vm._v("Number of Booked for the month")])])]), _vm._v(" "), _c("div", {
+    staticClass: "show_data_month"
+  }, [_c("button", {
+    staticClass: "custom-btn btn-16",
+    on: {
+      click: _vm.showPreviousMonths
+    }
+  }, [_vm._v("Previous")]), _vm._v(" "), _c("span", {
+    staticClass: "radio-header radio-text ms-3 me-3"
+  }, [_vm._v(_vm._s(this.currentMonth) + " / " + _vm._s(this.currentYear))]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
+    attrs: {
+      disabled: _vm.disableNextButton
+    },
+    on: {
+      click: _vm.showNextMonths
+    }
+  }, [_vm._v("Next")])])]);
+};
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render),
+/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", [_c("ul", {
+    staticClass: "main__body__box-info",
+    "class": {
+      fade: _vm.isTransitioning
+    }
+  }, [_c("li", [_c("i", {
+    staticClass: "fa-solid fa-money-bill-trend-up",
+    staticStyle: {
+      color: "#ff6666"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-wallet-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "fa-brands fa-servicestack",
+    staticStyle: {
+      color: "#eab3e0"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "fa-regular fa-calendar",
+    staticStyle: {
+      color: "#3498db"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v(_vm._s(_vm.numberOfBooks))]), _vm._v(" "), _c("p", [_vm._v("Number of Booked for the month")])])]), _vm._v(" "), _c("div", {
+    staticClass: "show_data_month"
+  }, [_c("button", {
+    staticClass: "custom-btn btn-16",
+    on: {
+      click: _vm.showPreviousMonths
+    }
+  }, [_vm._v("Previous")]), _vm._v(" "), _c("span", {
+    staticClass: "radio-header radio-text ms-3 me-3"
+  }, [_vm._v(_vm._s(this.currentMonth) + " / " + _vm._s(this.currentYear))]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
+    attrs: {
+      disabled: _vm.disableNextButton
+    },
+    on: {
+      click: _vm.showNextMonths
+    }
+  }, [_vm._v("Next")])])]);
+};
+var staticRenderFns = [];
+render._withStripped = true;
+
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* binding */ render),
+/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function render() {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", [_c("ul", {
+    staticClass: "main__body__box-info",
+    "class": {
+      fade: _vm.isTransitioning
+    }
+  }, [_c("li", [_c("i", {
+    staticClass: "fa-solid fa-money-bill-trend-up",
+    staticStyle: {
+      color: "#ff6666"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-wallet-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "fa-brands fa-servicestack",
+    staticStyle: {
+      color: "#eab3e0"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "fa-regular fa-calendar",
+    staticStyle: {
+      color: "#3498db"
+    }
+  }), _vm._v(" "), _c("h5", [_vm._v(_vm._s(_vm.numberOfBooks))]), _vm._v(" "), _c("p", [_vm._v("Number of Booked for the month")])])]), _vm._v(" "), _c("div", {
+    staticClass: "show_data_month"
+  }, [_c("button", {
+    staticClass: "custom-btn btn-16",
+    on: {
+      click: _vm.showPreviousMonths
+    }
+  }, [_vm._v("Previous")]), _vm._v(" "), _c("span", {
+    staticClass: "radio-header radio-text ms-3 me-3"
+  }, [_vm._v(_vm._s(this.currentMonth) + " / " + _vm._s(this.currentYear))]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn btn-16",
+    attrs: {
+      disabled: _vm.disableNextButton
+    },
+    on: {
+      click: _vm.showNextMonths
+    }
+  }, [_vm._v("Next")])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2795,6 +5060,577 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&":
+/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& ***!
+  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&":
+/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& ***!
+  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js":
+/*!******************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js ***!
+  \******************************************************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+// eslint-disable-next-line func-names
+module.exports = function (cssWithMappingToString) {
+  var list = []; // return the list of modules as css string
+
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = cssWithMappingToString(item);
+
+      if (item[2]) {
+        return "@media ".concat(item[2], " {").concat(content, "}");
+      }
+
+      return content;
+    }).join("");
+  }; // import a list of modules into the list
+  // eslint-disable-next-line func-names
+
+
+  list.i = function (modules, mediaQuery, dedupe) {
+    if (typeof modules === "string") {
+      // eslint-disable-next-line no-param-reassign
+      modules = [[null, modules, ""]];
+    }
+
+    var alreadyImportedModules = {};
+
+    if (dedupe) {
+      for (var i = 0; i < this.length; i++) {
+        // eslint-disable-next-line prefer-destructuring
+        var id = this[i][0];
+
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+
+    for (var _i = 0; _i < modules.length; _i++) {
+      var item = [].concat(modules[_i]);
+
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      if (mediaQuery) {
+        if (!item[2]) {
+          item[2] = mediaQuery;
+        } else {
+          item[2] = "".concat(mediaQuery, " and ").concat(item[2]);
+        }
+      }
+
+      list.push(item);
+    }
+  };
+
+  return list;
+};
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&":
+/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&");
+
+            
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+
+/***/ }),
+
+/***/ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js ***!
+  \****************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+var isOldIE = function isOldIE() {
+  var memo;
+  return function memorize() {
+    if (typeof memo === 'undefined') {
+      // Test for IE <= 9 as proposed by Browserhacks
+      // @see http://browserhacks.com/#hack-e71d8692f65334173fee715c222cb805
+      // Tests for existence of standard globals is to allow style-loader
+      // to operate correctly into non-standard environments
+      // @see https://github.com/webpack-contrib/style-loader/issues/177
+      memo = Boolean(window && document && document.all && !window.atob);
+    }
+
+    return memo;
+  };
+}();
+
+var getTarget = function getTarget() {
+  var memo = {};
+  return function memorize(target) {
+    if (typeof memo[target] === 'undefined') {
+      var styleTarget = document.querySelector(target); // Special case to return head of iframe instead of iframe itself
+
+      if (window.HTMLIFrameElement && styleTarget instanceof window.HTMLIFrameElement) {
+        try {
+          // This will throw an exception if access to iframe is blocked
+          // due to cross-origin restrictions
+          styleTarget = styleTarget.contentDocument.head;
+        } catch (e) {
+          // istanbul ignore next
+          styleTarget = null;
+        }
+      }
+
+      memo[target] = styleTarget;
+    }
+
+    return memo[target];
+  };
+}();
+
+var stylesInDom = [];
+
+function getIndexByIdentifier(identifier) {
+  var result = -1;
+
+  for (var i = 0; i < stylesInDom.length; i++) {
+    if (stylesInDom[i].identifier === identifier) {
+      result = i;
+      break;
+    }
+  }
+
+  return result;
+}
+
+function modulesToDom(list, options) {
+  var idCountMap = {};
+  var identifiers = [];
+
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
+    var id = options.base ? item[0] + options.base : item[0];
+    var count = idCountMap[id] || 0;
+    var identifier = "".concat(id, " ").concat(count);
+    idCountMap[id] = count + 1;
+    var index = getIndexByIdentifier(identifier);
+    var obj = {
+      css: item[1],
+      media: item[2],
+      sourceMap: item[3]
+    };
+
+    if (index !== -1) {
+      stylesInDom[index].references++;
+      stylesInDom[index].updater(obj);
+    } else {
+      stylesInDom.push({
+        identifier: identifier,
+        updater: addStyle(obj, options),
+        references: 1
+      });
+    }
+
+    identifiers.push(identifier);
+  }
+
+  return identifiers;
+}
+
+function insertStyleElement(options) {
+  var style = document.createElement('style');
+  var attributes = options.attributes || {};
+
+  if (typeof attributes.nonce === 'undefined') {
+    var nonce =  true ? __webpack_require__.nc : 0;
+
+    if (nonce) {
+      attributes.nonce = nonce;
+    }
+  }
+
+  Object.keys(attributes).forEach(function (key) {
+    style.setAttribute(key, attributes[key]);
+  });
+
+  if (typeof options.insert === 'function') {
+    options.insert(style);
+  } else {
+    var target = getTarget(options.insert || 'head');
+
+    if (!target) {
+      throw new Error("Couldn't find a style target. This probably means that the value for the 'insert' parameter is invalid.");
+    }
+
+    target.appendChild(style);
+  }
+
+  return style;
+}
+
+function removeStyleElement(style) {
+  // istanbul ignore if
+  if (style.parentNode === null) {
+    return false;
+  }
+
+  style.parentNode.removeChild(style);
+}
+/* istanbul ignore next  */
+
+
+var replaceText = function replaceText() {
+  var textStore = [];
+  return function replace(index, replacement) {
+    textStore[index] = replacement;
+    return textStore.filter(Boolean).join('\n');
+  };
+}();
+
+function applyToSingletonTag(style, index, remove, obj) {
+  var css = remove ? '' : obj.media ? "@media ".concat(obj.media, " {").concat(obj.css, "}") : obj.css; // For old IE
+
+  /* istanbul ignore if  */
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = replaceText(index, css);
+  } else {
+    var cssNode = document.createTextNode(css);
+    var childNodes = style.childNodes;
+
+    if (childNodes[index]) {
+      style.removeChild(childNodes[index]);
+    }
+
+    if (childNodes.length) {
+      style.insertBefore(cssNode, childNodes[index]);
+    } else {
+      style.appendChild(cssNode);
+    }
+  }
+}
+
+function applyToTag(style, options, obj) {
+  var css = obj.css;
+  var media = obj.media;
+  var sourceMap = obj.sourceMap;
+
+  if (media) {
+    style.setAttribute('media', media);
+  } else {
+    style.removeAttribute('media');
+  }
+
+  if (sourceMap && typeof btoa !== 'undefined') {
+    css += "\n/*# sourceMappingURL=data:application/json;base64,".concat(btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))), " */");
+  } // For old IE
+
+  /* istanbul ignore if  */
+
+
+  if (style.styleSheet) {
+    style.styleSheet.cssText = css;
+  } else {
+    while (style.firstChild) {
+      style.removeChild(style.firstChild);
+    }
+
+    style.appendChild(document.createTextNode(css));
+  }
+}
+
+var singleton = null;
+var singletonCounter = 0;
+
+function addStyle(obj, options) {
+  var style;
+  var update;
+  var remove;
+
+  if (options.singleton) {
+    var styleIndex = singletonCounter++;
+    style = singleton || (singleton = insertStyleElement(options));
+    update = applyToSingletonTag.bind(null, style, styleIndex, false);
+    remove = applyToSingletonTag.bind(null, style, styleIndex, true);
+  } else {
+    style = insertStyleElement(options);
+    update = applyToTag.bind(null, style, options);
+
+    remove = function remove() {
+      removeStyleElement(style);
+    };
+  }
+
+  update(obj);
+  return function updateStyle(newObj) {
+    if (newObj) {
+      if (newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap) {
+        return;
+      }
+
+      update(obj = newObj);
+    } else {
+      remove();
+    }
+  };
+}
+
+module.exports = function (list, options) {
+  options = options || {}; // Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+  // tags it will allow on a page
+
+  if (!options.singleton && typeof options.singleton !== 'boolean') {
+    options.singleton = isOldIE();
+  }
+
+  list = list || [];
+  var lastIdentifiers = modulesToDom(list, options);
+  return function update(newList) {
+    newList = newList || [];
+
+    if (Object.prototype.toString.call(newList) !== '[object Array]') {
+      return;
+    }
+
+    for (var i = 0; i < lastIdentifiers.length; i++) {
+      var identifier = lastIdentifiers[i];
+      var index = getIndexByIdentifier(identifier);
+      stylesInDom[index].references--;
+    }
+
+    var newLastIdentifiers = modulesToDom(newList, options);
+
+    for (var _i = 0; _i < lastIdentifiers.length; _i++) {
+      var _identifier = lastIdentifiers[_i];
+
+      var _index = getIndexByIdentifier(_identifier);
+
+      if (stylesInDom[_index].references === 0) {
+        stylesInDom[_index].updater();
+
+        stylesInDom.splice(_index, 1);
+      }
+    }
+
+    lastIdentifiers = newLastIdentifiers;
+  };
+};
+
+/***/ }),
+
 /***/ "./resources/js/components/CreateBooking.vue":
 /*!***************************************************!*\
   !*** ./resources/js/components/CreateBooking.vue ***!
@@ -2808,15 +5644,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateBooking.vue?vue&type=template&id=31ee20e2& */ "./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2&");
 /* harmony import */ var _CreateBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateBooking.vue?vue&type=script&lang=js& */ "./resources/js/components/CreateBooking.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& */ "./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
+;
 
 
 /* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
   _CreateBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__.render,
   _CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
@@ -2830,6 +5668,207 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 /* hot reload */
 if (false) { var api; }
 component.options.__file = "resources/js/components/CreateBooking.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/EditBooking.vue":
+/*!*************************************************!*\
+  !*** ./resources/js/components/EditBooking.vue ***!
+  \*************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditBooking.vue?vue&type=template&id=609a1e54& */ "./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&");
+/* harmony import */ var _EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditBooking.vue?vue&type=script&lang=js& */ "./resources/js/components/EditBooking.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.render,
+  _EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/EditBooking.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/PriceBooking.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/PriceBooking.vue ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PriceBooking.vue?vue&type=template&id=7f9a26bb& */ "./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&");
+/* harmony import */ var _PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PriceBooking.vue?vue&type=script&lang=js& */ "./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.render,
+  _PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/PriceBooking.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingAll.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingAll.vue ***!
+  \**********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& */ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&");
+/* harmony import */ var _TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TotalPriceBookingAll.vue?vue&type=script&lang=js& */ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&");
+/* harmony import */ var _TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& */ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TotalPriceBookingAll.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingArtist.vue":
+/*!*************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingArtist.vue ***!
+  \*************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& */ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&");
+/* harmony import */ var _TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TotalPriceBookingArtist.vue?vue&type=script&lang=js& */ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&");
+/* harmony import */ var _TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& */ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TotalPriceBookingArtist.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingEmployee.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingEmployee.vue ***!
+  \***************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& */ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&");
+/* harmony import */ var _TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TotalPriceBookingEmployee.vue?vue&type=script&lang=js& */ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&");
+/* harmony import */ var _TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& */ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.render,
+  _TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/TotalPriceBookingEmployee.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -2850,6 +5889,86 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/EditBooking.vue?vue&type=script&lang=js&":
+/*!**************************************************************************!*\
+  !*** ./resources/js/components/EditBooking.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditBooking.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/PriceBooking.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PriceBooking.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
 /***/ "./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2&":
 /*!**********************************************************************************!*\
   !*** ./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2& ***!
@@ -2863,6 +5982,143 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateBooking.vue?vue&type=template&id=31ee20e2& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54& ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditBooking.vue?vue&type=template&id=609a1e54& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&":
+/*!*********************************************************************************!*\
+  !*** ./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb& ***!
+  \*********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PriceBooking.vue?vue&type=template&id=7f9a26bb& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& ***!
+  \*****************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& ***!
+  \********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& ***!
+  \**********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& ***!
+  \************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&":
+/*!*******************************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& ***!
+  \*******************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&":
+/*!**********************************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& ***!
+  \**********************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&":
+/*!************************************************************************************************************!*\
+  !*** ./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& ***!
+  \************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&");
 
 
 /***/ }),
@@ -19010,7 +22266,7 @@ const isThenable = (thing) =>
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
-/******/ 			// no module.id needed
+/******/ 			id: moduleId,
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
@@ -19023,6 +22279,18 @@ const isThenable = (thing) =>
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -19063,6 +22331,11 @@ const isThenable = (thing) =>
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/nonce */
+/******/ 	(() => {
+/******/ 		__webpack_require__.nc = undefined;
+/******/ 	})();
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
@@ -19072,14 +22345,37 @@ var __webpack_exports__ = {};
   !*** ./resources/js/bookcreate.js ***!
   \************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
 /* harmony import */ var _components_CreateBooking_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/CreateBooking.vue */ "./resources/js/components/CreateBooking.vue");
+/* harmony import */ var _components_EditBooking_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/EditBooking.vue */ "./resources/js/components/EditBooking.vue");
+/* harmony import */ var _components_PriceBooking_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/PriceBooking.vue */ "./resources/js/components/PriceBooking.vue");
+/* harmony import */ var _components_TotalPriceBookingEmployee_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/TotalPriceBookingEmployee.vue */ "./resources/js/components/TotalPriceBookingEmployee.vue");
+/* harmony import */ var _components_TotalPriceBookingArtist_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/TotalPriceBookingArtist.vue */ "./resources/js/components/TotalPriceBookingArtist.vue");
+/* harmony import */ var _components_TotalPriceBookingAll_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/TotalPriceBookingAll.vue */ "./resources/js/components/TotalPriceBookingAll.vue");
 
 
-new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
+
+
+
+
+
+new vue__WEBPACK_IMPORTED_MODULE_6__["default"]({
   el: '#app',
   components: {
-    CreateBooking: _components_CreateBooking_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+    CreateBooking: _components_CreateBooking_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
+    EditBooking: _components_EditBooking_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    PriceBooking: _components_PriceBooking_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
+  }
+});
+new vue__WEBPACK_IMPORTED_MODULE_6__["default"]({
+  el: '#price',
+  components: {
+    TotalPriceBookingEmployee: _components_TotalPriceBookingEmployee_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
+    TotalPriceBookingArtists: _components_TotalPriceBookingArtist_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
+    TotalPriceBookingAll: _components_TotalPriceBookingAll_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+  },
+  data: {
+    userId: document.getElementById('price').getAttribute('data-user-id')
   }
 });
 })();

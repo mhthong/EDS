@@ -69,11 +69,24 @@
                     </div>
 
                     <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9 flexb-c nav_content">
-                        <div class="bg-ad flexb-col-c">
-                            <h4 class="text-center pt-3"> Change the infomation </h4>
-                            <form class="mt-8 space-y-6 col-12" action="{{ route('admin.updateInfomation') }}"
-                                method="POST">
+                        @if (Auth::check())
+                            <div class="bg-ad flexb-col-c">
+                                <h4 class="text-center pt-3"> Change the infomation </h4>
+
+
+                                @if (Auth::user() instanceof \App\Models\Artists)
+                                    <form class="mt-8 space-y-6 col-12" action="{{ route('artists.updateInfomation') }}"
+                                        method="POST">
+                                    @elseif (Auth::user() instanceof \App\Models\Admin)
+                                        <form class="mt-8 space-y-6 col-12" action="{{ route('admin.updateInfomation') }}"
+                                            method="POST">
+                                        @elseif (Auth::user() instanceof \App\Models\Employee)
+                                            <form class="mt-8 space-y-6 col-12"
+                                                action="{{ route('employee.updateInfomation') }}" method="POST">
+                                @endif
+
                                 @csrf
+
                                 <div class="containerInput -space-y-px mb-4">
                                     <div class="input__user">
                                         <label for="email">Email:</label>
@@ -93,12 +106,32 @@
                                 </div>
                                 <button type="submit" style="color: cadetblue;"
                                     class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium  bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>
-                            </form>
-                        </div>
-                        <div class="bg-ad flexb-col-c">
-                            <h4 class="text-center pt-3"> Change the password </h4>
-                            <form class="mt-8 space-y-6 col-12" onsubmit="return validate()"
-                                action="{{ route('reset-password') }}" method="POST">
+                                </form>
+
+
+                            </div>
+                        @else
+                            <p>Welcome, Guest!</p>
+                            <!-- Hiển thị nội dung dành cho khách truy cập -->
+                        @endif
+
+
+                        @if (Auth::check())
+                            <div class="bg-ad flexb-col-c">
+                                <h4 class="text-center pt-3"> Change the password </h4>
+
+                                @if (Auth::user() instanceof \App\Models\Artists)
+                                    <form class="mt-8 space-y-6 col-12" onsubmit="return validate()"
+                                        action="{{ route('artists.reset-password') }}" method="POST">
+                                    @elseif (Auth::user() instanceof \App\Models\Admin)
+                                        <form class="mt-8 space-y-6 col-12" onsubmit="return validate()"
+                                            action="{{ route('reset-password') }}" method="POST">
+                                        @elseif (Auth::user() instanceof \App\Models\Employee)
+                                            <form class="mt-8 space-y-6 col-12" onsubmit="return validate()"
+                                                action="{{ route('employee.reset-password') }}" method="POST">
+                                @endif
+
+
                                 @csrf
 
                                 <div class="containerInput -space-y-px mb-4">
@@ -133,9 +166,14 @@
                                 </div>
                                 <button type="submit" style="color: cadetblue;"
                                     class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium  bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save</button>
-                            </form>
-                        </div>
+                                </form>
+                            </div>
+                        @else
+                            <p>Welcome, Guest!</p>
+                            <!-- Hiển thị nội dung dành cho khách truy cập -->
+                        @endif
                     </div>
+
 
 
                 </div>
@@ -287,14 +325,51 @@
                     });
                 });
             </script>
+        @elseif (Auth::user() instanceof \App\Models\Employee)
+            <script>
+                var route_prefix = "/employee/laravel-filemanager";
+            
+                $('#lfm1').filemanager('image', {
+                    prefix: route_prefix
+                });
+            </script>
 
+            <!-- Script để gửi Ajax request và xử lý kết quả -->
+            <script>
+                // Gửi Ajax request khi form được submit
+                $('#avatarForm').submit(function(event) {
+                    event.preventDefault();
+
+                    var formData = new FormData($(this)[0]);
+
+                    $.ajax({
+                        url: "{{ route('employee.updateAvatar') }}",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(response) {
+                            // Xử lý kết quả thành công
+                            alert('Avatar updated successfully!');
+                            $('#avatarModal').modal('hide');
+
+                            // Tải lại trang
+                            location.reload();
+                        },
+
+                        error: function(xhr) {
+                            // Xử lý kết quả thất bại
+                            alert('Failed to update avatar. Please try again.');
+                        }
+                    });
+                });
+            </script>
             <!-- Hiển thị nội dung dành riêng cho admins -->
         @endif
     @else
         <p>Welcome, Guest!</p>
         <!-- Hiển thị nội dung dành cho khách truy cập -->
     @endif
-
 
 
 

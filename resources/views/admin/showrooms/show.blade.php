@@ -188,6 +188,83 @@
                                             </div>
 
                                         </div>
+
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                                            <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
+                                                <div class="bg-ad-form right-sidebar mt-3">
+                                                    <div class="widget meta-boxes">
+                                                        <div class="widget-title">
+                                                            <h4><label for="status" class="m-0 control-label required"
+                                                                    aria-required="true">Showroom schedule</label></h4>
+                                                        </div>
+
+                                                        <div class="col-12"
+                                                            style="    display: flex;
+                                                    justify-content: start;
+                                                    flex-wrap: wrap;">
+                                                            @foreach ($daysOfWeek as $day)
+                                                                <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 p-3">
+
+                                                                    <div class="mt-3 mb-3">
+                                                                        <label class="radio-header radio-text"
+                                                                            for="active_{{ $day }}">{{ $day }}</label>
+                                                                        <input type="checkbox"
+                                                                            name="active_{{ $day }}"
+                                                                            id="active_{{ $day }}"
+                                                                            onchange="toggleWorkingFields(this)"
+                                                                            {{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? 'checked' : '' }}>
+                                                                    </div>
+
+
+
+                                                                    <div class=" working-value-group controls"
+                                                                        id="workingvalue_group_{{ $day }}">
+                                                                        <label for="workingvalue_{{ $day }}"
+                                                                            class="active">Number</label>
+
+                                                                        <input type="number"
+                                                                            name="workingvalue_{{ $day }}"
+                                                                            id="workingvalue_{{ $day }}"
+                                                                            min="0" max="4"
+                                                                            value="{{ old("workingvalue_{$day}", optional($showroom_schedules->where('day', $day)->first())->workingvalue) }}"
+                                                                            onchange="generateWorkingHours(this)">
+
+                                                                    </div>
+
+
+
+                                                                    <label for="{{ $day }}">Hours </label>
+
+                                                                    <div class="form-group working-hours-group controls"
+                                                                        id="{{ $day }}"
+                                                                        style="{{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? '' : 'display: none' }}">
+
+                                                                        <div class="working-hours  working-hours-flex"
+                                                                            style="display: flex;flex-wrap: wrap; ">
+                                                                            @foreach (optional($showroom_schedules->where('day', $day)->first())->workingHours ?? [] as $index => $workingHour)
+                                                                                <input type="time"
+                                                                                    name="{{ $day }}[{{ $index }}][start_time]"
+                                                                                    value="{{ old("{$day}.{$index}.start_time", $workingHour->start_time) }}"
+                                                                                    required>
+                                                                                <input type="time"
+                                                                                    name="{{ $day }}[{{ $index }}][end_time]"
+                                                                                    value="{{ old("{$day}.{$index}.end_time", $workingHour->end_time) }}"
+                                                                                    required>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" name="{{ $day }}[]"
+                                                                        id="{{ $day }}_hidden">
+
+                                                                </div>
+                                                            @endforeach
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                             </div>

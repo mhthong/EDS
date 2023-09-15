@@ -35,4 +35,10 @@ class Showroom extends Model
         return $this->hasMany(ShowroomSchedule::class);
     }
 
+    public function groupservices()
+{
+    return $this->belongsToMany(GroupService::class, 'service_showroom', 'showroom_id', 'groupservice_id');
+}
+
+
 }

@@ -32,14 +32,28 @@ Route::get('/group-services/{showroomId}', [APIBookingController::class, 'getGro
 Route::get('/showroomschedule/{showroomId}', [APIBookingController::class, 'ShowroomSchedule']);
 Route::get('/services', [APIBookingController::class, 'getServices']);
 Route::get('/artist-levels', [APIBookingController::class, 'ArtistLevel']);
+Route::get('/artist', [APIBookingController::class, 'Artist']);
 
 
-Route::get('all-data', [BookingController::class, 'getAllData']);
+Route::get('all-data', [APIBookingController::class, 'getAllData']);
 
-Route::get('/bookings/showroom/{showroomId}', [BookingController::class, 'getBookShowroomData']);
+Route::get('data-bookings/{id}', [APIBookingController::class, 'bookingsData']);
+
+Route::get('data-bookings-artists/{id}', [APIBookingController::class, 'bookingsDataArtists']);
 
 
+Route::get('data-bookings-employee/{id}', [APIBookingController::class, 'bookingsDataEmployee']);
 
 
+Route::get('/bookings/showroom/{showroomId}', [APIBookingController::class, 'getBookShowroomData']);
 
+Route::post('/bookings-store', [APIBookingController::class, 'store']);
+
+Route::middleware(['userid'])->group(function () {
+    Route::get('/bookingsDataEmployee/{id}', [APIBookingController::class, 'bookingsDataEmployee']);
+    Route::get('/bookingsDataArtists/{id}', [APIBookingController::class, 'bookingsDataArtists']);
+});
+
+
+/* bookingsDataEmployee */
 

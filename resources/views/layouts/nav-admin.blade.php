@@ -3,16 +3,29 @@
     @if (Auth::user() instanceof \App\Models\Artists)
         <!-- start: SIDEBAR -->
         <section id="sidebar">
-            <a href="#" class="brand">
+            <a href="/artists" class="brand">
                 <i class="ph-flame-fill"></i>
             </a>
             <ul class="sidebar__menu">
                 <li>
-                    <a href="#" class="active"><i class="ph-house-fill"></i></a>
+                    <a href="#" class=""><i class="ph-house-fill"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Dashboard</li>
                         <li><a href="#">Sales</a></li>
                         <li><a href="#">Analytics</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#"><i class="fa-brands fa-servicestack"></i></a>
+                    <ul class="sidebar__submenu">
+                        <li class="title">Salon</li>
+        
+                        <li>
+                            <a href="#">Booking <i class="ph-caret-right-fill"></i></a>
+                            <ul class="sidebar__dropdown-menu">
+                                <li><a href="{{ route('artists.book.index') }}">All Booking</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -48,12 +61,12 @@
     @elseif (Auth::user() instanceof \App\Models\Admin)
         <!-- start: SIDEBAR -->
         <section id="sidebar">
-            <a href="#" class="brand">
+            <a href="/admin" class="brand">
                 <i class="ph-flame-fill"></i>
             </a>
             <ul class="sidebar__menu">
                 <li>
-                    <a href="#" class="active"><i class="ph-house-fill"></i></a>
+                    <a href="#" class=""><i class="ph-house-fill"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Dashboard</li>
                         <li><a href="#">Sales</a></li>
@@ -85,14 +98,29 @@
                         <li><a href="{{ route('static.create') }}">Add New Statics</a></li>
                     </ul>
                 </li>
-  {{--               <li>
-                    <a href="#"><i class="fa-solid fa-tag"></i></a>
+                {{--               <li>
+                                    <a href="#"><i class="fa-solid fa-tag"></i></a>
+                                    <ul class="sidebar__submenu">
+                                        <li class="title">Tags</li>
+                                        <li><a style="" href="{{ route('tags') }}">Tag</a></li>
+                                        <li><a href="{{ route('tag-create') }}">Add New Tag</a></li>
+                                    </ul>
+                                </li> --}}
+
+
+                <li>
+                    <a href="#"><i class="fa-solid fa-clipboard-user"></i></a>
                     <ul class="sidebar__submenu">
-                        <li class="title">Tags</li>
-                        <li><a style="" href="{{ route('tags') }}">Tag</a></li>
-                        <li><a href="{{ route('tag-create') }}">Add New Tag</a></li>
+                    <li class="title">Employee</li>
+                
+   
+                            <li><a href="{{ route('employee.index') }}">All Employee</a></li>
+                            <li><a href="{{ route('employee.create') }}">Add New Employee </a></li>
+      
+
                     </ul>
-                </li> --}}
+        
+                </li>
             
                 <li>
                     <a href="#"><i class="fa-brands fa-servicestack"></i></a>
@@ -191,8 +219,67 @@
         </section>
         <!-- end: SIDEBAR MOBILE -->
         <!-- Hiển thị nội dung dành riêng cho admins -->
+    @elseif (Auth::user() instanceof \App\Models\Employee)
+
+            <!-- start: SIDEBAR -->
+            <section id="sidebar">
+                <a href="/employee" class="brand">
+                    <i class="ph-flame-fill"></i>
+                </a>
+                <ul class="sidebar__menu">
+                    <li>
+                        <a href="#" class=""><i class="ph-house-fill"></i></a>
+                        <ul class="sidebar__submenu">
+                            <li class="title">Dashboard</li>
+                            <li><a href="#">Sales</a></li>
+                            <li><a href="#">Analytics</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa-brands fa-servicestack"></i></a>
+                        <ul class="sidebar__submenu">
+                            <li class="title">Salon</li>
+            
+                            <li>
+                                <a href="#">Booking <i class="ph-caret-right-fill"></i></a>
+                                <ul class="sidebar__dropdown-menu">
+                                    <li><a href="{{ route('employee.book.index') }}">All Booking</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="dropdown-item logout" href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                             document.getElementById('logout-form').submit();">
+                            <i class="ph-sign-out-fill">
+                            </i>
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
+                    </li>
+                </ul>
+            </section>
+    
+            <!-- start: SIDEBAR OVERLAY -->
+            <div class="sidebar-overlay"></div>
+            <!-- end: SIDEBAR OVERLAY -->
+            <!-- end: SIDEBAR -->
+    
+            <!-- start: SIDEBAR MOBILE -->
+            <section id="sidebar-mobile">
+                <i class="ph-squares-four-fill toggle-sidebar"></i>
+                <a href="#" class="brand">
+                    <i class="ph-flame-fill"></i>
+                    Employee
+                </a>
+            </section>
+            <!-- end: SIDEBAR MOBILE -->
+
     @endif
 @else
     <p>Welcome, Guest!</p>
     <!-- Hiển thị nội dung dành cho khách truy cập -->
 @endif
+

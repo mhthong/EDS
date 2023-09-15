@@ -37,7 +37,7 @@ class LoginController extends Controller
      */
 
      const ALL_GUARD = [
-       'admin', 'web', 'artists' ,/* 'shop', 'employee', 'user' */
+       'admin', 'web', 'artists' ,'employee',/* 'shop', 'employee', 'user' */
      ];
 
     public function guard()
@@ -47,32 +47,26 @@ class LoginController extends Controller
 
     function login(Request $request)
     {
-
-      $dataLogin = $request->only(['name', 'password']);
-
-      foreach (self::ALL_GUARD as $guard) {
-
-        if (Auth::guard($guard)->attempt($dataLogin)) {
-
- 
-
-          if($guard=='web')
-          {
-            return redirect('/home');
-          }
-          elseif($guard=='admin'){
-            return redirect('/'.$guard.'/');
-          }
-          else{
-            return redirect('/'.$guard.'/');
-          }
-
+        $dataLogin = $request->only(['name', 'password']);
+    
+        foreach (self::ALL_GUARD as $guard) {
+            if (Auth::guard($guard)->attempt($dataLogin)) {
+                $user = Auth::guard($guard)->user();
+                if ($user->status === 'published') {
+                    if ($guard == 'web') {
+                        return redirect('/home');
+                    } elseif ($guard == 'admin') {
+                        return redirect('/' . $guard . '/');
+                    } else {
+                        return redirect('/' . $guard . '/');
+                    }
+                }
+            }
         }
-      }
-
-      return redirect('/login');
+    
+        return redirect('/login');
     }
-
+    
     public function showLoginForm()
     {
         return view('auth.login');

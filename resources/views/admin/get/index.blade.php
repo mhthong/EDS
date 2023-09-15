@@ -21,10 +21,31 @@
             <div class="main__body">
 
                 <div class="main__body__data">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 flexb-c">
+
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+
+
+                        <div class="main__body__data__header">
+                            <div class="">
+                    
+                                </button>
+
+                                <div class="download-buttons">
+                                    <button type="button" class="btn-sub btn btn-success "
+                                        id="download-visible-data">Download
+                                        Visible Data</button>
+                                    <button type="button" class="btn-sub btn btn-primary" id="download-all-data">Download
+                                        All
+                                        Data</button>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+
                         <div class="bg-ad flexb-col-c">
 
-                            <table class="table-reponsive">
+                            <table id="table" class="table-reponsive">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -72,16 +93,7 @@
 
                                 </tbody>
                             </table>
-                            {{ $gets->links() }}
-
-
-                            <style>
-                                nav[role=navigation] {
-                                    position: absolute;
-                                    bottom: 50px;
-                                    right: 50px;
-                                }
-                            </style>
+       
                         </div>
                     </div>
                 </div>
@@ -95,4 +107,77 @@
 @endsection
 
 @section('script')
+<script>
+    $(document).ready(function() {
+
+    const table = $('#table').DataTable({
+        scrollX: true,
+        autoWidth: false,
+    });
+
+
+            // Hàm để tạo tên tệp với ngày tháng năm
+            function generateFileName(prefix, extension) {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                const seconds = String(now.getSeconds()).padStart(2, '0');
+
+                return `${prefix}_${year}-${month}-${day}_${hours}${minutes}${seconds}.${extension}`;
+            }
+
+            // Sử dụng hàm generateFileName để tạo tên tệp
+            $('#download-visible-data').on('click', function() {
+                const visibleData = table.rows({
+                    search: 'applied'
+                }).data().toArray();
+                const fileName = generateFileName('visible_data', 'xlsx');
+                downloadDataToExcel(visibleData, fileName);
+            });
+
+            $('#download-all-data').on('click', function() {
+                const allData = table.rows().data().toArray();
+                const fileName = generateFileName('all_data', 'xlsx');
+                downloadDataToExcel(allData, fileName);
+            });
+
+
+
+            // Hàm để loại bỏ thẻ HTML từ chuỗi
+            function stripHtmlTags(html) {
+                var tmp = document.createElement("div");
+                tmp.innerHTML = html;
+                return tmp.textContent || tmp.innerText || "";
+            }
+
+            // Hàm để tạo và tải tệp Excel
+            function downloadDataToExcel(data, filename) {
+                const excelData = [];
+                excelData.push(['No.', 'Client Name', 'Client Info', 'Services',
+                ]);
+
+                data.forEach(row => {
+                    // Loại bỏ thẻ HTML từ các giá trị cần xuất
+                    const rowData = Object.values(row).map(value => {
+                        if (typeof value === 'string') {
+                            return stripHtmlTags(value);
+                        }
+                        return value;
+                    });
+                    excelData.push(rowData);
+                });
+
+                const wb = XLSX.utils.book_new();
+                const ws = XLSX.utils.aoa_to_sheet(excelData);
+                XLSX.utils.book_append_sheet(wb, ws, 'Data');
+                XLSX.writeFile(wb, filename);
+            }
+    
+});
+
+</script>
+
 @endsection

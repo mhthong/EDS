@@ -26,6 +26,7 @@ class AuthAdminController extends Controller
             ->get();
 
         $stt = 1;
+
         return view('admin.auth-admin.index', compact('admins', 'stt'));
         }
         else {
@@ -47,25 +48,26 @@ class AuthAdminController extends Controller
     public function store(Request $request)
     {
 
+
         // Validate the input
-        $validatedData = $request->validate([
+        $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:admins,email',
-            'password' => 'required|min:6|confirmed',
+            'status' => 'required|in:published,pending,draft',
             // Add more validation rules as needed
         ]);
 
+
+        $data =  $request->all();
+
+        $data['password'] = Hash::make($request->input('password'));
+        $data['manage_supers'] = 1;
+        $data['super_user'] = 1;
+
         // Create a new admin
-        $admin = new Admin;
-        $admin->name = $request->input('name');
-        $admin->email = $request->input('email');
-        $admin->password = Hash::make($request->input('password'));
-        $admin->manage_supers = 1 ;
-        $admin->super_user = 1 ;
 
-        $refun = $admin->save();
-
-        if (isset($refun) && $refun == true) {
+        $createdAdmin = Admin::create($data);
+        if ($createdAdmin) {
             // If the artist was successfully created, redirect with success message
             return redirect()->route('auth-admin.index')->with('success', 'User created successfully.');
         } else {
@@ -85,15 +87,39 @@ class AuthAdminController extends Controller
     public function update(Request $request, Admin $auth_admin)
     {
 
-            // Validate the inpu
-        $auth_admin->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|string|email|max:255|unique:admins,email,' . $auth_admin->id,
+            'status' => 'required|in:published,pending,draft',
+            // Add more validation rules as needed
         ]);
+
+        $data = $request->all();
+
+
+        if( $auth_admin->password == $request->input('password'))
+        {
+            $data['password'] = $request->input('password');
+
+        }
+        else{
+
+            $data['password'] = Hash::make($request->input('password'));
+        }
+
+            // Validate the inpu
+            $updateAuth_admin =   $auth_admin->update($data);
+
+             
+            if ($updateAuth_admin) {
+                // If the artist was successfully update, redirect with success message
+                return redirect()->route('auth-admin.index')->with('success', 'User update successfully.');
+            } else {
+                // If the artist creation failed, redirect back with an error message
+                return redirect()->back()->with('failed', 'Failed to update user.');
+            }
    
-         // If the admin was successfully updated, redirect with success message
-            return redirect()->route('auth-admin.index')->with('success', 'User updated successfully.');
+        
 
        
     }

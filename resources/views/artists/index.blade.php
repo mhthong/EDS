@@ -22,24 +22,11 @@
 
 		<!-- start: MAIN BODY -->
 		<div class="main__body">
-			<ul class="main__body__box-info">
-				<li>
-					<i class="ph-shopping-bag-fill"></i>
-					<h5>$823</h5>
-					<p>Sales</p>
-				</li>
-				<li>
-					<i class="ph-wallet-fill"></i>
-					<h5>$423</h5>
-					<p>Wallet</p>
-				</li>
-				<li>
-					<i class="ph-users-fill"></i>
-					<h5>455</h5>
-					<p>Members</p>
-				</li>
-			</ul>
-			<div class="main__body__data">
+			<div id="price" data-user-id="{{ auth()->id() }}">
+				<total-price-booking-artists></total-price-booking-artists>
+			</div>
+
+{{-- 			<div class="main__body__data">
 				<div class="sales-summary">
 					<div class="sales-summary__top">
 						<h4>Sales Summary</h4>
@@ -181,12 +168,17 @@
 						</li>
 					</ul>
 				</div>
-			</div>
+			</div> --}}
 		</div>
 		<!-- end: MAIN BODY -->
 
 	</section>
 	<!-- end: MAIN -->
+@endsection
+
+
+@section('script')
+<script src="/js/bookcreate.js" defer></script>
 @endsection
 
 @section('footer')

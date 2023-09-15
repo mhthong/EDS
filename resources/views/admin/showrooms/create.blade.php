@@ -76,7 +76,10 @@
 
                                         </div>
 
+
                                     </div>
+
+
                                     <div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3">
                                         <div class="bg-ad-form right-sidebar ">
                                             <div
@@ -121,41 +124,23 @@
                                             </div>
                                         </div>
 
+
                                         <div class="bg-ad-form right-sidebar mt-3">
                                             <div class="widget meta-boxes">
                                                 <div class="widget-title">
                                                     <h4><label for="status" class="m-0 control-label required"
-                                                            aria-required="true">Status</label></h4>
+                                                            aria-required="true">Group Serviecs</label></h4>
                                                 </div>
 
-                                                @foreach ($daysOfWeek as $day)
-                                                    <div class="form-group">
-                                                        <label
-                                                            for="active_{{ $day }}">{{ __('Active on ') . $day }}</label>
-                                                        <input type="checkbox" name="active_{{ $day }}"
-                                                            id="active_{{ $day }}"
-                                                            onchange="toggleWorkingFields(this)">
-                                                    </div>
-                                                    <div class="form-group working-value-group"
-                                                        id="workingvalue_group_{{ $day }}">
-                                                        <label
-                                                            for="workingvalue_{{ $day }}">{{ __('Working Value on ') . $day }}</label>
-                                                        <input type="number" name="workingvalue_{{ $day }}"
-                                                            id="workingvalue_{{ $day }}" min="0"
-                                                            max="4" value="1"
-                                                            onchange="generateWorkingHours(this)">
-                                                    </div>
-                                                    <div class="form-group working-hours-group" id="{{ $day }}">
-                                                        <label for="{{ $day }}">Working Hours on
-                                                            {{ $day }}</label>
-                                                        <div class="working-hours"></div>
-                                                    </div>
-                                                    <input type="hidden" name="{{ $day }}[]"
-                                                        id="{{ $day }}_hidden">
-                                                @endforeach
-
-
-                                                <!-- ... -->
+                                                @isset($allGroupServices)
+                                                    @foreach ($allGroupServices as $groupService)
+                                                        <label>
+                                                            <input type="checkbox" name="groupservices[]"
+                                                                value="{{ $groupService->id }}">
+                                                            {{ $groupService->Name }}
+                                                        </label><br>
+                                                    @endforeach
+                                                @endisset
 
 
 
@@ -163,6 +148,66 @@
                                         </div>
 
                                     </div>
+                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                                        <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
+                                            <div class="bg-ad-form right-sidebar mt-3">
+                                                <div class="widget meta-boxes">
+                                                    <div class="widget-title">
+                                                        <h4><label for="status" class="m-0 control-label required"
+                                                                aria-required="true">Showroom schedule</label></h4>
+                                                    </div>
+
+                                                    <div class="col-12"
+                                                        style="    display: flex;
+                                                justify-content: start;
+                                                flex-wrap: wrap;">
+
+                                                        @foreach ($daysOfWeek as $day)
+                                                            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 p-3">
+                                                                <div class="mt-3 mb-3">
+                                                                    <label for="active_{{ $day }}"
+                                                                        class="radio-header radio-text">{{ $day }}</label>
+                                                                    <input type="checkbox"
+                                                                        name="active_{{ $day }}"
+                                                                        id="active_{{ $day }}"
+                                                                        onchange="toggleWorkingFields(this)">
+                                                                </div>
+
+                                                                <div class=" working-value-group controls"
+                                                                    id="workingvalue_group_{{ $day }}">
+                                                                    <label for="workingvalue_{{ $day }}"
+                                                                        class="active">Number</label>
+                                                                    <input type="number"
+                                                                        name="workingvalue_{{ $day }}"
+                                                                        id="workingvalue_{{ $day }}"
+                                                                        min="0" max="4" value="1"
+                                                                        onchange="generateWorkingHours(this)">
+                                                                </div>
+
+                                                                <label for="{{ $day }}">Hours</label>
+                                                                <div class=" working-value-group controls">
+                                                                    <div class=" working-hours-group"
+                                                                        id="{{ $day }}">
+                                                                        <div class="working-hours working-hours-flex"
+                                                                            style="display: flex;flex-wrap: wrap;
+                                                    ">
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <input type="hidden" name="{{ $day }}[]"
+                                                                        id="{{ $day }}_hidden">
+                                                                </div>
+
+                                                            </div>
+                                                        @endforeach
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </form>
                         </div>

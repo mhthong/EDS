@@ -49,6 +49,9 @@ use App\Http\Controllers\AuthAdminController;
 use App\Http\Controllers\ArtistAuthController;
 use App\Http\Controllers\GetController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\EmployeeAuthController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -67,9 +70,7 @@ Route::get('/data', function () {
 });
 /* Route::get('/', [PublicController::class, 'Home'] ); */
 
-Route::get('', function () {
-    return view('playout');
-});
+Route::get('', [LoginController::class, 'showLoginForm']);
 
 
 Route::get('/booking-form', function () {
@@ -77,7 +78,8 @@ Route::get('/booking-form', function () {
 });
 
 
-Route::post('/bookings-store', [BookingController::class, 'store'])->name('bookings.store');
+
+
 
 /* Route::get('caretoties/{slug}', [SlugController::class, 'index'])->name('slug'); */
 
@@ -153,21 +155,94 @@ Route::middleware('auth:user')->prefix('user')->group(
 
 Route::middleware('auth:artists')->prefix('artists')->group(
     function () {
+
+        Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+            \UniSharp\LaravelFilemanager\Lfm::routes();
+        });
+        
         Route::get('/', [ArtistAuthController::class, 'index'])->name('artists');
         Route::get('/your-setting', [ArtistAuthController::class, 'YourSetting'])->name('artists.your-setting');
         Route::post('/reset-password', [ArtistAuthController::class, 'ResetPassword'])->name('artists.reset-password');
         Route::post('/update-avatar', [ArtistAuthController::class, 'updateAvatar'])->name('artists.updateAvatar');
         Route::post('/update-infomation', [ArtistAuthController::class, 'updateInfomation'])->name('artists.updateInfomation');
-        
-        Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['artists', 'auth']], function() {
+
+        Route::group(['prefix' => 'laravel-filemanager'], function () {
             \UniSharp\LaravelFilemanager\Lfm::routes();
         });
 
+        Route::get('/filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
+
+
+    Route::prefix('books')->group(
+        function () {
+
+            // Store - Store a newly created service in the database
+            Route::post('/store', [BookingController::class, 'store'])->name('artists.bookings.store');
+
+            Route::get('/index', [BookingController::class, 'index'])->name('artists.book.index');
+
+            // Edit page - Show the form for editing an existing service
+            Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('artists.bookings.edit');
+            // routes/web.php or routes/api.php
     
-      
+            // Update - Update the specified service in the database
+            Route::post('/{id}', [BookingController::class, 'update'])->name('artists.bookings.update');
+            // Destroy - Remove the specified service from the database
+            /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
+
+        }
+    );
+
+
     }
 
 );
+
+
+
+Route::middleware('auth:employee')->prefix('employee')->group(function () {
+
+    Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web']], function () {
+        \UniSharp\LaravelFilemanager\Lfm::routes();
+    });
+
+    Route::get('/', [EmployeeAuthController::class, 'index'])->name('employee');
+    Route::get('/your-setting', [EmployeeAuthController::class, 'YourSetting'])->name('employee.your-setting');
+    Route::post('/reset-password', [EmployeeAuthController::class, 'ResetPassword'])->name('employee.reset-password');
+    Route::post('/update-avatar', [EmployeeAuthController::class, 'updateAvatar'])->name('employee.updateAvatar');
+    Route::post('/update-infomation', [EmployeeAuthController::class, 'updateInfomation'])->name('employee.updateInfomation');
+
+    Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
+        \UniSharp\LaravelFilemanager\Lfm::routes();
+    });
+
+    Route::get('/filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
+
+    Route::prefix('books')->group(
+        function () {
+
+            // Store - Store a newly created service in the database
+            Route::post('/store', [BookingController::class, 'store'])->name('employee.bookings.store');
+
+            Route::get('/index', [BookingController::class, 'index'])->name('employee.book.index');
+
+            // Edit page - Show the form for editing an existing service
+            Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('employee.bookings.edit');
+            // routes/web.php or routes/api.php
+    
+            // Update - Update the specified service in the database
+            Route::post('/{id}', [BookingController::class, 'update'])->name('employee.bookings.update');
+            // Destroy - Remove the specified service from the database
+            /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
+
+        }
+    );
+
+
+});
+
 
 
 
@@ -190,6 +265,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
             }
         );
+
+
 
         Route::get('/', [AdminController::class, 'test'])->name('auth-admin.index');
         Route::get('/', [AdminController::class, 'index']);
@@ -230,6 +307,32 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             Route::post('update-menu/{id}', [MenuController::class, 'update'])->name('update-menu');
         }
         );
+
+
+
+        Route::prefix('books')->group(
+            function () {
+
+                // Store - Store a newly created service in the database
+                Route::post('/store', [BookingController::class, 'store'])->name('bookings.store');
+
+                Route::get('/index', [BookingController::class, 'index'])->name('book.index');
+
+                // Edit page - Show the form for editing an existing service
+                Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+                // routes/web.php or routes/api.php
+        
+                // Update - Update the specified service in the database
+                Route::post('/{id}', [BookingController::class, 'update'])->name('bookings.update');
+                // Destroy - Remove the specified service from the database
+                /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
+
+            }
+        );
+
+
+
+
 
         /* Route::prefix('contacts')->group(
                     function () {
@@ -339,6 +442,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
 
 
+
         Route::prefix('artist')->group(
             function () {
                 Route::get('/', [ArtistController::class, 'index'])->name('artist.index');
@@ -353,8 +457,20 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             }
         );
 
+        Route::prefix('employee')->group(
+            function () {
+                Route::get('/', [EmployeeController::class, 'index'])->name('employee.index');
+                Route::get('show/{employee}', [EmployeeController::class, 'show'])->name('employee.show');
+                Route::get('edit/{employee}', [EmployeeController::class, 'edit'])->name('employee.edit', true);
+                Route::put('update/{employee}', [EmployeeController::class, 'update'])->name('employee.update');
+                Route::DELETE('delete/{employee}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
+                Route::get('create', [EmployeeController::class, 'create'])->name('employee.create', true);
+                Route::post('store', [EmployeeController::class, 'store'])->name('employee.store', true);
 
-        Route::get('/booking', function () {return view('admin.book.index');})->name('book.index');;
+            }
+        );
+
+
 
 
         Route::prefix('pages')->group(
@@ -407,23 +523,23 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             }
         );
 
-/*         Route::prefix('tags')->group(
-            function () {
-                Route::get('/', [TagsController::class, 'index'])->name('tags');
-                Route::get('create', [TagsController::class, 'create_index'])->name('tag-create');
-                Route::post('store', [TagsController::class, 'store'])->name('tag-store');
-                Route::DELETE('delete/{id}', [TagsController::class, 'destroy'])->name('tag.delete');
-                Route::get('edit/{id}', [TagsController::class, 'edit'])->name('edit-tag');
-                Route::post('update-tag/{id}', [TagsController::class, 'update'])->name('update.tag');
+        /*         Route::prefix('tags')->group(
+                    function () {
+                        Route::get('/', [TagsController::class, 'index'])->name('tags');
+                        Route::get('create', [TagsController::class, 'create_index'])->name('tag-create');
+                        Route::post('store', [TagsController::class, 'store'])->name('tag-store');
+                        Route::DELETE('delete/{id}', [TagsController::class, 'destroy'])->name('tag.delete');
+                        Route::get('edit/{id}', [TagsController::class, 'edit'])->name('edit-tag');
+                        Route::post('update-tag/{id}', [TagsController::class, 'update'])->name('update.tag');
 
-                Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
-                    \UniSharp\LaravelFilemanager\Lfm::routes();
-                });
-        
-                Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
-            }
-        );
- */
+                        Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
+                            \UniSharp\LaravelFilemanager\Lfm::routes();
+                        });
+                
+                        Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+                    }
+                );
+         */
 
         Route::prefix('theme')->group(
             function () {

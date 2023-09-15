@@ -14,7 +14,7 @@ class Booking extends Model
       // Define the table associated with the model
     protected $table = 'bookings';
 
-    protected $fillable = ['ArtistID', 'ShowroomID', 'time', 'date', 'GetID','price_id', 'content','status'];
+    protected $fillable = ['ArtistID', 'ShowroomID', 'time','time_end', 'date', 'GetID','price_id', 'content','action','status','source_name','source_id','source_type'];
 
     public function artist()
     {

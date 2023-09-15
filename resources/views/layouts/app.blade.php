@@ -7,8 +7,21 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @routes()
 
-    <title>{{ config('app.name', 'Admin') }}</title>
+    @if (Auth::check())   
+        @if (Auth::user() instanceof \App\Models\Admin)
+
+        <title>Admin</title>
+        @elseif  (Auth::user() instanceof \App\Models\Artists)
+        <title>Artists</title>
+        @elseif  (Auth::user() instanceof \App\Models\Employee)
+        <title>Employee</title>
+        @endif
+
+    @endif
+
+    @stack('styles')
 
     <!-- Scripts -->
     {{--  <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script> --}}

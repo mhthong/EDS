@@ -4,7 +4,9 @@
         @if (Auth::check())
    
     @if (Auth::user() instanceof \App\Models\Artists)
-    <li><a href="{{ url(env('APP_URL')) }}/artist">Home</a></li>
+    <li><a href="{{ url(env('APP_URL')) }}/artists">Home</a></li>
+    @elseif (Auth::user() instanceof \App\Models\Employee)
+    <li><a href="{{ url(env('APP_URL')) }}/employee">Home</a></li>
     @elseif (Auth::user() instanceof \App\Models\Admin)
     <li><a href="{{ url(env('APP_URL')) }}/admin">Home</a></li>
         <!-- Hiển thị nội dung dành riêng cho admins -->
@@ -166,10 +168,7 @@
                     <img src="{{ asset('./storage/photos/1/Image/user-286.png') }}" class="img-fluid img" alt="avatar">
                 @endif
             @endauth
-                <div class="name">
-                    <h5>John Doe</h5>
-                    <p>Web Developer</p>
-                </div>
+    
             </div>
           
 
@@ -182,6 +181,10 @@
     @elseif (Auth::user() instanceof \App\Models\Admin)
     <ul class="profile__menu">
         <li><a href="{{route('your-setting')}}"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
+    </ul>
+    @elseif (Auth::user() instanceof \App\Models\Employee)
+    <ul class="profile__menu">
+        <li><a href="{{route('employee.your-setting')}}"><i class="ph-user-circle-fill"></i> Edit profile</a></li>
     </ul>
         <!-- Hiển thị nội dung dành riêng cho admins -->
     @endif

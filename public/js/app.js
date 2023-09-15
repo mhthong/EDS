@@ -3124,6 +3124,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wow_min_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_wow_min_js__WEBPACK_IMPORTED_MODULE_14__);
 /* harmony import */ var _dashboards_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./dashboards.js */ "./resources/js/dashboards.js");
 /* harmony import */ var _dashboards_js__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_dashboards_js__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var _ziggy_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ziggy.js */ "./resources/js/ziggy.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes React and other helpers. It's a great starting point while
@@ -3137,6 +3138,7 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
 
 
 
@@ -6640,6 +6642,605 @@ var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_
 });
 
 /* All delay classes will take half the time to start */
+
+/***/ }),
+
+/***/ "./resources/js/ziggy.js":
+/*!*******************************!*\
+  !*** ./resources/js/ziggy.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Ziggy: () => (/* binding */ Ziggy)
+/* harmony export */ });
+var Ziggy = {
+  "url": "http:\/\/127.0.0.1:8000",
+  "port": 8000,
+  "defaults": {},
+  "routes": {
+    "unisharp.lfm.show": {
+      "uri": "admin\/setting\/laravel-filemanager",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getErrors": {
+      "uri": "admin\/setting\/laravel-filemanager\/errors",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.upload": {
+      "uri": "admin\/setting\/laravel-filemanager\/upload",
+      "methods": ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+    },
+    "unisharp.lfm.getItems": {
+      "uri": "admin\/setting\/laravel-filemanager\/jsonitems",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.move": {
+      "uri": "admin\/setting\/laravel-filemanager\/move",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.domove": {
+      "uri": "admin\/setting\/laravel-filemanager\/domove",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getAddfolder": {
+      "uri": "admin\/setting\/laravel-filemanager\/newfolder",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getFolders": {
+      "uri": "admin\/setting\/laravel-filemanager\/folders",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getCrop": {
+      "uri": "admin\/setting\/laravel-filemanager\/crop",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getCropimage": {
+      "uri": "admin\/setting\/laravel-filemanager\/cropimage",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getCropnewimage": {
+      "uri": "admin\/setting\/laravel-filemanager\/cropnewimage",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getRename": {
+      "uri": "admin\/setting\/laravel-filemanager\/rename",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getResize": {
+      "uri": "admin\/setting\/laravel-filemanager\/resize",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.performResize": {
+      "uri": "admin\/setting\/laravel-filemanager\/doresize",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getDownload": {
+      "uri": "admin\/setting\/laravel-filemanager\/download",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.getDelete": {
+      "uri": "admin\/setting\/laravel-filemanager\/delete",
+      "methods": ["GET", "HEAD"]
+    },
+    "unisharp.lfm.": {
+      "uri": "admin\/setting\/laravel-filemanager\/demo",
+      "methods": ["GET", "HEAD"]
+    },
+    "product-detail": {
+      "uri": "product-detail\/{table}-{id}",
+      "methods": ["GET", "HEAD"]
+    },
+    "login": {
+      "uri": "login",
+      "methods": ["POST"]
+    },
+    "logout": {
+      "uri": "logout",
+      "methods": ["POST"]
+    },
+    "register": {
+      "uri": "register",
+      "methods": ["GET", "HEAD"]
+    },
+    "password.request": {
+      "uri": "password\/reset",
+      "methods": ["GET", "HEAD"]
+    },
+    "password.email": {
+      "uri": "forgot-password",
+      "methods": ["POST"]
+    },
+    "password.reset": {
+      "uri": "reset-password\/{token}",
+      "methods": ["GET", "HEAD"]
+    },
+    "password.update": {
+      "uri": "reset-password",
+      "methods": ["POST"]
+    },
+    "password.confirm": {
+      "uri": "password\/confirm",
+      "methods": ["GET", "HEAD"]
+    },
+    "forgot-password": {
+      "uri": "forgot-password",
+      "methods": ["GET", "HEAD"]
+    },
+    "home": {
+      "uri": "user\/home",
+      "methods": ["GET", "HEAD"]
+    },
+    "artists": {
+      "uri": "artists",
+      "methods": ["GET", "HEAD"]
+    },
+    "artists.your-setting": {
+      "uri": "artists\/your-setting",
+      "methods": ["GET", "HEAD"]
+    },
+    "artists.reset-password": {
+      "uri": "artists\/reset-password",
+      "methods": ["POST"]
+    },
+    "artists.updateAvatar": {
+      "uri": "artists\/update-avatar",
+      "methods": ["POST"]
+    },
+    "artists.updateInfomation": {
+      "uri": "artists\/update-infomation",
+      "methods": ["POST"]
+    },
+    "composer.email": {
+      "uri": "email",
+      "methods": ["POST"]
+    },
+    "auth-admin.index": {
+      "uri": "admin\/auth-admin",
+      "methods": ["GET", "HEAD"]
+    },
+    "auth-admin.store": {
+      "uri": "admin\/auth-admin\/store",
+      "methods": ["POST"]
+    },
+    "auth-admin.update": {
+      "uri": "admin\/auth-admin\/{auth_admin}",
+      "methods": ["PUT"],
+      "bindings": {
+        "auth_admin": "id"
+      }
+    },
+    "auth-admin.destroy": {
+      "uri": "admin\/auth-admin\/{auth_admin}",
+      "methods": ["DELETE"],
+      "bindings": {
+        "auth_admin": "id"
+      }
+    },
+    "your-setting": {
+      "uri": "admin\/your-setting",
+      "methods": ["GET", "HEAD"]
+    },
+    "reset-password": {
+      "uri": "admin\/reset-password",
+      "methods": ["POST"]
+    },
+    "admin.updateAvatar": {
+      "uri": "admin\/update-avatar",
+      "methods": ["POST"]
+    },
+    "admin.updateInfomation": {
+      "uri": "admin\/update-infomation",
+      "methods": ["POST"]
+    },
+    "ckeditor.upload": {
+      "uri": "admin\/insert-new",
+      "methods": ["POST"]
+    },
+    "FormContact-admin": {
+      "uri": "admin\/FormContact",
+      "methods": ["GET", "HEAD"]
+    },
+    "search": {
+      "uri": "admin\/search",
+      "methods": ["GET", "HEAD"]
+    },
+    "FormContact.show": {
+      "uri": "admin\/FormContact\/{id}",
+      "methods": ["GET", "HEAD"]
+    },
+    "FormContact.delete": {
+      "uri": "admin\/FormContact\/delete\/{id}",
+      "methods": ["DELETE"]
+    },
+    "simple-slider": {
+      "uri": "admin\/simple-slider",
+      "methods": ["GET", "HEAD"]
+    },
+    "SimpleSlider.edit": {
+      "uri": "admin\/simple-slider\/edit\/{id}",
+      "methods": ["GET", "HEAD"]
+    },
+    "update-simple-slider": {
+      "uri": "admin\/update-simple-slider\/{id}",
+      "methods": ["POST"]
+    },
+    "simple-slider-item.delete": {
+      "uri": "admin\/simple-slider-item\/delete\/{id}",
+      "methods": ["DELETE"]
+    },
+    "update-simple-slider-item": {
+      "uri": "admin\/update-simple-slider-item\/{id}",
+      "methods": ["POST"]
+    },
+    "created-simple-slider-item": {
+      "uri": "admin\/created-simple-slider-item\/{id_simple}",
+      "methods": ["POST"]
+    },
+    "category": {
+      "uri": "admin\/category",
+      "methods": ["GET", "HEAD"]
+    },
+    "category-up": {
+      "uri": "admin\/category\/category-post",
+      "methods": ["POST"]
+    },
+    "category.delete": {
+      "uri": "admin\/category\/delete\/{id}",
+      "methods": ["DELETE"]
+    },
+    "update-menu": {
+      "uri": "admin\/category\/update-menu\/{id}",
+      "methods": ["POST"]
+    },
+    "bookings.store": {
+      "uri": "admin\/books\/store",
+      "methods": ["POST"]
+    },
+    "bookings.edit": {
+      "uri": "admin\/books\/{id}\/edit",
+      "methods": ["GET", "HEAD"]
+    },
+    "bookings.update": {
+      "uri": "admin\/books\/{id}",
+      "methods": ["PUT"]
+    },
+    "artist-levels.index": {
+      "uri": "admin\/artist-levels",
+      "methods": ["GET", "HEAD"]
+    },
+    "artist-levels.create": {
+      "uri": "admin\/artist-levels\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "artist-levels.store": {
+      "uri": "admin\/artist-levels\/store",
+      "methods": ["POST"]
+    },
+    "artist-levels.show": {
+      "uri": "admin\/artist-levels\/{artist_level}",
+      "methods": ["GET", "HEAD"]
+    },
+    "artist-levels.edit": {
+      "uri": "admin\/artist-levels\/{artist_level}\/edit",
+      "methods": ["GET", "HEAD"]
+    },
+    "artist-levels.update": {
+      "uri": "admin\/artist-levels\/{artist_level}",
+      "methods": ["PUT"],
+      "bindings": {
+        "artist_level": "id"
+      }
+    },
+    "artist-levels.destroy": {
+      "uri": "admin\/artist-levels\/{artist_level}",
+      "methods": ["DELETE"],
+      "bindings": {
+        "artist_level": "id"
+      }
+    },
+    "get.index": {
+      "uri": "admin\/get",
+      "methods": ["GET", "HEAD"]
+    },
+    "get.create": {
+      "uri": "admin\/get\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "get.store": {
+      "uri": "admin\/get\/get",
+      "methods": ["POST"]
+    },
+    "get.edit": {
+      "uri": "admin\/get\/{get}\/edit",
+      "methods": ["GET", "HEAD"],
+      "bindings": {
+        "get": "id"
+      }
+    },
+    "get.update": {
+      "uri": "admin\/get\/{get}",
+      "methods": ["PUT"]
+    },
+    "get.destroy": {
+      "uri": "admin\/get\/{get}",
+      "methods": ["DELETE"],
+      "bindings": {
+        "get": "id"
+      }
+    },
+    "groups.index": {
+      "uri": "admin\/group",
+      "methods": ["GET", "HEAD"]
+    },
+    "groups.store": {
+      "uri": "admin\/group\/store",
+      "methods": ["POST"]
+    },
+    "groups.update": {
+      "uri": "admin\/group\/{group}",
+      "methods": ["PUT"],
+      "bindings": {
+        "group": "id"
+      }
+    },
+    "groups.destroy": {
+      "uri": "admin\/group\/{group}",
+      "methods": ["DELETE"],
+      "bindings": {
+        "group": "id"
+      }
+    },
+    "services.index": {
+      "uri": "admin\/services",
+      "methods": ["GET", "HEAD"]
+    },
+    "services.create": {
+      "uri": "admin\/services\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "services.store": {
+      "uri": "admin\/services\/store",
+      "methods": ["POST"]
+    },
+    "services.edit": {
+      "uri": "admin\/services\/{service}\/edit",
+      "methods": ["GET", "HEAD"],
+      "bindings": {
+        "service": "id"
+      }
+    },
+    "services.update": {
+      "uri": "admin\/services\/{service}",
+      "methods": ["PUT"],
+      "bindings": {
+        "service": "id"
+      }
+    },
+    "services.destroy": {
+      "uri": "admin\/services\/{service}",
+      "methods": ["DELETE"],
+      "bindings": {
+        "service": "id"
+      }
+    },
+    "showrooms.index": {
+      "uri": "admin\/showrooms",
+      "methods": ["GET", "HEAD"]
+    },
+    "showrooms.create": {
+      "uri": "admin\/showrooms\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "showrooms.store": {
+      "uri": "admin\/showrooms\/store",
+      "methods": ["POST"]
+    },
+    "showrooms.edit": {
+      "uri": "admin\/showrooms\/{showroom}\/edit",
+      "methods": ["GET", "HEAD"],
+      "bindings": {
+        "showroom": "id"
+      }
+    },
+    "showrooms.update": {
+      "uri": "admin\/showrooms\/{showroom}",
+      "methods": ["PUT"],
+      "bindings": {
+        "showroom": "id"
+      }
+    },
+    "showrooms.destroy": {
+      "uri": "admin\/showrooms\/{showroom}",
+      "methods": ["DELETE"],
+      "bindings": {
+        "showroom": "id"
+      }
+    },
+    "artist.index": {
+      "uri": "admin\/artist",
+      "methods": ["GET", "HEAD"]
+    },
+    "artist.show": {
+      "uri": "admin\/artist\/show\/{artist}",
+      "methods": ["GET", "HEAD"],
+      "bindings": {
+        "artist": "id"
+      }
+    },
+    "artist.edit": {
+      "uri": "admin\/artist\/edit\/{artist}",
+      "methods": ["GET", "HEAD"],
+      "bindings": {
+        "artist": "id"
+      }
+    },
+    "artist.update": {
+      "uri": "admin\/artist\/update\/{artist}",
+      "methods": ["PUT"],
+      "bindings": {
+        "artist": "id"
+      }
+    },
+    "artist.destroy": {
+      "uri": "admin\/artist\/delete\/{artist}",
+      "methods": ["DELETE"],
+      "bindings": {
+        "artist": "id"
+      }
+    },
+    "artist.create": {
+      "uri": "admin\/artist\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "artist.store": {
+      "uri": "admin\/artist\/store",
+      "methods": ["POST"]
+    },
+    "book.index": {
+      "uri": "admin\/booking",
+      "methods": ["GET", "HEAD"]
+    },
+    "blocks": {
+      "uri": "admin\/pages",
+      "methods": ["GET", "HEAD"]
+    },
+    "block.create": {
+      "uri": "admin\/pages\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "block-store": {
+      "uri": "admin\/pages\/store",
+      "methods": ["POST"]
+    },
+    "blocks.delete": {
+      "uri": "admin\/pages\/delete\/{id}",
+      "methods": ["DELETE"]
+    },
+    "blocks.edit": {
+      "uri": "admin\/pages\/edit\/{id}",
+      "methods": ["GET", "HEAD"]
+    },
+    "blocks.update": {
+      "uri": "admin\/pages\/update-block\/{id}",
+      "methods": ["POST"]
+    },
+    "statics": {
+      "uri": "admin\/blocks",
+      "methods": ["GET", "HEAD"]
+    },
+    "static.create": {
+      "uri": "admin\/blocks\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "static-store": {
+      "uri": "admin\/blocks\/store",
+      "methods": ["POST"]
+    },
+    "statics.delete": {
+      "uri": "admin\/blocks\/delete\/{id}",
+      "methods": ["DELETE"]
+    },
+    "statics.edit": {
+      "uri": "admin\/blocks\/edit\/{id}",
+      "methods": ["GET", "HEAD"]
+    },
+    "statics.update": {
+      "uri": "admin\/blocks\/update-static\/{id}",
+      "methods": ["POST"]
+    },
+    "posts": {
+      "uri": "admin\/posts",
+      "methods": ["GET", "HEAD"]
+    },
+    "create": {
+      "uri": "admin\/posts\/create",
+      "methods": ["GET", "HEAD"]
+    },
+    "post.multi.delete": {
+      "uri": "admin\/posts\/multidelete",
+      "methods": ["GET", "HEAD"]
+    },
+    "posts-up": {
+      "uri": "admin\/posts\/store",
+      "methods": ["POST"]
+    },
+    "posts.delete": {
+      "uri": "admin\/posts\/delete\/{id}",
+      "methods": ["DELETE"]
+    },
+    "edit-posts": {
+      "uri": "admin\/posts\/edit\/{id}",
+      "methods": ["GET", "HEAD"]
+    },
+    "update-posts": {
+      "uri": "admin\/posts\/update-posts\/{id}",
+      "methods": ["POST"]
+    },
+    "setting": {
+      "uri": "admin\/theme\/option",
+      "methods": ["GET", "HEAD"]
+    },
+    "setting-up": {
+      "uri": "admin\/theme\/option-post",
+      "methods": ["POST"]
+    },
+    "general": {
+      "uri": "admin\/setting\/general",
+      "methods": ["GET", "HEAD"]
+    },
+    "general.post": {
+      "uri": "admin\/setting\/general-post",
+      "methods": ["POST"]
+    },
+    "email": {
+      "uri": "admin\/setting\/email",
+      "methods": ["GET", "HEAD"]
+    },
+    "email.post": {
+      "uri": "admin\/setting\/email-post",
+      "methods": ["POST"]
+    },
+    "compose-email-form": {
+      "uri": "compose-email",
+      "methods": ["POST"]
+    },
+    "contact.edit": {
+      "uri": "contact",
+      "methods": ["GET", "HEAD"]
+    },
+    "contacts.update": {
+      "uri": "update-contact",
+      "methods": ["POST"]
+    },
+    "informations-post": {
+      "uri": "informations-post",
+      "methods": ["GET", "HEAD"]
+    },
+    "informations.upload": {
+      "uri": "insert-informations",
+      "methods": ["POST"]
+    },
+    "caretoties": {
+      "uri": "caretoties\/{slug}",
+      "methods": ["GET", "HEAD"]
+    },
+    "post": {
+      "uri": "post\/{slug}",
+      "methods": ["GET", "HEAD"]
+    },
+    "page": {
+      "uri": "page\/{slug}",
+      "methods": ["GET", "HEAD"]
+    }
+  }
+};
+if (typeof window !== 'undefined' && typeof window.Ziggy !== 'undefined') {
+  Object.assign(Ziggy.routes, window.Ziggy.routes);
+}
+
 
 /***/ }),
 

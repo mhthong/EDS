@@ -57,23 +57,26 @@
 
                                                 <div class="form-group">
                                                     <label for="Name">Name</label>
-                                                    <input type="text" class="form-control" id="Name" name="Name" value="{{ $showroom ->Name}}" required>
+                                                    <input type="text" class="form-control" id="Name" name="Name"
+                                                        value="{{ $showroom->Name }}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="Address">Address</label>
-                                                    <input type="text" class="form-control" id="Address" name="Address"  value="{{ $showroom ->Address}}" required>
+                                                    <input type="text" class="form-control" id="Address" name="Address"
+                                                        value="{{ $showroom->Address }}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="Phone">Phone</label>
-                                                    <input type="text" class="form-control" id="Phone" name="Phone"  value="{{ $showroom ->Phone}}" required>
+                                                    <input type="text" class="form-control" id="Phone" name="Phone"
+                                                        value="{{ $showroom->Phone }}" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="Description">Description</label>
-                                                    <textarea class="form-control" id="Description" name="Description"> {{ $showroom ->Description}}</textarea>
+                                                    <textarea class="form-control" id="Description" name="Description"> {{ $showroom->Description }}</textarea>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="maps">Maps</label>
-                                                    <textarea type="text" class="form-control" col="30" rows="10" id="maps" name="maps">{{ $showroom ->maps}}</textarea>
+                                                    <textarea type="text" class="form-control" col="30" rows="10" id="maps" name="maps">{{ $showroom->maps }}</textarea>
                                                 </div>
                                             </div>
 
@@ -133,38 +136,103 @@
                                                 <div class="widget meta-boxes">
                                                     <div class="widget-title">
                                                         <h4><label for="status" class="m-0 control-label required"
-                                                                aria-required="true">Showroom Schedules</label></h4>
+                                                                aria-required="true">Group Serviecs</label></h4>
                                                     </div>
-                                                    <div class="widget-body p-3">
-                                                        <div class="ui-select-wrapper form-group mt-4">
-                                                            @foreach ($daysOfWeek as $day)
-                                                            <div class="form-group">
-                                                                <label for="active_{{ $day }}">{{ __('Active on ') . $day }}</label>
-                                                                <input type="checkbox" name="active_{{ $day }}" id="active_{{ $day }}" onchange="toggleWorkingFields(this)" {{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? 'checked' : '' }}>
-                                                            </div>
-                                                            <div class="form-group working-value-group" id="workingvalue_group_{{ $day }}" style="{{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? '' : 'display: none' }}">
-                                                                <label for="workingvalue_{{ $day }}">{{ __('Working Value on ') . $day }}</label>
-                                                                <input type="number" name="workingvalue_{{ $day }}" id="workingvalue_{{ $day }}" min="0" max="30" value="{{ old("workingvalue_{$day}", optional($showroom_schedules->where('day', $day)->first())->workingvalue) }}" onchange="generateWorkingHours(this)">
-                                                            </div>
-                                                            <div class="form-group working-hours-group" id="{{ $day }}" style="{{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? '' : 'display: none' }}">
-                                                                <label for="{{ $day }}">Working Hours on {{ $day }}</label>
-                                                                <div class="working-hours">
-                                                                    @foreach (optional($showroom_schedules->where('day', $day)->first())->workingHours ?? [] as $index => $workingHour)
-                                                                        <input type="time" name="{{ $day }}[{{ $index }}][start_time]" value="{{ old("{$day}.{$index}.start_time", $workingHour->start_time) }}" required>
-                                                                        <input type="time" name="{{ $day }}[{{ $index }}][end_time]" value="{{ old("{$day}.{$index}.end_time", $workingHour->end_time) }}" required>
-                                                                    @endforeach
-                                                                </div>
-                                                            </div>
-                                                            <input type="hidden" name="{{ $day }}[]" id="{{ $day }}_hidden">
+
+                                                    @isset($allGroupServices)
+                                                        @foreach ($allGroupServices as $groupService)
+                                                            <label>
+                                                                <input type="checkbox" name="groupservices[]"
+                                                                    value="{{ $groupService->id }}"
+                                                                    {{ in_array($groupService->id, $selectedGroupServices) ? 'checked' : '' }}>
+                                                                {{ $groupService->Name }}
+                                                            </label><br>
                                                         @endforeach
-                                                        
-                                                        
-                                                        </div>
-                                                    </div>
+                                                    @endisset
+
+
+
                                                 </div>
                                             </div>
 
 
+                                        </div>
+
+                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+                                            <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
+                                                <div class="bg-ad-form right-sidebar mt-3">
+                                                    <div class="widget meta-boxes">
+                                                        <div class="widget-title">
+                                                            <h4><label for="status" class="m-0 control-label required"
+                                                                    aria-required="true">Showroom schedule</label></h4>
+                                                        </div>
+
+                                                        <div class="col-12"
+                                                            style="    display: flex;
+                                                    justify-content: start;
+                                                    flex-wrap: wrap;">
+                                                            @foreach ($daysOfWeek as $day)
+                                                                <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 p-3">
+
+                                                                    <div class="mt-3 mb-3">
+                                                                        <label class="radio-header radio-text"
+                                                                            for="active_{{ $day }}">{{ $day }}</label>
+                                                                        <input type="checkbox"
+                                                                            name="active_{{ $day }}"
+                                                                            id="active_{{ $day }}"
+                                                                            onchange="toggleWorkingFields(this)"
+                                                                            {{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? 'checked' : '' }}>
+                                                                    </div>
+
+
+
+                                                                    <div class=" working-value-group controls"
+                                                                        id="workingvalue_group_{{ $day }}">
+                                                                        <label for="workingvalue_{{ $day }}"
+                                                                            class="active">Number</label>
+
+                                                                        <input type="number"
+                                                                            name="workingvalue_{{ $day }}"
+                                                                            id="workingvalue_{{ $day }}"
+                                                                            min="0" max="4"
+                                                                            value="{{ old("workingvalue_{$day}", optional($showroom_schedules->where('day', $day)->first())->workingvalue) }}"
+                                                                            onchange="generateWorkingHours(this)">
+
+                                                                    </div>
+
+
+
+                                                                    <label for="{{ $day }}">Hours </label>
+
+                                                                    <div class="form-group working-hours-group controls"
+                                                                        id="{{ $day }}"
+                                                                        style="{{ old("active_{$day}", optional($showroom_schedules->where('day', $day)->first())->active) ? '' : 'display: none' }}">
+
+                                                                        <div class="working-hours  working-hours-flex"
+                                                                            style="display: flex;flex-wrap: wrap; ">
+                                                                            @foreach (optional($showroom_schedules->where('day', $day)->first())->workingHours ?? [] as $index => $workingHour)
+                                                                                <input type="time"
+                                                                                    name="{{ $day }}[{{ $index }}][start_time]"
+                                                                                    value="{{ old("{$day}.{$index}.start_time", $workingHour->start_time) }}"
+                                                                                    required>
+                                                                                <input type="time"
+                                                                                    name="{{ $day }}[{{ $index }}][end_time]"
+                                                                                    value="{{ old("{$day}.{$index}.end_time", $workingHour->end_time) }}"
+                                                                                    required>
+                                                                            @endforeach
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" name="{{ $day }}[]"
+                                                                        id="{{ $day }}_hidden">
+
+                                                                </div>
+                                                            @endforeach
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
