@@ -37,6 +37,10 @@
                                                     .pointer-events-a {
                                                         pointer-events: none !important;
                                                     }
+                                                    option[value="Cancel"],
+                                                    option[value="Refund"] {
+                                                        display: none;
+                                                    }
                                                 </style>
                                             @endpush
 
@@ -57,6 +61,11 @@
                                                         <style>
                                                             .pointer-events-p {
                                                                 pointer-events: none !important;
+                                                            }
+                                                            option[value="Cancel"],
+                                                            option[value="Refund"],
+                                                            option[value="Done"]{
+                                                                display: none;
                                                             }
                                                         </style>
                                                     @endpush
