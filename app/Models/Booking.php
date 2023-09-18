@@ -47,9 +47,8 @@ class Booking extends Model
     }
 
     public function sourceBookings()
-{
-    return $this->hasMany(SourceBooking::class, 'booking_id');
-}
-
+        {
+            return $this->hasMany(SourceBooking::class, 'booking_id');
+        }
 
 }

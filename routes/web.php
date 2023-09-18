@@ -87,6 +87,7 @@ Route::get('/home', [PublicController::class, 'Home']);
 
 Route::get('/generate', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
+    
     echo 'ok';
 });
 

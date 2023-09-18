@@ -28,7 +28,7 @@
                 ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Treament Date</label
               >
               <div v-if="showWarning" class="error-message">
-                Please select a date 7 days from today.
+                Please select a date more today.
               </div>
             </div>
           </div>
@@ -320,10 +320,9 @@
             <div class="ui-select-wrapper form-group">
               <div>
                 <select
-                  class="form-control"
+                  class="form-control pointer-events-p"
                   v-model="selectedStatus"
                   name="status"
-                  @input="InputSelectedStatus"
                 >
                   <option value="Waiting" selected>Waiting</option>
                   <option value="Done">Done</option>
@@ -345,7 +344,7 @@
                     name="content"
                     v-model="content"
                     required
-                  ></textarea>
+                  >{{ this.content }}</textarea>
                 </div>
               </div>
             </div>
@@ -410,7 +409,7 @@
                     type="text"
                     class="form-control pointer-events-a pointer-events-p"
                     name="sendmail"
-                    v-model="content"
+                    v-model="sendmail"
                   ></textarea>
 
                   <div class="btn-set">
@@ -421,7 +420,7 @@
                       class="btn btn-info pointer-events-a pointer-events-p"
                       @click="submitFormSendMail"
                       :disabled="
-                        content.trim() === '' || submitted || !submitFormSendMail()
+                        sendmail.trim() === '' || submitted || !submitFormSendMail()
                       "
                     >
                       <i class="fa-regular fa-paper-plane"></i>
@@ -486,6 +485,7 @@ export default {
       selectedStatus: "Waiting",
       selectedPaymentType: "N/A",
       content: "",
+      sendmail:"",
       id: "",
       currentURL: "",
       apiData_id: [],
@@ -599,7 +599,8 @@ export default {
           this.endTime = this.apiData_id[0].time_end;
           this.selectedServices = this.apiData_id[0].services[0].id;
           this.selectedServicesName = this.apiData_id[0].services[0].Name;
-
+          this.content = this.apiData_id[0].content;
+ 
           if (this.apiData_id[0].ArtistID === 7) {
             this.selectedArtist = 0;
           } else {
@@ -613,6 +614,7 @@ export default {
             // Handle the case where payment data is not available
             this.selectedPaymentType = "N/A";
           }
+
           this.action = this.apiData_id[0].action;
 
           this.formData = {
@@ -663,6 +665,7 @@ export default {
         console.error("Error fetching API data:", error);
       }
     },
+
     fetchArtists() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios
@@ -675,11 +678,26 @@ export default {
         });
     },
 
+
+    async fetchShowroomSchedule() {
+      try {
+        const response = await axios.get(
+          `/api/showroomschedule/${this.selectedShowroom}`
+        );
+        this.showroomSchedules = response.data;
+        console.log("selectedShowroom",this.selectedShowroom);
+        console.log("showroomSchedules", response.data);
+      } catch (error) {
+        console.error("Error fetching showroomschedule data:", error);
+      }
+    },
+
     fetchShowroomSchedule() {
       axios
         .get(`/api/showroomschedule/${this.id}`)
         .then((response) => {
           this.showroomSchedules = response.data;
+          console.log("showroomSchedules", response.data);
         })
         .catch((error) => {
           console.error("Error fetching showroomschedule:", error);
@@ -690,11 +708,13 @@ export default {
       if (!this.selectedDate) return;
       const selectedDay = this.selectedDateToDay(this.selectedDate);
       const selectedShowroomSchedule = this.showroomSchedules.find(
-        (schedule) => schedule.day === selectedDay && schedule.active === 1
+        (schedule) => schedule.day === selectedDay && schedule.active === "1"
       );
       this.filteredDays = selectedShowroomSchedule
         ? [selectedShowroomSchedule]
         : [];
+
+        console.log( this.filteredDays);
     },
     selectedDateToDay(dateString) {
       const date = new Date(dateString);
@@ -731,7 +751,7 @@ export default {
           data.time === workingHourStartTime &&
           data.date === selectedDate &&
           data.time_end === workingHourEndTime &&
-          data.ArtistID === selectedArtist
+          parseInt(data.ArtistID) === parseInt(selectedArtist)
       );
 
       return (
@@ -751,7 +771,7 @@ export default {
       const timeDiff = selectedDate - currentDate;
 
       // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
-      if (timeDiff < 0 || timeDiff < 7 * 24 * 60 * 60 * 1000) {
+      if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
         // Ngày không hợp lệ, hiển thị thông báo
         this.showWarning = true;
       } else {
@@ -919,7 +939,7 @@ export default {
     },
 
     submitFormSendMail() {
-      if (this.content.trim() === "") {
+      if (this.sendmail.trim() === "") {
         // Check if content is empty or contains only whitespace
         alert("Textarea cannot be empty.");
         return false; // You can show an alert or any other error handling here

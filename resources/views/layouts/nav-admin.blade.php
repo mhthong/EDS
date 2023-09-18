@@ -121,6 +121,16 @@
                     </ul>
         
                 </li>
+                <li>
+                    @auth
+    @if(Auth::user()->super_user === 0 && Auth::user()->manage_supers === 0)
+        <p>User ID: {{ Auth::user()->id }}</p>
+        <p>Name: {{ Auth::user()->name }}</p>
+        <!-- Add more user information fields as needed -->
+    @endif
+@endauth
+
+                </li>
             
                 <li>
                     <a href="#"><i class="fa-brands fa-servicestack"></i></a>
@@ -161,6 +171,8 @@
                 <li>
                     <a href="{{ route('get.index') }}"><i class="fa-solid fa-address-book"></i></a>
                 </li>
+
+                
                 <li>
                     <a href="{{ route('auth-admin.index') }}"><i class="fa-solid fa-user"></i></a>
                 </li>

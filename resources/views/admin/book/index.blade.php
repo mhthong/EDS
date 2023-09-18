@@ -155,6 +155,8 @@
                                         <th data-field="Deposit">Deposit</th>
                                         <th data-field="PaymentType">Payment Type</th>
                                         <th data-field="Statustate">Status</th>
+                                        <th data-field="Actiontate">Approved
+                                        </th>
                                         <th data-field="Remaining">Remaining</th>
                                         <th data-field="TotalRevenue">Total Revenue</th>
                                         <th data-field="Source">Source</th>
@@ -174,6 +176,8 @@
                                         <th data-field="Deposit"></th>
                                         <th data-field="PaymentType">Payment Type</th>
                                         <th data-field="Statustate">Status</th>
+                                        <th data-field="Actiontate">Approved
+                                        </th>
                                         <th data-field="Remaining"></th>
                                         <th data-field="TotalRevenue"></th>
                                         <th data-field="Source">Source</th>
@@ -223,6 +227,7 @@
                                             <td>{{ $booking->price ? $booking->price->Deposit_price : 'N/A' }}</td>
                                             <td>{{ $booking->payment ? $booking->payment->payment_type : 'N/A' }}</td>
                                             <td>{{ $booking->status }}</td>
+                                            <td>{{ $booking->action }}</td>
                                             <td>{{ $booking->price ? $booking->price->Remaining_price : 'N/A' }}</td>
                                             <td>{{ $booking->price ? $booking->price->Total_price : 'N/A' }}</td>
                                             <td>{{ $booking->source_name }}</td>
@@ -294,7 +299,7 @@
 
 
 
-            table.columns([5, 6, 11, 12, 15]).every(function() {
+            table.columns([5, 6, 11, 12,13, 15]).every(function() {
                 const column = this;
                 const select = $('<select><option value=""></option></select>')
                     .appendTo($(column.header()).empty())

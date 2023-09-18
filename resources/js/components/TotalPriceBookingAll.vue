@@ -18,11 +18,11 @@
         <h5>${{ Deposit_price }}</h5>
         <p>Deposit Price for the month</p>
       </li>
-      <li>
+<!--       <li>
         <i class="fa-brands fa-servicestack" style="color: #eab3e0;"></i>
         <h5>${{ servies_price }}</h5>
         <p>Booking Price for the month</p>
-      </li>
+      </li> -->
       <li>
         <i class="fa-regular fa-calendar" style="color: #3498db;"></i>
         <h5>{{ numberOfBooks }}</h5>

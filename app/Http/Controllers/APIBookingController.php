@@ -170,7 +170,7 @@ class APIBookingController extends Controller
             'services',
             'price',
             'payment'
-        ])->where('ShowroomID', $showroomId)->get();
+        ])->where('status','=','Waiting')->where('ShowroomID', $showroomId)->get();
 
         return response()->json($getBookShowroomData);
     }

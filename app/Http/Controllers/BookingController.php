@@ -47,7 +47,7 @@ class BookingController extends Controller
                     'services',
                     'price',
                     'payment'
-                ])->orderBy('created_at', 'desc')->where('ArtistID', '=', $userId)->get();
+                ])->orderBy('created_at', 'desc')->where('action','=','approved')->where('ArtistID', '=', $userId)->get();
 
             } elseif (Auth::user() instanceof \App\Models\Admin) {
 
@@ -287,7 +287,7 @@ class BookingController extends Controller
     public function updateEdit($book, $data)
     {
 
-
+   
 
         if ($data['artist'] == 0) {
             $artists = Artists::where('name', '=', 'N/A')->first();
@@ -297,7 +297,6 @@ class BookingController extends Controller
             $ArtistID = $data['artist'];
         }
         
-
 
         if (isset($data['content'])) {
             $content = $data['content'];
@@ -325,8 +324,10 @@ class BookingController extends Controller
             $Total_price = 0;
             $Remaining_price = 0;
         } else {
+        
             $Total_price = $Price->Deposit_price;
-            $Remaining_price = $Price->Total_price - $Price->Deposit_price;
+            $Remaining_price = $Price->Remaining_price;
+            dd( $Price ,$Total_price ,  $Remaining_price );
         }
 
 

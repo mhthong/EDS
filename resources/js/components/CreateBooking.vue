@@ -217,7 +217,7 @@
               ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Date</label
             >
             <div v-if="showWarning" class="error-message">
-              Please select a date 7 days from today.
+              Please select a date more today.
             </div>
           </div>
         </div>
@@ -601,6 +601,7 @@ export default {
 
     filterActiveDays() {
       if (!this.selectedDate) return;
+      console.log("selectedDate:", this.selectedDate);
       const selectedDay = this.selectedDateToDay(this.selectedDate);
       const selectedShowroomSchedule = this.showroomSchedules.find(
         (schedule) => schedule.day === selectedDay && schedule.active === 1
@@ -609,6 +610,7 @@ export default {
         ? [selectedShowroomSchedule]
         : [];
     },
+
     selectedDateToDay(dateString) {
       const date = new Date(dateString);
       const daysOfWeek = [
@@ -656,7 +658,7 @@ export default {
       const timeDiff = selectedDate - currentDate;
 
       // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
-      if (timeDiff < 0 || timeDiff < 7 * 24 * 60 * 60 * 1000) {
+      if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
         // Ngày không hợp lệ, hiển thị thông báo
         this.showWarning = true;
       } else {

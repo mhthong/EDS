@@ -182,6 +182,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     filterActiveDays: function filterActiveDays() {
       if (!this.selectedDate) return;
+      console.log("selectedDate:", this.selectedDate);
       var selectedDay = this.selectedDateToDay(this.selectedDate);
       var selectedShowroomSchedule = this.showroomSchedules.find(function (schedule) {
         return schedule.day === selectedDay && schedule.active === 1;
@@ -213,7 +214,7 @@ __webpack_require__.r(__webpack_exports__);
       var timeDiff = selectedDate - currentDate;
 
       // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
-      if (timeDiff < 0 || timeDiff < 7 * 24 * 60 * 60 * 1000) {
+      if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
         // Ngày không hợp lệ, hiển thị thông báo
         this.showWarning = true;
       } else {
@@ -429,6 +430,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+var _methods;
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return { value: void 0, done: !0 }; } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable || "" === iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } throw new TypeError(_typeof(iterable) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
@@ -478,6 +483,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       selectedStatus: "Waiting",
       selectedPaymentType: "N/A",
       content: "",
+      sendmail: "",
       id: "",
       currentURL: "",
       apiData_id: [],
@@ -572,7 +578,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return null;
     }
   },
-  methods: {
+  methods: (_methods = {
     fetchapiData_id: function fetchapiData_id() {
       var _this4 = this;
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
@@ -588,6 +594,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         _this4.endTime = _this4.apiData_id[0].time_end;
         _this4.selectedServices = _this4.apiData_id[0].services[0].id;
         _this4.selectedServicesName = _this4.apiData_id[0].services[0].Name;
+        _this4.content = _this4.apiData_id[0].content;
         if (_this4.apiData_id[0].ArtistID === 7) {
           _this4.selectedArtist = 0;
         } else {
@@ -668,229 +675,232 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     fetchShowroomSchedule: function fetchShowroomSchedule() {
       var _this9 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.id)).then(function (response) {
-        _this9.showroomSchedules = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching showroomschedule:", error);
-      });
-    },
-    filterActiveDays: function filterActiveDays() {
-      if (!this.selectedDate) return;
-      var selectedDay = this.selectedDateToDay(this.selectedDate);
-      var selectedShowroomSchedule = this.showroomSchedules.find(function (schedule) {
-        return schedule.day === selectedDay && schedule.active === 1;
-      });
-      this.filteredDays = selectedShowroomSchedule ? [selectedShowroomSchedule] : [];
-    },
-    selectedDateToDay: function selectedDateToDay(dateString) {
-      var date = new Date(dateString);
-      var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      return daysOfWeek[date.getDay()];
-    },
-    inputSelectedStatus: function inputSelectedStatus() {
-      // Handle input change event if needed
-    },
-    // ... (Phần methods và các hàm đã có)
-    isDisabled: function isDisabled(day, workingHourStartTime, workingHourEndTime, selectedDate, selectedArtist) {
-      // Check if API data has already been fetched
-
-      // Fetch API data if it hasn't been fetched yet
-      // Set the flag to true to indicate that data has been fetched
-      var matchingApiData = this.apiData.find(function (data) {
-        return data.time === workingHourStartTime && data.date === selectedDate && data.time_end === workingHourEndTime && data.ArtistID === selectedArtist;
-      });
-      return matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom;
-    },
-    checkSelectedDate: function checkSelectedDate() {
-      // Xử lý sự kiện khi ngày được chọn thay đổi
-      var apiData = this.apiData_id[0];
-      var currentDateISO = apiData.created_at;
-      var currentDate = new Date(currentDateISO); // Convert to JavaScript Date object
-
-      var selectedDate = new Date(this.selectedDate);
-
-      // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
-      var timeDiff = selectedDate - currentDate;
-
-      // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
-      if (timeDiff < 0 || timeDiff < 7 * 24 * 60 * 60 * 1000) {
-        // Ngày không hợp lệ, hiển thị thông báo
-        this.showWarning = true;
-      } else {
-        // Ngày hợp lệ, ẩn thông báo
-        this.showWarning = false;
-      }
-    },
-    fetchServices: function fetchServices() {
-      var _this10 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
-        _this10.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching services:", error);
-      });
-    },
-    fetchArtistlevels: function fetchArtistlevels() {
-      var _this11 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
-        _this11.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching artist levels:", error);
-      });
-    },
-    updateTotalPrice: function updateTotalPrice() {
-      this.totalPrice = this.calculateTotalPrice;
-    },
-    formatCurrency: function formatCurrency(value) {
-      var formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "UAD"
-      });
-      return formatter.format(value);
-    },
-    getServiceName: function getServiceName(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      return service ? service.Name : "";
-    },
-    getServicePrice: function getServicePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var priceString = service.Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(priceString);
-      }
-      return 0;
-    },
-    getServiceSalePrice: function getServiceSalePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var Sale_PricepriceString = service.Sale_Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(Sale_PricepriceString);
-      }
-      return 0;
-    },
-    checkInputValue: function checkInputValue() {
-      if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
-        this.inputError = true;
-      } else {
-        this.inputError = false;
-      }
-    },
-    calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
-      var serviceTotalPrice = 0;
-      if (this.selectedServices !== null) {
-        // Tìm dịch vụ được chọn trong danh sách dịch vụ
-        var servicePrice = this.getServicePrice(this.selectedServices);
-        var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
-        serviceTotalPrice = parseFloat(servicePrice);
-      }
-      this.maxDepositPrice = serviceTotalPrice;
-      this.maxDiscountPrice = serviceTotalPrice;
-      if (this.selectedDepositPrice !== "") {
-        var selectedDepositPrice = this.selectedDepositPrice;
-        return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice);
-      } else {
-        return serviceTotalPrice + this.totalLevelPrice;
-      }
-    },
-    nextStep: function nextStep() {
-      if (this.step === "showroom") {
-        if (this.selectedServices) {
-          this.fetchArtistlevels();
-          this.fetchGroupServices();
-          this.fetchApiData();
-          this.step = "groupService";
-        }
-      }
-    },
-    prevStep: function prevStep() {
-      if (this.step === "groupService") {
-        this.step = "showroom";
-        this.bookingDatavalue = "";
-        this.selectedGroupService = null;
-        this.selectedServices = this.apiData_id[0].services[0].id;
-        this.selectedArtistlevel = [];
-        this.totalSelectedServicesPrice = 0;
-        // Xóa dữ liệu đã chọn
-      }
-    },
-    checkselectedArtist: function checkselectedArtist() {
-      this.isIconActive = true;
-    },
-    SubmitEvent: function SubmitEvent() {
-      if (this.step === "groupService") {
-        if (this.validateForm()) {
-          // If the form is valid, proceed with submission
-          // Your existing code here to submit the data
-          // After successful submission, you can set this.submitted = true;
-          var bookingDatavalue = {
-            showroomId: this.selectedShowroom,
-            groupServiceId: this.selectedGroupService,
-            serviceIds: this.selectedServices,
-            Artist_levelID: this.selectedArtistlevel,
-            ArtistID: this.selectedArtist,
-            Level_price: this.totalLevelPrice,
-            Remaining_price: this.calculateTotalSelectedServicesPrice(),
-            Deposit_price: this.selectedDepositPrice,
-            Total_price: parseFloat(this.calculateTotalSelectedServicesPrice()) + parseFloat(this.selectedDepositPrice)
-          };
-          this.bookingData = JSON.stringify(bookingDatavalue);
-        } else {
-          // If the form is not valid, do not submit and display an error message
-          this.submitted = false;
-        }
-      } else {
-        this.step = "showroom";
-      }
-    },
-    submitFormSendMail: function submitFormSendMail() {
-      if (this.content.trim() === "") {
-        // Check if content is empty or contains only whitespace
-        alert("Textarea cannot be empty.");
-        return false; // You can show an alert or any other error handling here
-      } else {
-        // Proceed with form submission
-        // You can use axios or any other method to send the data to the server
-        return true;
-      }
-    },
-    validateTime: function validateTime() {
-      // Parse the time inputs into Date objects
-      var startTime = new Date("1970-01-01T".concat(this.startTime));
-      var endTime = new Date("1970-01-01T".concat(this.endTime));
-
-      // Check if the end time is later than the start time
-      if (startTime >= endTime) {
-        alert("End time must be later than start time.");
-        // You can reset the end time or handle the error as needed
-        this.endTime = "";
-      }
-    },
-    isNameValid: function isNameValid(name) {
-      // Kiểm tra dữ liệu tên (có thể có các yêu cầu riêng cho trường này)
-      return name.trim().length > 0;
-    },
-    isEmailValid: function isEmailValid(email) {
-      // Kiểm tra dữ liệu email (đơn giản kiểm tra định dạng)
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    },
-    isAddressValid: function isAddressValid(address) {
-      // Kiểm tra dữ liệu địa chỉ (có thể có các yêu cầu riêng cho trường này)
-      return address.trim().length > 0;
-    },
-    isPhoneValid: function isPhoneValid(phone) {
-      // Kiểm tra dữ liệu số điện thoại (ví dụ: 10 chữ số)
-      return /^\d{10}$/.test(phone);
-    },
-    toggleGroupService: function toggleGroupService(groupId) {
-      // Sử dụng Vue.set để đảm bảo Vue.js theo dõi sự thay đổi trong trường dữ liệu groupServiceStates
-      this.$set(this.groupServiceStates, groupId, !this.groupServiceStates[groupId]);
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              _context2.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(_this9.selectedShowroom));
+            case 3:
+              response = _context2.sent;
+              _this9.showroomSchedules = response.data;
+              console.log("selectedShowroom", _this9.selectedShowroom);
+              console.log("showroomSchedules", response.data);
+              _context2.next = 12;
+              break;
+            case 9:
+              _context2.prev = 9;
+              _context2.t0 = _context2["catch"](0);
+              console.error("Error fetching showroomschedule data:", _context2.t0);
+            case 12:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2, null, [[0, 9]]);
+      }))();
     }
-  },
+  }, _defineProperty(_methods, "fetchShowroomSchedule", function fetchShowroomSchedule() {
+    var _this10 = this;
+    axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.id)).then(function (response) {
+      _this10.showroomSchedules = response.data;
+      console.log("showroomSchedules", response.data);
+    })["catch"](function (error) {
+      console.error("Error fetching showroomschedule:", error);
+    });
+  }), _defineProperty(_methods, "filterActiveDays", function filterActiveDays() {
+    if (!this.selectedDate) return;
+    var selectedDay = this.selectedDateToDay(this.selectedDate);
+    var selectedShowroomSchedule = this.showroomSchedules.find(function (schedule) {
+      return schedule.day === selectedDay && schedule.active === "1";
+    });
+    this.filteredDays = selectedShowroomSchedule ? [selectedShowroomSchedule] : [];
+    console.log(this.filteredDays);
+  }), _defineProperty(_methods, "selectedDateToDay", function selectedDateToDay(dateString) {
+    var date = new Date(dateString);
+    var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    return daysOfWeek[date.getDay()];
+  }), _defineProperty(_methods, "inputSelectedStatus", function inputSelectedStatus() {
+    // Handle input change event if needed
+  }), _defineProperty(_methods, "isDisabled", function isDisabled(day, workingHourStartTime, workingHourEndTime, selectedDate, selectedArtist) {
+    // Check if API data has already been fetched
+
+    // Fetch API data if it hasn't been fetched yet
+    // Set the flag to true to indicate that data has been fetched
+    var matchingApiData = this.apiData.find(function (data) {
+      return data.time === workingHourStartTime && data.date === selectedDate && data.time_end === workingHourEndTime && parseInt(data.ArtistID) === parseInt(selectedArtist);
+    });
+    return matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom;
+  }), _defineProperty(_methods, "checkSelectedDate", function checkSelectedDate() {
+    // Xử lý sự kiện khi ngày được chọn thay đổi
+    var apiData = this.apiData_id[0];
+    var currentDateISO = apiData.created_at;
+    var currentDate = new Date(currentDateISO); // Convert to JavaScript Date object
+
+    var selectedDate = new Date(this.selectedDate);
+
+    // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
+    var timeDiff = selectedDate - currentDate;
+
+    // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
+    if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
+      // Ngày không hợp lệ, hiển thị thông báo
+      this.showWarning = true;
+    } else {
+      // Ngày hợp lệ, ẩn thông báo
+      this.showWarning = false;
+    }
+  }), _defineProperty(_methods, "fetchServices", function fetchServices() {
+    var _this11 = this;
+    axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
+      _this11.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+    })["catch"](function (error) {
+      console.error("Error fetching services:", error);
+    });
+  }), _defineProperty(_methods, "fetchArtistlevels", function fetchArtistlevels() {
+    var _this12 = this;
+    axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
+      _this12.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+    })["catch"](function (error) {
+      console.error("Error fetching artist levels:", error);
+    });
+  }), _defineProperty(_methods, "updateTotalPrice", function updateTotalPrice() {
+    this.totalPrice = this.calculateTotalPrice;
+  }), _defineProperty(_methods, "formatCurrency", function formatCurrency(value) {
+    var formatter = new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "UAD"
+    });
+    return formatter.format(value);
+  }), _defineProperty(_methods, "getServiceName", function getServiceName(id) {
+    var service = this.services.find(function (service) {
+      return service.id === id;
+    });
+    return service ? service.Name : "";
+  }), _defineProperty(_methods, "getServicePrice", function getServicePrice(id) {
+    var service = this.services.find(function (service) {
+      return service.id === id;
+    });
+    if (service) {
+      var priceString = service.Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
+      return parseFloat(priceString);
+    }
+    return 0;
+  }), _defineProperty(_methods, "getServiceSalePrice", function getServiceSalePrice(id) {
+    var service = this.services.find(function (service) {
+      return service.id === id;
+    });
+    if (service) {
+      var Sale_PricepriceString = service.Sale_Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
+      return parseFloat(Sale_PricepriceString);
+    }
+    return 0;
+  }), _defineProperty(_methods, "checkInputValue", function checkInputValue() {
+    if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
+      this.inputError = true;
+    } else {
+      this.inputError = false;
+    }
+  }), _defineProperty(_methods, "calculateTotalSelectedServicesPrice", function calculateTotalSelectedServicesPrice() {
+    var serviceTotalPrice = 0;
+    if (this.selectedServices !== null) {
+      // Tìm dịch vụ được chọn trong danh sách dịch vụ
+      var servicePrice = this.getServicePrice(this.selectedServices);
+      var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
+      serviceTotalPrice = parseFloat(servicePrice);
+    }
+    this.maxDepositPrice = serviceTotalPrice;
+    this.maxDiscountPrice = serviceTotalPrice;
+    if (this.selectedDepositPrice !== "") {
+      var selectedDepositPrice = this.selectedDepositPrice;
+      return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice);
+    } else {
+      return serviceTotalPrice + this.totalLevelPrice;
+    }
+  }), _defineProperty(_methods, "nextStep", function nextStep() {
+    if (this.step === "showroom") {
+      if (this.selectedServices) {
+        this.fetchArtistlevels();
+        this.fetchGroupServices();
+        this.fetchApiData();
+        this.step = "groupService";
+      }
+    }
+  }), _defineProperty(_methods, "prevStep", function prevStep() {
+    if (this.step === "groupService") {
+      this.step = "showroom";
+      this.bookingDatavalue = "";
+      this.selectedGroupService = null;
+      this.selectedServices = this.apiData_id[0].services[0].id;
+      this.selectedArtistlevel = [];
+      this.totalSelectedServicesPrice = 0;
+      // Xóa dữ liệu đã chọn
+    }
+  }), _defineProperty(_methods, "checkselectedArtist", function checkselectedArtist() {
+    this.isIconActive = true;
+  }), _defineProperty(_methods, "SubmitEvent", function SubmitEvent() {
+    if (this.step === "groupService") {
+      if (this.validateForm()) {
+        // If the form is valid, proceed with submission
+        // Your existing code here to submit the data
+        // After successful submission, you can set this.submitted = true;
+        var bookingDatavalue = {
+          showroomId: this.selectedShowroom,
+          groupServiceId: this.selectedGroupService,
+          serviceIds: this.selectedServices,
+          Artist_levelID: this.selectedArtistlevel,
+          ArtistID: this.selectedArtist,
+          Level_price: this.totalLevelPrice,
+          Remaining_price: this.calculateTotalSelectedServicesPrice(),
+          Deposit_price: this.selectedDepositPrice,
+          Total_price: parseFloat(this.calculateTotalSelectedServicesPrice()) + parseFloat(this.selectedDepositPrice)
+        };
+        this.bookingData = JSON.stringify(bookingDatavalue);
+      } else {
+        // If the form is not valid, do not submit and display an error message
+        this.submitted = false;
+      }
+    } else {
+      this.step = "showroom";
+    }
+  }), _defineProperty(_methods, "submitFormSendMail", function submitFormSendMail() {
+    if (this.sendmail.trim() === "") {
+      // Check if content is empty or contains only whitespace
+      alert("Textarea cannot be empty.");
+      return false; // You can show an alert or any other error handling here
+    } else {
+      // Proceed with form submission
+      // You can use axios or any other method to send the data to the server
+      return true;
+    }
+  }), _defineProperty(_methods, "validateTime", function validateTime() {
+    // Parse the time inputs into Date objects
+    var startTime = new Date("1970-01-01T".concat(this.startTime));
+    var endTime = new Date("1970-01-01T".concat(this.endTime));
+
+    // Check if the end time is later than the start time
+    if (startTime >= endTime) {
+      alert("End time must be later than start time.");
+      // You can reset the end time or handle the error as needed
+      this.endTime = "";
+    }
+  }), _defineProperty(_methods, "isNameValid", function isNameValid(name) {
+    // Kiểm tra dữ liệu tên (có thể có các yêu cầu riêng cho trường này)
+    return name.trim().length > 0;
+  }), _defineProperty(_methods, "isEmailValid", function isEmailValid(email) {
+    // Kiểm tra dữ liệu email (đơn giản kiểm tra định dạng)
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }), _defineProperty(_methods, "isAddressValid", function isAddressValid(address) {
+    // Kiểm tra dữ liệu địa chỉ (có thể có các yêu cầu riêng cho trường này)
+    return address.trim().length > 0;
+  }), _defineProperty(_methods, "isPhoneValid", function isPhoneValid(phone) {
+    // Kiểm tra dữ liệu số điện thoại (ví dụ: 10 chữ số)
+    return /^\d{10}$/.test(phone);
+  }), _defineProperty(_methods, "toggleGroupService", function toggleGroupService(groupId) {
+    // Sử dụng Vue.set để đảm bảo Vue.js theo dõi sự thay đổi trong trường dữ liệu groupServiceStates
+    this.$set(this.groupServiceStates, groupId, !this.groupServiceStates[groupId]);
+  }), _methods),
   mounted: function mounted() {
     this.fetchShowrooms();
     this.fetchServices();
@@ -1673,7 +1683,7 @@ var render = function render() {
     staticClass: "fa fa-calendar"
   }), _vm._v("  Date")]), _vm._v(" "), _vm.showWarning ? _c("div", {
     staticClass: "error-message"
-  }, [_vm._v("\n            Please select a date 7 days from today.\n          ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n            Please select a date more today.\n          ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
     staticClass: "col-12"
   }, [_c("div", {
     staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
@@ -2091,7 +2101,7 @@ var render = function render() {
     staticClass: "fa fa-calendar"
   }), _vm._v("  Treament Date")]), _vm._v(" "), _vm.showWarning ? _c("div", {
     staticClass: "error-message"
-  }, [_vm._v("\n              Please select a date 7 days from today.\n            ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n              Please select a date more today.\n            ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
     staticClass: "col-12"
   }, [_c("div", {
     staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
@@ -2492,12 +2502,11 @@ var render = function render() {
       value: _vm.selectedStatus,
       expression: "selectedStatus"
     }],
-    staticClass: "form-control",
+    staticClass: "form-control pointer-events-p",
     attrs: {
       name: "status"
     },
     on: {
-      input: _vm.InputSelectedStatus,
       change: function change($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
           return o.selected;
@@ -2553,7 +2562,7 @@ var render = function render() {
         _vm.content = $event.target.value;
       }
     }
-  })]) : _vm._e()])])])])]), _vm._v(" "), _c("div", {
+  }, [_vm._v(_vm._s(this.content))])]) : _vm._e()])])])])]), _vm._v(" "), _c("div", {
     staticClass: "bg-ad-form right-sidebar mt-3"
   }, [_c("div", {
     staticClass: "widget meta-boxes"
@@ -2643,8 +2652,8 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.content,
-      expression: "content"
+      value: _vm.sendmail,
+      expression: "sendmail"
     }],
     staticClass: "form-control pointer-events-a pointer-events-p",
     attrs: {
@@ -2652,12 +2661,12 @@ var render = function render() {
       name: "sendmail"
     },
     domProps: {
-      value: _vm.content
+      value: _vm.sendmail
     },
     on: {
       input: function input($event) {
         if ($event.target.composing) return;
-        _vm.content = $event.target.value;
+        _vm.sendmail = $event.target.value;
       }
     }
   }), _vm._v(" "), _c("div", {
@@ -2668,7 +2677,7 @@ var render = function render() {
       type: "submit",
       name: "submit",
       value: "sendmail",
-      disabled: _vm.content.trim() === "" || _vm.submitted || !_vm.submitFormSendMail()
+      disabled: _vm.sendmail.trim() === "" || _vm.submitted || !_vm.submitFormSendMail()
     },
     on: {
       click: _vm.submitFormSendMail
@@ -2827,11 +2836,6 @@ var render = function render() {
   }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "ph-shopping-bag-fill"
   }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#eab3e0"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "fa-regular fa-calendar",
     staticStyle: {
       color: "#3498db"
@@ -2891,11 +2895,6 @@ var render = function render() {
   }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "ph-shopping-bag-fill"
   }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#eab3e0"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "fa-regular fa-calendar",
     staticStyle: {
       color: "#3498db"
@@ -2955,11 +2954,6 @@ var render = function render() {
   }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "ph-shopping-bag-fill"
   }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#eab3e0"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "fa-regular fa-calendar",
     staticStyle: {
       color: "#3498db"
