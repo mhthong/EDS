@@ -63,10 +63,12 @@
     <template v-if="step === 'showroom'">
       <div class="radio-section">
         <div v-for="showroom in showrooms" :key="showroom.id">
-          <label class="label" for="">
+          <label class="label"  :for="'showroom_' + showroom.id">
             <input
+            class="showroom_label"
               type="radio"
               :value="showroom.id"
+              :id="'showroom_' + showroom.id"
               v-model="selectedShowroom"
             />
             <div class="radio-header radio-text">{{ showroom.Name }}</div>

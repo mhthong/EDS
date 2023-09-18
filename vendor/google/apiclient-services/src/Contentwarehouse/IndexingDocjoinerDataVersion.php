@@ -155,6 +155,8 @@ class IndexingDocjoinerDataVersion extends \Google\Model
   protected $imageSearchRejectedImageInfoListDataType = '';
   protected $imageStockStockImageAnnotationType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $imageStockStockImageAnnotationDataType = '';
+  protected $imageembedType = IndexingDocjoinerDataVersionVersionInfo::class;
+  protected $imageembedDataType = '';
   protected $indexingAnnotationsAnnotationMetaType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $indexingAnnotationsAnnotationMetaDataType = '';
   protected $indexingAnnotationsAppMarketAppMarketAnnotationType = IndexingDocjoinerDataVersionVersionInfo::class;
@@ -1017,6 +1019,8 @@ class IndexingDocjoinerDataVersion extends \Google\Model
   protected $timeRangeAnnotationsDataType = '';
   protected $travelAssistantTravelDocClassificationType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $travelAssistantTravelDocClassificationDataType = '';
+  protected $ucpSignalType = IndexingDocjoinerDataVersionVersionInfo::class;
+  protected $ucpSignalDataType = '';
   protected $udrConverterDocumentShoppingDataType = IndexingDocjoinerDataVersionVersionInfo::class;
   protected $udrConverterDocumentShoppingDataDataType = '';
   protected $udrConverterOfferType = IndexingDocjoinerDataVersionVersionInfo::class;
@@ -2031,6 +2035,20 @@ class IndexingDocjoinerDataVersion extends \Google\Model
   public function getImageStockStockImageAnnotation()
   {
     return $this->imageStockStockImageAnnotation;
+  }
+  /**
+   * @param IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function setImageembed(IndexingDocjoinerDataVersionVersionInfo $imageembed)
+  {
+    $this->imageembed = $imageembed;
+  }
+  /**
+   * @return IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function getImageembed()
+  {
+    return $this->imageembed;
   }
   /**
    * @param IndexingDocjoinerDataVersionVersionInfo
@@ -8065,6 +8083,20 @@ class IndexingDocjoinerDataVersion extends \Google\Model
   public function getTravelAssistantTravelDocClassification()
   {
     return $this->travelAssistantTravelDocClassification;
+  }
+  /**
+   * @param IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function setUcpSignal(IndexingDocjoinerDataVersionVersionInfo $ucpSignal)
+  {
+    $this->ucpSignal = $ucpSignal;
+  }
+  /**
+   * @return IndexingDocjoinerDataVersionVersionInfo
+   */
+  public function getUcpSignal()
+  {
+    return $this->ucpSignal;
   }
   /**
    * @param IndexingDocjoinerDataVersionVersionInfo

@@ -1440,7 +1440,7 @@ var render = function render() {
     }, [_c("label", {
       staticClass: "label",
       attrs: {
-        "for": ""
+        "for": "showroom_" + showroom.id
       }
     }, [_c("input", {
       directives: [{
@@ -1449,8 +1449,10 @@ var render = function render() {
         value: _vm.selectedShowroom,
         expression: "selectedShowroom"
       }],
+      staticClass: "showroom_label",
       attrs: {
-        type: "radio"
+        type: "radio",
+        id: "showroom_" + showroom.id
       },
       domProps: {
         value: showroom.id,

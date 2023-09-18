@@ -17509,6 +17509,27 @@ textarea.form-control-lg {
   color: #bdcc00;
   cursor: text;
 }
+.controls input[type=text]:focus + label.active, .controls input[type=text]:hover + label.active,
+.controls input[type=email]:focus + label.active,
+.controls input[type=email]:hover + label.active,
+.controls input[type=number]:focus + label.active,
+.controls input[type=number]:hover + label.active,
+.controls input[type=date]:focus + label.active,
+.controls input[type=date]:hover + label.active,
+.controls input[type=tel]:focus + label.active,
+.controls input[type=tel]:hover + label.active,
+.controls input[type=time]:focus + label.active,
+.controls input[type=time]:hover + label.active,
+.controls textarea:focus + label.active,
+.controls textarea:hover + label.active,
+.controls button:focus + label.active,
+.controls button:hover + label.active,
+.controls select:focus + label.active,
+.controls select:hover + label.active {
+  top: -20px;
+  color: #555;
+  width: auto;
+}
 .controls .fa-sort {
   position: absolute;
   right: 10px;

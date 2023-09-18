@@ -203,7 +203,7 @@
                         </li>
                     </ul>
                 <li>
-                    <a class="dropdown-item logout" href="{{ route('logout') }}"
+                    <a class="dropdown-item logout" href="{{ route('logout') }}"8
                         onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
                         <i class="ph-sign-out-fill">

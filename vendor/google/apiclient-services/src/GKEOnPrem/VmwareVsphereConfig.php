@@ -25,9 +25,9 @@ class VmwareVsphereConfig extends \Google\Collection
    */
   public $datastore;
   /**
-   * @var string
+   * @var string[]
    */
-  public $storagePolicyName;
+  public $hostGroups;
   protected $tagsType = VmwareVsphereTag::class;
   protected $tagsDataType = 'array';
 
@@ -46,18 +46,18 @@ class VmwareVsphereConfig extends \Google\Collection
     return $this->datastore;
   }
   /**
-   * @param string
+   * @param string[]
    */
-  public function setStoragePolicyName($storagePolicyName)
+  public function setHostGroups($hostGroups)
   {
-    $this->storagePolicyName = $storagePolicyName;
+    $this->hostGroups = $hostGroups;
   }
   /**
-   * @return string
+   * @return string[]
    */
-  public function getStoragePolicyName()
+  public function getHostGroups()
   {
-    return $this->storagePolicyName;
+    return $this->hostGroups;
   }
   /**
    * @param VmwareVsphereTag[]

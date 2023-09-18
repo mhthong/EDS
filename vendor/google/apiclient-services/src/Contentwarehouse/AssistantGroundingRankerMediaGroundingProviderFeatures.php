@@ -28,6 +28,14 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
    */
   public $ambiguityClassifier;
   /**
+   * @var string
+   */
+  public $entityMid;
+  /**
+   * @var bool
+   */
+  public $hasCastVideoDeeplink;
+  /**
    * @var bool
    */
   public $hasTypeSemanticEdge;
@@ -39,6 +47,10 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
    * @var bool
    */
   public $isMediaSearchQuerySubsetOfEntityNameAndArtist;
+  /**
+   * @var bool
+   */
+  public $isMostRecentSongAlbumAmbiguous;
   /**
    * @var bool
    */
@@ -96,6 +108,34 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
     return $this->ambiguityClassifier;
   }
   /**
+   * @param string
+   */
+  public function setEntityMid($entityMid)
+  {
+    $this->entityMid = $entityMid;
+  }
+  /**
+   * @return string
+   */
+  public function getEntityMid()
+  {
+    return $this->entityMid;
+  }
+  /**
+   * @param bool
+   */
+  public function setHasCastVideoDeeplink($hasCastVideoDeeplink)
+  {
+    $this->hasCastVideoDeeplink = $hasCastVideoDeeplink;
+  }
+  /**
+   * @return bool
+   */
+  public function getHasCastVideoDeeplink()
+  {
+    return $this->hasCastVideoDeeplink;
+  }
+  /**
    * @param bool
    */
   public function setHasTypeSemanticEdge($hasTypeSemanticEdge)
@@ -136,6 +176,20 @@ class AssistantGroundingRankerMediaGroundingProviderFeatures extends \Google\Mod
   public function getIsMediaSearchQuerySubsetOfEntityNameAndArtist()
   {
     return $this->isMediaSearchQuerySubsetOfEntityNameAndArtist;
+  }
+  /**
+   * @param bool
+   */
+  public function setIsMostRecentSongAlbumAmbiguous($isMostRecentSongAlbumAmbiguous)
+  {
+    $this->isMostRecentSongAlbumAmbiguous = $isMostRecentSongAlbumAmbiguous;
+  }
+  /**
+   * @return bool
+   */
+  public function getIsMostRecentSongAlbumAmbiguous()
+  {
+    return $this->isMostRecentSongAlbumAmbiguous;
   }
   /**
    * @param bool
