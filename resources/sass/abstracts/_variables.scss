@@ -588,8 +588,9 @@ p:before {
 
 
 .published{
+    
     i{
-        padding: 5px;
+    padding: 5px;
     background: aquamarine;
     }
 }
@@ -603,6 +604,7 @@ p:before {
 
 .draft{
     i{
+        border-radius: 5px;
         padding: 5px;
         background: rgb(255, 94, 83);
     }

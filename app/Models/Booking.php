@@ -51,4 +51,25 @@ class Booking extends Model
             return $this->hasMany(SourceBooking::class, 'booking_id');
         }
 
+    // app/Models/Booking.php
+
+public function deleteBooking()
+{
+    // Delete related records if needed
+    // For example, you can delete associated payment records before deleting the booking
+    if ($this->payment ) {
+        $this->payment->delete();
+
+    }
+
+    // Delete the booking record itself
+    $this->delete();
+
+    // You can also perform additional actions here before or after deletion
+
+    // Example: Logging the deletion
+    // Log::info('Booking deleted: ' . $this->id);
+}
+
+
 }

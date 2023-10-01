@@ -23,9 +23,18 @@
 
 		<!-- start: MAIN BODY -->
 		<div class="main__body">
-			<div id="price" data-user-id="{{ auth()->id() }}">
-				<total-price-booking-all></total-price-booking-all>
+
+
+			<div id="doashboard" data-user-id="{{ auth()->id() }}">
+				<!-- Render your AdminDashboard component here -->
+				<admin-dashboard></admin-dashboard>
 			</div>
+
+			<div id="fullcalendar" >
+				<!-- Render your AdminDashboard component here -->
+				<fullcalendar-admin></fullcalendar-admin>
+			</div>
+						
 {{-- 			<div class="main__body__data">
 				<div class="sales-summary">
 					<div class="sales-summary__top">
@@ -177,8 +186,11 @@
 @endsection
 
 @section('script')
-<script src="/js/bookcreate.js" defer></script>
+<script src="/js/dashboardsvue.js" defer></script>
+<script src="/js/FullCalendarAdmin.js" defer></script>
 @endsection
+
+
 
 @section('footer')
 @endsection

@@ -35,6 +35,15 @@
 
                             @if (Auth::check())
                                 @if (Auth::user() instanceof \App\Models\Artists)
+                                      @push('styles')
+                                                <style>
+                                                    .delete {
+                                                        display: none;
+                                                    }
+                                                </style>
+                                            @endpush
+
+                      
 
                                 @elseif (Auth::user() instanceof \App\Models\Admin)
 
@@ -58,7 +67,15 @@
                                 </form>
 
                                 @elseif (Auth::user() instanceof \App\Models\Employee)
-
+                                
+                         
+                                    @push('styles')
+                                                <style>
+                                                    .delete {
+                                                        display: none;
+                                                    }
+                                                </style>
+                                            @endpush
                                 <div class="modal-header main__body__data__header">
                                     <h5 class="m-0">Add New Booking </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -95,10 +112,10 @@
                         ">
                                 <button type="button" class="btn-sub btn btn-info" data-bs-toggle="modal"
                                     data-bs-target="#createModal" data-target=".bd-example-modal-lg">
-                                    New Book
+                                    New Booking
                                 </button>
 
-                                <div class="download-buttons">
+                                <div class="download-buttons delete">
                                     <button type="button" class="btn-sub btn btn-success "
                                         id="download-visible-data">Download
                                         Visible Data</button>
@@ -138,14 +155,17 @@
 
                         <div class="bg-ad flexb-col-c">
 
-                            <table id="table" class="table-reponsive">
+                            <table id="table" class="table table-striped ">
                                 <!-- ... -->
                                 <thead>
-                                    <tr>
+                                    <tr class="table-danger">
                                         <th>No.</th>
                                         <th data-field="ClientName">Client Name</th>
                                         <th data-field="ClientInfo">Client Info</th>
+                                        <th data-field="Note">Note</th>
+                                        
                                         <th data-field="Services">Services</th>
+                                        <th data-field="Source">Source</th>
                                         <th data-field="Price">Price</th>
                                         <th data-field="Location">Location</th>
                                         <th data-field="Artist">Artist</th>
@@ -159,14 +179,16 @@
                                         </th>
                                         <th data-field="Remaining">Remaining</th>
                                         <th data-field="TotalRevenue">Total Revenue</th>
-                                        <th data-field="Source">Source</th>
+                                        <th data-field="Staff">Staff</th>
                                         <th data-field="Action">Action</th>
                                     </tr>
-                                    <tr class="tr_footer">
+                                    <tr class="tr_footer table-danger">
                                         <th></th>
                                         <th data-field="ClientName"></th>
                                         <th data-field="ClientInfo"></th>
+                                        <th data-field="Note"></th>
                                         <th data-field="Services"></th>
+                                        <th data-field="Source"></th>
                                         <th data-field="Price"></th>
                                         <th data-field="Location">Location</th>
                                         <th data-field="Artist">Artist</th>
@@ -180,7 +202,7 @@
                                         </th>
                                         <th data-field="Remaining"></th>
                                         <th data-field="TotalRevenue"></th>
-                                        <th data-field="Source">Source</th>
+                                        <th data-field="Staff">Staff</th>
                                         <th data-field="Action"></th>
                                     </tr>
                                 </thead>
@@ -214,7 +236,11 @@
                                                 <p>Address: {{ $booking->get->Address }}</p>
                                                 <p>Phone: {{ $booking->get->Phone }}</p>
                                             </td>
+                                            <td>{{ $booking->get->Note }}</td>
+                                            
                                             <td>{{ $booking->services->pluck('Name')->join(', ') }}</td>
+                                            
+                                             <td>{{ $booking->get->Source }}</td>
                                             <td>{{ $booking->price ? $booking->price->servies_price : 'N/A' }}</td>
                                             <td>{{ $booking->showroom->Name }}</td>
                                             <td>{{ $booking->artist->name }}</td>
@@ -231,14 +257,24 @@
                                             <td>{{ $booking->price ? $booking->price->Remaining_price : 'N/A' }}</td>
                                             <td>{{ $booking->price ? $booking->price->Total_price : 'N/A' }}</td>
                                             <td>{{ $booking->source_name }}</td>
+                                           
                                             <td>
+                                                 <a class="a" href="{{ route($route, ['id' => $booking->id]) }}">
                                                 <button
                                                 class="custom-btn btn-16"
                                                 type="button"
                                               >
-                                              <a class="a" href="{{ route($route, ['id' => $booking->id]) }}">Edit</a>
+                                             Edit
                                               </button>
-                                               
+                                               </a>
+                                               <div class ="delete">
+                                                <form method="POST" action="{{ route('bookings.delete', $booking->id) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="custom-btn btn-danger" style="color:rgb(255, 116, 116);">Delete </button>
+                                                </form>
+                                               </div>
+   
                                             </td>
                                         </tr>
                                     @endforeach
@@ -271,11 +307,35 @@
             const table = $('#table').DataTable({
                 scrollX: true,
                 order: [[0, 'desc']],
-                autoWidth: false,
+                autoWidth: true,
                 columnDefs: [{
                     type: 'date',
                     targets: [7, 8]
-                }]
+                }],
+                columns: [
+            { width: '50px' }, 
+            { width: '200px' }, 
+            { width: '500px' },
+            { width: '200px' }, 
+            { width: '200px' },
+            { width: '200px' }, 
+            { width: '200px' },
+            { width: '200px' }, 
+            { width: '200px' },
+            { width: '200px' }, 
+            { width: '200px' },
+            { width: '200px' }, 
+            { width: '200px' },
+            { width: '200px' }, 
+            { width: '200px' },
+            { width: '200px' }, 
+            { width: '200px' },
+            { width: '200px' },
+            { width: '200px' }, 
+            { width: '200px' },
+ 
+        ],
+                
 
             });
 
@@ -299,7 +359,7 @@
 
 
 
-            table.columns([5, 6, 11, 12,13, 15]).every(function() {
+            table.columns([7, 8, 14, 18,13, 15]).every(function() {
                 const column = this;
                 const select = $('<select><option value=""></option></select>')
                     .appendTo($(column.header()).empty())
@@ -365,9 +425,9 @@
             // Hàm để tạo và tải tệp Excel
             function downloadDataToExcel(data, filename) {
                 const excelData = [];
-                excelData.push(['No.', 'Client Name', 'Client Info', 'Services', 'Price', 'Location', 'Artist',
+                excelData.push(['No.', 'Client Name', 'Client Info', 'Note','Services','Source', 'Price', 'Location', 'Artist',
                     'Booking Date Create', 'Treatment Date', 'Time', 'Deposit', 'Payment Type', 'Status',
-                    'Remaining', 'Total Revenue', 'Source', 'Link'
+                    'Remaining', 'Total Revenue', 'Staff', 'Link'
                 ]);
 
                 data.forEach(row => {
@@ -388,4 +448,78 @@
             }
         });
     </script>
+    
+<Style>
+/* Thêm các cài đặt khác tùy theo ý muốn */
+/* CSS cho bảng */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* CSS cho header của bảng */
+thead {
+    background-color: #f2f2f2; /* Màu nền cho header */
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Đường kẻ dưới mỗi hàng */
+}
+
+/* CSS cho hàng chẵn */
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Màu nền cho hàng chẵn */
+}
+
+/* CSS cho hover trên hàng */
+tr:hover {
+    background-color: #e0e0e0; /* Màu nền khi di chuột vào hàng */
+}
+
+/* CSS cho hàng chẵn */
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Màu nền cho hàng chẵn */
+}
+
+/* CSS cho hàng lẻ */
+tr:nth-child(odd) {
+    background-color: #ffffff; /* Màu nền cho hàng lẻ */
+}
+/* CSS cho hàng chẵn */
+tr:nth-child(even) {
+    background: linear-gradient(90deg, #f2f2f2, #ffffff); /* Gradient từ màu trắng đến màu xám nhạt */
+}
+
+/* CSS cho hàng lẻ */
+tr:nth-child(odd) {
+    background: linear-gradient(90deg, #ffffff, #f2f2f2); /* Gradient từ màu xám nhạt đến màu trắng */
+}
+
+
+/* CSS cho hàng chẵn */
+tr:nth-child(even) {
+    background-color: #f2f2f2; /* Màu nền cho hàng chẵn */
+}
+
+/* CSS cho hàng lẻ */
+tr:nth-child(odd) {
+    background-color: #ffffff; /* Màu nền cho hàng lẻ */
+}
+/* Thiết lập chiều rộng cố định cho các th và td */
+th, td {
+    padding: 10px; /* Padding để tạo khoảng cách và thẩm mỹ */
+    text-align: center; /* Căn giữa nội dung trong cột */
+    width: auto; /* Đặt chiều rộng tự động để các cột bằng nhau */
+}
+
+/* Bỏ thiết lập chiều rộng cố định cho th đầu tiên (nếu cần) */
+th:first-child {
+    width: auto; /* Đặt chiều rộng tự động cho thứ tự đầu tiên */
+}
+
+
+</Style>
 @endsection

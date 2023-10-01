@@ -1,10 +1,10 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BookingForm.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BookingForm.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/FullcalendarAdmin.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/FullcalendarAdmin.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -15,9 +15,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _fullcalendar_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @fullcalendar/vue */ "./node_modules/@fullcalendar/vue/dist/index.js");
 /* harmony import */ var _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fullcalendar/daygrid */ "./node_modules/@fullcalendar/daygrid/index.js");
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
 
 
@@ -28,25 +25,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
-      showrooms: [],
-      showroomspath: [],
-      selectedShowroom: null,
-      groupServices: [],
-      showroomSchedules: [],
-      services: [],
-      artistlevels: [],
-      selectedArtistlevel: null,
-      selectedshowroomschedule: null,
-      selectedGroupService: "",
-      selectedGroupServiceServices: [],
-      step: "showroom",
-      selectedServices: [],
-      totalPrice: 0,
       calendarOptions: {
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"]],
         initialView: "dayGridMonth",
         weekends: true,
-        events: [] // Sự kiện sẽ được thêm vào đây
+        events: [],
+        // Sự kiện sẽ được thêm vào đây
+        eventTimeFormat: {
+          hour: 'numeric',
+          minute: '2-digit',
+          separator: ' - ',
+          meridiem: 'short'
+        }
       }
       /*   selectedOption: "option1", */
     };
@@ -54,216 +44,32 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
   watch: {},
   computed: {
-    selectedShowroomMap: function selectedShowroomMap() {
-      var _this = this;
-      // Lấy thông tin maps của showroom được chọn
-      if (this.selectedShowroom) {
-        var selectedShowroom = this.showrooms.find(function (showroom) {
-          return showroom.id === _this.selectedShowroom;
-        });
-        return selectedShowroom ? selectedShowroom.maps : "";
-      }
-      return "";
-    },
-    selectedArtistlevelDetails: function selectedArtistlevelDetails() {
-      var _this2 = this;
-      if (this.selectedArtistlevel) {
-        var selectedLevel = this.artistlevels.find(function (level) {
-          return level.id === _this2.selectedArtistlevel;
-        });
-        return selectedLevel ? {
-          Name: selectedLevel.Name,
-          Level_price: selectedLevel.Level_price
-        } : null;
-      }
-      return null;
-    },
-    totalLevelPrice: function totalLevelPrice() {
-      if (this.selectedServices.length > 0 && this.selectedArtistlevelDetails) {
-        var levelPrice = parseFloat(this.selectedArtistlevelDetails.Level_price);
-        return this.selectedServices.length * levelPrice;
-      }
-      return 0;
-    },
-    selectedServicesPriced: function selectedServicesPriced() {
-      var _this3 = this;
-      if (this.selectedServices) {
-        var selectedServices = this.services.filter(function (service) {
-          return _this3.selectedServices.includes(service.id);
-        });
-        return selectedServices.map(function (service) {
-          return service.Price;
-        });
-      }
-      return null;
-    }
+
     /*     totalSelectedServicesPrice() {
     return this.calculateTotalPrice(); // Tính tổng giá trị dịch vụ đã chọn
     }, */
   },
   methods: {
-    fetchShowrooms: function fetchShowrooms() {
-      var _this4 = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get("/api/showrooms").then(function (response) {
-        _this4.showrooms = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching showrooms:", error);
+    loadEvents: function loadEvents() {
+      var _this = this;
+      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get("/api/all-data").then(function (response) {
+        _this.calendarOptions.events = response.data.map(function (event) {
+          var startTime = new Date(event.date + 'T' + event.time);
+          var endTime = new Date(event.date + 'T' + event.time_end);
+          console.log("Start Time:", startTime);
+          console.log("End Time:", endTime);
+          return {
+            title: event.status,
+            start: startTime,
+            end: endTime
+          };
+        });
       });
-    },
-    fetchGroupServices: function fetchGroupServices() {
-      var _this5 = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get("/api/group-services/".concat(this.selectedShowroom)).then(function (response) {
-        _this5.groupServices = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching group services:", error);
-      });
-    },
-    fetchShowroomSchedule: function fetchShowroomSchedule() {
-      var _this6 = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
-        _this6.showroomSchedules = response.data;
-        // Cập nhật sự kiện trong FullCalendar sau khi nhận dữ liệu từ API
-        _this6.updateCalendarEvents();
-      })["catch"](function (error) {
-        console.error("Error fetching showroomschedule:", error);
-      });
-    },
-    updateCalendarEvents: function updateCalendarEvents() {
-      var visibleDates = this.calendar.getDates();
-      var _iterator = _createForOfIteratorHelper(visibleDates),
-        _step;
-      try {
-        for (_iterator.s(); !(_step = _iterator.n()).done;) {
-          var date = _step.value;
-          var dayOfWeek = date.getDay();
-          var dayOfMonth = date.getDate();
-          var month = date.getMonth();
-          var year = date.getFullYear();
-          console.log("Ng\xE0y: ".concat(dayOfMonth, ", Th\xE1ng: ").concat(month + 1, ", N\u0103m: ").concat(year, ", Th\u1EE9: ").concat(this.getDayName(dayOfWeek)));
-        }
-      } catch (err) {
-        _iterator.e(err);
-      } finally {
-        _iterator.f();
-      }
-    },
-    fetchServices: function fetchServices() {
-      var _this7 = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get("/api/services").then(function (response) {
-        _this7.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching services:", error);
-      });
-    },
-    fetchArtistlevels: function fetchArtistlevels() {
-      var _this8 = this;
-      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get("/api/artist-levels").then(function (response) {
-        _this8.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching artist levels:", error);
-      });
-    },
-    updateTotalPrice: function updateTotalPrice() {
-      this.totalPrice = this.calculateTotalPrice;
-    },
-    formatCurrency: function formatCurrency(value) {
-      var formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "UAD"
-      });
-      return formatter.format(value);
-    },
-    getServiceName: function getServiceName(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      return service ? service.Name : "";
-    },
-    getServicePrice: function getServicePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var priceString = service.Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(priceString);
-      }
-      return 0;
-    },
-    getServiceSalePrice: function getServiceSalePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var Sale_PricepriceString = service.Sale_Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(Sale_PricepriceString);
-      }
-      return 0;
-    },
-    calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
-      var _this9 = this;
-      var serviceTotalPrice = this.selectedServices.reduce(function (totalPrice, serviceId) {
-        var servicePrice = _this9.getServicePrice(serviceId);
-        var serviceSalePrice = _this9.getServiceSalePrice(serviceId);
-        totalPrice += parseFloat(servicePrice) - parseFloat(serviceSalePrice);
-        return totalPrice;
-      }, 0);
-      return serviceTotalPrice + this.totalLevelPrice;
-    },
-    nextStep: function nextStep() {
-      if (this.step === "showroom") {
-        if (this.selectedShowroom) {
-          this.fetchGroupServices();
-          this.selectedGroupService = "";
-          this.step = "groupService";
-        }
-      } else if (this.step === "groupService") {
-        if (this.selectedServices) {
-          this.fetchArtistlevels();
-          this.step = "artistlevels";
-        }
-      } else if (this.step === "artistlevels") {
-        if (this.selectedShowroom) {
-          this.fetchShowroomSchedule();
-          this.step = "showroomschedule";
-        }
-      }
-    },
-    prevStep: function prevStep() {
-      if (this.step === "groupService") {
-        this.step = "showroom";
-        this.selectedGroupService = null;
-        this.selectedServices = [];
-        this.selectedArtistlevel = [];
-        this.totalSelectedServicesPrice = 0;
-        // Xóa dữ liệu đã chọn
-      } else if (this.step === "artistlevels") {
-        this.step = "groupService";
-        this.selectedArtistlevel = [];
-        this.totalSelectedServicesPrice = 0;
-      } else if (this.step === "showroomschedule") {
-        this.step = "artistlevels";
-        this.selectedshowroomschedule = [];
-      }
-    },
-    submit: function submit() {
-      // Process and save the selected data
-      var bookingData = {
-        showroomId: this.selectedShowroom,
-        groupServiceId: this.selectedGroupService,
-        serviceIds: this.selectedServices,
-        Artistlevel: this.selectedArtistlevelDetails,
-        totalPrice: this.calculateTotalSelectedServicesPrice()
-      };
-      console.log("Booking Data:", bookingData);
     }
   },
   mounted: function mounted() {
-    this.fetchShowrooms();
-    this.fetchServices();
-    this.fetchArtistlevels();
-    this.fetchShowroomSchedule();
-
-    // Khởi tạo FullCalendar
+    // Gọi phương thức loadEvents khi component được tạo ra
+    this.loadEvents();
     this.calendar = new _fullcalendar_vue__WEBPACK_IMPORTED_MODULE_0__["default"].Calendar(this.$refs.calendar, {
       plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"]]
       // Cấu hình khác của FullCalendar
@@ -271,18 +77,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
     // Render lịch
     this.calendar.render();
-
-    // Lấy thông tin các ngày trong tháng hiện tại
-    this.getVisibleDatesInfo();
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BookingForm.vue?vue&type=template&id=9a61edbc&":
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BookingForm.vue?vue&type=template&id=9a61edbc& ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/FullcalendarAdmin.vue?vue&type=template&id=4faee8a7&":
+/*!***********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/FullcalendarAdmin.vue?vue&type=template&id=4faee8a7& ***!
+  \***********************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -294,152 +97,11 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", [_vm.selectedShowroom ? _c("div", [_vm._v("\n     Selected Showroom Maps: " + _vm._s(_vm.selectedShowroomMap) + "\n   ")]) : _vm._e(), _vm._v(" "), _vm.selectedServices.length > 0 ? _c("div", [_c("p", [_vm._v("Selected Services:")]), _vm._v(" "), _c("ul", _vm._l(_vm.selectedServices, function (serviceId) {
-    return _c("li", {
-      key: serviceId
-    }, [_c("p", [_vm._v("\n           Name: " + _vm._s(_vm.getServiceName(serviceId)) + " -- Price:\n           " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(serviceId))) + " -- SalePrice :\n           " + _vm._s(_vm.formatCurrency(_vm.getServiceSalePrice(serviceId))) + "\n         ")])]);
-  }), 0), _vm._v(" "), _vm.selectedArtistlevelDetails ? _c("ul", [_c("li", [_vm._v("\n         " + _vm._s(_vm.selectedArtistlevelDetails.Name) + "\n         "), _c("p", [_c("i", [_vm._v(_vm._s(_vm.formatCurrency(_vm.selectedArtistlevelDetails.Level_price)))])]), _vm._v("\n\n         Total Level Price: " + _vm._s(_vm.formatCurrency(_vm.totalLevelPrice)) + "\n       ")])]) : _c("p", [_vm._v("No selected level")]), _vm._v("\n     Total Price: " + _vm._s(_vm.formatCurrency(_vm.calculateTotalSelectedServicesPrice())) + "\n   ")]) : _vm._e(), _vm._v(" "), _vm.step === "showroom" ? [_c("label", {
-    attrs: {
-      "for": ""
-    }
-  }, [_vm._v("Choose location")]), _vm._v(" "), _vm._l(_vm.showrooms, function (showroom) {
-    return _c("div", {
-      key: showroom.id
-    }, [_c("input", {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: _vm.selectedShowroom,
-        expression: "selectedShowroom"
-      }],
-      attrs: {
-        type: "radio"
-      },
-      domProps: {
-        value: showroom.id,
-        checked: _vm._q(_vm.selectedShowroom, showroom.id)
-      },
-      on: {
-        change: function change($event) {
-          _vm.selectedShowroom = showroom.id;
-        }
-      }
-    }), _vm._v("\n       " + _vm._s(showroom.Name) + "\n     ")]);
-  }), _vm._v(" "), _c("span", [_vm._v("Đã chọn: " + _vm._s(_vm.selectedShowroom))]), _vm._v(" "), _c("button", {
-    attrs: {
-      disabled: !_vm.selectedShowroom
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("Next")])] : _vm._e(), _vm._v(" "), [_c("div", [_vm.step === "groupService" ? [_vm._l(_vm.groupServices, function (groupService) {
-    return _c("div", {
-      key: groupService.groupService.id
-    }, [_c("p", [_vm._v("groupService: " + _vm._s(groupService.groupService.Name))]), _vm._v(" "), _c("ul", _vm._l(groupService.groupService.services, function (service) {
-      return _c("li", {
-        key: service.id
-      }, [_c("label", [_c("input", {
-        directives: [{
-          name: "model",
-          rawName: "v-model",
-          value: _vm.selectedServices,
-          expression: "selectedServices"
-        }],
-        attrs: {
-          type: "checkbox"
-        },
-        domProps: {
-          value: service.id,
-          checked: Array.isArray(_vm.selectedServices) ? _vm._i(_vm.selectedServices, service.id) > -1 : _vm.selectedServices
-        },
-        on: {
-          change: [function ($event) {
-            var $$a = _vm.selectedServices,
-              $$el = $event.target,
-              $$c = $$el.checked ? true : false;
-            if (Array.isArray($$a)) {
-              var $$v = service.id,
-                $$i = _vm._i($$a, $$v);
-              if ($$el.checked) {
-                $$i < 0 && (_vm.selectedServices = $$a.concat([$$v]));
-              } else {
-                $$i > -1 && (_vm.selectedServices = $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
-              }
-            } else {
-              _vm.selectedServices = $$c;
-            }
-          }, _vm.calculateTotalSelectedServicesPrice]
-        }
-      }), _vm._v(" "), _c("p", [_vm._v("\n                   Service: " + _vm._s(service.Name) + " -- Price:\n                   " + _vm._s(_vm.formatCurrency(service.Price)) + "\n                 ")])])]);
-    }), 0)]);
-  }), _vm._v(" "), _c("button", {
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("Back")]), _vm._v(" "), _c("button", {
-    attrs: {
-      disabled: !_vm.selectedServices
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("Next")])] : _vm._e()], 2)], _vm._v(" "), _vm.step === "artistlevels" ? [_c("ul", _vm._l(_vm.artistlevels, function (artistLevel) {
-    return _c("li", {
-      key: artistLevel.id
-    }, [_c("label", [_c("input", {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: _vm.selectedArtistlevel,
-        expression: "selectedArtistlevel"
-      }],
-      attrs: {
-        type: "radio"
-      },
-      domProps: {
-        value: artistLevel.id,
-        checked: _vm._q(_vm.selectedArtistlevel, artistLevel.id)
-      },
-      on: {
-        change: [function ($event) {
-          _vm.selectedArtistlevel = artistLevel.id;
-        }, _vm.calculateTotalSelectedServicesPrice]
-      }
-    }), _vm._v("\n           " + _vm._s(artistLevel.Name) + "\n           "), _c("p", [_c("i", [_vm._v(_vm._s(_vm.formatCurrency(artistLevel.Level_price)))])])])]);
-  }), 0), _vm._v(" "), _c("button", {
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("Back")]), _vm._v(" "), _c("button", {
-    attrs: {
-      disabled: !_vm.selectedArtistlevel
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("Next")])] : _vm._e(), _vm._v(" "), _vm.step === "showroomschedule" ? [_c("ul", [_c("FullCalendar", {
+  return _c("div", [_c("FullCalendar", {
     attrs: {
       options: _vm.calendarOptions
     }
-  })], 1), _vm._v(" "), _c("button", {
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("Back")]), _vm._v(" "), _c("button", {
-    attrs: {
-      disabled: !_vm.selectedshowroomschedule
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("\n       Next\n     ")]), _vm._v(" "), _c("button", {
-    attrs: {
-      disabled: !_vm.selectedshowroomschedule
-    },
-    on: {
-      click: _vm.submit
-    }
-  }, [_vm._v("\n       Submit\n     ")])] : _vm._e()], 2);
+  })], 1);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2636,10 +2298,10 @@ var t,r,u,i,o=0,f=[],c=[],e=preact__WEBPACK_IMPORTED_MODULE_0__.options.__b,a=pr
 
 /***/ }),
 
-/***/ "./resources/js/components/BookingForm.vue":
-/*!*************************************************!*\
-  !*** ./resources/js/components/BookingForm.vue ***!
-  \*************************************************/
+/***/ "./resources/js/components/FullcalendarAdmin.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/FullcalendarAdmin.vue ***!
+  \*******************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -2647,8 +2309,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _BookingForm_vue_vue_type_template_id_9a61edbc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BookingForm.vue?vue&type=template&id=9a61edbc& */ "./resources/js/components/BookingForm.vue?vue&type=template&id=9a61edbc&");
-/* harmony import */ var _BookingForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BookingForm.vue?vue&type=script&lang=js& */ "./resources/js/components/BookingForm.vue?vue&type=script&lang=js&");
+/* harmony import */ var _FullcalendarAdmin_vue_vue_type_template_id_4faee8a7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FullcalendarAdmin.vue?vue&type=template&id=4faee8a7& */ "./resources/js/components/FullcalendarAdmin.vue?vue&type=template&id=4faee8a7&");
+/* harmony import */ var _FullcalendarAdmin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FullcalendarAdmin.vue?vue&type=script&lang=js& */ "./resources/js/components/FullcalendarAdmin.vue?vue&type=script&lang=js&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -2658,9 +2320,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 ;
 var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _BookingForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _BookingForm_vue_vue_type_template_id_9a61edbc___WEBPACK_IMPORTED_MODULE_0__.render,
-  _BookingForm_vue_vue_type_template_id_9a61edbc___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _FullcalendarAdmin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _FullcalendarAdmin_vue_vue_type_template_id_4faee8a7___WEBPACK_IMPORTED_MODULE_0__.render,
+  _FullcalendarAdmin_vue_vue_type_template_id_4faee8a7___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
   null,
@@ -2670,15 +2332,15 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/BookingForm.vue"
+component.options.__file = "resources/js/components/FullcalendarAdmin.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/BookingForm.vue?vue&type=script&lang=js&":
-/*!**************************************************************************!*\
-  !*** ./resources/js/components/BookingForm.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************/
+/***/ "./resources/js/components/FullcalendarAdmin.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/FullcalendarAdmin.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -2686,24 +2348,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./BookingForm.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BookingForm.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingForm_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FullcalendarAdmin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./FullcalendarAdmin.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/FullcalendarAdmin.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FullcalendarAdmin_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/BookingForm.vue?vue&type=template&id=9a61edbc&":
-/*!********************************************************************************!*\
-  !*** ./resources/js/components/BookingForm.vue?vue&type=template&id=9a61edbc& ***!
-  \********************************************************************************/
+/***/ "./resources/js/components/FullcalendarAdmin.vue?vue&type=template&id=4faee8a7&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/FullcalendarAdmin.vue?vue&type=template&id=4faee8a7& ***!
+  \**************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingForm_vue_vue_type_template_id_9a61edbc___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingForm_vue_vue_type_template_id_9a61edbc___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FullcalendarAdmin_vue_vue_type_template_id_4faee8a7___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FullcalendarAdmin_vue_vue_type_template_id_4faee8a7___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_BookingForm_vue_vue_type_template_id_9a61edbc___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./BookingForm.vue?vue&type=template&id=9a61edbc& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/BookingForm.vue?vue&type=template&id=9a61edbc&");
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FullcalendarAdmin_vue_vue_type_template_id_4faee8a7___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./FullcalendarAdmin.vue?vue&type=template&id=4faee8a7& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/FullcalendarAdmin.vue?vue&type=template&id=4faee8a7&");
 
 
 /***/ }),
@@ -30177,18 +29839,18 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!******************************!*\
-  !*** ./resources/js/book.js ***!
-  \******************************/
+/*!*******************************************!*\
+  !*** ./resources/js/FullCalendarAdmin.js ***!
+  \*******************************************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _components_BookingForm_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/BookingForm.vue */ "./resources/js/components/BookingForm.vue");
+/* harmony import */ var _components_FullcalendarAdmin_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/FullcalendarAdmin.vue */ "./resources/js/components/FullcalendarAdmin.vue");
 
 
 new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
-  el: '#app',
+  el: '#fullcalendar',
   components: {
-    BookingForm: _components_BookingForm_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+    FullcalendarAdmin: _components_FullcalendarAdmin_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   }
 });
 })();

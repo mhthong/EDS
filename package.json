@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@popperjs/core": "^2.10.2",
-        "axios": "^1.4.0",
+        "axios": "^1.5.0",
         "cross-env": "^7.0",
         "jquery": "^3.6.2",
         "laravel-mix": "^6.0.19",
@@ -28,8 +28,8 @@
     "dependencies": {
         "@fancyapps/ui": "^4.0.31",
         "@fullcalendar/core": "^6.1.8",
-        "@fullcalendar/daygrid": "^6.1.8",
-        "@fullcalendar/vue": "^6.1.8",
+        "@fullcalendar/daygrid": "^6.1.9",
+        "@fullcalendar/vue": "^6.1.9",
         "@master/css": "^2.0.0-beta.84",
         "animate.css": "^4.1.1",
         "bootstrap": "^5.3.1",
@@ -42,8 +42,10 @@
         "slick-carousel": "^1.8.1",
         "typeahead": "^0.2.2",
         "vue-full-calendar": "^2.8.1-0",
+        "vue-fullcalendar": "^1.0.9",
         "vue-js-modal": "^2.0.1",
         "vue-router": "^2.8.1",
+        "vue2-daterange-picker": "^0.6.8",
         "wow.js": "^1.2.2"
     },
     "name": "edsalon",

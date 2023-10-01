@@ -9,7 +9,7 @@
           }}</span>
         </div>
 
-        <div v-if=" this.selectedServices !== null ">
+        <div v-if="this.selectedServices !== null">
           <div class="book_detail">
             <p>
               <i class="fa-brands fa-servicestack" style="color: #eab3e0"></i>
@@ -60,12 +60,14 @@
       <!--      <div v-html="selectedShowroomMap"></div> -->
     </div>
 
+    <!--    <template v-if="step === 'showroom'"> -->
+
     <template v-if="step === 'showroom'">
       <div class="radio-section">
         <div v-for="showroom in showrooms" :key="showroom.id">
-          <label class="label"  :for="'showroom_' + showroom.id">
+          <label class="label" :for="'showroom_' + showroom.id">
             <input
-            class="showroom_label"
+              class="showroom_label"
               type="radio"
               :value="showroom.id"
               :id="'showroom_' + showroom.id"
@@ -85,6 +87,7 @@
         Next
       </button>
     </template>
+    <!--    <template v-if="step === 'showroom'"> -->
 
     <template v-if="step === 'groupService'">
       <!-- Group Services -->
@@ -202,12 +205,13 @@
 
     <template v-if="step === 'showroomschedule'">
       <div class="col-12">
-        <div class="col-12 col-sm-12 col-lg-12  p-2 mb-2">
+        <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
           <div class="controls">
             <input
               id="depart"
               class="floatLabel"
               type="date"
+              :id="selectedDate"
               v-model="selectedDate"
               @change="filterActiveDays"
               @input="checkSelectedDate"
@@ -216,6 +220,7 @@
               for="selectedDate"
               class="label-date"
               :class="{ active: isLabelActive }"
+              :id="selectedDate"
               ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Date</label
             >
             <div v-if="showWarning" class="error-message">
@@ -226,17 +231,17 @@
       </div>
 
       <div class="col-12">
-        <div class="col-12 col-sm-4 col-lg-4  p-2 mb-2">
+        <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
           <div class="controls">
             <i class="fa fa-sort"></i>
 
             <select
               v-model="selectedArtist"
               @input="checkselectedArtist"
+              @change="filterActiveDays"
               id="artistSelect"
               class="floatLabel"
             >
-              <option :value="0">N/A</option>
               <option
                 v-for="artist in artists"
                 :key="artist.id"
@@ -252,7 +257,7 @@
           </div>
         </div>
 
-        <div class="col-12 col-sm-4 col-lg-4  p-2 mb-2">
+        <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
           <div class="controls">
             <i class="fa fa-sort"></i>
             <select v-model="selectedStatus">
@@ -268,16 +273,17 @@
           </div>
         </div>
 
-        <div class="col-12 col-sm-4 col-lg-4  p-2 mb-2">
+        <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
           <div class="controls">
             <i class="fa fa-sort"></i>
             <select v-model="selectedPaymentType">
-              <option value="N/A" selected>N/A</option>
               <option value="Bank transfer">Bank transfer</option>
               <option value="After Pay">After Pay</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
             </select>
 
-            <label for="artistSelect" class="label-date active"
+            <label for="selectedPaymentType" class="label-date active"
               >&nbsp;&nbsp;Payment Type</label
             >
           </div>
@@ -285,43 +291,77 @@
       </div>
 
       <!-- Hiển thị danh sách các ngày active và working_hours -->
-      <div class="col-12" v-if="!showWarning && filteredDays.length > 0">
+      <div class="col-12" >
 
-          <div class="col-12" v-for="day in filteredDays" :key="day.id">
-            <!--          <h3>{{ day.day }}</h3> -->
-            <div
-              class="radio-section col-12 col-sm-6 col-lg-3  p-2"
-              v-for="workingHour in day.working_hours"
-              :key="workingHour.id"
+        <div v-if="filteredDays.length > 0">
+          <span class="radio-text">Spot exists</span>
+
+              <div v-for="(schedule, index) in filteredDays" :key="index">
+                <!--          <h3>{{ day.day }}</h3> -->
+
+                <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
+                  <label class="label label-schedule m-0">
+                    <span class="radio-header radio-text"
+                      >Spot {{ index + 1 }} ( {{ formatTime(schedule.time) }} -
+                      {{ formatTime(schedule.time_end) }} )</span
+                    >
+                  </label>
+                </div>
+              </div>
+        </div>
+
+        <div v-if="filteredDays.length < 1">
+          <span class="radio-text">None spot exists .</span>
+        </div>
+   
+
+        <div>
+          <div class="col-12">
+            <span class="radio-text col-12 mb-3 mt-1"
+              >Please choose a time that does not coincide with the Spot's
+              existence .</span
             >
+            <!-- Trường đầu vào cho thời gian bắt đầu -->
 
-            <div class="">
-              <label class="label m-0">
+            <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
+              <div class="controls">
                 <input
-                  type="radio"
-                  :value="workingHour"
-                  v-model="selectedWorkingHour"
-                  :disabled="
-                    isDisabled(
-                      day.day,
-                      workingHour.start_time,
-                      workingHour.end_time,
-                      selectedDate,
-                      selectedArtist
-                    )
-                  "
+                  class="floatLabe"
+                  type="time"
+                  :id="startTime"
+                  v-model="startTime"
+                  @change="checkTimeConflict"
+                  step="1800"
                 />
-                <span class="radio-header radio-text">
-                  {{ workingHour.start_time }} -
-                  {{ workingHour.end_time }}</span
+                <label for="artistSelect" class="label-date active"
+                  ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;Start
+                  Time</label
                 >
-              </label>
+              </div>
             </div>
-            
- 
+
+            <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
+              <!-- Trường đầu vào cho thời gian kết thúc -->
+              <div class="controls">
+                <input
+                  class="floatLabel"
+                  type="time"
+                  v-model="endTime"
+                  @change="checkTimeConflict"
+                  step="1800"
+                />
+                <label for="artistSelect" class="label-date active"
+                  ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;End
+                  Time</label
+                >
+              </div>
+            </div>
+
+            <div class="alert col-12 draft" v-if="showAlert">
+              <i>The selected time conflicts or is invalid.</i>
             </div>
           </div>
-
+        </div>
 
         <!--         <p v-else class="error-message">
           No active days for the selected showroom and date.
@@ -334,8 +374,8 @@
       <button
         class="custom-btn btn-16"
         @click.prevent="nextStep"
-        :disabled="!selectedWorkingHour"
         type="button"
+        :disabled="!startTime || !endTime || !selectedArtist || !selectedDate"
       >
         Next
       </button>
@@ -343,17 +383,16 @@
 
     <template v-if="step === 'getShow'">
       <input
-          class="form-control"
-          style="display: none"
-          type="text"
-          :value="bookingData"
-          id="bookingData"
-          name="bookingData"
-          required
-        />
+        class="form-control"
+        style="display: none"
+        type="text"
+        :value="bookingData"
+        id="bookingData"
+        name="bookingData"
+        required
+      />
+
       <div class="controls mb-4">
-
-
         <input
           class="form-control"
           type="text"
@@ -362,12 +401,9 @@
           v-model="formData.name"
           required
         />
-        <label for="name"  class="label-date active" >Name:</label>
-
+        <label for="name" class="label-date active">Name :</label>
       </div>
       <div class="controls mb-4">
-
-       
         <input
           class="form-control"
           type="email"
@@ -376,12 +412,11 @@
           v-model="formData.email"
         />
 
-        <label for="email"  class="label-date active">Email:</label>
+        <label for="email" class="label-date active">Email :</label>
       </div>
 
       <div class="controls mb-4">
-
-        <label for="address"  class="label-date active">Address:</label>
+        <label for="address" class="label-date active">Address :</label>
         <input
           class="form-control"
           type="text"
@@ -389,11 +424,10 @@
           name="address"
           v-model="formData.address"
         />
+      </div>
 
-        </div>
-        <div class="controls mb-4">
-
-        <label for="phone" class="label-date active">Phone:</label>
+      <div class="controls mb-4">
+        <label for="phone" class="label-date active">Phone :</label>
         <input
           class="form-control"
           type="tel"
@@ -402,7 +436,31 @@
           v-model="formData.phone"
         />
       </div>
-      
+
+      <div class="controls mb-4">
+        <input
+          class="form-control"
+          type="text"
+          id="source"
+          name="source"
+          v-model="formData.source"
+          required
+        />
+        <label for="name" class="label-date active">Source :</label>
+      </div>
+      <div class="controls mb-4">
+        <textarea
+          name="note"
+          id="note"
+          cols="30"
+          rows="10"
+          v-model="formData.note"
+          required
+        ></textarea>
+
+        <label for="name" class="label-date active">Note :</label>
+      </div>
+
       <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
 
       <button class="custom-btn btn-16" @click="prevStep" type="button">
@@ -430,7 +488,7 @@ export default {
       services: [],
       artistlevels: [],
       selectedArtistlevel: null,
-      selectedshowroomschedule: null,
+      selectedshowroomschedule: [],
       selectedGroupService: "",
       selectedGroupServiceServices: [],
       step: "showroom",
@@ -439,8 +497,10 @@ export default {
       selectedDate: "",
       showWarning: false, // Ngày tối thiểu cho trường input
       filteredDays: [],
-      selectedWorkingHour: "",
-      selectedWorkingHour_end_time: "",
+      startTime: null,
+      endTime: null,
+      isTimeConflict: false,
+      showAlert: false,
       apiData: [],
       artists: [],
       formData: {
@@ -448,6 +508,8 @@ export default {
         email: "",
         address: "",
         phone: "",
+        source: "",
+        note: "",
       },
       errorMessage: "", // Dữ liệu từ API
       jsonData: "",
@@ -456,17 +518,16 @@ export default {
       selectedDepositPrice: 100,
       maxDepositPrice: 0,
       maxDiscountPrice: 0,
-      minDepositPrice: 100,
+      minDepositPrice: 0,
       minDiscountPrice: 0,
       inputError: false,
       inputError_01: false,
       selectedStatus: "Waiting",
-      selectedPaymentType: "N/A",
+      selectedPaymentType: "Bank transfer",
       htmlData: "",
       groupServiceStates: {},
       isLabelActive: false,
       isIconActive: false,
-
       /*   selectedOption: "option1", */
     };
   },
@@ -544,6 +605,20 @@ export default {
   },
 
   methods: {
+    formatTime(time) {
+      // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
+      const timeParts = time.split(":");
+      const hours = parseInt(timeParts[0]);
+      const minutes = parseInt(timeParts[1]);
+
+      // Định dạng thời gian thành chuỗi với số 0 đứng trước nếu cần
+      const formattedHours = hours < 10 ? `0${hours}` : hours;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+      // Kết hợp giờ và phút thành chuỗi định dạng
+      return `${formattedHours}:${formattedMinutes}`;
+    },
+
     fetchShowrooms() {
       axios
         .get("/api/showrooms")
@@ -601,16 +676,33 @@ export default {
         });
     },
 
-    filterActiveDays() {
+    /*    filterActiveDays() {
       if (!this.selectedDate) return;
       console.log("selectedDate:", this.selectedDate);
+      console.log("this.showroomSchedules:", this.showroomSchedules);
       const selectedDay = this.selectedDateToDay(this.selectedDate);
       const selectedShowroomSchedule = this.showroomSchedules.find(
-        (schedule) => schedule.day === selectedDay && schedule.active === 1
+        (schedule) => */ /*  schedule.day === selectedDay && schedule.active === "1" */ /* schedule.day === selectedDay && schedule.active === 1
       );
       this.filteredDays = selectedShowroomSchedule
         ? [selectedShowroomSchedule]
         : [];
+
+        console.log( this.filteredDays);
+    }, */
+    filterActiveDays() {
+      if (!this.selectedDate) return;
+      console.log("selectedDate:", this.selectedDate);
+      console.log("this.fetchApiData:", this.apiData);
+      console.log(this.selectedArtist);
+
+      this.filteredDays = this.apiData.filter(
+        (schedule) =>
+          schedule.date === this.selectedDate &&
+          schedule.ArtistID === this.selectedArtist
+      );
+
+      console.log(this.filteredDays);
     },
 
     selectedDateToDay(dateString) {
@@ -643,11 +735,46 @@ export default {
           data.date === selectedDate &&
           data.time_end === workingHourEndTime &&
           data.ArtistID === selectedArtist
+        /*   parseInt(data.ArtistID) === parseInt(selectedArtist) */
       );
-
       return (
         matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom
       );
+    },
+
+    checkTimeConflict() {
+      if (!this.startTime || !this.endTime) {
+        this.isTimeConflict = false;
+        return;
+      }
+
+      const selectedStartTime = new Date(`1970-01-01T${this.startTime}`);
+      const selectedEndTime = new Date(`1970-01-01T${this.endTime}`);
+      // ...
+ // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
+        const isStartTimeValid = selectedStartTime.getHours() >= 8 && selectedStartTime.getHours() < 20;
+    const isEndTimeValid = selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
+      // Kiểm tra xung đột thời gian cho cả startTime và endTime
+      const conflict = this.filteredDays.some((schedule) => {
+        const startTime = new Date(`1970-01-01T${schedule.time}`);
+        const endTime = new Date(`1970-01-01T${schedule.time_end}`);
+        // ...
+
+        return (
+          (selectedStartTime >= startTime && selectedStartTime < endTime) ||
+          (selectedEndTime > startTime && selectedEndTime <= endTime)
+        );
+      });
+
+      if (conflict || selectedStartTime >= selectedEndTime || !isStartTimeValid || !isEndTimeValid) {
+        this.isTimeConflict = true;
+        this.showAlert = true;
+        this.startTime = null;
+        this.endTime = null;
+      } else {
+        this.isTimeConflict = false;
+        this.showAlert = false;
+      }
     },
 
     checkSelectedDate() {
@@ -662,11 +789,19 @@ export default {
       // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
       if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
         // Ngày không hợp lệ, hiển thị thông báo
-        this.showWarning = true;
+        /*    this.showWarning = true; */
+
+        this.showWarning = false;
       } else {
         // Ngày hợp lệ, ẩn thông báo
         this.showWarning = false;
       }
+    },
+
+    handleFileChange() {
+      // Handle the file selection here, e.g., store it in a data property
+      this.paymentImage = this.$refs.fileInput.files[0];
+      console.log(this.paymentImage);
     },
 
     fetchServices() {
@@ -696,9 +831,9 @@ export default {
     },
 
     formatCurrency(value) {
-      const formatter = new Intl.NumberFormat("en-US", {
+      const formatter = new Intl.NumberFormat("en-AU", {
         style: "currency",
-        currency: "UAD",
+        currency: "AUD",
       });
       return formatter.format(value);
     },
@@ -813,7 +948,7 @@ export default {
         }
       } else if (this.step === "showroomschedule") {
         this.fetchArtists();
-        if (this.selectedDate && this.selectedWorkingHour) {
+        if (this.selectedDate && !this.isTimeConflict) {
           this.step = "getShow";
 
           const bookingDatavalue = {
@@ -829,8 +964,8 @@ export default {
               parseFloat(this.calculateTotalSelectedServicesPrice()) +
               parseFloat(this.selectedDepositPrice),
             Date: this.selectedDate,
-            workingHour: this.selectedWorkingHour.start_time,
-            WorkingHour_end_time: this.selectedWorkingHour.end_time,
+            workingHour: this.startTime,
+            WorkingHour_end_time: this.endTime,
             Status: this.selectedStatus,
             PaymentType: this.selectedPaymentType,
           };
@@ -927,6 +1062,11 @@ export default {
   box-sizing: border-box;
   display: flex;
   gap: 1rem;
+}
+
+.label-schedule {
+  justify-content: center;
+  background-color: rgb(255 112 158 / 25%);
 }
 
 .label:hover {

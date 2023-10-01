@@ -64,6 +64,7 @@ use App\Http\Controllers\EmployeeAuthController;
 */
 
 
+
 Route::get('/data', function () {
     $test = Analytics::fetchMostVisitedpages(Period::days(7));
     dd($test);
@@ -154,6 +155,13 @@ Route::middleware('auth:user')->prefix('user')->group(
 );
 
 
+Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web']], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
+});
+
+Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
+
 Route::middleware('auth:artists')->prefix('artists')->group(
     function () {
 
@@ -166,10 +174,6 @@ Route::middleware('auth:artists')->prefix('artists')->group(
         Route::post('/reset-password', [ArtistAuthController::class, 'ResetPassword'])->name('artists.reset-password');
         Route::post('/update-avatar', [ArtistAuthController::class, 'updateAvatar'])->name('artists.updateAvatar');
         Route::post('/update-infomation', [ArtistAuthController::class, 'updateInfomation'])->name('artists.updateInfomation');
-
-        Route::group(['prefix' => 'laravel-filemanager'], function () {
-            \UniSharp\LaravelFilemanager\Lfm::routes();
-        });
 
         Route::get('/filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
@@ -192,6 +196,11 @@ Route::middleware('auth:artists')->prefix('artists')->group(
             // Destroy - Remove the specified service from the database
             /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
 
+            // routes/web.php
+
+
+
+
         }
     );
 
@@ -204,9 +213,7 @@ Route::middleware('auth:artists')->prefix('artists')->group(
 
 Route::middleware('auth:employee')->prefix('employee')->group(function () {
 
-    Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web']], function () {
-        \UniSharp\LaravelFilemanager\Lfm::routes();
-    });
+
 
     Route::get('/', [EmployeeAuthController::class, 'index'])->name('employee');
     Route::get('/your-setting', [EmployeeAuthController::class, 'YourSetting'])->name('employee.your-setting');
@@ -214,9 +221,6 @@ Route::middleware('auth:employee')->prefix('employee')->group(function () {
     Route::post('/update-avatar', [EmployeeAuthController::class, 'updateAvatar'])->name('employee.updateAvatar');
     Route::post('/update-infomation', [EmployeeAuthController::class, 'updateInfomation'])->name('employee.updateInfomation');
 
-    Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
-        \UniSharp\LaravelFilemanager\Lfm::routes();
-    });
 
     Route::get('/filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
@@ -327,6 +331,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::post('/{id}', [BookingController::class, 'update'])->name('bookings.update');
                 // Destroy - Remove the specified service from the database
                 /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
+
+                Route::delete('/bookings/{id}', [BookingController::class, 'delete'])->name('bookings.delete');
 
             }
         );

@@ -1,10 +1,10 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=script&lang=js&":
-/*!********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -12,1137 +12,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue2-daterange-picker */ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.umd.min.js");
+/* harmony import */ var vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vue2_daterange_picker_dist_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue2-daterange-picker/dist/vue2-daterange-picker.css */ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+
+ // Import the CSS
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    DateRangePicker: (vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_0___default())
+  },
   data: function data() {
+    // Lấy ngày hiện tại
+    var currentDate = new Date();
+
+    // Lấy ngày đầu tháng hiện tại
+    var startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+    // Lấy ngày cuối tháng hiện tại
+    var endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
     return {
-      showrooms: [],
-      showroomspath: "N/A",
-      selectedShowroom: null,
-      selectedArtist: 0,
-      groupServices: [],
-      showroomSchedules: [],
-      services: [],
-      artistlevels: [],
-      selectedArtistlevel: null,
-      selectedshowroomschedule: [],
-      selectedGroupService: "",
-      selectedGroupServiceServices: [],
-      step: "showroom",
-      selectedServices: null,
-      totalPrice: 0,
-      selectedDate: "",
-      showWarning: false,
-      // Ngày tối thiểu cho trường input
-      filteredDays: [],
-      startTime: null,
-      endTime: null,
-      isTimeConflict: false,
-      showAlert: false,
-      apiData: [],
-      artists: [],
-      formData: {
-        name: "",
-        email: "",
-        address: "",
-        phone: "",
-        source: "",
-        note: ""
+      dateRange: {
+        start: startOfMonth,
+        // Ngày bắt đầu
+        end: endOfMonth // Ngày kết thúc
       },
-      errorMessage: "",
-      // Dữ liệu từ API
-      jsonData: "",
-      bookingData: "",
-      selectedDiscountPrice: 0,
-      selectedDepositPrice: 100,
-      maxDepositPrice: 0,
-      maxDiscountPrice: 0,
-      minDepositPrice: 0,
-      minDiscountPrice: 0,
-      inputError: false,
-      inputError_01: false,
-      selectedStatus: "Waiting",
-      selectedPaymentType: "Bank transfer",
-      htmlData: "",
-      groupServiceStates: {},
-      isLabelActive: false,
-      isIconActive: false
-      /*   selectedOption: "option1", */
+
+      dateCompare: {
+        start: null,
+        // Ngày bắt đầu
+        end: null // Ngày kết thúc
+      },
+
+      id: "",
+      currentURL: "",
+      apiData_id: [],
+      Total_price: "",
+      Deposit_price: "",
+      Remaining_price: "",
+      servies_price: "",
+      userId: null,
+      isTransitioning: false,
+      disableNextButton: false,
+      numberOfBooks: 0,
+      filteredDataWaiting: null,
+      filteredDataCancel: null,
+      filteredDataDone: null,
+      filteredDataRefund: null
     };
   },
-
   watch: {
-    selectedArtist: function selectedArtist(newValue, oldValue) {
-      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
-      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
-    }
-  },
-
-  computed: {
-    selectedShowroomMap: function selectedShowroomMap() {
-      var _this = this;
-      // Lấy thông tin maps của showroom được chọn
-      if (this.selectedShowroom) {
-        var selectedShowroom = this.showrooms.find(function (showroom) {
-          return showroom.id === _this.selectedShowroom;
-        });
-        return selectedShowroom ? selectedShowroom.maps : "";
-      }
-      return "";
-    },
-    selectedShowroomName: function selectedShowroomName() {
-      var _this2 = this;
-      // Lấy thông tin maps của showroom được chọn
-      if (this.selectedShowroom) {
-        var selectedShowroom = this.showrooms.find(function (showroom) {
-          return showroom.id === _this2.selectedShowroom;
-        });
-        return selectedShowroom ? selectedShowroom.Name : "";
-      }
-      return "";
-    },
-    selectedArtistlevelDetails: function selectedArtistlevelDetails() {
-      var _this3 = this;
-      if (this.selectedArtistlevel) {
-        var selectedLevel = this.artistlevels.find(function (level) {
-          return level.id === _this3.selectedArtistlevel;
-        });
-        return selectedLevel ? {
-          Name: selectedLevel.Name,
-          Level_price: selectedLevel.Level_price
-        } : null;
-      }
-      return null;
-    },
-    totalLevelPrice: function totalLevelPrice() {
-      if (this.selectedArtistlevelDetails) {
-        var levelPrice = parseFloat(this.selectedArtistlevelDetails.Level_price);
-        return levelPrice;
-      }
-      return 0;
-    },
-    selectedServicesPriced: function selectedServicesPriced() {
-      var _this4 = this;
-      if (this.selectedServices) {
-        var selectedServices = this.services.filter(function (service) {
-          return _this4.selectedServices.includes(service.id);
-        });
-        return selectedServices.map(function (service) {
-          return service.Price;
-        });
-      }
-      return null;
-    },
-    isNextButtonDisabled: function isNextButtonDisabled() {
-      return this.inputError || this.inputError_01 || this.selectedArtistlevel === null ||
-      // Check if an artist level is selected
-      this.selectedArtistlevel === undefined;
-    }
-  },
-  methods: {
-    formatTime: function formatTime(time) {
-      // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
-      var timeParts = time.split(":");
-      var hours = parseInt(timeParts[0]);
-      var minutes = parseInt(timeParts[1]);
-
-      // Định dạng thời gian thành chuỗi với số 0 đứng trước nếu cần
-      var formattedHours = hours < 10 ? "0".concat(hours) : hours;
-      var formattedMinutes = minutes < 10 ? "0".concat(minutes) : minutes;
-
-      // Kết hợp giờ và phút thành chuỗi định dạng
-      return "".concat(formattedHours, ":").concat(formattedMinutes);
-    },
-    fetchShowrooms: function fetchShowrooms() {
-      var _this5 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showrooms").then(function (response) {
-        _this5.showrooms = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching showrooms:", error);
-      });
-    },
-    fetchGroupServices: function fetchGroupServices() {
-      var _this6 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/group-services/".concat(this.selectedShowroom)).then(function (response) {
-        _this6.groupServices = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching group services:", error);
-      });
-    },
-    fetchApiData: function fetchApiData() {
-      var _this7 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(this.selectedShowroom)).then(function (response) {
-        _this7.apiData = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    },
-    fetchArtists: function fetchArtists() {
-      var _this8 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
-        _this8.artists = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    },
-    fetchShowroomSchedule: function fetchShowroomSchedule() {
-      var _this9 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
-        _this9.showroomSchedules = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching showroomschedule:", error);
-      });
-    },
-    /*    filterActiveDays() {
-      if (!this.selectedDate) return;
-      console.log("selectedDate:", this.selectedDate);
-      console.log("this.showroomSchedules:", this.showroomSchedules);
-      const selectedDay = this.selectedDateToDay(this.selectedDate);
-      const selectedShowroomSchedule = this.showroomSchedules.find(
-        (schedule) => */
-    /*  schedule.day === selectedDay && schedule.active === "1" */
-    /* schedule.day === selectedDay && schedule.active === 1
-    );
-    this.filteredDays = selectedShowroomSchedule
-    ? [selectedShowroomSchedule]
-    : [];
-    console.log( this.filteredDays);
-    }, */
-    filterActiveDays: function filterActiveDays() {
-      var _this10 = this;
-      if (!this.selectedDate) return;
-      console.log("selectedDate:", this.selectedDate);
-      console.log("this.fetchApiData:", this.apiData);
-      console.log(this.selectedArtist);
-      this.filteredDays = this.apiData.filter(function (schedule) {
-        return schedule.date === _this10.selectedDate && schedule.ArtistID === _this10.selectedArtist;
-      });
-      console.log(this.filteredDays);
-    },
-    selectedDateToDay: function selectedDateToDay(dateString) {
-      var date = new Date(dateString);
-      var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      return daysOfWeek[date.getDay()];
-    },
-    // ... (Phần methods và các hàm đã có)
-    isDisabled: function isDisabled(day, workingHourStartTime, workingHourEndTime, selectedDate, selectedArtist) {
-      // Kiểm tra xem giờ và ngày từ API có trùng với workingHour và selectedDate hay không
-      // Nếu trùng và trạng thái là "Waiting", trả về true để vô hiệu hóa input radio, ngược lại trả về false
-
-      var matchingApiData = this.apiData.find(function (data) {
-        return data.time === workingHourStartTime && data.date === selectedDate && data.time_end === workingHourEndTime && data.ArtistID === selectedArtist;
-      }
-      /*   parseInt(data.ArtistID) === parseInt(selectedArtist) */);
-
-      return matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom;
-    },
-    checkTimeConflict: function checkTimeConflict() {
-      if (!this.startTime || !this.endTime) {
-        this.isTimeConflict = false;
-        return;
-      }
-      var selectedStartTime = new Date("1970-01-01T".concat(this.startTime));
-      var selectedEndTime = new Date("1970-01-01T".concat(this.endTime));
-      // ...
-      // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
-      var isStartTimeValid = selectedStartTime.getHours() >= 8 && selectedStartTime.getHours() < 20;
-      var isEndTimeValid = selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
-      // Kiểm tra xung đột thời gian cho cả startTime và endTime
-      var conflict = this.filteredDays.some(function (schedule) {
-        var startTime = new Date("1970-01-01T".concat(schedule.time));
-        var endTime = new Date("1970-01-01T".concat(schedule.time_end));
-        // ...
-
-        return selectedStartTime >= startTime && selectedStartTime < endTime || selectedEndTime > startTime && selectedEndTime <= endTime;
-      });
-      if (conflict || selectedStartTime >= selectedEndTime || !isStartTimeValid || !isEndTimeValid) {
-        this.isTimeConflict = true;
-        this.showAlert = true;
-        this.startTime = null;
-        this.endTime = null;
-      } else {
-        this.isTimeConflict = false;
-        this.showAlert = false;
-      }
-    },
-    checkSelectedDate: function checkSelectedDate() {
-      // Xử lý sự kiện khi ngày được chọn thay đổi
-      var currentDate = new Date();
-      var selectedDate = new Date(this.selectedDate);
-      this.isLabelActive = true;
-
-      // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
-      var timeDiff = selectedDate - currentDate;
-
-      // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
-      if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
-        // Ngày không hợp lệ, hiển thị thông báo
-        /*    this.showWarning = true; */
-
-        this.showWarning = false;
-      } else {
-        // Ngày hợp lệ, ẩn thông báo
-        this.showWarning = false;
-      }
-    },
-    handleFileChange: function handleFileChange() {
-      // Handle the file selection here, e.g., store it in a data property
-      this.paymentImage = this.$refs.fileInput.files[0];
-      console.log(this.paymentImage);
-    },
-    fetchServices: function fetchServices() {
-      var _this11 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
-        _this11.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching services:", error);
-      });
-    },
-    fetchArtistlevels: function fetchArtistlevels() {
-      var _this12 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
-        _this12.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching artist levels:", error);
-      });
-    },
-    updateTotalPrice: function updateTotalPrice() {
-      this.totalPrice = this.calculateTotalPrice;
-    },
-    formatCurrency: function formatCurrency(value) {
-      var formatter = new Intl.NumberFormat("en-AU", {
-        style: "currency",
-        currency: "AUD"
-      });
-      return formatter.format(value);
-    },
-    getServiceName: function getServiceName(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      return service ? service.Name : "";
-    },
-    getServicePrice: function getServicePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var priceString = service.Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(priceString);
-      }
-      return 0;
-    },
-    getServiceSalePrice: function getServiceSalePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var Sale_PricepriceString = service.Sale_Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(Sale_PricepriceString);
-      }
-      return 0;
-    },
-    checkInputValue: function checkInputValue() {
-      if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
-        this.inputError = true;
-      } else {
-        this.inputError = false;
-      }
-    },
-    checkInputValueDiscount: function checkInputValueDiscount() {
-      var max = this.maxDiscountPrice - this.selectedDepositPrice;
-      if (this.selectedDiscountPrice > max || this.selectedDiscountPrice < this.minDiscountPrice || this.selectedDiscountPrice === "") {
-        this.inputError_01 = true;
-      } else {
-        this.inputError_01 = false;
-      }
-    },
-    calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
-      var serviceTotalPrice = 0;
-      if (this.selectedServices !== null) {
-        // Tìm dịch vụ được chọn trong danh sách dịch vụ
-        var servicePrice = this.getServicePrice(this.selectedServices);
-        var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
-        serviceTotalPrice = parseFloat(servicePrice);
-        console.log(serviceTotalPrice);
-      }
-      this.maxDepositPrice = serviceTotalPrice;
-      this.maxDiscountPrice = serviceTotalPrice;
-      if (this.selectedDepositPrice !== "" || this.selectedDiscountPrice !== "") {
-        var selectedDepositPrice = this.selectedDepositPrice;
-        var selectedDiscountPrice = this.selectedDiscountPrice;
-        return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice) - parseFloat(selectedDiscountPrice);
-      } else {
-        return serviceTotalPrice + this.totalLevelPrice;
-      }
-    },
-    nextStep: function nextStep() {
-      if (this.step === "showroom") {
-        if (this.selectedShowroom) {
-          this.fetchGroupServices();
-          this.fetchApiData();
-          this.selectedGroupService = "";
-          this.step = "groupService";
-        }
-      } else if (this.step === "groupService") {
-        console.log(this.selectedServices);
-        if (this.selectedServices) {
-          this.fetchArtistlevels();
-          this.step = "artistlevels";
-        }
-      } else if (this.step === "artistlevels") {
-        console.log(this.selectedShowroom);
-        if (this.selectedShowroom) {
-          this.fetchShowroomSchedule();
-          this.step = "showroomschedule";
-        }
-      } else if (this.step === "showroomschedule") {
-        this.fetchArtists();
-        if (this.selectedDate && !this.isTimeConflict) {
-          this.step = "getShow";
-          var bookingDatavalue = {
-            showroomId: this.selectedShowroom,
-            groupServiceId: this.selectedGroupService,
-            serviceIds: this.selectedServices,
-            Artist_levelID: this.selectedArtistlevel,
-            ArtistID: this.selectedArtist,
-            Level_price: this.totalLevelPrice,
-            Remaining_price: this.calculateTotalSelectedServicesPrice(),
-            Deposit_price: this.selectedDepositPrice,
-            Total_price: parseFloat(this.calculateTotalSelectedServicesPrice()) + parseFloat(this.selectedDepositPrice),
-            Date: this.selectedDate,
-            workingHour: this.startTime,
-            WorkingHour_end_time: this.endTime,
-            Status: this.selectedStatus,
-            PaymentType: this.selectedPaymentType
-          };
-          console.log(bookingDatavalue);
-          this.bookingData = JSON.stringify(bookingDatavalue);
-        }
-      }
-    },
-    checkselectedArtist: function checkselectedArtist() {
-      this.isIconActive = true;
-    },
-    prevStep: function prevStep() {
-      if (this.step === "groupService") {
-        this.step = "showroom";
-        this.selectedGroupService = null;
-        this.selectedServices = null;
-        this.selectedArtistlevel = [];
-        this.totalSelectedServicesPrice = 0;
-        // Xóa dữ liệu đã chọn
-      } else if (this.step === "artistlevels") {
-        this.step = "groupService";
-        this.selectedArtistlevel = [];
-        this.totalSelectedServicesPrice = 0;
-      } else if (this.step === "showroomschedule") {
-        this.step = "artistlevels";
-        this.selectedshowroomschedule = [];
-        this.selectedDate = "";
-        this.selectedWorkingHour = "";
-      } else if (this.step === "getShow") {
-        this.step = "showroomschedule";
-        this.formData = "";
-        this.selectedshowroomschedule = [];
-        this.selectedDate = "";
-        this.selectedArtist = "";
-        this.selectedWorkingHour = "";
-        this.bookingDatavalue = "";
-      }
-    },
-    isNameValid: function isNameValid(name) {
-      // Kiểm tra dữ liệu tên (có thể có các yêu cầu riêng cho trường này)
-      return name.trim().length > 0;
-    },
-    isEmailValid: function isEmailValid(email) {
-      // Kiểm tra dữ liệu email (đơn giản kiểm tra định dạng)
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    },
-    isAddressValid: function isAddressValid(address) {
-      // Kiểm tra dữ liệu địa chỉ (có thể có các yêu cầu riêng cho trường này)
-      return address.trim().length > 0;
-    },
-    isPhoneValid: function isPhoneValid(phone) {
-      // Kiểm tra dữ liệu số điện thoại (ví dụ: 10 chữ số)
-      return /^\d{10}$/.test(phone);
-    },
-    toggleGroupService: function toggleGroupService(groupId) {
-      // Sử dụng Vue.set để đảm bảo Vue.js theo dõi sự thay đổi trong trường dữ liệu groupServiceStates
-      this.$set(this.groupServiceStates, groupId, !this.groupServiceStates[groupId]);
-    }
-  },
-  mounted: function mounted() {
-    this.fetchShowrooms();
-    this.fetchServices();
-    this.fetchArtistlevels();
-    this.fetchShowroomSchedule();
-    this.fetchApiData();
-    this.fetchArtists();
-    this.htmlData = this.selectedShowroomMap;
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return { value: void 0, done: !0 }; } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable || "" === iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } throw new TypeError(_typeof(iterable) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    var _ref;
-    return _ref = {
-      showrooms: [],
-      showroomspath: "N/A",
-      selectedShowroom: null,
-      selectedArtist: 0,
-      groupServices: [],
-      showroomSchedules: [],
-      services: [],
-      artistlevels: [],
-      selectedArtistlevel: null,
-      selectedshowroomschedule: null,
-      selectedGroupService: "",
-      selectedGroupServiceServices: [],
-      step: "showroom",
-      selectedServices: null,
-      selectedServicesName: null,
-      totalPrice: 0,
-      selectedDate: "",
-      showWarning: false,
-      // Ngày tối thiểu cho trường input
-      filteredDays: [],
-      startTime: null,
-      endTime: null,
-      isTimeConflict: false,
-      showAlert: false,
-      showfilteredDays: false,
-      selectedWorkingHour: "",
-      selectedWorkingHour_end_time: "",
-      apiData: [],
-      artists: [],
-      formData: {
-        name: "",
-        email: "",
-        address: "",
-        phone: "",
-        source: "",
-        note: ""
+    dateRange: {
+      handler: function handler(newDateRange, oldDateRange) {
+        // Log khi dateRange thay đổi
+        console.log("dateRange đã thay đổi:", newDateRange.endDate, newDateRange.startDate);
+        this.dateRange.end = newDateRange.endDate;
+        this.dateRange.start = newDateRange.startDate;
+        this.calculateTotal();
       },
-      InputSelectedStatus: "",
-      errorMessage: "",
-      // Dữ liệu từ API
-      jsonData: "",
-      bookingData: "",
-      inputError_01: false,
-      selectedDepositPrice: 0,
-      maxDepositPrice: 0,
-      maxDiscountPrice: 0,
-      minDepositPrice: 0,
-      minDiscountPrice: 0,
-      selectedDiscountPrice: 0,
-      inputError: false,
-      selectedStatus: "Waiting",
-      selectedPaymentType: "N/A",
-      Refund: 0,
-      maxRefund: "",
-      Cancel: "Clients",
-      sendmail: "",
-      id: "",
-      currentURL: "",
-      apiData_id: [],
-      GetID: []
-    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _ref;
-  },
-  created: function created() {
-    // Lấy URL hiện tại và gán cho biến currentURL
-    this.currentURL = window.location.href;
+      deep: true // Theo dõi các sự thay đổi sâu trong object
+    },
 
-    // Sử dụng biểu thức chính quy để trích xuất ID từ URL
-    var idMatch = this.currentURL.match(/\/(\d+)\/edit$/);
-    if (idMatch && idMatch[1]) {
-      // Nếu có khớp và tìm thấy ID, bạn có thể lấy nó và chuyển thành số nguyên
-      this.id = parseInt(idMatch[1]);
+    dateCompare: {
+      handler: function handler(newDateCompare, oldDateCompare) {
+        // Log khi dateCompare thay đổi
+        console.log("dateCompare đã thay đổi:", newDateCompare);
+      },
+      deep: true // Theo dõi các sự thay đổi sâu trong object
     }
-    // Call the method to fetch data when the component is created
-  },
-
-  watch: {
-    selectedDateWatcher: function selectedDateWatcher(newVal, oldVal) {
-      this.filterActiveDays();
-    },
-    selectedArtist: function selectedArtist(newValue, oldValue) {
-      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
-      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
-    },
-
-    selectedWorkingHour: function selectedWorkingHour(newWorkingHour, oldWorkingHour) {
-      // Update selectedStartTime when selectedWorkingHour changes
-      if (newWorkingHour) {
-        this.selectedStartTime = newWorkingHour.start_time;
-        this.selectedEndTime = newWorkingHour.end_time;
-      } else {
-        // Handle the case when nothing is selected
-        this.selectedStartTime = "";
-        this.selectedEndTime = "";
-      }
-    }
-  },
-  computed: {
-    selectedDateWatcher: function selectedDateWatcher() {
-      return this.selectedDate;
-    },
-    selectedShowroomMap: function selectedShowroomMap() {
-      var _this = this;
-      // Lấy thông tin maps của showroom được chọn
-      if (this.selectedShowroom) {
-        var selectedShowroom = this.showrooms.find(function (showroom) {
-          return showroom.id === _this.selectedShowroom;
-        });
-        return selectedShowroom ? selectedShowroom.maps : "";
-      }
-      return "";
-    },
-    selectedArtistlevelDetails: function selectedArtistlevelDetails() {
-      var _this2 = this;
-      if (this.selectedArtistlevel) {
-        var selectedLevel = this.artistlevels.find(function (level) {
-          return level.id === _this2.selectedArtistlevel;
-        });
-        return selectedLevel ? {
-          Name: selectedLevel.Name,
-          Level_price: selectedLevel.Level_price
-        } : null;
-      }
-      return null;
-    },
-    totalLevelPrice: function totalLevelPrice() {
-      if (this.selectedArtistlevelDetails) {
-        var levelPrice = parseFloat(this.selectedArtistlevelDetails.Level_price);
-        return levelPrice;
-      }
-      return 0;
-    },
-    selectedServicesPriced: function selectedServicesPriced() {
-      var _this3 = this;
-      if (this.selectedServices) {
-        var selectedServices = this.services.filter(function (service) {
-          return _this3.selectedServices.includes(service.id);
-        });
-        return selectedServices.map(function (service) {
-          return service.Price;
-        });
-      }
-      return null;
-    }
-  },
-  methods: {
-    fetchapiData_id: function fetchapiData_id() {
-      var _this4 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/data-bookings/".concat(this.id)).then(function (response) {
-        _this4.apiData_id = response.data;
-        _this4.selectedShowroom = _this4.apiData_id[0].ShowroomID;
-        _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
-        _this4.GetID = _this4.apiData_id[0].GetID;
-        _this4.selectedStatus = _this4.apiData_id[0].status;
-        _this4.StatusPresent = _this4.apiData_id[0].status;
-        _this4.selectedDate = _this4.apiData_id[0].date;
-        _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
-        _this4.startTime = _this4.apiData_id[0].time;
-        _this4.endTime = _this4.apiData_id[0].time_end;
-        _this4.selectedServices = _this4.apiData_id[0].services[0].id;
-        _this4.selectedServicesName = _this4.apiData_id[0].services[0].Name;
-        _this4.content = _this4.apiData_id[0].content;
-        _this4.Refund = _this4.apiData_id[0].price.Deposit_price - _this4.apiData_id[0].price.Total_price;
-        _this4.Cancel = _this4.apiData_id[0].content;
-        _this4.maxRefund = _this4.apiData_id[0].price.Deposit_price;
-        _this4.selectedDepositPrice = _this4.apiData_id[0].price.Deposit_price;
-        if (_this4.apiData_id[0].ArtistID === 7) {
-          _this4.selectedArtist = 0;
-        } else {
-          _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
-        }
-        // Check if the payment object exists in the data
-        if (_this4.apiData_id[0] && _this4.apiData_id[0].payment) {
-          // Set this.selectedPaymentType to the value of payment_type
-          _this4.selectedPaymentType = _this4.apiData_id[0].payment.payment_type;
-        } else {
-          // Handle the case where payment data is not available
-          _this4.selectedPaymentType = "N/A";
-        }
-        _this4.action = _this4.apiData_id[0].action;
-        _this4.formData = {
-          name: _this4.apiData_id[0].get.Name,
-          email: _this4.apiData_id[0].get.Email,
-          address: _this4.apiData_id[0].get.Address,
-          phone: _this4.apiData_id[0].get.Phone,
-          source: _this4.apiData_id[0].get.Source,
-          note: _this4.apiData_id[0].get.Note
-        };
-        _this4.fetchApiData();
-        _this4.fetchShowroomSchedule();
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    },
-    fetchShowrooms: function fetchShowrooms() {
-      var _this5 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showrooms").then(function (response) {
-        _this5.showrooms = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching showrooms:", error);
-      });
-    },
-    fetchGroupServices: function fetchGroupServices() {
-      var _this6 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/group-services/".concat(this.selectedShowroom)).then(function (response) {
-        _this6.groupServices = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching group services:", error);
-      });
-    },
-    fetchApiData: function fetchApiData() {
-      var _this7 = this;
-      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var response;
-        return _regeneratorRuntime().wrap(function _callee$(_context) {
-          while (1) switch (_context.prev = _context.next) {
-            case 0:
-              _context.prev = 0;
-              _context.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(_this7.selectedShowroom));
-            case 3:
-              response = _context.sent;
-              _this7.apiData = response.data;
-              console.log(_this7.selectedShowroom);
-              console.log("API data fetched selectedShowroom:", _this7.apiData);
-              _context.next = 12;
-              break;
-            case 9:
-              _context.prev = 9;
-              _context.t0 = _context["catch"](0);
-              console.error("Error fetching API data:", _context.t0);
-            case 12:
-            case "end":
-              return _context.stop();
-          }
-        }, _callee, null, [[0, 9]]);
-      }))();
-    },
-    fetchArtists: function fetchArtists() {
-      var _this8 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
-        _this8.artists = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    },
-    fetchShowroomSchedule: function fetchShowroomSchedule() {
-      var _this9 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
-        _this9.showroomSchedules = response.data;
-        console.log("showroomSchedules", _this9.showroomSchedules);
-      })["catch"](function (error) {
-        console.error("Error fetching showroomschedule:", error);
-      });
-    },
-    filterActiveDays: function filterActiveDays() {
-      var _this10 = this;
-      if (!this.selectedDate) return;
-      this.showfilteredDays = true;
-      this.filteredDays = this.apiData.filter(function (schedule) {
-        return schedule.date === _this10.selectedDate && schedule.ArtistID === _this10.selectedArtist && schedule.id !== _this10.id;
-      });
-      console.log(this.filteredDays);
-    },
-    formatTime: function formatTime(time) {
-      // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
-      var timeParts = time.split(":");
-      var hours = parseInt(timeParts[0]);
-      var minutes = parseInt(timeParts[1]);
-
-      // Định dạng thời gian thành chuỗi với số 0 đứng trước nếu cần
-      var formattedHours = hours < 10 ? "0".concat(hours) : hours;
-      var formattedMinutes = minutes < 10 ? "0".concat(minutes) : minutes;
-
-      // Kết hợp giờ và phút thành chuỗi định dạng
-      return "".concat(formattedHours, ":").concat(formattedMinutes);
-    },
-    checkTimeConflict: function checkTimeConflict() {
-      if (!this.startTime || !this.endTime) {
-        this.isTimeConflict = false;
-        return;
-      }
-      var selectedStartTime = new Date("1970-01-01T".concat(this.startTime));
-      var selectedEndTime = new Date("1970-01-01T".concat(this.endTime));
-      // ...
-      // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
-      var isStartTimeValid = selectedStartTime.getHours() >= 8 && selectedStartTime.getHours() < 20;
-      var isEndTimeValid = selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
-      // Kiểm tra xung đột thời gian cho cả startTime và endTime
-      var conflict = this.filteredDays.some(function (schedule) {
-        var startTime = new Date("1970-01-01T".concat(schedule.time));
-        var endTime = new Date("1970-01-01T".concat(schedule.time_end));
-        // ...
-
-        return selectedStartTime >= startTime && selectedStartTime < endTime || selectedEndTime > startTime && selectedEndTime <= endTime;
-      });
-      if (conflict || selectedStartTime >= selectedEndTime || !isStartTimeValid || !isEndTimeValid) {
-        this.isTimeConflict = true;
-        this.showAlert = true;
-        this.startTime = null;
-        this.endTime = null;
-      } else {
-        this.isTimeConflict = false;
-        this.showAlert = false;
-      }
-    },
-    selectedDateToDay: function selectedDateToDay(dateString) {
-      var date = new Date(dateString);
-      var daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      return daysOfWeek[date.getDay()];
-    },
-    inputSelectedStatus: function inputSelectedStatus() {
-      // Handle input change event if needed
-    },
-    // ... (Phần methods và các hàm đã có)
-    isDisabled: function isDisabled(day, workingHourStartTime, workingHourEndTime, selectedDate, selectedArtist) {
-      // Check if API data has already been fetched
-
-      // Fetch API data if it hasn't been fetched yet
-      // Set the flag to true to indicate that data has been fetched
-      var matchingApiData = this.apiData.find(function (data) {
-        return data.time === workingHourStartTime && data.date === selectedDate && data.time_end === workingHourEndTime && parseInt(data.ArtistID) === parseInt(selectedArtist);
-      });
-      return matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom;
-    },
-    checkSelectedDate: function checkSelectedDate() {
-      // Xử lý sự kiện khi ngày được chọn thay đổi
-      var apiData = this.apiData_id[0];
-      var currentDateISO = apiData.created_at;
-      var currentDate = new Date(currentDateISO); // Convert to JavaScript Date object
-
-      var selectedDate = new Date(this.selectedDate);
-
-      // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
-      var timeDiff = selectedDate - currentDate;
-
-      // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
-      if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
-        // Ngày không hợp lệ, hiển thị thông báo
-        /*        this.showWarning = true; */
-        this.showWarning = false;
-      } else {
-        // Ngày hợp lệ, ẩn thông báo
-        this.showWarning = false;
-      }
-    },
-    fetchServices: function fetchServices() {
-      var _this11 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
-        _this11.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching services:", error);
-      });
-    },
-    fetchArtistlevels: function fetchArtistlevels() {
-      var _this12 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
-        _this12.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching artist levels:", error);
-      });
-    },
-    updateTotalPrice: function updateTotalPrice() {
-      this.totalPrice = this.calculateTotalPrice;
-    },
-    formatCurrency: function formatCurrency(value) {
-      var formatter = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "UAD"
-      });
-      return formatter.format(value);
-    },
-    getServiceName: function getServiceName(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      return service ? service.Name : "";
-    },
-    getServicePrice: function getServicePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var priceString = service.Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(priceString);
-      }
-      return 0;
-    },
-    getServiceSalePrice: function getServiceSalePrice(id) {
-      var service = this.services.find(function (service) {
-        return service.id === id;
-      });
-      if (service) {
-        var Sale_PricepriceString = service.Sale_Price.replace(/[^0-9.-]/g, ""); // Loại bỏ ký tự không cần thiết
-        return parseFloat(Sale_PricepriceString);
-      }
-      return 0;
-    },
-    checkInputValue: function checkInputValue() {
-      if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
-        this.inputError = true;
-      } else {
-        this.inputError = false;
-      }
-    },
-    checkInputValueDiscount: function checkInputValueDiscount() {
-      var max = this.maxDiscountPrice - this.selectedDepositPrice;
-      if (this.selectedDiscountPrice > max || this.selectedDiscountPrice < this.minDiscountPrice || this.selectedDiscountPrice === "") {
-        this.inputError_01 = true;
-      } else {
-        this.inputError_01 = false;
-      }
-    },
-    calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
-      var serviceTotalPrice = 0;
-      if (this.selectedServices !== null) {
-        // Tìm dịch vụ được chọn trong danh sách dịch vụ
-        var servicePrice = this.getServicePrice(this.selectedServices);
-        var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
-        serviceTotalPrice = parseFloat(servicePrice);
-      }
-      this.maxDepositPrice = serviceTotalPrice;
-      this.maxDiscountPrice = serviceTotalPrice;
-      if (this.selectedDepositPrice !== "") {
-        var selectedDepositPrice = this.selectedDepositPrice;
-        return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice);
-      } else {
-        return serviceTotalPrice + this.totalLevelPrice;
-      }
-    },
-    nextStep: function nextStep() {
-      if (this.step === "showroom") {
-        if (this.selectedServices) {
-          this.fetchArtistlevels();
-          this.fetchGroupServices();
-          this.fetchApiData();
-          this.step = "groupService";
-        }
-      }
-    },
-    prevStep: function prevStep() {
-      if (this.step === "groupService") {
-        this.step = "showroom";
-        this.bookingDatavalue = "";
-        this.selectedGroupService = null;
-        this.selectedServices = this.apiData_id[0].services[0].id;
-        this.selectedArtistlevel = [];
-        this.totalSelectedServicesPrice = 0;
-        // Xóa dữ liệu đã chọn
-      }
-    },
-    checkselectedArtist: function checkselectedArtist() {
-      this.isIconActive = true;
-    },
-    SubmitEvent: function SubmitEvent() {
-      if (this.step === "groupService") {
-        if (this.validateForm()) {
-          // If the form is valid, proceed with submission
-          // Your existing code here to submit the data
-          // After successful submission, you can set this.submitted = true;
-          var bookingDatavalue = {
-            showroomId: this.selectedShowroom,
-            groupServiceId: this.selectedGroupService,
-            serviceIds: this.selectedServices,
-            Artist_levelID: this.selectedArtistlevel,
-            ArtistID: this.selectedArtist,
-            Level_price: this.totalLevelPrice,
-            Remaining_price: this.calculateTotalSelectedServicesPrice(),
-            Deposit_price: this.selectedDepositPrice,
-            Total_price: parseFloat(this.calculateTotalSelectedServicesPrice()) + parseFloat(this.selectedDepositPrice)
-          };
-          this.bookingData = JSON.stringify(bookingDatavalue);
-        } else {
-          // If the form is not valid, do not submit and display an error message
-          this.submitted = false;
-        }
-      } else {
-        this.step = "showroom";
-      }
-    },
-    submitFormSendMail: function submitFormSendMail() {
-      if (this.sendmail.trim() === "") {
-        // Check if content is empty or contains only whitespace
-        alert("Textarea cannot be empty.");
-        return false; // You can show an alert or any other error handling here
-      } else {
-        // Proceed with form submission
-        // You can use axios or any other method to send the data to the server
-        return true;
-      }
-    },
-    validateTime: function validateTime() {
-      // Parse the time inputs into Date objects
-      var startTime = new Date("1970-01-01T".concat(this.startTime));
-      var endTime = new Date("1970-01-01T".concat(this.endTime));
-
-      // Check if the end time is later than the start time
-      if (startTime >= endTime) {
-        alert("End time must be later than start time.");
-        // You can reset the end time or handle the error as needed
-        this.endTime = "";
-      }
-    },
-    isNameValid: function isNameValid(name) {
-      // Kiểm tra dữ liệu tên (có thể có các yêu cầu riêng cho trường này)
-      return name.trim().length > 0;
-    },
-    isEmailValid: function isEmailValid(email) {
-      // Kiểm tra dữ liệu email (đơn giản kiểm tra định dạng)
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    },
-    isAddressValid: function isAddressValid(address) {
-      // Kiểm tra dữ liệu địa chỉ (có thể có các yêu cầu riêng cho trường này)
-      return address.trim().length > 0;
-    },
-    isPhoneValid: function isPhoneValid(phone) {
-      // Kiểm tra dữ liệu số điện thoại (ví dụ: 10 chữ số)
-      return /^\d{10}$/.test(phone);
-    },
-    toggleGroupService: function toggleGroupService(groupId) {
-      // Sử dụng Vue.set để đảm bảo Vue.js theo dõi sự thay đổi trong trường dữ liệu groupServiceStates
-      this.$set(this.groupServiceStates, groupId, !this.groupServiceStates[groupId]);
-    }
-  },
-  mounted: function mounted() {
-    this.fetchShowrooms();
-    this.fetchServices();
-    this.fetchArtistlevels();
-    this.fetchShowroomSchedule();
-    this.fetchApiData();
-    this.fetchArtists();
-    this.fetchapiData_id();
-    this.fetchGroupServices();
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {
-      id: "",
-      currentURL: "",
-      apiData_id: [],
-      Total_price: "",
-      Deposit_price: "",
-      Remaining_price: "",
-      servies_price: ""
-      /*   selectedOption: "option1", */
-    };
-  },
-  created: function created() {
-    // Lấy URL hiện tại và gán cho biến currentURL
-    this.currentURL = window.location.href;
-
-    // Sử dụng biểu thức chính quy để trích xuất ID từ URL
-    var idMatch = this.currentURL.match(/\/(\d+)\/edit$/);
-    if (idMatch && idMatch[1]) {
-      // Nếu có khớp và tìm thấy ID, bạn có thể lấy nó và chuyển thành số nguyên
-      this.id = parseInt(idMatch[1]);
-    }
-  },
-  watch: {},
-  computed: {},
-  methods: {
-    fetchapiData_id: function fetchapiData_id() {
-      var _this = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/data-bookings/".concat(this.id)).then(function (response) {
-        _this.apiData_id = response.data;
-        _this.Total_price = _this.apiData_id[0].price.Total_price;
-        _this.Deposit_price = _this.apiData_id[0].price.Deposit_price;
-        _this.Remaining_price = _this.apiData_id[0].price.Remaining_price;
-        _this.servies_price = _this.apiData_id[0].price.servies_price;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    }
-  },
-  mounted: function mounted() {
-    this.fetchapiData_id();
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {
-      id: "",
-      currentURL: "",
-      apiData_id: [],
-      Total_price: "",
-      Deposit_price: "",
-      Remaining_price: "",
-      servies_price: "",
-      userId: null,
-      currentMonth: null,
-      currentYear: null,
-      isTransitioning: false,
-      disableNextButton: false,
-      numberOfBooks: 0
-      // Không vô hiệu hóa nút "Xem các tháng sau" ban đầu
-    };
   },
 
   computed: {
@@ -1154,22 +92,66 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     fetchapiData_id: function fetchapiData_id() {
       var _this = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/all-data").then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_2__["default"].get("/api/all-data").then(function (response) {
         _this.apiData_id = response.data;
+        _this.filteredData();
         _this.calculateTotal(); // Gọi hàm tính tổng sau khi lấy dữ liệu API
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
+    filteredData: function filteredData() {
+      this.filteredDataWaiting = this.apiData_id.filter(function (booking) {
+        var WaitingStatus = booking.status;
+        return WaitingStatus == "Waiting";
+      });
+      this.filteredDataDone = this.apiData_id.filter(function (booking) {
+        var DoneStatus = booking.status;
+        return DoneStatus == "Done";
+      });
+      this.filteredDataRefund = this.apiData_id.filter(function (booking) {
+        var RefundStatus = booking.status;
+        return RefundStatus == "Refund";
+      });
+      this.filteredDataCancel = this.apiData_id.filter(function (booking) {
+        var CancelStatus = booking.status;
+        return CancelStatus == "Cancel";
+      });
+    },
     calculateTotal: function calculateTotal() {
       var _this2 = this;
+      console.log("filteredDataWaiting:", this.filteredDataWaiting);
+      console.log("filteredDataDone:", this.filteredDataDone);
+      console.log("filteredDataRefund:", this.filteredDataRefund);
+      console.log("filteredDataCancel:", this.filteredDataCancel);
+      console.log("dateRange:", this.dateRange.end, this.dateRange.start);
+
       // Lọc các bản ghi thuộc tháng và năm hiện tại
       var filteredData = this.apiData_id.filter(function (booking) {
         var updatedAtDate = new Date(booking.price.updated_at);
-        var updatedMonth = updatedAtDate.getMonth() + 1;
-        var updatedYear = updatedAtDate.getFullYear();
-        return updatedMonth === _this2.currentMonth && updatedYear === _this2.currentYear;
+        return updatedAtDate <= _this2.dateRange.end && updatedAtDate >= _this2.dateRange.start;
       });
+      var filteredDataWaiting = this.filteredDataWaiting.filter(function (booking) {
+        var updatedAtDate = new Date(booking.price.updated_at);
+        return updatedAtDate <= _this2.dateRange.end && updatedAtDate >= _this2.dateRange.start;
+      });
+      var filteredDataDone = this.filteredDataDone.filter(function (booking) {
+        var updatedAtDate = new Date(booking.price.updated_at);
+        return updatedAtDate <= _this2.dateRange.end && updatedAtDate >= _this2.dateRange.start;
+      });
+      var filteredDataRefund = this.filteredDataRefund.filter(function (booking) {
+        var updatedAtDate = new Date(booking.price.updated_at);
+        return updatedAtDate <= _this2.dateRange.end && updatedAtDate >= _this2.dateRange.start;
+      });
+      var filteredDataCancel = this.filteredDataCancel.filter(function (booking) {
+        var updatedAtDate = new Date(booking.price.updated_at);
+        return updatedAtDate <= _this2.dateRange.end && updatedAtDate >= _this2.dateRange.start;
+      });
+      console.log(filteredData);
+      console.log(filteredDataDone);
+      console.log(filteredDataWaiting);
+      console.log(filteredDataRefund);
+      console.log(filteredDataCancel);
 
       // Tính tổng các giá trị từ dữ liệu đã lọc
       this.Total_price = filteredData.reduce(function (total, booking) {
@@ -1248,1058 +230,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {
-      id: "",
-      currentURL: "",
-      apiData_id: [],
-      Total_price: "",
-      Deposit_price: "",
-      Remaining_price: "",
-      servies_price: "",
-      userId: null,
-      currentMonth: null,
-      currentYear: null,
-      isTransitioning: false,
-      disableNextButton: false,
-      numberOfBooks: 0
-      // Không vô hiệu hóa nút "Xem các tháng sau" ban đầu
-    };
-  },
-
-  computed: {
-    totalBookings: function totalBookings() {
-      // Trả về tổng số booking bằng cách sử dụng thuộc tính length của mảng filteredData
-      return this.filteredData.length;
-    }
-  },
-  methods: {
-    fetchapiData_id: function fetchapiData_id() {
-      var _this = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookingsDataArtists/".concat(this.userId)).then(function (response) {
-        _this.apiData_id = response.data;
-        _this.calculateTotal(); // Gọi hàm tính tổng sau khi lấy dữ liệu API
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    },
-    calculateTotal: function calculateTotal() {
-      var _this2 = this;
-      // Lọc các bản ghi thuộc tháng và năm hiện tại
-      var filteredData = this.apiData_id.filter(function (booking) {
-        var updatedAtDate = new Date(booking.price.updated_at);
-        var updatedMonth = updatedAtDate.getMonth() + 1;
-        var updatedYear = updatedAtDate.getFullYear();
-        return updatedMonth === _this2.currentMonth && updatedYear === _this2.currentYear;
-      });
-
-      // Tính tổng các giá trị từ dữ liệu đã lọc
-      this.Total_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price);
-      }, 0).toFixed(2);
-      this.Deposit_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.Remaining_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Remaining_price);
-      }, 0).toFixed(2);
-      this.servies_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.numberOfBooks = filteredData.length;
-    },
-    showPreviousMonths: function showPreviousMonths() {
-      var _this3 = this;
-      this.isTransitioning = true; // Bắt đầu hiệu ứng
-      setTimeout(function () {
-        _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-        // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
-        _this3.currentMonth = _this3.currentMonth - 1;
-        console.log(_this3.currentMonth);
-
-        // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
-        if (_this3.currentMonth === 0) {
-          _this3.currentMonth = 12;
-          _this3.currentYear = _this3.currentYear - 1;
-        }
-        _this3.calculateTotal();
-        _this3.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-      }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
-    },
-    showNextMonths: function showNextMonths() {
-      var _this4 = this;
-      if (this.currentMonth < 12) {
-        this.isTransitioning = true; // Bắt đầu hiệu ứng
-        setTimeout(function () {
-          _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-          // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
-          _this4.currentMonth = _this4.currentMonth + 1;
-          console.log(_this4.currentMonth);
-
-          // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
-          if (_this4.currentMonth === 12) {
-            _this4.currentMonth = 1;
-            _this4.currentYear = _this4.currentYear + 1;
-          }
-          _this4.calculateTotal();
-          _this4.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-        }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
-      }
-    },
-    checkDisableNextButton: function checkDisableNextButton() {
-      var currentDate = new Date();
-      var currentMonth = currentDate.getMonth() + 1;
-      var currentYear = currentDate.getFullYear();
-      // Nút "Xem các tháng sau" sẽ bị vô hiệu hóa nếu tháng hiện tại là tháng cuối cùng trong danh sách
-      if (this.currentMonth >= currentMonth && this.currentYear >= currentYear) {
-        this.disableNextButton = true;
-      } else {
-        this.disableNextButton = false;
-      }
-    }
-  },
-  mounted: function mounted() {
-    this.userId = this.$root.userId;
-    var currentDate = new Date();
-    this.currentMonth = currentDate.getMonth() + 1;
-    this.currentYear = currentDate.getFullYear();
-    this.fetchapiData_id();
-    this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau" khi ban đầu tải trang
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&":
-/*!********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  data: function data() {
-    return {
-      id: "",
-      currentURL: "",
-      apiData_id: [],
-      Total_price: "",
-      Deposit_price: "",
-      Remaining_price: "",
-      servies_price: "",
-      userId: null,
-      currentMonth: null,
-      currentYear: null,
-      isTransitioning: false,
-      disableNextButton: false,
-      numberOfBooks: 0
-      // Không vô hiệu hóa nút "Xem các tháng sau" ban đầu
-    };
-  },
-
-  computed: {
-    totalBookings: function totalBookings() {
-      // Trả về tổng số booking bằng cách sử dụng thuộc tính length của mảng filteredData
-      return this.filteredData.length;
-    }
-  },
-  methods: {
-    fetchapiData_id: function fetchapiData_id() {
-      var _this = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookingsDataEmployee/".concat(this.userId)).then(function (response) {
-        _this.apiData_id = response.data;
-        _this.calculateTotal(); // Gọi hàm tính tổng sau khi lấy dữ liệu API
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    },
-    calculateTotal: function calculateTotal() {
-      var _this2 = this;
-      // Lọc các bản ghi thuộc tháng và năm hiện tại
-      var filteredData = this.apiData_id.filter(function (booking) {
-        var updatedAtDate = new Date(booking.price.updated_at);
-        var updatedMonth = updatedAtDate.getMonth() + 1;
-        var updatedYear = updatedAtDate.getFullYear();
-        return updatedMonth === _this2.currentMonth && updatedYear === _this2.currentYear;
-      });
-
-      // Tính tổng các giá trị từ dữ liệu đã lọc
-      this.Total_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price);
-      }, 0).toFixed(2);
-      this.Deposit_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.Remaining_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Remaining_price);
-      }, 0).toFixed(2);
-      this.servies_price = filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.numberOfBooks = filteredData.length;
-    },
-    showPreviousMonths: function showPreviousMonths() {
-      var _this3 = this;
-      this.isTransitioning = true; // Bắt đầu hiệu ứng
-      setTimeout(function () {
-        _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-        // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
-        _this3.currentMonth = _this3.currentMonth - 1;
-        console.log(_this3.currentMonth);
-
-        // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
-        if (_this3.currentMonth === 0) {
-          _this3.currentMonth = 12;
-          _this3.currentYear = _this3.currentYear - 1;
-        }
-        _this3.calculateTotal();
-        _this3.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-      }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
-    },
-    showNextMonths: function showNextMonths() {
-      var _this4 = this;
-      if (this.currentMonth < 12) {
-        this.isTransitioning = true; // Bắt đầu hiệu ứng
-        setTimeout(function () {
-          _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-          // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
-          _this4.currentMonth = _this4.currentMonth + 1;
-          console.log(_this4.currentMonth);
-
-          // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
-          if (_this4.currentMonth === 12) {
-            _this4.currentMonth = 1;
-            _this4.currentYear = _this4.currentYear + 1;
-          }
-          _this4.calculateTotal();
-          _this4.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-        }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
-      }
-    },
-    checkDisableNextButton: function checkDisableNextButton() {
-      var currentDate = new Date();
-      var currentMonth = currentDate.getMonth() + 1;
-      var currentYear = currentDate.getFullYear();
-      // Nút "Xem các tháng sau" sẽ bị vô hiệu hóa nếu tháng hiện tại là tháng cuối cùng trong danh sách
-      if (this.currentMonth >= currentMonth && this.currentYear >= currentYear) {
-        this.disableNextButton = true;
-      } else {
-        this.disableNextButton = false;
-      }
-    }
-  },
-  mounted: function mounted() {
-    this.userId = this.$root.userId;
-    var currentDate = new Date();
-    this.currentMonth = currentDate.getMonth() + 1;
-    this.currentYear = currentDate.getFullYear();
-    this.fetchapiData_id();
-    this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau" khi ban đầu tải trang
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* binding */ render),
-/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-var render = function render() {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", [_vm.selectedShowroom ? _c("div", {
-    staticClass: "selectedShowroom"
-  }, [_c("div", {
-    staticClass: "form-control mb-4"
-  }, [_c("div", {
-    staticClass: "book_detail"
-  }, [_c("i", {
-    staticClass: "fa-solid fa-location-dot"
-  }), _vm._v(" "), _c("span", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v(_vm._s(_vm.selectedShowroomName))])]), _vm._v(" "), this.selectedServices !== null ? _c("div", [_c("div", {
-    staticClass: "book_detail"
-  }, [_vm._m(0), _vm._v(" "), _c("ul", {
-    staticClass: "m-0"
-  }, [_c("li", {
-    staticClass: "book-title"
-  }, [_c("p", {
-    staticClass: "radio-text"
-  }, [_vm._v("\n                " + _vm._s(_vm.getServiceName(_vm.selectedServices)) + " -- Price:\n                " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(_vm.selectedServices))) + "\n                ")])])]), _vm._v(" "), _vm.selectedArtistlevelDetails ? _c("div", [_c("div", {}, [_c("p", [_c("i", {
-    staticClass: "fa-solid fa-user",
-    staticStyle: {
-      color: "#944747"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v(_vm._s(_vm.selectedArtistlevelDetails.Name))])]), _vm._v(" "), _c("ul", [_c("li", [_c("p", {
-    staticClass: "radio-text"
-  }, [_c("i", [_vm._v(_vm._s(_vm.formatCurrency(_vm.selectedArtistlevelDetails.Level_price)))])]), _vm._v(" "), _c("p", {
-    staticClass: "radio-text"
-  }, [_vm._v("\n                    Level Price: " + _vm._s(_vm.formatCurrency(_vm.totalLevelPrice)) + "\n                  ")])])])])]) : _c("p", {
-    staticClass: "radio-text"
-  }, [_vm._v("No selected level")]), _vm._v(" "), _c("p", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("\n            Remaining Price:\n            " + _vm._s(_vm.formatCurrency(_vm.calculateTotalSelectedServicesPrice())) + "\n          ")])])]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _vm.step === "showroom" ? [_c("div", {
-    staticClass: "radio-section"
-  }, _vm._l(_vm.showrooms, function (showroom) {
-    return _c("div", {
-      key: showroom.id
-    }, [_c("label", {
-      staticClass: "label",
-      attrs: {
-        "for": "showroom_" + showroom.id
-      }
-    }, [_c("input", {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: _vm.selectedShowroom,
-        expression: "selectedShowroom"
-      }],
-      staticClass: "showroom_label",
-      attrs: {
-        type: "radio",
-        id: "showroom_" + showroom.id
-      },
-      domProps: {
-        value: showroom.id,
-        checked: _vm._q(_vm.selectedShowroom, showroom.id)
-      },
-      on: {
-        change: function change($event) {
-          _vm.selectedShowroom = showroom.id;
-        }
-      }
-    }), _vm._v(" "), _c("div", {
-      staticClass: "radio-header radio-text"
-    }, [_vm._v(_vm._s(showroom.Name))])])]);
-  }), 0), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button",
-      disabled: !_vm.selectedShowroom
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "groupService" ? [_vm._l(_vm.groupServices, function (groupService) {
-    return _c("div", {
-      key: groupService.groupService.id,
-      staticClass: "label groupService"
-    }, [_c("div", {
-      staticClass: "radio-header radio-text",
-      "class": {
-        active: _vm.groupServiceStates[groupService.groupService.id]
-      },
-      on: {
-        click: function click($event) {
-          return _vm.toggleGroupService(groupService.groupService.id);
-        }
-      }
-    }, [_vm._v("\n        " + _vm._s(groupService.groupService.Name) + "\n      ")]), _vm._v(" "), _vm.groupServiceStates[groupService.groupService.id] ? _c("ul", {
-      staticClass: "m-0"
-    }, _vm._l(groupService.groupService.services, function (service) {
-      return _c("li", {
-        key: service.id
-      }, [_c("label", {
-        staticClass: "flex-groupService"
-      }, [_c("input", {
-        directives: [{
-          name: "model",
-          rawName: "v-model",
-          value: _vm.selectedServices,
-          expression: "selectedServices"
-        }],
-        attrs: {
-          type: "radio"
-        },
-        domProps: {
-          value: service.id,
-          checked: _vm._q(_vm.selectedServices, service.id)
-        },
-        on: {
-          change: [function ($event) {
-            _vm.selectedServices = service.id;
-          }, function ($event) {
-            return _vm.calculateTotalSelectedServicesPrice();
-          }]
-        }
-      }), _vm._v(" "), _c("div", {
-        staticClass: "radio-header radio-text"
-      }, [_vm._v("\n              " + _vm._s(service.Name) + " -- Price: " + _vm._s(_vm.formatCurrency(service.Price)) + "\n            ")])])]);
-    }), 0) : _vm._e()]);
-  }), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button",
-      disabled: _vm.selectedServices === null
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "artistlevels" ? [_c("ul", [_c("li", {
-    staticClass: "mt-3 mb-3"
-  }, [_c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Deposit Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDepositPrice,
-      expression: "selectedDepositPrice"
-    }],
-    staticClass: "deposit",
-    attrs: {
-      type: "number",
-      max: _vm.maxDepositPrice,
-      min: _vm.minDepositPrice
-    },
-    domProps: {
-      value: _vm.selectedDepositPrice
-    },
-    on: {
-      change: _vm.calculateTotalSelectedServicesPrice,
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDepositPrice = $event.target.value;
-      }, _vm.checkInputValue]
-    }
-  }), _vm._v(" "), _vm.inputError ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v("\n          Value exceeds limit min 100.\n        ")]) : _vm._e()]), _vm._v(" "), _c("li", {
-    staticClass: "mt-3 mb-3"
-  }, [_c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Discount Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDiscountPrice,
-      expression: "selectedDiscountPrice"
-    }],
-    staticClass: "deposit",
-    attrs: {
-      type: "number",
-      max: _vm.maxDiscountPrice,
-      min: _vm.minDiscountPrice
-    },
-    domProps: {
-      value: _vm.selectedDiscountPrice
-    },
-    on: {
-      change: _vm.calculateTotalSelectedServicesPrice,
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDiscountPrice = $event.target.value;
-      }, _vm.checkInputValueDiscount]
-    }
-  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v("Value exceeds limit.")]) : _vm._e()]), _vm._v(" "), _c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Select Level Artist")]), _vm._v(" "), _vm._l(_vm.artistlevels, function (artistLevel) {
-    return _c("li", {
-      key: artistLevel.id,
-      staticClass: "mt-3 mb-3"
-    }, [_c("label", {
-      staticClass: "label"
-    }, [_c("input", {
-      directives: [{
-        name: "model",
-        rawName: "v-model",
-        value: _vm.selectedArtistlevel,
-        expression: "selectedArtistlevel"
-      }],
-      attrs: {
-        type: "radio"
-      },
-      domProps: {
-        value: artistLevel.id,
-        checked: _vm._q(_vm.selectedArtistlevel, artistLevel.id)
-      },
-      on: {
-        change: [function ($event) {
-          _vm.selectedArtistlevel = artistLevel.id;
-        }, _vm.calculateTotalSelectedServicesPrice]
-      }
-    }), _vm._v(" "), _c("div", {
-      staticClass: "radio-header radio-text"
-    }, [_vm._v(_vm._s(artistLevel.Name))]), _vm._v(" "), _c("i", {
-      staticClass: "radio-text"
-    }, [_vm._v(_vm._s(_vm.formatCurrency(artistLevel.Level_price)))])])]);
-  })], 2), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      disabled: _vm.isNextButtonDisabled,
-      type: "button"
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "showroomschedule" ? [_c("div", {
-    staticClass: "col-12"
-  }, [_c("div", {
-    staticClass: "col-12 col-sm-12 col-lg-12 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDate,
-      expression: "selectedDate"
-    }],
-    staticClass: "floatLabel",
-    attrs: _defineProperty({
-      id: "depart",
-      type: "date"
-    }, "id", _vm.selectedDate),
-    domProps: {
-      value: _vm.selectedDate
-    },
-    on: {
-      change: _vm.filterActiveDays,
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDate = $event.target.value;
-      }, _vm.checkSelectedDate]
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date",
-    "class": {
-      active: _vm.isLabelActive
-    },
-    attrs: {
-      "for": "selectedDate",
-      id: _vm.selectedDate
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-calendar"
-  }), _vm._v("  Date")]), _vm._v(" "), _vm.showWarning ? _c("div", {
-    staticClass: "error-message"
-  }, [_vm._v("\n            Please select a date more today.\n          ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12"
-  }, [_c("div", {
-    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("i", {
-    staticClass: "fa fa-sort"
-  }), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedArtist,
-      expression: "selectedArtist"
-    }],
-    staticClass: "floatLabel",
-    attrs: {
-      id: "artistSelect"
-    },
-    on: {
-      input: _vm.checkselectedArtist,
-      change: [function ($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedArtist = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.filterActiveDays]
-    }
-  }, _vm._l(_vm.artists, function (artist) {
-    return _c("option", {
-      key: artist.id,
-      domProps: {
-        value: artist.id
-      }
-    }, [_vm._v("\n              " + _vm._s(artist.name) + "\n            ")]);
-  }), 0), _vm._v(" "), _vm._m(1)])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("i", {
-    staticClass: "fa fa-sort"
-  }), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedStatus,
-      expression: "selectedStatus"
-    }],
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Waiting",
-      selected: ""
-    }
-  }, [_vm._v("Waiting")])]), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_vm._v("  Status")])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("i", {
-    staticClass: "fa fa-sort"
-  }), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedPaymentType,
-      expression: "selectedPaymentType"
-    }],
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedPaymentType = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Bank transfer"
-    }
-  }, [_vm._v("Bank transfer")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "After Pay"
-    }
-  }, [_vm._v("After Pay")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Cash"
-    }
-  }, [_vm._v("Cash")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Card"
-    }
-  }, [_vm._v("Card")])]), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "selectedPaymentType"
-    }
-  }, [_vm._v("  Payment Type")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12"
-  }, [_vm.filteredDays.length > 0 ? _c("div", [_c("span", {
-    staticClass: "radio-text"
-  }, [_vm._v("Spot exists")]), _vm._v(" "), _vm._l(_vm.filteredDays, function (schedule, index) {
-    return _c("div", {
-      key: index
-    }, [_c("div", {
-      staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
-    }, [_c("label", {
-      staticClass: "label label-schedule m-0"
-    }, [_c("span", {
-      staticClass: "radio-header radio-text"
-    }, [_vm._v("Spot " + _vm._s(index + 1) + " ( " + _vm._s(_vm.formatTime(schedule.time)) + " -\n                    " + _vm._s(_vm.formatTime(schedule.time_end)) + " )")])])])]);
-  })], 2) : _vm._e(), _vm._v(" "), _vm.filteredDays.length < 1 ? _c("div", [_c("span", {
-    staticClass: "radio-text"
-  }, [_vm._v("None spot exists .")])]) : _vm._e(), _vm._v(" "), _c("div", [_c("div", {
-    staticClass: "col-12"
-  }, [_c("span", {
-    staticClass: "radio-text col-12 mb-3 mt-1"
-  }, [_vm._v("Please choose a time that does not coincide with the Spot's\n            existence .")]), _vm._v(" "), _c("div", {
-    staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.startTime,
-      expression: "startTime"
-    }],
-    staticClass: "floatLabe",
-    attrs: {
-      type: "time",
-      id: _vm.startTime,
-      step: "1800"
-    },
-    domProps: {
-      value: _vm.startTime
-    },
-    on: {
-      change: _vm.checkTimeConflict,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.startTime = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _vm._m(2)])]), _vm._v(" "), _c("div", {
-    staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.endTime,
-      expression: "endTime"
-    }],
-    staticClass: "floatLabel",
-    attrs: {
-      type: "time",
-      step: "1800"
-    },
-    domProps: {
-      value: _vm.endTime
-    },
-    on: {
-      change: _vm.checkTimeConflict,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.endTime = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _vm._m(3)])]), _vm._v(" "), _vm.showAlert ? _c("div", {
-    staticClass: "alert col-12 draft"
-  }, [_c("i", [_vm._v("The selected time conflicts or is invalid.")])]) : _vm._e()])])]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button",
-      disabled: !_vm.startTime || !_vm.endTime || !_vm.selectedArtist || !_vm.selectedDate
-    },
-    on: {
-      click: function click($event) {
-        $event.preventDefault();
-        return _vm.nextStep.apply(null, arguments);
-      }
-    }
-  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "getShow" ? [_c("input", {
-    staticClass: "form-control",
-    staticStyle: {
-      display: "none"
-    },
-    attrs: {
-      type: "text",
-      id: "bookingData",
-      name: "bookingData",
-      required: ""
-    },
-    domProps: {
-      value: _vm.bookingData
-    }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.name,
-      expression: "formData.name"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      id: "name",
-      name: "name",
-      required: ""
-    },
-    domProps: {
-      value: _vm.formData.name
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "name", $event.target.value);
-      }
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "name"
-    }
-  }, [_vm._v("Name :")])]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.email,
-      expression: "formData.email"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "email",
-      id: "email",
-      name: "email"
-    },
-    domProps: {
-      value: _vm.formData.email
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "email", $event.target.value);
-      }
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "email"
-    }
-  }, [_vm._v("Email :")])]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "address"
-    }
-  }, [_vm._v("Address :")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.address,
-      expression: "formData.address"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      id: "address",
-      name: "address"
-    },
-    domProps: {
-      value: _vm.formData.address
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "address", $event.target.value);
-      }
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "phone"
-    }
-  }, [_vm._v("Phone :")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.phone,
-      expression: "formData.phone"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "tel",
-      id: "phone",
-      name: "phone"
-    },
-    domProps: {
-      value: _vm.formData.phone
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "phone", $event.target.value);
-      }
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.source,
-      expression: "formData.source"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "text",
-      id: "source",
-      name: "source",
-      required: ""
-    },
-    domProps: {
-      value: _vm.formData.source
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "source", $event.target.value);
-      }
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "name"
-    }
-  }, [_vm._v("Source :")])]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("textarea", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.note,
-      expression: "formData.note"
-    }],
-    attrs: {
-      name: "note",
-      id: "note",
-      cols: "30",
-      rows: "10",
-      required: ""
-    },
-    domProps: {
-      value: _vm.formData.note
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "note", $event.target.value);
-      }
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "name"
-    }
-  }, [_vm._v("Note :")])]), _vm._v(" "), _vm.errorMessage ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v(_vm._s(_vm.errorMessage))]) : _vm._e(), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "submit"
-    }
-  }, [_vm._v("Submit")])] : _vm._e()], 2);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("p", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#eab3e0"
-    }
-  }), _vm._v(" "), _c("span", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Selected Services:")])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-male"
-  }), _vm._v("  Artist")]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa-regular fa-clock"
-  }), _vm._v("  Start\n                Time")]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa-regular fa-clock"
-  }), _vm._v("  End\n                Time")]);
-}];
-render._withStripped = true;
-
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&":
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54& ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=template&id=1d9b30b0&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=template&id=1d9b30b0& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -2311,1081 +245,43 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "flexb-c col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12",
-    staticStyle: {
-      "align-items": "flex-start",
-      "justify-content": "space-between"
-    }
-  }, [_c("div", {
-    staticClass: "col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9"
-  }, [_c("div", [_c("h4", {
-    staticClass: "col-12"
-  }, [_c("p", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("\n          Service : " + _vm._s(_vm.selectedServicesName) + "\n        ")])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12"
-  }, [_c("div", {
-    staticClass: "col-12 col-sm-12 col-lg-12 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDate,
-      expression: "selectedDate"
-    }],
-    staticClass: "floatLabel pointer-events-a",
+  return _c("div", [_c("label", {
     attrs: {
-      id: "depart",
-      type: "date",
-      name: "date"
-    },
-    domProps: {
-      value: _vm.selectedDate
-    },
-    on: {
-      change: _vm.filterActiveDays,
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDate = $event.target.value;
-      }, _vm.checkSelectedDate],
-      click: _vm.filterActiveDays,
-      blur: _vm.filterActiveDays
+      "for": _vm.dateRange
     }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    "class": {
-      active: _vm.isLabelActive
-    },
+  }, [_c("date-range-picker", {
+    staticClass: "form-control",
     attrs: {
-      "for": "selectedDate"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-calendar"
-  }), _vm._v("  Treament Date")]), _vm._v(" "), _vm.showWarning ? _c("div", {
-    staticClass: "error-message"
-  }, [_vm._v("\n              Please select a date more today.\n            ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12"
-  }, [_c("div", {
-    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("i", {
-    staticClass: "fa fa-sort"
-  }), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedArtist,
-      expression: "selectedArtist"
-    }],
-    staticClass: "floatLabel pointer-events-a",
-    attrs: {
-      id: "artistSelect",
-      name: "artist"
+      id: _vm.dateRange,
+      label: "Date range",
+      locale: "en-US"
     },
-    on: {
-      input: _vm.checkselectedArtist,
-      change: [function ($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedArtist = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.filterActiveDays]
-    }
-  }, [_c("option", {
-    attrs: {
-      selected: ""
-    },
-    domProps: {
-      value: 7
-    }
-  }, [_vm._v("N/A")]), _vm._v(" "), _vm._l(_vm.artists, function (artist) {
-    return _c("option", {
-      key: artist.id,
-      domProps: {
-        value: artist.id
-      }
-    }, [_vm._v("\n                " + _vm._s(artist.name) + "\n              ")]);
-  })], 2), _vm._v(" "), _vm._m(0)])]), _vm._v(" "), _vm.showfilteredDays ? _c("div", {
-    staticClass: "col-12 col-sm-8 col-lg-8"
-  }, [_c("div", [_c("div", {
-    staticClass: "col-12"
-  }, [_c("div", {
-    staticClass: "radio-section col-12 col-sm-6 col-lg-6 p-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.startTime,
-      expression: "startTime"
-    }],
-    staticClass: "floatLabe",
-    attrs: {
-      type: "time",
-      id: _vm.startTime,
-      name: "start_time",
-      step: "1800"
-    },
-    domProps: {
-      value: _vm.startTime
-    },
-    on: {
-      change: _vm.checkTimeConflict,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.startTime = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _vm._m(1)])]), _vm._v(" "), _c("div", {
-    staticClass: "radio-section col-12 col-sm-6 col-lg-6 p-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.endTime,
-      expression: "endTime"
-    }],
-    staticClass: "floatLabel",
-    attrs: {
-      type: "time",
-      name: "end_time",
-      step: "1800"
-    },
-    domProps: {
-      value: _vm.endTime
-    },
-    on: {
-      change: _vm.checkTimeConflict,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.endTime = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _vm._m(2)])]), _vm._v(" "), _vm.showAlert ? _c("div", {
-    staticClass: "alert col-12 draft"
-  }, [_c("i", [_vm._v("The selected time conflicts or is invalid.")])]) : _vm._e()])]), _vm._v(" "), _vm.filteredDays.length > 0 ? _c("div", [_c("span", {
-    staticClass: "radio-text"
-  }, [_vm._v("Spot exists")]), _vm._v(" "), _vm._l(_vm.filteredDays, function (schedule, index) {
-    return _c("div", {
-      key: index
-    }, [_c("div", {
-      staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
-    }, [_c("label", {
-      staticClass: "label label-schedule m-0"
-    }, [_c("span", {
-      staticClass: "radio-header radio-text"
-    }, [_vm._v("Spot " + _vm._s(index + 1) + " ( " + _vm._s(_vm.formatTime(schedule.time)) + " -\n                    " + _vm._s(_vm.formatTime(schedule.time_end)) + " )")])])])]);
-  }), _vm._v(" "), _c("span", {
-    staticClass: "radio-text col-12 mb-3 mt-1"
-  }, [_vm._v("Please choose a time that does not coincide with the Spot's\n              existence .")])], 2) : _c("div", [_c("span", {
-    staticClass: "radio-text ps-2"
-  }, [_vm._v("None spot exists .")])])]) : _vm._e()])]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
-  }, [_c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.name,
-      expression: "formData.name"
-    }],
-    staticClass: "form-control pointer-events-a",
-    attrs: {
-      type: "text",
-      id: "name",
-      name: "name",
-      required: ""
-    },
-    domProps: {
-      value: _vm.formData.name
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "name", $event.target.value);
-      }
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "name"
-    }
-  }, [_vm._v("Name:")])]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.email,
-      expression: "formData.email"
-    }],
-    staticClass: "form-control pointer-events-a",
-    attrs: {
-      type: "email",
-      id: "email",
-      name: "email"
-    },
-    domProps: {
-      value: _vm.formData.email
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "email", $event.target.value);
-      }
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "email"
-    }
-  }, [_vm._v("Email:")])]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "address"
-    }
-  }, [_vm._v("Address:")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.address,
-      expression: "formData.address"
-    }],
-    staticClass: "form-control pointer-events-a",
-    attrs: {
-      type: "text",
-      id: "address",
-      name: "address"
-    },
-    domProps: {
-      value: _vm.formData.address
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "address", $event.target.value);
-      }
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "phone"
-    }
-  }, [_vm._v("Phone:")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.phone,
-      expression: "formData.phone"
-    }],
-    staticClass: "form-control pointer-events-a",
-    attrs: {
-      type: "tel",
-      id: "phone",
-      name: "phone"
-    },
-    domProps: {
-      value: _vm.formData.phone
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "phone", $event.target.value);
-      }
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": _vm.formData.source
-    }
-  }, [_vm._v("Source:")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.source,
-      expression: "formData.source"
-    }],
-    staticClass: "form-control pointer-events-a",
-    attrs: {
-      type: "text",
-      id: _vm.formData.source,
-      name: "source"
-    },
-    domProps: {
-      value: _vm.formData.source
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "source", $event.target.value);
-      }
-    }
-  })]), _vm._v(" "), _c("div", {
-    staticClass: "controls mb-4"
-  }, [_c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": _vm.formData.note
-    }
-  }, [_vm._v("Note:")]), _vm._v(" "), _c("textarea", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.formData.note,
-      expression: "formData.note"
-    }],
-    attrs: {
-      name: "note",
-      id: _vm.formData.note,
-      cols: "30",
-      rows: "10"
-    },
-    domProps: {
-      value: _vm.formData.note
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.$set(_vm.formData, "note", $event.target.value);
-      }
-    }
-  })])]), _vm._v(" "), _c("div", {
-    staticClass: "form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
-  }, [_vm.step === "showroom" ? [_c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button",
-      disabled: !_vm.selectedShowroom
-    },
-    on: {
-      click: _vm.nextStep
-    }
-  }, [_vm._v("\n          Service\n        ")])] : _vm._e(), _vm._v(" "), _vm.step === "groupService" ? [_vm._l(_vm.groupServices, function (groupService) {
-    return _c("div", {
-      key: groupService.groupService.id,
-      staticClass: "label groupService"
-    }, [_c("div", {
-      staticClass: "radio-header radio-text",
-      "class": {
-        active: _vm.groupServiceStates[groupService.groupService.id]
+    model: {
+      value: _vm.dateRange,
+      callback: function callback($$v) {
+        _vm.dateRange = $$v;
       },
-      on: {
-        click: function click($event) {
-          return _vm.toggleGroupService(groupService.groupService.id);
-        }
-      }
-    }, [_vm._v("\n            " + _vm._s(groupService.groupService.Name) + "\n          ")]), _vm._v(" "), _vm.groupServiceStates[groupService.groupService.id] ? _c("ul", {
-      staticClass: "m-0"
-    }, _vm._l(groupService.groupService.services, function (service) {
-      return _c("li", {
-        key: service.id
-      }, [_c("label", {
-        staticClass: "flex-groupService"
-      }, [_c("input", {
-        directives: [{
-          name: "model",
-          rawName: "v-model",
-          value: _vm.selectedServices,
-          expression: "selectedServices"
-        }],
-        staticClass: "pointer-events-a",
-        attrs: {
-          name: "service_id",
-          type: "radio"
-        },
-        domProps: {
-          value: service.id,
-          checked: _vm._q(_vm.selectedServices, service.id)
-        },
-        on: {
-          change: [function ($event) {
-            _vm.selectedServices = service.id;
-          }, function ($event) {
-            return _vm.calculateTotalSelectedServicesPrice();
-          }]
-        }
-      }), _vm._v(" "), _c("div", {
-        staticClass: "radio-header radio-text"
-      }, [_vm._v("\n                  " + _vm._s(service.Name) + " -- Price:\n                  " + _vm._s(_vm.formatCurrency(service.Price)) + "\n                ")])])]);
-    }), 0) : _vm._e()]);
-  }), _vm._v(" "), _c("ul", [_c("li", {
-    staticClass: "mt-3 mb-3"
-  }, [_c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Deposit Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDepositPrice,
-      expression: "selectedDepositPrice"
-    }],
-    staticClass: "deposit",
-    attrs: {
-      name: "deposit",
-      type: "number",
-      max: _vm.maxDepositPrice,
-      min: _vm.minDepositPrice
-    },
-    domProps: {
-      value: _vm.selectedDepositPrice
-    },
-    on: {
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDepositPrice = $event.target.value;
-      }, _vm.checkInputValue]
+      expression: "dateRange"
     }
-  }), _vm._v(" "), _vm.inputError ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v("\n              Value exceeds limit.\n            ")]) : _vm._e()]), _vm._v(" "), _c("li", {
-    staticClass: "mt-3 mb-3"
-  }, [_c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Discount Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDiscountPrice,
-      expression: "selectedDiscountPrice"
-    }],
-    staticClass: "deposit",
+  })], 1), _vm._v(" "), _c("label", {
     attrs: {
-      name: "discount",
-      type: "number",
-      max: _vm.maxDiscountPrice,
-      min: _vm.minDiscountPrice
-    },
-    domProps: {
-      value: _vm.selectedDiscountPrice
-    },
-    on: {
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDiscountPrice = $event.target.value;
-      }, _vm.checkInputValueDiscount]
+      "for": _vm.dateCompare
     }
-  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v("\n              Value exceeds limit.\n            ")]) : _vm._e()])]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("\n          Back\n        ")])] : _vm._e()], 2)]), _vm._v(" "), _c("div", {
-    staticClass: "col-12 col-sm-12 col-md-12 col-lg-3 col-xl-3 col-xxl-3"
-  }, [_c("div", {
-    staticClass: "bg-ad-form right-sidebar"
-  }, [_c("div", {
-    staticClass: "widget meta-boxes form-actions form-actions-default action-horizontal"
-  }, [_vm._m(3), _vm._v(" "), _c("div", {
-    staticClass: "widget-body"
-  }, [_c("div", {
-    staticClass: "btn-set"
-  }, [_c("button", {
-    staticClass: "btn btn-info",
-    attrs: {
-      type: "submit",
-      name: "submit",
-      value: "save",
-      disabled: _vm.submitted
-    },
-    on: {
-      click: _vm.SubmitEvent
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-save"
-  }), _vm._v(" Save\n            ")]), _vm._v("\n             \n            "), _c("button", {
-    staticClass: "btn btn-success",
-    attrs: {
-      type: "submit",
-      name: "submit",
-      value: "apply",
-      disabled: _vm.submitted
-    },
-    on: {
-      click: _vm.SubmitEvent
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-check-circle"
-  }), _vm._v(" Save & Exit\n            ")]), _vm._v(" "), _vm.errorMessagesubmitted ? _c("div", {
-    staticClass: "error-message"
-  }, [_vm._v("\n              " + _vm._s(_vm.errorMessage) + "\n            ")]) : _vm._e()])])])]), _vm._v(" "), _c("div", {
-    staticClass: "bg-ad-form right-sidebar mt-3"
-  }, [_c("div", {
-    staticClass: "widget meta-boxes"
-  }, [_vm._m(4), _vm._v(" "), _c("div", {
-    staticClass: "widget-body p-3"
-  }, [_c("div", {
-    staticClass: "ui-select-wrapper form-group"
-  }, [_vm.StatusPresent === "Waiting" ? _c("div", [_c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedStatus,
-      expression: "selectedStatus"
-    }],
-    staticClass: "form-control pointer-events-p",
-    attrs: {
-      name: "status"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Waiting",
-      selected: ""
-    }
-  }, [_vm._v("Waiting")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Done"
-    }
-  }, [_vm._v("Done")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Cancel"
-    }
-  }, [_vm._v("Cancel")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Refund"
-    }
-  }, [_vm._v("Refund")])]), _vm._v(" "), _vm.selectedStatus === "Cancel" ? _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": ""
-    }
-  }, [_vm._v("Reason cancel")]), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.Cancel,
-      expression: "Cancel"
-    }],
-    staticClass: "form-control pointer-events-p",
-    attrs: {
-      name: "Cancel"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.Cancel = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Clients",
-      selected: ""
-    }
-  }, [_vm._v("Clients")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Operation"
-    }
-  }, [_vm._v("Operation")])])]) : _vm._e(), _vm._v(" "), _vm.selectedStatus === "Refund" ? _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": ""
-    }
-  }, [_vm._v("Refund Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.Refund,
-      expression: "Refund"
-    }],
+  }, [_c("date-range-picker", {
     staticClass: "form-control",
     attrs: {
-      type: "number",
-      name: "Refund",
-      min: "0",
-      max: this.maxRefund,
-      required: ""
+      id: _vm.dateCompare,
+      label: "Date range",
+      locale: "en-US"
     },
-    domProps: {
-      value: _vm.Refund
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.Refund = $event.target.value;
-      }
+    model: {
+      value: _vm.dateCompare,
+      callback: function callback($$v) {
+        _vm.dateCompare = $$v;
+      },
+      expression: "dateCompare"
     }
-  })]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm.StatusPresent === "Done" ? _c("div", [_c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedStatus,
-      expression: "selectedStatus"
-    }],
-    staticClass: "form-control pointer-events-p",
-    attrs: {
-      name: "status"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Done"
-    }
-  }, [_vm._v("Done")])])]) : _vm._e(), _vm._v(" "), _vm.StatusPresent === "Cancel" ? _c("div", [_c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedStatus,
-      expression: "selectedStatus"
-    }],
-    staticClass: "form-control pointer-events-p",
-    attrs: {
-      name: "status"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Cancel"
-    }
-  }, [_vm._v("Cancel")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Refund"
-    }
-  }, [_vm._v("Refund")])]), _vm._v(" "), _vm.selectedStatus === "Cancel" ? _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": ""
-    }
-  }, [_vm._v("Reason cancel")]), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.Cancel,
-      expression: "Cancel"
-    }],
-    staticClass: "form-control pointer-events-p",
-    attrs: {
-      name: "Cancel"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.Cancel = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Clients",
-      selected: ""
-    }
-  }, [_vm._v("Clients")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Operation"
-    }
-  }, [_vm._v("Operation")])])]) : _vm._e(), _vm._v(" "), _vm.selectedStatus === "Refund" ? _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": ""
-    }
-  }, [_vm._v("Refund Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.Refund,
-      expression: "Refund"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "number",
-      name: "Refund",
-      min: "0",
-      max: this.maxRefund,
-      required: ""
-    },
-    domProps: {
-      value: _vm.Refund
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.Refund = $event.target.value;
-      }
-    }
-  })]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm.StatusPresent === "Refund" ? _c("div", [_c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedStatus,
-      expression: "selectedStatus"
-    }],
-    staticClass: "form-control pointer-events-p",
-    attrs: {
-      name: "status"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Refund"
-    }
-  }, [_vm._v("Refund")])]), _vm._v(" "), _vm.selectedStatus === "Refund" ? _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": ""
-    }
-  }, [_vm._v("Refund Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.Refund,
-      expression: "Refund"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "number",
-      name: "Refund",
-      min: "0",
-      max: this.maxRefund,
-      required: ""
-    },
-    domProps: {
-      value: _vm.Refund
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.Refund = $event.target.value;
-      }
-    }
-  })]) : _vm._e()]) : _vm._e()])])])]), _vm._v(" "), _c("div", {
-    staticClass: "bg-ad-form right-sidebar mt-3"
-  }, [_c("div", {
-    staticClass: "widget meta-boxes"
-  }, [_vm._m(5), _vm._v(" "), _c("div", {
-    staticClass: "widget-body p-3"
-  }, [_c("div", {
-    staticClass: "ui-select-wrapper form-group"
-  }, [_c("div", [_c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedPaymentType,
-      expression: "selectedPaymentType"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      name: "payment_type"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedPaymentType = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Bank transfer"
-    }
-  }, [_vm._v("Bank transfer")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "After Pay"
-    }
-  }, [_vm._v("After Pay")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Cash"
-    }
-  }, [_vm._v("Cash")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Card"
-    }
-  }, [_vm._v("Card")])])])])])])]), _vm._v(" "), _c("div", {
-    staticClass: "bg-ad-form right-sidebar mt-3"
-  }, [_c("div", {
-    staticClass: "widget meta-boxes"
-  }, [_vm._m(6), _vm._v(" "), _c("div", {
-    staticClass: "widget-body p-3"
-  }, [_c("div", {
-    staticClass: "ui-select-wrapper form-group"
-  }, [_c("div", [_c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.action,
-      expression: "action"
-    }],
-    staticClass: "form-control pointer-events-a pointer-events-p",
-    attrs: {
-      name: "action"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.action = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "pending"
-    }
-  }, [_vm._v("Pending")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "approved"
-    }
-  }, [_vm._v("Approved")])]), _vm._v(" "), _c("div", {
-    staticClass: "form-group"
-  }, [_c("label", {
-    attrs: {
-      "for": ""
-    }
-  }, [_vm._v("Note")]), _vm._v(" "), _c("textarea", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.sendmail,
-      expression: "sendmail"
-    }],
-    staticClass: "form-control pointer-events-a pointer-events-p",
-    attrs: {
-      type: "text",
-      name: "sendmail"
-    },
-    domProps: {
-      value: _vm.sendmail
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.sendmail = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "btn-set"
-  }, [_c("button", {
-    staticClass: "btn btn-info pointer-events-a pointer-events-p",
-    attrs: {
-      type: "submit",
-      name: "submit",
-      value: "sendmail",
-      disabled: _vm.sendmail.trim() === "" || _vm.submitted || !_vm.submitFormSendMail()
-    },
-    on: {
-      click: _vm.submitFormSendMail
-    }
-  }, [_c("i", {
-    staticClass: "fa-regular fa-paper-plane"
-  }), _vm._v("\n                    Send Mail\n                  ")])])])])])])])])])]);
-};
-var staticRenderFns = [function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-male"
-  }), _vm._v("  Artist")]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa-regular fa-clock"
-  }), _vm._v("  Start\n                    Time")]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa-regular fa-clock"
-  }), _vm._v("  End\n                    Time")]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "widget-title"
-  }, [_c("h4", [_c("span", [_vm._v("Publish")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "widget-title"
-  }, [_c("h4", [_c("label", {
-    staticClass: "m-0 control-label required",
-    attrs: {
-      "for": "status",
-      "aria-required": "true"
-    }
-  }, [_vm._v("Status")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "widget-title"
-  }, [_c("h4", [_c("label", {
-    staticClass: "m-0 control-label required",
-    attrs: {
-      "for": "status",
-      "aria-required": "true"
-    }
-  }, [_vm._v("PaymentType")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "widget-title"
-  }, [_c("h4", [_c("label", {
-    staticClass: "m-0 control-label required",
-    attrs: {
-      "for": "status",
-      "aria-required": "true"
-    }
-  }, [_vm._v("Action")])])]);
-}];
-render._withStripped = true;
-
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&":
-/*!******************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb& ***!
-  \******************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* binding */ render),
-/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-var render = function render() {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", [_c("ul", {
-    staticClass: "main__body__box-info"
-  }, [_c("li", [_c("i", {
-    staticClass: "fa-solid fa-money-bill-trend-up",
-    staticStyle: {
-      color: "#ff6666"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-shopping-bag-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#eab3e0"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price")])])])]);
-};
-var staticRenderFns = [];
-render._withStripped = true;
-
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&":
-/*!**************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& ***!
-  \**************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* binding */ render),
-/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-var render = function render() {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", [_c("ul", {
+  })], 1), _vm._v(" "), _c("div", [_c("ul", {
     staticClass: "main__body__box-info",
     "class": {
       fade: _vm.isTransitioning
@@ -3395,151 +291,24 @@ var render = function render() {
     staticStyle: {
       color: "#ff6666"
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "ph-shopping-bag-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Cancel")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Refund")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Waiting")])]), _vm._v(" "), _c("li", [_c("i", {
+    staticClass: "ph-shopping-bag-fill"
+  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Done")])]), _vm._v(" "), _c("li", [_c("i", {
     staticClass: "fa-regular fa-calendar",
     staticStyle: {
       color: "#3498db"
     }
-  }), _vm._v(" "), _c("h5", [_vm._v(_vm._s(_vm.numberOfBooks))]), _vm._v(" "), _c("p", [_vm._v("Number of Booked for the month")])])]), _vm._v(" "), _c("div", {
-    staticClass: "show_data_month"
-  }, [_c("button", {
-    staticClass: "custom-btn btn-16",
-    on: {
-      click: _vm.showPreviousMonths
-    }
-  }, [_vm._v("Previous")]), _vm._v(" "), _c("span", {
-    staticClass: "radio-header radio-text ms-3 me-3"
-  }, [_vm._v(_vm._s(this.currentMonth) + " / " + _vm._s(this.currentYear))]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      disabled: _vm.disableNextButton
-    },
-    on: {
-      click: _vm.showNextMonths
-    }
-  }, [_vm._v("Next")])])]);
-};
-var staticRenderFns = [];
-render._withStripped = true;
-
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&":
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* binding */ render),
-/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-var render = function render() {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", [_c("ul", {
-    staticClass: "main__body__box-info",
-    "class": {
-      fade: _vm.isTransitioning
-    }
-  }, [_c("li", [_c("i", {
-    staticClass: "fa-solid fa-money-bill-trend-up",
-    staticStyle: {
-      color: "#ff6666"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-shopping-bag-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-regular fa-calendar",
-    staticStyle: {
-      color: "#3498db"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v(_vm._s(_vm.numberOfBooks))]), _vm._v(" "), _c("p", [_vm._v("Number of Booked for the month")])])]), _vm._v(" "), _c("div", {
-    staticClass: "show_data_month"
-  }, [_c("button", {
-    staticClass: "custom-btn btn-16",
-    on: {
-      click: _vm.showPreviousMonths
-    }
-  }, [_vm._v("Previous")]), _vm._v(" "), _c("span", {
-    staticClass: "radio-header radio-text ms-3 me-3"
-  }, [_vm._v(_vm._s(this.currentMonth) + " / " + _vm._s(this.currentYear))]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      disabled: _vm.disableNextButton
-    },
-    on: {
-      click: _vm.showNextMonths
-    }
-  }, [_vm._v("Next")])])]);
-};
-var staticRenderFns = [];
-render._withStripped = true;
-
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* binding */ render),
-/* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-var render = function render() {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", [_c("ul", {
-    staticClass: "main__body__box-info",
-    "class": {
-      fade: _vm.isTransitioning
-    }
-  }, [_c("li", [_c("i", {
-    staticClass: "fa-solid fa-money-bill-trend-up",
-    staticStyle: {
-      color: "#ff6666"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-shopping-bag-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(_vm.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price for the month")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-regular fa-calendar",
-    staticStyle: {
-      color: "#3498db"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v(_vm._s(_vm.numberOfBooks))]), _vm._v(" "), _c("p", [_vm._v("Number of Booked for the month")])])]), _vm._v(" "), _c("div", {
-    staticClass: "show_data_month"
-  }, [_c("button", {
-    staticClass: "custom-btn btn-16",
-    on: {
-      click: _vm.showPreviousMonths
-    }
-  }, [_vm._v("Previous")]), _vm._v(" "), _c("span", {
-    staticClass: "radio-header radio-text ms-3 me-3"
-  }, [_vm._v(_vm._s(this.currentMonth) + " / " + _vm._s(this.currentYear))]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      disabled: _vm.disableNextButton
-    },
-    on: {
-      click: _vm.showNextMonths
-    }
-  }, [_vm._v("Next")])])]);
+  }), _vm._v(" "), _c("h5", [_vm._v(_vm._s(_vm.numberOfBooks))]), _vm._v(" "), _c("p", [_vm._v("Number of Booked")])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -5618,10 +2387,10 @@ module.exports = Array.isArray || function (arr) {
 
 /***/ }),
 
-/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&":
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css ***!
+  \************************************************************************************************************************************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5629,23 +2398,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
 // Imports
 
-var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+var ___CSS_LOADER_EXPORT___ = _laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "td[data-v-98ac2448],th[data-v-98ac2448]{padding:2px;background-color:#fff}td.today[data-v-98ac2448]{font-weight:700}td.disabled[data-v-98ac2448]{pointer-events:none;background-color:#eee;border-radius:0;opacity:.6}.fa[data-v-98ac2448]{display:inline-block;width:100%;height:100%;background:transparent no-repeat 50%;background-size:100% 100%;fill:#ccc}.next[data-v-98ac2448]:hover,.prev[data-v-98ac2448]:hover{background-color:transparent!important}.next .fa[data-v-98ac2448]:hover,.prev .fa[data-v-98ac2448]:hover{opacity:.6}.chevron-left[data-v-98ac2448]{width:16px;height:16px;display:block;background-image:url(\"data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 10 10'%3E%3Cpath d='M5.25 0l-4 4 4 4 1.5-1.5-2.5-2.5 2.5-2.5-1.5-1.5z'/%3E%3C/svg%3E\")}.chevron-right[data-v-98ac2448]{width:16px;height:16px;display:block;background-image:url(\"data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-2 -2 10 10'%3E%3Cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3E%3C/svg%3E\")}.yearselect[data-v-98ac2448]{padding-right:1px;border:none;-webkit-appearance:menulist;-moz-appearance:menulist;appearance:menulist}.monthselect[data-v-98ac2448]{border:none}.daterangepicker .ranges{text-align:left;margin:0;width:100%}.daterangepicker .ranges ul{list-style:none;margin:0 auto;padding:0;width:100%}.daterangepicker .ranges li{font-size:12px;padding:8px 12px;cursor:pointer}.daterangepicker .ranges li:hover{background-color:#eee;color:#000}.daterangepicker .ranges li.active{background-color:#08c;color:#fff}.daterangepicker .monthselect,.daterangepicker .yearselect{font-size:12px;padding:1px;height:auto;margin:0;cursor:default;width:calc(50% - 1rem)}.daterangepicker .monthselect{margin-right:1rem}.daterangepicker .calendar-time{text-align:center;margin:4px auto 0 auto;line-height:30px;position:relative;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center}.daterangepicker .calendar-time select.disabled{color:#ccc;cursor:not-allowed}.daterangepicker select.ampmselect,.daterangepicker select.hourselect,.daterangepicker select.minuteselect,.daterangepicker select.secondselect{width:50px;margin:2px;background:#eee;border:1px solid #eee;padding:2px;outline:0;font-size:12px}.daterangepicker .drp-buttons .btn{margin-left:8px;font-size:12px;font-weight:700;padding:4px 8px}.daterangepicker .btn{display:inline-block;text-align:center;vertical-align:middle;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;background-color:transparent;border:1px solid transparent}.daterangepicker .btn-primary,.daterangepicker .btn-success{background-color:#28a745;color:#fff}.daterangepicker .btn-secondary{background-color:#6c757d;color:#fff}.vue-daterange-picker *,.vue-daterange-picker :after,.vue-daterange-picker :before{-webkit-box-sizing:border-box;box-sizing:border-box}.drp-calendar .col .left{-webkit-box-flex:0;-ms-flex:0 0 auto;flex:0 0 auto}.daterangepicker.hide-calendars.show-ranges .ranges,.daterangepicker.hide-calendars.show-ranges .ranges ul{width:100%}.daterangepicker .calendars-container{display:-webkit-box;display:-ms-flexbox;display:flex}.daterangepicker[readonly]{pointer-events:none}.daterangepicker{position:absolute;color:inherit;background-color:#fff;border-radius:4px;border:1px solid #ddd;width:278px;max-width:none;padding:0;margin-top:7px;top:100px;left:20px;z-index:3001;display:none;font-size:15px;line-height:1em}.daterangepicker:after,.daterangepicker:before{position:absolute;display:inline-block;border-bottom-color:rgba(0,0,0,.2);content:\"\"}.daterangepicker:before{top:-7px;border-right:7px solid transparent;border-left:7px solid transparent;border-bottom:7px solid #ccc}.daterangepicker:after{top:-6px;border-right:6px solid transparent;border-bottom:6px solid #fff;border-left:6px solid transparent}.daterangepicker.opensleft:before{right:9px}.daterangepicker.opensleft:after{right:10px}.daterangepicker.openscenter:after,.daterangepicker.openscenter:before{left:0;right:0;width:0;margin-left:auto;margin-right:auto}.daterangepicker.opensright:before{left:9px}.daterangepicker.opensright:after{left:10px}.daterangepicker.drop-up{margin-top:-7px}.daterangepicker.drop-up:before{top:auto;bottom:-7px;border-bottom:initial;border-top:7px solid #ccc}.daterangepicker.drop-up:after{top:auto;bottom:-6px;border-bottom:initial;border-top:6px solid #fff}.daterangepicker.single .drp-selected{display:none}.daterangepicker.show-calendar .drp-buttons,.daterangepicker.show-calendar .drp-calendar{display:block}.daterangepicker.auto-apply .drp-buttons{display:none}.daterangepicker .drp-calendar{display:none;max-width:270px;width:270px}.daterangepicker .drp-calendar.left{padding:8px 0 8px 8px}.daterangepicker .drp-calendar.right{padding:8px}.daterangepicker .drp-calendar.single .calendar-table{border:none}.daterangepicker .calendar-table .next span,.daterangepicker .calendar-table .prev span{color:#fff;border:solid #000;border-width:0 2px 2px 0;border-radius:0;display:inline-block;padding:3px}.daterangepicker .calendar-table .next span{transform:rotate(-45deg);-webkit-transform:rotate(-45deg)}.daterangepicker .calendar-table .prev span{transform:rotate(135deg);-webkit-transform:rotate(135deg)}.daterangepicker .calendar-table td,.daterangepicker .calendar-table th{white-space:nowrap;text-align:center;vertical-align:middle;min-width:32px;width:32px;height:24px;line-height:24px;font-size:12px;border-radius:4px;border:1px solid transparent;cursor:pointer}.daterangepicker .calendar-table{border:1px solid #fff;border-radius:4px;background-color:#fff}.daterangepicker .calendar-table table{width:100%;margin:0;border-spacing:0;border-collapse:collapse;display:table}.daterangepicker td.available:hover,.daterangepicker th.available:hover{background-color:#eee;border-color:transparent;color:inherit}.daterangepicker td.week,.daterangepicker th.week{font-size:80%;color:#ccc}.daterangepicker td.off,.daterangepicker td.off.end-date,.daterangepicker td.off.in-range,.daterangepicker td.off.start-date{background-color:#fff;border-color:transparent;color:#999}.daterangepicker td.in-range{background-color:#ebf4f8;border-color:transparent;color:#000;border-radius:0}.daterangepicker td.start-date{border-radius:4px 0 0 4px}.daterangepicker td.end-date{border-radius:0 4px 4px 0}.daterangepicker td.start-date.end-date{border-radius:4px}.daterangepicker td.active,.daterangepicker td.active:hover{background-color:#357ebd;border-color:transparent;color:#fff}.daterangepicker th.month{width:auto}.daterangepicker option.disabled,.daterangepicker td.disabled{color:#999;cursor:not-allowed;text-decoration:line-through}.daterangepicker select.yearselect{width:40%}.daterangepicker .drp-buttons{clear:both;text-align:right;padding:8px;border-top:1px solid #ddd;display:none;line-height:12px;vertical-align:middle}.daterangepicker .drp-selected{display:inline-block;font-size:12px;padding-right:8px}.daterangepicker.show-ranges .drp-calendar.left{border-left:1px solid #ddd}.daterangepicker.show-calendar .ranges{margin-top:8px;width:auto}@media (min-width:564px){.daterangepicker{width:auto}.daterangepicker .ranges ul{width:140px}.daterangepicker.single .ranges ul{width:100%}.daterangepicker.single .drp-calendar.left{clear:none}.daterangepicker.ltr{direction:ltr;text-align:left}.daterangepicker.ltr .drp-calendar.left{clear:left;margin-right:0}.daterangepicker.ltr .drp-calendar.left .calendar-table{border-right:none;border-top-right-radius:0;border-bottom-right-radius:0}.daterangepicker.ltr .drp-calendar.right{margin-left:0}.daterangepicker.ltr .drp-calendar.right .calendar-table{border-left:none;border-top-left-radius:0;border-bottom-left-radius:0}.daterangepicker.ltr .drp-calendar.left .calendar-table{padding-right:8px}.daterangepicker.rtl{direction:rtl;text-align:right}.daterangepicker.rtl .drp-calendar.left{clear:right;margin-left:0}.daterangepicker.rtl .drp-calendar.left .calendar-table{border-left:none;border-top-left-radius:0;border-bottom-left-radius:0}.daterangepicker.rtl .drp-calendar.right{margin-right:0}.daterangepicker.rtl .drp-calendar.right .calendar-table{border-right:none;border-top-right-radius:0;border-bottom-right-radius:0}.daterangepicker.rtl .drp-calendar.left .calendar-table{padding-left:12px}.daterangepicker.rtl .drp-calendar,.daterangepicker.rtl .ranges{text-align:right}}@media (min-width:730px){.daterangepicker .drp-calendar.left{clear:none!important}}.calendars[data-v-1ebd09d2]{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap}.reportrange-text[data-v-1ebd09d2]{background:#fff;cursor:pointer;padding:5px 10px;border:1px solid #ccc;width:100%;overflow:hidden}.daterangepicker[data-v-1ebd09d2]{-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;display:-webkit-box;display:-ms-flexbox;display:flex;width:auto}@media screen and (max-width:768px){.daterangepicker.show-ranges .drp-calendar.left[data-v-1ebd09d2]{border-left:0}.daterangepicker.show-ranges .ranges[data-v-1ebd09d2]{border-bottom:1px solid #ddd;width:100%}.daterangepicker.show-ranges .ranges[data-v-1ebd09d2] ul{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;width:auto}}@media screen and (max-width:541px){.daterangepicker .calendars-container[data-v-1ebd09d2]{-ms-flex-wrap:wrap;flex-wrap:wrap}}@media screen and (min-width:540px){.daterangepicker.show-weeknumbers[data-v-1ebd09d2],.daterangepicker[data-v-1ebd09d2]{min-width:486px}}@media screen and (min-width:768px){.daterangepicker.show-ranges.show-weeknumbers[data-v-1ebd09d2],.daterangepicker.show-ranges[data-v-1ebd09d2]{min-width:682px}}@media screen and (max-width:340px){.daterangepicker.single.show-weeknumbers[data-v-1ebd09d2],.daterangepicker.single[data-v-1ebd09d2]{min-width:250px}}@media screen and (min-width:339px){.daterangepicker.single[data-v-1ebd09d2]{min-width:auto}.daterangepicker.single.show-ranges.show-weeknumbers[data-v-1ebd09d2],.daterangepicker.single.show-ranges[data-v-1ebd09d2]{min-width:356px}.daterangepicker.single.show-ranges .drp-calendar.left[data-v-1ebd09d2]{border-left:1px solid #ddd}.daterangepicker.single.show-ranges .ranges[data-v-1ebd09d2]{max-width:none;-ms-flex-preferred-size:auto;flex-basis:auto;border-bottom:0}.daterangepicker.single.show-ranges .ranges[data-v-1ebd09d2] ul{display:block;width:100%}}.daterangepicker.show-calendar[data-v-1ebd09d2]{display:block;top:auto}.daterangepicker.opensleft[data-v-1ebd09d2]{right:10px;left:auto}.daterangepicker.openscenter[data-v-1ebd09d2]{right:auto;left:50%;-webkit-transform:translate(-50%);transform:translate(-50%)}.daterangepicker.opensright[data-v-1ebd09d2]{left:10px;right:auto}.slide-fade-enter-active[data-v-1ebd09d2]{-webkit-transition:all .2s ease;transition:all .2s ease}.slide-fade-leave-active[data-v-1ebd09d2]{-webkit-transition:all .1s cubic-bezier(1,.5,.8,1);transition:all .1s cubic-bezier(1,.5,.8,1)}.slide-fade-enter[data-v-1ebd09d2],.slide-fade-leave-to[data-v-1ebd09d2]{-webkit-transform:translateX(10px);transform:translateX(10px);opacity:0}.vue-daterange-picker[data-v-1ebd09d2]{position:relative;display:inline-block;min-width:60px}.vue-daterange-picker .show-ranges.hide-calendars[data-v-1ebd09d2]{width:150px;min-width:150px}.inline .daterangepicker[data-v-1ebd09d2]{position:static}.inline .daterangepicker[data-v-1ebd09d2]:after,.inline .daterangepicker[data-v-1ebd09d2]:before{display:none}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
 
 /***/ }),
 
-/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&":
-/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css&":
+/*!******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css& ***!
+  \******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5659,55 +2428,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}\n", ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&":
-/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& ***!
-  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
-// Imports
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}\n", ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
-/***/ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&":
-/*!*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& ***!
-  \*****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js */ "./node_modules/laravel-mix/node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
-// Imports
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active, .fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter, .fade-leave-to {\n  opacity: 0;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -5790,10 +2511,10 @@ module.exports = function (cssWithMappingToString) {
 
 /***/ }),
 
-/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&":
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css":
+/*!***************************************************************************!*\
+  !*** ./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css ***!
+  \***************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5801,9 +2522,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&");
+/* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
+/* harmony import */ var _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./vue2-daterange-picker.css */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css");
 
             
 
@@ -5812,18 +2533,18 @@ var options = {};
 options.insert = "head";
 options.singleton = false;
 
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+var update = _style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_1__["default"], options);
 
 
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
-/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&":
-/*!****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -5833,7 +2554,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
 /* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&");
+/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_style_index_0_id_1d9b30b0_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css&");
 
             
 
@@ -5842,71 +2563,11 @@ var options = {};
 options.insert = "head";
 options.singleton = false;
 
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
+var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_style_index_0_id_1d9b30b0_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
 
 
 
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&");
-
-            
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&":
-/*!*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& ***!
-  \*********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! !../../../node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js */ "./node_modules/style-loader/dist/runtime/injectStylesIntoStyleTag.js");
-/* harmony import */ var _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! !!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& */ "./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&");
-
-            
-
-var options = {};
-
-options.insert = "head";
-options.singleton = false;
-
-var update = _node_modules_style_loader_dist_runtime_injectStylesIntoStyleTag_js__WEBPACK_IMPORTED_MODULE_0___default()(_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"], options);
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_style_index_0_id_1d9b30b0_lang_css___WEBPACK_IMPORTED_MODULE_1__["default"].locals || {});
 
 /***/ }),
 
@@ -6189,10 +2850,10 @@ module.exports = function (list, options) {
 
 /***/ }),
 
-/***/ "./resources/js/components/CreateBooking.vue":
-/*!***************************************************!*\
-  !*** ./resources/js/components/CreateBooking.vue ***!
-  \***************************************************/
+/***/ "./resources/js/components/AdminDashboard.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/AdminDashboard.vue ***!
+  \****************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6200,9 +2861,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateBooking.vue?vue&type=template&id=31ee20e2& */ "./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2&");
-/* harmony import */ var _CreateBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateBooking.vue?vue&type=script&lang=js& */ "./resources/js/components/CreateBooking.vue?vue&type=script&lang=js&");
-/* harmony import */ var _CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& */ "./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&");
+/* harmony import */ var _AdminDashboard_vue_vue_type_template_id_1d9b30b0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminDashboard.vue?vue&type=template&id=1d9b30b0& */ "./resources/js/components/AdminDashboard.vue?vue&type=template&id=1d9b30b0&");
+/* harmony import */ var _AdminDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminDashboard.vue?vue&type=script&lang=js& */ "./resources/js/components/AdminDashboard.vue?vue&type=script&lang=js&");
+/* harmony import */ var _AdminDashboard_vue_vue_type_style_index_0_id_1d9b30b0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css& */ "./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -6213,9 +2874,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _CreateBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__.render,
-  _CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _AdminDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _AdminDashboard_vue_vue_type_template_id_1d9b30b0___WEBPACK_IMPORTED_MODULE_0__.render,
+  _AdminDashboard_vue_vue_type_template_id_1d9b30b0___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
   null,
@@ -6225,15 +2886,15 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/CreateBooking.vue"
+component.options.__file = "resources/js/components/AdminDashboard.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/EditBooking.vue":
-/*!*************************************************!*\
-  !*** ./resources/js/components/EditBooking.vue ***!
-  \*************************************************/
+/***/ "./resources/js/components/AdminDashboard.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/AdminDashboard.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -6241,442 +2902,37 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditBooking.vue?vue&type=template&id=609a1e54& */ "./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&");
-/* harmony import */ var _EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditBooking.vue?vue&type=script&lang=js& */ "./resources/js/components/EditBooking.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.render,
-  _EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/EditBooking.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AdminDashboard.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/PriceBooking.vue":
-/*!**************************************************!*\
-  !*** ./resources/js/components/PriceBooking.vue ***!
-  \**************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PriceBooking.vue?vue&type=template&id=7f9a26bb& */ "./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&");
-/* harmony import */ var _PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PriceBooking.vue?vue&type=script&lang=js& */ "./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-;
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.render,
-  _PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/PriceBooking.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingAll.vue":
-/*!**********************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingAll.vue ***!
-  \**********************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& */ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&");
-/* harmony import */ var _TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TotalPriceBookingAll.vue?vue&type=script&lang=js& */ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&");
-/* harmony import */ var _TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& */ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-;
-
-
-/* normalize component */
-
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.render,
-  _TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/TotalPriceBookingAll.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingArtist.vue":
-/*!*************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingArtist.vue ***!
-  \*************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& */ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&");
-/* harmony import */ var _TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TotalPriceBookingArtist.vue?vue&type=script&lang=js& */ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&");
-/* harmony import */ var _TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& */ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-;
-
-
-/* normalize component */
-
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.render,
-  _TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/TotalPriceBookingArtist.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingEmployee.vue":
-/*!***************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingEmployee.vue ***!
-  \***************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& */ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&");
-/* harmony import */ var _TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./TotalPriceBookingEmployee.vue?vue&type=script&lang=js& */ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&");
-/* harmony import */ var _TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& */ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-;
-
-
-/* normalize component */
-
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.render,
-  _TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/TotalPriceBookingEmployee.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/CreateBooking.vue?vue&type=script&lang=js&":
-/*!****************************************************************************!*\
-  !*** ./resources/js/components/CreateBooking.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateBooking.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/EditBooking.vue?vue&type=script&lang=js&":
-/*!**************************************************************************!*\
-  !*** ./resources/js/components/EditBooking.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditBooking.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&":
-/*!***************************************************************************!*\
-  !*** ./resources/js/components/PriceBooking.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PriceBooking.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&":
+/***/ "./resources/js/components/AdminDashboard.vue?vue&type=template&id=1d9b30b0&":
 /*!***********************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js& ***!
+  !*** ./resources/js/components/AdminDashboard.vue?vue&type=template&id=1d9b30b0& ***!
   \***********************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_template_id_1d9b30b0___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_template_id_1d9b30b0___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2&":
-/*!**********************************************************************************!*\
-  !*** ./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2& ***!
-  \**********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_template_id_31ee20e2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateBooking.vue?vue&type=template&id=31ee20e2& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=template&id=31ee20e2&");
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_template_id_1d9b30b0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AdminDashboard.vue?vue&type=template&id=1d9b30b0& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=template&id=1d9b30b0&");
 
 
 /***/ }),
 
-/***/ "./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&":
-/*!********************************************************************************!*\
-  !*** ./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54& ***!
-  \********************************************************************************/
+/***/ "./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css& ***!
+  \*************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_EditBooking_vue_vue_type_template_id_609a1e54___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./EditBooking.vue?vue&type=template&id=609a1e54& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/EditBooking.vue?vue&type=template&id=609a1e54&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&":
-/*!*********************************************************************************!*\
-  !*** ./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb& ***!
-  \*********************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_PriceBooking_vue_vue_type_template_id_7f9a26bb___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./PriceBooking.vue?vue&type=template&id=7f9a26bb& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/PriceBooking.vue?vue&type=template&id=7f9a26bb&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& ***!
-  \*****************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_template_id_1bb53990___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=template&id=1bb53990& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=template&id=1bb53990&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&":
-/*!********************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& ***!
-  \********************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_template_id_9d75fb00___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=template&id=9d75fb00&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&":
-/*!**********************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& ***!
-  \**********************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   render: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   staticRenderFns: () => (/* reexport safe */ _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_use_0_node_modules_vue_loader_lib_loaders_templateLoader_js_ruleSet_1_rules_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_template_id_5bca7a27___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5.use[0]!./node_modules/vue-loader/lib/loaders/templateLoader.js??ruleSet[1].rules[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=template&id=5bca7a27&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&":
-/*!************************************************************************************************!*\
-  !*** ./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& ***!
-  \************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateBooking_vue_vue_type_style_index_0_id_31ee20e2_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/CreateBooking.vue?vue&type=style&index=0&id=31ee20e2&lang=css&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&":
-/*!*******************************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& ***!
-  \*******************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingAll_vue_vue_type_style_index_0_id_1bb53990_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingAll.vue?vue&type=style&index=0&id=1bb53990&lang=css&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&":
-/*!**********************************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& ***!
-  \**********************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingArtist_vue_vue_type_style_index_0_id_9d75fb00_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingArtist.vue?vue&type=style&index=0&id=9d75fb00&lang=css&");
-
-
-/***/ }),
-
-/***/ "./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&":
-/*!************************************************************************************************************!*\
-  !*** ./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& ***!
-  \************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_TotalPriceBookingEmployee_vue_vue_type_style_index_0_id_5bca7a27_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/TotalPriceBookingEmployee.vue?vue&type=style&index=0&id=5bca7a27&lang=css&");
+/* harmony import */ var _node_modules_style_loader_dist_cjs_js_node_modules_laravel_mix_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_AdminDashboard_vue_vue_type_style_index_0_id_1d9b30b0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader/dist/cjs.js!../../../node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css& */ "./node_modules/style-loader/dist/cjs.js!./node_modules/laravel-mix/node_modules/css-loader/dist/cjs.js??clonedRuleSet-9.use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9.use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/AdminDashboard.vue?vue&type=style&index=0&id=1d9b30b0&lang=css&");
 
 
 /***/ }),
@@ -18732,6 +14988,17 @@ Vue.compile = compileToFunctions;
 
 /***/ }),
 
+/***/ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.umd.min.js":
+/*!**********************************************************************************!*\
+  !*** ./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.umd.min.js ***!
+  \**********************************************************************************/
+/***/ (function(module) {
+
+(function(t,e){ true?module.exports=e():0})("undefined"!==typeof self?self:this,(function(){return function(t){var e={};function n(r){if(e[r])return e[r].exports;var a=e[r]={i:r,l:!1,exports:{}};return t[r].call(a.exports,a,a.exports,n),a.l=!0,a.exports}return n.m=t,n.c=e,n.d=function(t,e,r){n.o(t,e)||Object.defineProperty(t,e,{enumerable:!0,get:r})},n.r=function(t){"undefined"!==typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(t,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(t,"__esModule",{value:!0})},n.t=function(t,e){if(1&e&&(t=n(t)),8&e)return t;if(4&e&&"object"===typeof t&&t&&t.__esModule)return t;var r=Object.create(null);if(n.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:t}),2&e&&"string"!=typeof t)for(var a in t)n.d(r,a,function(e){return t[e]}.bind(null,a));return r},n.n=function(t){var e=t&&t.__esModule?function(){return t["default"]}:function(){return t};return n.d(e,"a",e),e},n.o=function(t,e){return Object.prototype.hasOwnProperty.call(t,e)},n.p="",n(n.s="fb15")}({"00ee":function(t,e,n){var r=n("b622"),a=r("toStringTag"),i={};i[a]="z",t.exports="[object z]"===String(i)},"057f":function(t,e,n){var r=n("fc6a"),a=n("241c").f,i={}.toString,o="object"==typeof window&&window&&Object.getOwnPropertyNames?Object.getOwnPropertyNames(window):[],s=function(t){try{return a(t)}catch(e){return o.slice()}};t.exports.f=function(t){return o&&"[object Window]"==i.call(t)?s(t):a(r(t))}},"06cf":function(t,e,n){var r=n("83ab"),a=n("d1e7"),i=n("5c6c"),o=n("fc6a"),s=n("c04e"),c=n("5135"),u=n("0cfb"),l=Object.getOwnPropertyDescriptor;e.f=r?l:function(t,e){if(t=o(t),e=s(e,!0),u)try{return l(t,e)}catch(n){}if(c(t,e))return i(!a.f.call(t,e),t[e])}},"0cfb":function(t,e,n){var r=n("83ab"),a=n("d039"),i=n("cc12");t.exports=!r&&!a((function(){return 7!=Object.defineProperty(i("div"),"a",{get:function(){return 7}}).a}))},"0e58":function(t,e,n){"use strict";var r=n("beb7"),a=n.n(r);a.a},"14c3":function(t,e,n){var r=n("c6b6"),a=n("9263");t.exports=function(t,e){var n=t.exec;if("function"===typeof n){var i=n.call(t,e);if("object"!==typeof i)throw TypeError("RegExp exec method returned something other than an Object or null");return i}if("RegExp"!==r(t))throw TypeError("RegExp#exec called on incompatible receiver");return a.call(t,e)}},"159b":function(t,e,n){var r=n("da84"),a=n("fdbc"),i=n("17c2"),o=n("9112");for(var s in a){var c=r[s],u=c&&c.prototype;if(u&&u.forEach!==i)try{o(u,"forEach",i)}catch(l){u.forEach=i}}},"17c2":function(t,e,n){"use strict";var r=n("b727").forEach,a=n("b301");t.exports=a("forEach")?function(t){return r(this,t,arguments.length>1?arguments[1]:void 0)}:[].forEach},"18e6":function(t,e,n){},"1be4":function(t,e,n){var r=n("d066");t.exports=r("document","documentElement")},"1c0b":function(t,e){t.exports=function(t){if("function"!=typeof t)throw TypeError(String(t)+" is not a function");return t}},"1c7e":function(t,e,n){var r=n("b622"),a=r("iterator"),i=!1;try{var o=0,s={next:function(){return{done:!!o++}},return:function(){i=!0}};s[a]=function(){return this},Array.from(s,(function(){throw 2}))}catch(c){}t.exports=function(t,e){if(!e&&!i)return!1;var n=!1;try{var r={};r[a]=function(){return{next:function(){return{done:n=!0}}}},t(r)}catch(c){}return n}},"1d80":function(t,e){t.exports=function(t){if(void 0==t)throw TypeError("Can't call method on "+t);return t}},"1dde":function(t,e,n){var r=n("d039"),a=n("b622"),i=n("60ae"),o=a("species");t.exports=function(t){return i>=51||!r((function(){var e=[],n=e.constructor={};return n[o]=function(){return{foo:1}},1!==e[t](Boolean).foo}))}},"23cb":function(t,e,n){var r=n("a691"),a=Math.max,i=Math.min;t.exports=function(t,e){var n=r(t);return n<0?a(n+e,0):i(n,e)}},"23e7":function(t,e,n){var r=n("da84"),a=n("06cf").f,i=n("9112"),o=n("6eeb"),s=n("ce4e"),c=n("e893"),u=n("94ca");t.exports=function(t,e){var n,l,f,d,h,p,m=t.target,g=t.global,v=t.stat;if(l=g?r:v?r[m]||s(m,{}):(r[m]||{}).prototype,l)for(f in e){if(h=e[f],t.noTargetGet?(p=a(l,f),d=p&&p.value):d=l[f],n=u(g?f:m+(v?".":"#")+f,t.forced),!n&&void 0!==d){if(typeof h===typeof d)continue;c(h,d)}(t.sham||d&&d.sham)&&i(h,"sham",!0),o(l,f,h,t)}}},"241c":function(t,e,n){var r=n("ca84"),a=n("7839"),i=a.concat("length","prototype");e.f=Object.getOwnPropertyNames||function(t){return r(t,i)}},"25f0":function(t,e,n){"use strict";var r=n("6eeb"),a=n("825a"),i=n("d039"),o=n("ad6d"),s="toString",c=RegExp.prototype,u=c[s],l=i((function(){return"/a/b"!=u.call({source:"a",flags:"b"})})),f=u.name!=s;(l||f)&&r(RegExp.prototype,s,(function(){var t=a(this),e=String(t.source),n=t.flags,r=String(void 0===n&&t instanceof RegExp&&!("flags"in c)?o.call(t):n);return"/"+e+"/"+r}),{unsafe:!0})},"35a1":function(t,e,n){var r=n("f5df"),a=n("3f8c"),i=n("b622"),o=i("iterator");t.exports=function(t){if(void 0!=t)return t[o]||t["@@iterator"]||a[r(t)]}},"37e8":function(t,e,n){var r=n("83ab"),a=n("9bf2"),i=n("825a"),o=n("df75");t.exports=r?Object.defineProperties:function(t,e){i(t);var n,r=o(e),s=r.length,c=0;while(s>c)a.f(t,n=r[c++],e[n]);return t}},"3bbe":function(t,e,n){var r=n("861d");t.exports=function(t){if(!r(t)&&null!==t)throw TypeError("Can't set "+String(t)+" as a prototype");return t}},"3ca3":function(t,e,n){"use strict";var r=n("6547").charAt,a=n("69f3"),i=n("7dd0"),o="String Iterator",s=a.set,c=a.getterFor(o);i(String,"String",(function(t){s(this,{type:o,string:String(t),index:0})}),(function(){var t,e=c(this),n=e.string,a=e.index;return a>=n.length?{value:void 0,done:!0}:(t=r(n,a),e.index+=t.length,{value:t,done:!1})}))},"3f8c":function(t,e){t.exports={}},"428f":function(t,e,n){var r=n("da84");t.exports=r},"44ad":function(t,e,n){var r=n("d039"),a=n("c6b6"),i="".split;t.exports=r((function(){return!Object("z").propertyIsEnumerable(0)}))?function(t){return"String"==a(t)?i.call(t,""):Object(t)}:Object},"44d2":function(t,e,n){var r=n("b622"),a=n("7c73"),i=n("9112"),o=r("unscopables"),s=Array.prototype;void 0==s[o]&&i(s,o,a(null)),t.exports=function(t){s[o][t]=!0}},"466d":function(t,e,n){"use strict";var r=n("d784"),a=n("825a"),i=n("50c4"),o=n("1d80"),s=n("8aa5"),c=n("14c3");r("match",1,(function(t,e,n){return[function(e){var n=o(this),r=void 0==e?void 0:e[t];return void 0!==r?r.call(e,n):new RegExp(e)[t](String(n))},function(t){var r=n(e,t,this);if(r.done)return r.value;var o=a(t),u=String(this);if(!o.global)return c(o,u);var l=o.unicode;o.lastIndex=0;var f,d=[],h=0;while(null!==(f=c(o,u))){var p=String(f[0]);d[h]=p,""===p&&(o.lastIndex=s(u,i(o.lastIndex),l)),h++}return 0===h?null:d}]}))},4930:function(t,e,n){var r=n("d039");t.exports=!!Object.getOwnPropertySymbols&&!r((function(){return!String(Symbol())}))},"4d64":function(t,e,n){var r=n("fc6a"),a=n("50c4"),i=n("23cb"),o=function(t){return function(e,n,o){var s,c=r(e),u=a(c.length),l=i(o,u);if(t&&n!=n){while(u>l)if(s=c[l++],s!=s)return!0}else for(;u>l;l++)if((t||l in c)&&c[l]===n)return t||l||0;return!t&&-1}};t.exports={includes:o(!0),indexOf:o(!1)}},"4de4":function(t,e,n){"use strict";var r=n("23e7"),a=n("b727").filter,i=n("d039"),o=n("1dde"),s=o("filter"),c=s&&!i((function(){[].filter.call({length:-1,0:1},(function(t){throw t}))}));r({target:"Array",proto:!0,forced:!s||!c},{filter:function(t){return a(this,t,arguments.length>1?arguments[1]:void 0)}})},"4df4":function(t,e,n){"use strict";var r=n("f8c2"),a=n("7b0b"),i=n("9bdd"),o=n("e95a"),s=n("50c4"),c=n("8418"),u=n("35a1");t.exports=function(t){var e,n,l,f,d,h=a(t),p="function"==typeof this?this:Array,m=arguments.length,g=m>1?arguments[1]:void 0,v=void 0!==g,y=0,b=u(h);if(v&&(g=r(g,m>2?arguments[2]:void 0,2)),void 0==b||p==Array&&o(b))for(e=s(h.length),n=new p(e);e>y;y++)c(n,y,v?g(h[y],y):h[y]);else for(f=b.call(h),d=f.next,n=new p;!(l=d.call(f)).done;y++)c(n,y,v?i(f,g,[l.value,y],!0):l.value);return n.length=y,n}},"50c4":function(t,e,n){var r=n("a691"),a=Math.min;t.exports=function(t){return t>0?a(r(t),9007199254740991):0}},5135:function(t,e){var n={}.hasOwnProperty;t.exports=function(t,e){return n.call(t,e)}},5319:function(t,e,n){"use strict";var r=n("d784"),a=n("825a"),i=n("7b0b"),o=n("50c4"),s=n("a691"),c=n("1d80"),u=n("8aa5"),l=n("14c3"),f=Math.max,d=Math.min,h=Math.floor,p=/\$([$&'`]|\d\d?|<[^>]*>)/g,m=/\$([$&'`]|\d\d?)/g,g=function(t){return void 0===t?t:String(t)};r("replace",2,(function(t,e,n){return[function(n,r){var a=c(this),i=void 0==n?void 0:n[t];return void 0!==i?i.call(n,a,r):e.call(String(a),n,r)},function(t,i){var c=n(e,t,this,i);if(c.done)return c.value;var h=a(t),p=String(this),m="function"===typeof i;m||(i=String(i));var v=h.global;if(v){var y=h.unicode;h.lastIndex=0}var b=[];while(1){var D=l(h,p);if(null===D)break;if(b.push(D),!v)break;var w=String(D[0]);""===w&&(h.lastIndex=u(p,o(h.lastIndex),y))}for(var x="",S=0,M=0;M<b.length;M++){D=b[M];for(var k=String(D[0]),_=f(d(s(D.index),p.length),0),O=[],T=1;T<D.length;T++)O.push(g(D[T]));var C=D.groups;if(m){var P=[k].concat(O,_,p);void 0!==C&&P.push(C);var j=String(i.apply(void 0,P))}else j=r(k,p,_,O,C,i);_>=S&&(x+=p.slice(S,_)+j,S=_+k.length)}return x+p.slice(S)}];function r(t,n,r,a,o,s){var c=r+t.length,u=a.length,l=m;return void 0!==o&&(o=i(o),l=p),e.call(s,l,(function(e,i){var s;switch(i.charAt(0)){case"$":return"$";case"&":return t;case"`":return n.slice(0,r);case"'":return n.slice(c);case"<":s=o[i.slice(1,-1)];break;default:var l=+i;if(0===l)return e;if(l>u){var f=h(l/10);return 0===f?e:f<=u?void 0===a[f-1]?i.charAt(1):a[f-1]+i.charAt(1):e}s=a[l-1]}return void 0===s?"":s}))}}))},"53ca":function(t,e,n){"use strict";n.d(e,"a",(function(){return a}));n("a4d3"),n("e01a"),n("d28b"),n("e260"),n("d3b7"),n("3ca3"),n("ddb0");function r(t){return r="function"===typeof Symbol&&"symbol"===typeof Symbol.iterator?function(t){return typeof t}:function(t){return t&&"function"===typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":typeof t},r(t)}function a(t){return a="function"===typeof Symbol&&"symbol"===r(Symbol.iterator)?function(t){return r(t)}:function(t){return t&&"function"===typeof Symbol&&t.constructor===Symbol&&t!==Symbol.prototype?"symbol":r(t)},a(t)}},5692:function(t,e,n){var r=n("c430"),a=n("c6cd");(t.exports=function(t,e){return a[t]||(a[t]=void 0!==e?e:{})})("versions",[]).push({version:"3.5.0",mode:r?"pure":"global",copyright:"© 2019 Denis Pushkarev (zloirock.ru)"})},"56ef":function(t,e,n){var r=n("d066"),a=n("241c"),i=n("7418"),o=n("825a");t.exports=r("Reflect","ownKeys")||function(t){var e=a.f(o(t)),n=i.f;return n?e.concat(n(t)):e}},5899:function(t,e){t.exports="\t\n\v\f\r                　\u2028\u2029\ufeff"},"58a8":function(t,e,n){var r=n("1d80"),a=n("5899"),i="["+a+"]",o=RegExp("^"+i+i+"*"),s=RegExp(i+i+"*$"),c=function(t){return function(e){var n=String(r(e));return 1&t&&(n=n.replace(o,"")),2&t&&(n=n.replace(s,"")),n}};t.exports={start:c(1),end:c(2),trim:c(3)}},"5c6c":function(t,e){t.exports=function(t,e){return{enumerable:!(1&t),configurable:!(2&t),writable:!(4&t),value:e}}},"60ae":function(t,e,n){var r,a,i=n("da84"),o=n("b39a"),s=i.process,c=s&&s.versions,u=c&&c.v8;u?(r=u.split("."),a=r[0]+r[1]):o&&(r=o.match(/Edge\/(\d+)/),(!r||r[1]>=74)&&(r=o.match(/Chrome\/(\d+)/),r&&(a=r[1]))),t.exports=a&&+a},6547:function(t,e,n){var r=n("a691"),a=n("1d80"),i=function(t){return function(e,n){var i,o,s=String(a(e)),c=r(n),u=s.length;return c<0||c>=u?t?"":void 0:(i=s.charCodeAt(c),i<55296||i>56319||c+1===u||(o=s.charCodeAt(c+1))<56320||o>57343?t?s.charAt(c):i:t?s.slice(c,c+2):o-56320+(i-55296<<10)+65536)}};t.exports={codeAt:i(!1),charAt:i(!0)}},"65f0":function(t,e,n){var r=n("861d"),a=n("e8b5"),i=n("b622"),o=i("species");t.exports=function(t,e){var n;return a(t)&&(n=t.constructor,"function"!=typeof n||n!==Array&&!a(n.prototype)?r(n)&&(n=n[o],null===n&&(n=void 0)):n=void 0),new(void 0===n?Array:n)(0===e?0:e)}},"69f3":function(t,e,n){var r,a,i,o=n("7f9a"),s=n("da84"),c=n("861d"),u=n("9112"),l=n("5135"),f=n("f772"),d=n("d012"),h=s.WeakMap,p=function(t){return i(t)?a(t):r(t,{})},m=function(t){return function(e){var n;if(!c(e)||(n=a(e)).type!==t)throw TypeError("Incompatible receiver, "+t+" required");return n}};if(o){var g=new h,v=g.get,y=g.has,b=g.set;r=function(t,e){return b.call(g,t,e),e},a=function(t){return v.call(g,t)||{}},i=function(t){return y.call(g,t)}}else{var D=f("state");d[D]=!0,r=function(t,e){return u(t,D,e),e},a=function(t){return l(t,D)?t[D]:{}},i=function(t){return l(t,D)}}t.exports={set:r,get:a,has:i,enforce:p,getterFor:m}},"6eeb":function(t,e,n){var r=n("da84"),a=n("9112"),i=n("5135"),o=n("ce4e"),s=n("8925"),c=n("69f3"),u=c.get,l=c.enforce,f=String(String).split("String");(t.exports=function(t,e,n,s){var c=!!s&&!!s.unsafe,u=!!s&&!!s.enumerable,d=!!s&&!!s.noTargetGet;"function"==typeof n&&("string"!=typeof e||i(n,"name")||a(n,"name",e),l(n).source=f.join("string"==typeof e?e:"")),t!==r?(c?!d&&t[e]&&(u=!0):delete t[e],u?t[e]=n:a(t,e,n)):u?t[e]=n:o(e,n)})(Function.prototype,"toString",(function(){return"function"==typeof this&&u(this).source||s(this)}))},7156:function(t,e,n){var r=n("861d"),a=n("d2bb");t.exports=function(t,e,n){var i,o;return a&&"function"==typeof(i=e.constructor)&&i!==n&&r(o=i.prototype)&&o!==n.prototype&&a(t,o),t}},7418:function(t,e){e.f=Object.getOwnPropertySymbols},"746f":function(t,e,n){var r=n("428f"),a=n("5135"),i=n("c032"),o=n("9bf2").f;t.exports=function(t){var e=r.Symbol||(r.Symbol={});a(e,t)||o(e,t,{value:i.f(t)})}},7839:function(t,e){t.exports=["constructor","hasOwnProperty","isPrototypeOf","propertyIsEnumerable","toLocaleString","toString","valueOf"]},"7a50":function(t,e,n){"use strict";n.r(e);n("a4d3"),n("4de4"),n("d81d"),n("fb6a"),n("e439"),n("dbb4"),n("b64b"),n("159b");var r=n("ade3"),a=(n("d3b7"),n("466d"),n("5319"),n("53ca")),i=function(){var t=/d{1,4}|m{1,4}|yy(?:yy)?|([HhMsTt])\1?|[LloSZWN]|"[^"]*"|'[^']*'/g,e=/\b(?:[PMCEA][SDP]T|(?:Pacific|Mountain|Central|Eastern|Atlantic) (?:Standard|Daylight|Prevailing) Time|(?:GMT|UTC)(?:[-+]\d{4})?)\b/g,n=/[^-+\dA-Z]/g;return function(r,a,l,f){if(1!==arguments.length||"string"!==u(r)||/\d/.test(r)||(a=r,r=void 0),r=r||new Date,r instanceof Date||(r=new Date(r)),isNaN(r))throw TypeError("Invalid date");a=String(i.masks[a]||a||i.masks["default"]);var d=a.slice(0,4);"UTC:"!==d&&"GMT:"!==d||(a=a.slice(4),l=!0,"GMT:"===d&&(f=!0));var h=l?"getUTC":"get",p=r[h+"Date"](),m=r[h+"Day"](),g=r[h+"Month"](),v=r[h+"FullYear"](),y=r[h+"Hours"](),b=r[h+"Minutes"](),D=r[h+"Seconds"](),w=r[h+"Milliseconds"](),x=l?0:r.getTimezoneOffset(),S=s(r),M=c(r),k={d:p,dd:o(p),ddd:i.i18n.dayNames[m],dddd:i.i18n.dayNames[m+7],m:g+1,mm:o(g+1),mmm:i.i18n.monthNames[g],mmmm:i.i18n.monthNames[g+12],yy:String(v).slice(2),yyyy:v,h:y%12||12,hh:o(y%12||12),H:y,HH:o(y),M:b,MM:o(b),s:D,ss:o(D),l:o(w,3),L:o(Math.round(w/10)),t:y<12?i.i18n.timeNames[0]:i.i18n.timeNames[1],tt:y<12?i.i18n.timeNames[2]:i.i18n.timeNames[3],T:y<12?i.i18n.timeNames[4]:i.i18n.timeNames[5],TT:y<12?i.i18n.timeNames[6]:i.i18n.timeNames[7],Z:f?"GMT":l?"UTC":(String(r).match(e)||[""]).pop().replace(n,""),o:(x>0?"-":"+")+o(100*Math.floor(Math.abs(x)/60)+Math.abs(x)%60,4),S:["th","st","nd","rd"][p%10>3?0:(p%100-p%10!=10)*p%10],W:S,N:M};return a.replace(t,(function(t){return t in k?k[t]:t.slice(1,t.length-1)}))}}();function o(t,e){t=String(t),e=e||2;while(t.length<e)t="0"+t;return t}function s(t){var e=new Date(t.getFullYear(),t.getMonth(),t.getDate());e.setDate(e.getDate()-(e.getDay()+6)%7+3);var n=new Date(e.getFullYear(),0,4);n.setDate(n.getDate()-(n.getDay()+6)%7+3);var r=e.getTimezoneOffset()-n.getTimezoneOffset();e.setHours(e.getHours()-r);var a=(e-n)/6048e5;return 1+Math.floor(a)}function c(t){var e=t.getDay();return 0===e&&(e=7),e}function u(t){return null===t?"null":void 0===t?"undefined":"object"!==Object(a["a"])(t)?Object(a["a"])(t):Array.isArray(t)?"array":{}.toString.call(t).slice(8,-1).toLowerCase()}function l(t,e){var n=Object.keys(t);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(t);e&&(r=r.filter((function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable}))),n.push.apply(n,r)}return n}function f(t){for(var e=1;e<arguments.length;e++){var n=null!=arguments[e]?arguments[e]:{};e%2?l(Object(n),!0).forEach((function(e){Object(r["a"])(t,e,n[e])})):Object.getOwnPropertyDescriptors?Object.defineProperties(t,Object.getOwnPropertyDescriptors(n)):l(Object(n)).forEach((function(e){Object.defineProperty(t,e,Object.getOwnPropertyDescriptor(n,e))}))}return t}i.masks={default:"ddd mmm dd yyyy HH:MM:ss",shortDate:"m/d/yy",mediumDate:"mmm d, yyyy",longDate:"mmmm d, yyyy",fullDate:"dddd, mmmm d, yyyy",shortTime:"h:MM TT",mediumTime:"h:MM:ss TT",longTime:"h:MM:ss TT Z",isoDate:"yyyy-mm-dd",isoTime:"HH:MM:ss",isoDateTime:"yyyy-mm-dd'T'HH:MM:sso",isoUtcDateTime:"UTC:yyyy-mm-dd'T'HH:MM:ss'Z'",expiresHeaderFormat:"ddd, dd mmm yyyy HH:MM:ss Z"},i.i18n={dayNames:["Sun","Mon","Tue","Wed","Thu","Fri","Sat","Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],monthNames:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec","January","February","March","April","May","June","July","August","September","October","November","December"],timeNames:["a","p","am","pm","A","P","AM","PM"]};var d={isSame:function(t,e,n){var r=new Date(t),a=new Date(e);return"date"===n&&(r.setHours(0,0,0,0),a.setHours(0,0,0,0)),r.getTime()===a.getTime()},daysInMonth:function(t,e){return new Date(t,e,0).getDate()},weekNumber:function(t){return s(t)},format:function(t,e){return i(t,e)},nextMonth:function(t){var e=new Date(t.getTime());return e.setDate(1),e.setMonth(e.getMonth()+1),e},prevMonth:function(t){var e=new Date(t.getTime());return e.setDate(1),e.setMonth(e.getMonth()-1),e},validateDateRange:function(t,e,n){var r=new Date(n),a=new Date(e);return n&&t.getTime()>r.getTime()?r:e&&t.getTime()<a.getTime()?a:t},localeData:function(t){var e={direction:"ltr",format:"mm/dd/yyyy",separator:" - ",applyLabel:"Apply",cancelLabel:"Cancel",weekLabel:"W",customRangeLabel:"Custom Range",daysOfWeek:i.i18n.dayNames.slice(0,7).map((function(t){return t.substring(0,2)})),monthNames:i.i18n.monthNames.slice(0,12),firstDay:0};return f({},e,{},t)},yearMonth:function(t){var e=t.getMonth()+1;return t.getFullYear()+(e<10?"0":"")+e},isValidDate:function(t){return t instanceof Date&&!isNaN(t)}};e["default"]=d},"7b0b":function(t,e,n){var r=n("1d80");t.exports=function(t){return Object(r(t))}},"7c73":function(t,e,n){var r=n("825a"),a=n("37e8"),i=n("7839"),o=n("d012"),s=n("1be4"),c=n("cc12"),u=n("f772"),l=u("IE_PROTO"),f="prototype",d=function(){},h=function(){var t,e=c("iframe"),n=i.length,r="<",a="script",o=">",u="java"+a+":";e.style.display="none",s.appendChild(e),e.src=String(u),t=e.contentWindow.document,t.open(),t.write(r+a+o+"document.F=Object"+r+"/"+a+o),t.close(),h=t.F;while(n--)delete h[f][i[n]];return h()};t.exports=Object.create||function(t,e){var n;return null!==t?(d[f]=r(t),n=new d,d[f]=null,n[l]=t):n=h(),void 0===e?n:a(n,e)},o[l]=!0},"7db0":function(t,e,n){"use strict";var r=n("23e7"),a=n("b727").find,i=n("44d2"),o="find",s=!0;o in[]&&Array(1)[o]((function(){s=!1})),r({target:"Array",proto:!0,forced:s},{find:function(t){return a(this,t,arguments.length>1?arguments[1]:void 0)}}),i(o)},"7dd0":function(t,e,n){"use strict";var r=n("23e7"),a=n("9ed3"),i=n("e163"),o=n("d2bb"),s=n("d44e"),c=n("9112"),u=n("6eeb"),l=n("b622"),f=n("c430"),d=n("3f8c"),h=n("ae93"),p=h.IteratorPrototype,m=h.BUGGY_SAFARI_ITERATORS,g=l("iterator"),v="keys",y="values",b="entries",D=function(){return this};t.exports=function(t,e,n,l,h,w,x){a(n,e,l);var S,M,k,_=function(t){if(t===h&&j)return j;if(!m&&t in C)return C[t];switch(t){case v:return function(){return new n(this,t)};case y:return function(){return new n(this,t)};case b:return function(){return new n(this,t)}}return function(){return new n(this)}},O=e+" Iterator",T=!1,C=t.prototype,P=C[g]||C["@@iterator"]||h&&C[h],j=!m&&P||_(h),A="Array"==e&&C.entries||P;if(A&&(S=i(A.call(new t)),p!==Object.prototype&&S.next&&(f||i(S)===p||(o?o(S,p):"function"!=typeof S[g]&&c(S,g,D)),s(S,O,!0,!0),f&&(d[O]=D))),h==y&&P&&P.name!==y&&(T=!0,j=function(){return P.call(this)}),f&&!x||C[g]===j||c(C,g,j),d[e]=j,h)if(M={values:_(y),keys:w?j:_(v),entries:_(b)},x)for(k in M)!m&&!T&&k in C||u(C,k,M[k]);else r({target:e,proto:!0,forced:m||T},M);return M}},"7f9a":function(t,e,n){var r=n("da84"),a=n("8925"),i=r.WeakMap;t.exports="function"===typeof i&&/native code/.test(a(i))},"825a":function(t,e,n){var r=n("861d");t.exports=function(t){if(!r(t))throw TypeError(String(t)+" is not an object");return t}},"83ab":function(t,e,n){var r=n("d039");t.exports=!r((function(){return 7!=Object.defineProperty({},"a",{get:function(){return 7}}).a}))},8418:function(t,e,n){"use strict";var r=n("c04e"),a=n("9bf2"),i=n("5c6c");t.exports=function(t,e,n){var o=r(e);o in t?a.f(t,o,i(0,n)):t[o]=n}},"861d":function(t,e){t.exports=function(t){return"object"===typeof t?null!==t:"function"===typeof t}},8925:function(t,e,n){var r=n("c6cd"),a=Function.toString;"function"!=typeof r.inspectSource&&(r.inspectSource=function(t){return a.call(t)}),t.exports=r.inspectSource},"8aa5":function(t,e,n){"use strict";var r=n("6547").charAt;t.exports=function(t,e,n){return e+(n?r(t,e).length:1)}},"8b2e":function(t,e,n){},"90e3":function(t,e){var n=0,r=Math.random();t.exports=function(t){return"Symbol("+String(void 0===t?"":t)+")_"+(++n+r).toString(36)}},9112:function(t,e,n){var r=n("83ab"),a=n("9bf2"),i=n("5c6c");t.exports=r?function(t,e,n){return a.f(t,e,i(1,n))}:function(t,e,n){return t[e]=n,t}},9263:function(t,e,n){"use strict";var r=n("ad6d"),a=RegExp.prototype.exec,i=String.prototype.replace,o=a,s=function(){var t=/a/,e=/b*/g;return a.call(t,"a"),a.call(e,"a"),0!==t.lastIndex||0!==e.lastIndex}(),c=void 0!==/()??/.exec("")[1],u=s||c;u&&(o=function(t){var e,n,o,u,l=this;return c&&(n=new RegExp("^"+l.source+"$(?!\\s)",r.call(l))),s&&(e=l.lastIndex),o=a.call(l,t),s&&o&&(l.lastIndex=l.global?o.index+o[0].length:e),c&&o&&o.length>1&&i.call(o[0],n,(function(){for(u=1;u<arguments.length-2;u++)void 0===arguments[u]&&(o[u]=void 0)})),o}),t.exports=o},"94ca":function(t,e,n){var r=n("d039"),a=/#|\.prototype\./,i=function(t,e){var n=s[o(t)];return n==u||n!=c&&("function"==typeof e?r(e):!!e)},o=i.normalize=function(t){return String(t).replace(a,".").toLowerCase()},s=i.data={},c=i.NATIVE="N",u=i.POLYFILL="P";t.exports=i},"9bdd":function(t,e,n){var r=n("825a");t.exports=function(t,e,n,a){try{return a?e(r(n)[0],n[1]):e(n)}catch(o){var i=t["return"];throw void 0!==i&&r(i.call(t)),o}}},"9bf2":function(t,e,n){var r=n("83ab"),a=n("0cfb"),i=n("825a"),o=n("c04e"),s=Object.defineProperty;e.f=r?s:function(t,e,n){if(i(t),e=o(e,!0),i(n),a)try{return s(t,e,n)}catch(r){}if("get"in n||"set"in n)throw TypeError("Accessors not supported");return"value"in n&&(t[e]=n.value),t}},"9d0d":function(t,e,n){"use strict";var r=n("8b2e"),a=n.n(r);a.a},"9ed3":function(t,e,n){"use strict";var r=n("ae93").IteratorPrototype,a=n("7c73"),i=n("5c6c"),o=n("d44e"),s=n("3f8c"),c=function(){return this};t.exports=function(t,e,n){var u=e+" Iterator";return t.prototype=a(r,{next:i(1,n)}),o(t,u,!1,!0),s[u]=c,t}},a4d3:function(t,e,n){"use strict";var r=n("23e7"),a=n("da84"),i=n("d066"),o=n("c430"),s=n("83ab"),c=n("4930"),u=n("fdbf"),l=n("d039"),f=n("5135"),d=n("e8b5"),h=n("861d"),p=n("825a"),m=n("7b0b"),g=n("fc6a"),v=n("c04e"),y=n("5c6c"),b=n("7c73"),D=n("df75"),w=n("241c"),x=n("057f"),S=n("7418"),M=n("06cf"),k=n("9bf2"),_=n("d1e7"),O=n("9112"),T=n("6eeb"),C=n("5692"),P=n("f772"),j=n("d012"),A=n("90e3"),N=n("b622"),R=n("c032"),$=n("746f"),E=n("d44e"),U=n("69f3"),F=n("b727").forEach,I=P("hidden"),L="Symbol",H="prototype",B=N("toPrimitive"),Y=U.set,W=U.getterFor(L),V=Object[H],G=a.Symbol,z=i("JSON","stringify"),J=M.f,Z=k.f,X=x.f,q=_.f,K=C("symbols"),Q=C("op-symbols"),tt=C("string-to-symbol-registry"),et=C("symbol-to-string-registry"),nt=C("wks"),rt=a.QObject,at=!rt||!rt[H]||!rt[H].findChild,it=s&&l((function(){return 7!=b(Z({},"a",{get:function(){return Z(this,"a",{value:7}).a}})).a}))?function(t,e,n){var r=J(V,e);r&&delete V[e],Z(t,e,n),r&&t!==V&&Z(V,e,r)}:Z,ot=function(t,e){var n=K[t]=b(G[H]);return Y(n,{type:L,tag:t,description:e}),s||(n.description=e),n},st=c&&"symbol"==typeof G.iterator?function(t){return"symbol"==typeof t}:function(t){return Object(t)instanceof G},ct=function(t,e,n){t===V&&ct(Q,e,n),p(t);var r=v(e,!0);return p(n),f(K,r)?(n.enumerable?(f(t,I)&&t[I][r]&&(t[I][r]=!1),n=b(n,{enumerable:y(0,!1)})):(f(t,I)||Z(t,I,y(1,{})),t[I][r]=!0),it(t,r,n)):Z(t,r,n)},ut=function(t,e){p(t);var n=g(e),r=D(n).concat(pt(n));return F(r,(function(e){s&&!ft.call(n,e)||ct(t,e,n[e])})),t},lt=function(t,e){return void 0===e?b(t):ut(b(t),e)},ft=function(t){var e=v(t,!0),n=q.call(this,e);return!(this===V&&f(K,e)&&!f(Q,e))&&(!(n||!f(this,e)||!f(K,e)||f(this,I)&&this[I][e])||n)},dt=function(t,e){var n=g(t),r=v(e,!0);if(n!==V||!f(K,r)||f(Q,r)){var a=J(n,r);return!a||!f(K,r)||f(n,I)&&n[I][r]||(a.enumerable=!0),a}},ht=function(t){var e=X(g(t)),n=[];return F(e,(function(t){f(K,t)||f(j,t)||n.push(t)})),n},pt=function(t){var e=t===V,n=X(e?Q:g(t)),r=[];return F(n,(function(t){!f(K,t)||e&&!f(V,t)||r.push(K[t])})),r};if(c||(G=function(){if(this instanceof G)throw TypeError("Symbol is not a constructor");var t=arguments.length&&void 0!==arguments[0]?String(arguments[0]):void 0,e=A(t),n=function(t){this===V&&n.call(Q,t),f(this,I)&&f(this[I],e)&&(this[I][e]=!1),it(this,e,y(1,t))};return s&&at&&it(V,e,{configurable:!0,set:n}),ot(e,t)},T(G[H],"toString",(function(){return W(this).tag})),_.f=ft,k.f=ct,M.f=dt,w.f=x.f=ht,S.f=pt,s&&(Z(G[H],"description",{configurable:!0,get:function(){return W(this).description}}),o||T(V,"propertyIsEnumerable",ft,{unsafe:!0}))),u||(R.f=function(t){return ot(N(t),t)}),r({global:!0,wrap:!0,forced:!c,sham:!c},{Symbol:G}),F(D(nt),(function(t){$(t)})),r({target:L,stat:!0,forced:!c},{for:function(t){var e=String(t);if(f(tt,e))return tt[e];var n=G(e);return tt[e]=n,et[n]=e,n},keyFor:function(t){if(!st(t))throw TypeError(t+" is not a symbol");if(f(et,t))return et[t]},useSetter:function(){at=!0},useSimple:function(){at=!1}}),r({target:"Object",stat:!0,forced:!c,sham:!s},{create:lt,defineProperty:ct,defineProperties:ut,getOwnPropertyDescriptor:dt}),r({target:"Object",stat:!0,forced:!c},{getOwnPropertyNames:ht,getOwnPropertySymbols:pt}),r({target:"Object",stat:!0,forced:l((function(){S.f(1)}))},{getOwnPropertySymbols:function(t){return S.f(m(t))}}),z){var mt=!c||l((function(){var t=G();return"[null]"!=z([t])||"{}"!=z({a:t})||"{}"!=z(Object(t))}));r({target:"JSON",stat:!0,forced:mt},{stringify:function(t,e,n){var r,a=[t],i=1;while(arguments.length>i)a.push(arguments[i++]);if(r=e,(h(e)||void 0!==t)&&!st(t))return d(e)||(e=function(t,e){if("function"==typeof r&&(e=r.call(this,t,e)),!st(e))return e}),a[1]=e,z.apply(null,a)}})}G[H][B]||O(G[H],B,G[H].valueOf),E(G,L),j[I]=!0},a630:function(t,e,n){var r=n("23e7"),a=n("4df4"),i=n("1c7e"),o=!i((function(t){Array.from(t)}));r({target:"Array",stat:!0,forced:o},{from:a})},a691:function(t,e){var n=Math.ceil,r=Math.floor;t.exports=function(t){return isNaN(t=+t)?0:(t>0?r:n)(t)}},a6da:function(t,e,n){var r={"./native":"7a50","./native.js":"7a50"};function a(t){var e=i(t);return n(e)}function i(t){if(!n.o(r,t)){var e=new Error("Cannot find module '"+t+"'");throw e.code="MODULE_NOT_FOUND",e}return r[t]}a.keys=function(){return Object.keys(r)},a.resolve=i,t.exports=a,a.id="a6da"},a9e3:function(t,e,n){"use strict";var r=n("83ab"),a=n("da84"),i=n("94ca"),o=n("6eeb"),s=n("5135"),c=n("c6b6"),u=n("7156"),l=n("c04e"),f=n("d039"),d=n("7c73"),h=n("241c").f,p=n("06cf").f,m=n("9bf2").f,g=n("58a8").trim,v="Number",y=a[v],b=y.prototype,D=c(d(b))==v,w=function(t){var e,n,r,a,i,o,s,c,u=l(t,!1);if("string"==typeof u&&u.length>2)if(u=g(u),e=u.charCodeAt(0),43===e||45===e){if(n=u.charCodeAt(2),88===n||120===n)return NaN}else if(48===e){switch(u.charCodeAt(1)){case 66:case 98:r=2,a=49;break;case 79:case 111:r=8,a=55;break;default:return+u}for(i=u.slice(2),o=i.length,s=0;s<o;s++)if(c=i.charCodeAt(s),c<48||c>a)return NaN;return parseInt(i,r)}return+u};if(i(v,!y(" 0o1")||!y("0b1")||y("+0x1"))){for(var x,S=function(t){var e=arguments.length<1?0:t,n=this;return n instanceof S&&(D?f((function(){b.valueOf.call(n)})):c(n)!=v)?u(new y(w(e)),n,S):w(e)},M=r?h(y):"MAX_VALUE,MIN_VALUE,NaN,NEGATIVE_INFINITY,POSITIVE_INFINITY,EPSILON,isFinite,isInteger,isNaN,isSafeInteger,MAX_SAFE_INTEGER,MIN_SAFE_INTEGER,parseFloat,parseInt,isInteger".split(","),k=0;M.length>k;k++)s(y,x=M[k])&&!s(S,x)&&m(S,x,p(y,x));S.prototype=b,b.constructor=S,o(a,v,S)}},ad6d:function(t,e,n){"use strict";var r=n("825a");t.exports=function(){var t=r(this),e="";return t.global&&(e+="g"),t.ignoreCase&&(e+="i"),t.multiline&&(e+="m"),t.dotAll&&(e+="s"),t.unicode&&(e+="u"),t.sticky&&(e+="y"),e}},ade3:function(t,e,n){"use strict";function r(t,e,n){return e in t?Object.defineProperty(t,e,{value:n,enumerable:!0,configurable:!0,writable:!0}):t[e]=n,t}n.d(e,"a",(function(){return r}))},ae93:function(t,e,n){"use strict";var r,a,i,o=n("e163"),s=n("9112"),c=n("5135"),u=n("b622"),l=n("c430"),f=u("iterator"),d=!1,h=function(){return this};[].keys&&(i=[].keys(),"next"in i?(a=o(o(i)),a!==Object.prototype&&(r=a)):d=!0),void 0==r&&(r={}),l||c(r,f)||s(r,f,h),t.exports={IteratorPrototype:r,BUGGY_SAFARI_ITERATORS:d}},b041:function(t,e,n){"use strict";var r=n("00ee"),a=n("f5df");t.exports=r?{}.toString:function(){return"[object "+a(this)+"]"}},b301:function(t,e,n){"use strict";var r=n("d039");t.exports=function(t,e){var n=[][t];return!n||!r((function(){n.call(null,e||function(){throw 1},1)}))}},b39a:function(t,e,n){var r=n("d066");t.exports=r("navigator","userAgent")||""},b622:function(t,e,n){var r=n("da84"),a=n("5692"),i=n("5135"),o=n("90e3"),s=n("4930"),c=n("fdbf"),u=a("wks"),l=r.Symbol,f=c?l:o;t.exports=function(t){return i(u,t)||(s&&i(l,t)?u[t]=l[t]:u[t]=f("Symbol."+t)),u[t]}},b64b:function(t,e,n){var r=n("23e7"),a=n("7b0b"),i=n("df75"),o=n("d039"),s=o((function(){i(1)}));r({target:"Object",stat:!0,forced:s},{keys:function(t){return i(a(t))}})},b727:function(t,e,n){var r=n("f8c2"),a=n("44ad"),i=n("7b0b"),o=n("50c4"),s=n("65f0"),c=[].push,u=function(t){var e=1==t,n=2==t,u=3==t,l=4==t,f=6==t,d=5==t||f;return function(h,p,m,g){for(var v,y,b=i(h),D=a(b),w=r(p,m,3),x=o(D.length),S=0,M=g||s,k=e?M(h,x):n?M(h,0):void 0;x>S;S++)if((d||S in D)&&(v=D[S],y=w(v,S,b),t))if(e)k[S]=y;else if(y)switch(t){case 3:return!0;case 5:return v;case 6:return S;case 2:c.call(k,v)}else if(l)return!1;return f?-1:u||l?l:k}};t.exports={forEach:u(0),map:u(1),filter:u(2),some:u(3),every:u(4),find:u(5),findIndex:u(6)}},beb7:function(t,e,n){},c032:function(t,e,n){var r=n("b622");e.f=r},c04e:function(t,e,n){var r=n("861d");t.exports=function(t,e){if(!r(t))return t;var n,a;if(e&&"function"==typeof(n=t.toString)&&!r(a=n.call(t)))return a;if("function"==typeof(n=t.valueOf)&&!r(a=n.call(t)))return a;if(!e&&"function"==typeof(n=t.toString)&&!r(a=n.call(t)))return a;throw TypeError("Can't convert object to primitive value")}},c430:function(t,e){t.exports=!1},c6b6:function(t,e){var n={}.toString;t.exports=function(t){return n.call(t).slice(8,-1)}},c6cd:function(t,e,n){var r=n("da84"),a=n("ce4e"),i="__core-js_shared__",o=r[i]||a(i,{});t.exports=o},c8ba:function(t,e){var n;n=function(){return this}();try{n=n||new Function("return this")()}catch(r){"object"===typeof window&&(n=window)}t.exports=n},ca84:function(t,e,n){var r=n("5135"),a=n("fc6a"),i=n("4d64").indexOf,o=n("d012");t.exports=function(t,e){var n,s=a(t),c=0,u=[];for(n in s)!r(o,n)&&r(s,n)&&u.push(n);while(e.length>c)r(s,n=e[c++])&&(~i(u,n)||u.push(n));return u}},cc12:function(t,e,n){var r=n("da84"),a=n("861d"),i=r.document,o=a(i)&&a(i.createElement);t.exports=function(t){return o?i.createElement(t):{}}},ce4e:function(t,e,n){var r=n("da84"),a=n("9112");t.exports=function(t,e){try{a(r,t,e)}catch(n){r[t]=e}return e}},ce5f:function(t,e,n){"use strict";var r=n("18e6"),a=n.n(r);a.a},d012:function(t,e){t.exports={}},d039:function(t,e){t.exports=function(t){try{return!!t()}catch(e){return!0}}},d066:function(t,e,n){var r=n("428f"),a=n("da84"),i=function(t){return"function"==typeof t?t:void 0};t.exports=function(t,e){return arguments.length<2?i(r[t])||i(a[t]):r[t]&&r[t][e]||a[t]&&a[t][e]}},d1e7:function(t,e,n){"use strict";var r={}.propertyIsEnumerable,a=Object.getOwnPropertyDescriptor,i=a&&!r.call({1:2},1);e.f=i?function(t){var e=a(this,t);return!!e&&e.enumerable}:r},d28b:function(t,e,n){var r=n("746f");r("iterator")},d2bb:function(t,e,n){var r=n("825a"),a=n("3bbe");t.exports=Object.setPrototypeOf||("__proto__"in{}?function(){var t,e=!1,n={};try{t=Object.getOwnPropertyDescriptor(Object.prototype,"__proto__").set,t.call(n,[]),e=n instanceof Array}catch(i){}return function(n,i){return r(n),a(i),e?t.call(n,i):n.__proto__=i,n}}():void 0)},d3b7:function(t,e,n){var r=n("00ee"),a=n("6eeb"),i=n("b041");r||a(Object.prototype,"toString",i,{unsafe:!0})},d44e:function(t,e,n){var r=n("9bf2").f,a=n("5135"),i=n("b622"),o=i("toStringTag");t.exports=function(t,e,n){t&&!a(t=n?t:t.prototype,o)&&r(t,o,{configurable:!0,value:e})}},d784:function(t,e,n){"use strict";var r=n("9112"),a=n("6eeb"),i=n("d039"),o=n("b622"),s=n("9263"),c=o("species"),u=!i((function(){var t=/./;return t.exec=function(){var t=[];return t.groups={a:"7"},t},"7"!=="".replace(t,"$<a>")})),l=!i((function(){var t=/(?:)/,e=t.exec;t.exec=function(){return e.apply(this,arguments)};var n="ab".split(t);return 2!==n.length||"a"!==n[0]||"b"!==n[1]}));t.exports=function(t,e,n,f){var d=o(t),h=!i((function(){var e={};return e[d]=function(){return 7},7!=""[t](e)})),p=h&&!i((function(){var e=!1,n=/a/;return"split"===t&&(n={},n.constructor={},n.constructor[c]=function(){return n},n.flags="",n[d]=/./[d]),n.exec=function(){return e=!0,null},n[d](""),!e}));if(!h||!p||"replace"===t&&!u||"split"===t&&!l){var m=/./[d],g=n(d,""[t],(function(t,e,n,r,a){return e.exec===s?h&&!a?{done:!0,value:m.call(e,n,r)}:{done:!0,value:t.call(n,e,r)}:{done:!1}})),v=g[0],y=g[1];a(String.prototype,t,v),a(RegExp.prototype,d,2==e?function(t,e){return y.call(t,this,e)}:function(t){return y.call(t,this)}),f&&r(RegExp.prototype[d],"sham",!0)}}},d81d:function(t,e,n){"use strict";var r=n("23e7"),a=n("b727").map,i=n("d039"),o=n("1dde"),s=o("map"),c=s&&!i((function(){[].map.call({length:-1,0:1},(function(t){throw t}))}));r({target:"Array",proto:!0,forced:!s||!c},{map:function(t){return a(this,t,arguments.length>1?arguments[1]:void 0)}})},da84:function(t,e,n){(function(e){var n=function(t){return t&&t.Math==Math&&t};t.exports=n("object"==typeof globalThis&&globalThis)||n("object"==typeof window&&window)||n("object"==typeof self&&self)||n("object"==typeof e&&e)||Function("return this")()}).call(this,n("c8ba"))},dbb4:function(t,e,n){var r=n("23e7"),a=n("83ab"),i=n("56ef"),o=n("fc6a"),s=n("06cf"),c=n("8418");r({target:"Object",stat:!0,sham:!a},{getOwnPropertyDescriptors:function(t){var e,n,r=o(t),a=s.f,u=i(r),l={},f=0;while(u.length>f)n=a(r,e=u[f++]),void 0!==n&&c(l,e,n);return l}})},ddb0:function(t,e,n){var r=n("da84"),a=n("fdbc"),i=n("e260"),o=n("9112"),s=n("b622"),c=s("iterator"),u=s("toStringTag"),l=i.values;for(var f in a){var d=r[f],h=d&&d.prototype;if(h){if(h[c]!==l)try{o(h,c,l)}catch(m){h[c]=l}if(h[u]||o(h,u,f),a[f])for(var p in i)if(h[p]!==i[p])try{o(h,p,i[p])}catch(m){h[p]=i[p]}}}},df75:function(t,e,n){var r=n("ca84"),a=n("7839");t.exports=Object.keys||function(t){return r(t,a)}},e01a:function(t,e,n){"use strict";var r=n("23e7"),a=n("83ab"),i=n("da84"),o=n("5135"),s=n("861d"),c=n("9bf2").f,u=n("e893"),l=i.Symbol;if(a&&"function"==typeof l&&(!("description"in l.prototype)||void 0!==l().description)){var f={},d=function(){var t=arguments.length<1||void 0===arguments[0]?void 0:String(arguments[0]),e=this instanceof d?new l(t):void 0===t?l():l(t);return""===t&&(f[e]=!0),e};u(d,l);var h=d.prototype=l.prototype;h.constructor=d;var p=h.toString,m="Symbol(test)"==String(l("test")),g=/^Symbol\((.*)\)[^)]+$/;c(h,"description",{configurable:!0,get:function(){var t=s(this)?this.valueOf():this,e=p.call(t);if(o(f,t))return"";var n=m?e.slice(7,-1):e.replace(g,"$1");return""===n?void 0:n}}),r({global:!0,forced:!0},{Symbol:d})}},e163:function(t,e,n){var r=n("5135"),a=n("7b0b"),i=n("f772"),o=n("e177"),s=i("IE_PROTO"),c=Object.prototype;t.exports=o?Object.getPrototypeOf:function(t){return t=a(t),r(t,s)?t[s]:"function"==typeof t.constructor&&t instanceof t.constructor?t.constructor.prototype:t instanceof Object?c:null}},e177:function(t,e,n){var r=n("d039");t.exports=!r((function(){function t(){}return t.prototype.constructor=null,Object.getPrototypeOf(new t)!==t.prototype}))},e260:function(t,e,n){"use strict";var r=n("fc6a"),a=n("44d2"),i=n("3f8c"),o=n("69f3"),s=n("7dd0"),c="Array Iterator",u=o.set,l=o.getterFor(c);t.exports=s(Array,"Array",(function(t,e){u(this,{type:c,target:r(t),index:0,kind:e})}),(function(){var t=l(this),e=t.target,n=t.kind,r=t.index++;return!e||r>=e.length?(t.target=void 0,{value:void 0,done:!0}):"keys"==n?{value:r,done:!1}:"values"==n?{value:e[r],done:!1}:{value:[r,e[r]],done:!1}}),"values"),i.Arguments=i.Array,a("keys"),a("values"),a("entries")},e439:function(t,e,n){var r=n("23e7"),a=n("d039"),i=n("fc6a"),o=n("06cf").f,s=n("83ab"),c=a((function(){o(1)})),u=!s||c;r({target:"Object",stat:!0,forced:u,sham:!s},{getOwnPropertyDescriptor:function(t,e){return o(i(t),e)}})},e893:function(t,e,n){var r=n("5135"),a=n("56ef"),i=n("06cf"),o=n("9bf2");t.exports=function(t,e){for(var n=a(e),s=o.f,c=i.f,u=0;u<n.length;u++){var l=n[u];r(t,l)||s(t,l,c(e,l))}}},e8b5:function(t,e,n){var r=n("c6b6");t.exports=Array.isArray||function(t){return"Array"==r(t)}},e95a:function(t,e,n){var r=n("b622"),a=n("3f8c"),i=r("iterator"),o=Array.prototype;t.exports=function(t){return void 0!==t&&(a.Array===t||o[i]===t)}},f5df:function(t,e,n){var r=n("00ee"),a=n("c6b6"),i=n("b622"),o=i("toStringTag"),s="Arguments"==a(function(){return arguments}()),c=function(t,e){try{return t[e]}catch(n){}};t.exports=r?a:function(t){var e,n,r;return void 0===t?"Undefined":null===t?"Null":"string"==typeof(n=c(e=Object(t),o))?n:s?a(e):"Object"==(r=a(e))&&"function"==typeof e.callee?"Arguments":r}},f6fd:function(t,e){(function(t){var e="currentScript",n=t.getElementsByTagName("script");e in t||Object.defineProperty(t,e,{get:function(){try{throw new Error}catch(r){var t,e=(/.*at [^\(]*\((.*):.+:.+\)$/gi.exec(r.stack)||[!1])[1];for(t in n)if(n[t].src==e||"interactive"==n[t].readyState)return n[t];return null}}})})(document)},f772:function(t,e,n){var r=n("5692"),a=n("90e3"),i=r("keys");t.exports=function(t){return i[t]||(i[t]=a(t))}},f8c2:function(t,e,n){var r=n("1c0b");t.exports=function(t,e,n){if(r(t),void 0===e)return t;switch(n){case 0:return function(){return t.call(e)};case 1:return function(n){return t.call(e,n)};case 2:return function(n,r){return t.call(e,n,r)};case 3:return function(n,r,a){return t.call(e,n,r,a)}}return function(){return t.apply(e,arguments)}}},fb15:function(t,e,n){"use strict";var r;(n.r(e),"undefined"!==typeof window)&&(n("f6fd"),(r=window.document.currentScript)&&(r=r.src.match(/(.+\/)[^/]+\.js(\?.*)?$/))&&(n.p=r[1]));var a=function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"vue-daterange-picker",class:{inline:"inline"===t.opens}},[n("div",{ref:"toggle",class:t.controlContainerClass,on:{click:t.onClickPicker}},[t._t("input",[n("i",{staticClass:"glyphicon glyphicon-calendar fa fa-calendar"}),t._v(" "),n("span",[t._v(t._s(t.rangeText))]),n("b",{staticClass:"caret"})],{startDate:t.start,endDate:t.end,ranges:t.ranges,rangeText:t.rangeText})],2),n("transition",{attrs:{name:"slide-fade",mode:"out-in"}},[t.open||"inline"===t.opens?n("div",{directives:[{name:"append-to-body",rawName:"v-append-to-body"}],ref:"dropdown",staticClass:"daterangepicker ltr",class:t.pickerStyles},[t._t("header",null,{rangeText:t.rangeText,locale:t.locale,clickCancel:t.clickCancel,clickApply:t.clickedApply,in_selection:t.in_selection,autoApply:t.autoApply}),n("div",{staticClass:"calendars"},[t.showRanges?t._t("ranges",[n("calendar-ranges",{attrs:{"always-show-calendars":t.alwaysShowCalendars,"locale-data":t.locale,ranges:t.ranges,selected:{startDate:t.start,endDate:t.end}},on:{"click-range":t.clickRange,"show-custom-range":function(e){t.showCustomRangeCalendars=!0}}})],{startDate:t.start,endDate:t.end,ranges:t.ranges,clickRange:t.clickRange}):t._e(),t.showCalendars?n("div",{staticClass:"calendars-container"},[n("div",{staticClass:"drp-calendar col left",class:{single:t.singleDatePicker}},[t._e(),n("div",{staticClass:"calendar-table"},[n("calendar",{attrs:{monthDate:t.monthDate,"locale-data":t.locale,start:t.start,end:t.end,minDate:t.min,maxDate:t.max,"show-dropdowns":t.showDropdowns,"date-format":t.dateFormatFn,showWeekNumbers:t.showWeekNumbers},on:{"change-month":t.changeLeftMonth,"date-click":t.dateClick,"hover-date":t.hoverDate},scopedSlots:t._u([{key:"date-slot",fn:function(e){return t._t("date",null,null,e)}}],null,!0)})],1),t.timePicker&&t.start?n("calendar-time",{attrs:{"miniute-increment":t.timePickerIncrement,hour24:t.timePicker24Hour,"second-picker":t.timePickerSeconds,"current-time":t.start,readonly:t.readonly},on:{update:t.onUpdateStartTime}}):t._e()],1),t.singleDatePicker?t._e():n("div",{staticClass:"drp-calendar col right"},[t._e(),n("div",{staticClass:"calendar-table"},[n("calendar",{attrs:{monthDate:t.nextMonthDate,"locale-data":t.locale,start:t.start,end:t.end,minDate:t.min,maxDate:t.max,"show-dropdowns":t.showDropdowns,"date-format":t.dateFormatFn,showWeekNumbers:t.showWeekNumbers},on:{"change-month":t.changeRightMonth,"date-click":t.dateClick,"hover-date":t.hoverDate},scopedSlots:t._u([{key:"date-slot",fn:function(e){return t._t("date",null,null,e)}}],null,!0)})],1),t.timePicker&&t.end?n("calendar-time",{attrs:{"miniute-increment":t.timePickerIncrement,hour24:t.timePicker24Hour,"second-picker":t.timePickerSeconds,"current-time":t.end,readonly:t.readonly},on:{update:t.onUpdateEndTime}}):t._e()],1)]):t._e()],2),t._t("footer",[t.autoApply?t._e():n("div",{staticClass:"drp-buttons"},[t.showCalendars?n("span",{staticClass:"drp-selected"},[t._v(t._s(t.rangeText))]):t._e(),t.readonly?t._e():n("button",{staticClass:"cancelBtn btn btn-sm btn-secondary",attrs:{type:"button"},on:{click:t.clickCancel}},[t._v(t._s(t.locale.cancelLabel)+" ")]),t.readonly?t._e():n("button",{staticClass:"applyBtn btn btn-sm btn-success",attrs:{disabled:t.in_selection,type:"button"},on:{click:t.clickedApply}},[t._v(t._s(t.locale.applyLabel)+" ")])])],{rangeText:t.rangeText,locale:t.locale,clickCancel:t.clickCancel,clickApply:t.clickedApply,in_selection:t.in_selection,autoApply:t.autoApply})],2):t._e()])],1)},i=[],o=(n("a4d3"),n("4de4"),n("7db0"),n("a9e3"),n("e439"),n("dbb4"),n("b64b"),n("159b"),n("53ca"));function s(t){if(Array.isArray(t)){for(var e=0,n=new Array(t.length);e<t.length;e++)n[e]=t[e];return n}}n("e01a"),n("d28b"),n("a630"),n("e260"),n("d3b7"),n("25f0"),n("3ca3"),n("ddb0");function c(t){if(Symbol.iterator in Object(t)||"[object Arguments]"===Object.prototype.toString.call(t))return Array.from(t)}function u(){throw new TypeError("Invalid attempt to spread non-iterable instance")}function l(t){return s(t)||c(t)||u()}var f=n("ade3"),d=function(){var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"native";return t instanceof Object?t:"string"===typeof t||t instanceof String?n("a6da")("./"+t).default:void 0},h={props:{dateUtil:{type:[Object,String],default:"native"}},beforeCreate:function(){this.$dateUtil=d("native")}},p=function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("table",{staticClass:"table-condensed"},[n("thead",[n("tr",[n("th",{staticClass:"prev available",attrs:{tabindex:"0"},on:{click:t.prevMonthClick}},[n("span")]),t.showDropdowns?n("th",{staticClass:"month",attrs:{colspan:t.showWeekNumbers?6:5}},[n("div",{staticClass:"row mx-1"},[n("select",{directives:[{name:"model",rawName:"v-model",value:t.month,expression:"month"}],staticClass:"monthselect col",on:{change:function(e){var n=Array.prototype.filter.call(e.target.options,(function(t){return t.selected})).map((function(t){var e="_value"in t?t._value:t.value;return e}));t.month=e.target.multiple?n:n[0]}}},t._l(t.months,(function(e,r){return n("option",{key:r,attrs:{disabled:!e.enabled},domProps:{value:e.value+1}},[t._v(t._s(e.label))])})),0),n("input",{directives:[{name:"model",rawName:"v-model",value:t.year,expression:"year"}],ref:"yearSelect",staticClass:"yearselect col",attrs:{type:"number"},domProps:{value:t.year},on:{blur:t.checkYear,input:function(e){e.target.composing||(t.year=e.target.value)}}})])]):n("th",{staticClass:"month",attrs:{colspan:t.showWeekNumbers?6:5}},[t._v(t._s(t.monthName)+" "+t._s(t.year))]),n("th",{staticClass:"next available",attrs:{tabindex:"0"},on:{click:t.nextMonthClick}},[n("span")])])]),n("tbody",[n("tr",[t.showWeekNumbers?n("th",{staticClass:"week"},[t._v(t._s(t.locale.weekLabel))]):t._e(),t._l(t.locale.daysOfWeek,(function(e,r){return n("th",{key:r},[t._v(t._s(e))])}))],2),t._l(t.calendar,(function(e,r){return n("tr",{key:r},[t.showWeekNumbers&&(r%7||0===r)?n("td",{staticClass:"week"},[t._v(" "+t._s(t.$dateUtil.weekNumber(e[0]))+" ")]):t._e(),t._l(e,(function(e,r){return n("td",{key:r,class:t.dayClass(e),attrs:{"data-date":e.toISOString().substring(0,10)},on:{click:function(n){return t.$emit("date-click",e)},mouseover:function(n){return t.$emit("hover-date",e)}}},[t._t("date-slot",[t._v(" "+t._s(e.getDate())+" ")],{date:e})],2)}))],2)}))],2)])},m=[],g=(n("d81d"),{mixins:[h],name:"calendar",props:{monthDate:Date,localeData:Object,start:Date,end:Date,minDate:Date,maxDate:Date,showDropdowns:{type:Boolean,default:!1},showWeekNumbers:{type:Boolean,default:!1},dateFormat:{type:Function,default:null}},data:function(){var t=this.monthDate||this.start||new Date;return{currentMonthDate:t,year_text:t.getFullYear()}},methods:{prevMonthClick:function(){this.changeMonthDate(this.$dateUtil.prevMonth(this.currentMonthDate))},nextMonthClick:function(){this.changeMonthDate(this.$dateUtil.nextMonth(this.currentMonthDate))},changeMonthDate:function(t){var e=!(arguments.length>1&&void 0!==arguments[1])||arguments[1],n=this.$dateUtil.yearMonth(this.currentMonthDate);this.currentMonthDate=this.$dateUtil.validateDateRange(t,this.minDate,this.maxDate),e&&n!==this.$dateUtil.yearMonth(this.currentMonthDate)&&this.$emit("change-month",{month:this.currentMonthDate.getMonth()+1,year:this.currentMonthDate.getFullYear()}),this.checkYear()},dayClass:function(t){var e=new Date(t);e.setHours(0,0,0,0);var n=new Date(this.start);n.setHours(0,0,0,0);var r=new Date(this.end);r.setHours(0,0,0,0);var a=new Date(e);a.setHours(23,59,59,999);var i={off:t.getMonth()+1!==this.month,weekend:6===t.getDay()||0===t.getDay(),today:e.setHours(0,0,0,0)==(new Date).setHours(0,0,0,0),active:e.setHours(0,0,0,0)==new Date(this.start).setHours(0,0,0,0)||e.setHours(0,0,0,0)==new Date(this.end).setHours(0,0,0,0),"in-range":e>=n&&e<=r,"start-date":e.getTime()===n.getTime(),"end-date":e.getTime()===r.getTime(),disabled:this.minDate&&a.getTime()<this.minDate.getTime()||this.maxDate&&e.getTime()>this.maxDate.getTime()};return this.dateFormat?this.dateFormat(i,t):i},checkYear:function(){var t=this;this.$refs.yearSelect!==document.activeElement&&this.$nextTick((function(){t.year_text=t.monthDate.getFullYear()}))}},computed:{monthName:function(){return this.locale.monthNames[this.currentMonthDate.getMonth()]},year:{get:function(){return this.year_text},set:function(t){this.year_text=t;var e=this.$dateUtil.validateDateRange(new Date(t,this.month,1),this.minDate,this.maxDate);this.$dateUtil.isValidDate(e)&&this.$emit("change-month",{month:e.getMonth(),year:e.getFullYear()})}},month:{get:function(){return this.currentMonthDate.getMonth()+1},set:function(t){var e=this.$dateUtil.validateDateRange(new Date(this.year,t-1,1),this.minDate,this.maxDate);this.$emit("change-month",{month:e.getMonth()+1,year:e.getFullYear()})}},calendar:function(){for(var t=this.month,e=this.currentMonthDate.getFullYear(),n=new Date(e,t-1,1),r=this.$dateUtil.prevMonth(n).getMonth()+1,a=this.$dateUtil.prevMonth(n).getFullYear(),i=new Date(a,t-1,0).getDate(),o=n.getDay(),s=[],c=0;c<6;c++)s[c]=[];var u=i-o+this.locale.firstDay+1;u>i&&(u-=7),o===this.locale.firstDay&&(u=i-6);for(var l=new Date(a,r-1,u,12,0,0),f=0,d=0,h=0;f<42;f++,d++,l.setDate(l.getDate()+1))f>0&&d%7===0&&(d=0,h++),s[h][d]=new Date(l.getTime());return s},months:function(){var t=this;return this.locale.monthNames.map((function(e,n){return{label:e,value:n,enabled:(!t.maxDate||t.maxDate>=new Date(t.year,n,1))&&(!t.minDate||t.minDate<=new Date(t.year,n+1,0))}}))},locale:function(){return this.$dateUtil.localeData(this.localeData)}},watch:{monthDate:function(t){this.currentMonthDate.getTime()!==t.getTime()&&this.changeMonthDate(t,!1)}}}),v=g;n("9d0d");function y(t,e,n,r,a,i,o,s){var c,u="function"===typeof t?t.options:t;if(e&&(u.render=e,u.staticRenderFns=n,u._compiled=!0),r&&(u.functional=!0),i&&(u._scopeId="data-v-"+i),o?(c=function(t){t=t||this.$vnode&&this.$vnode.ssrContext||this.parent&&this.parent.$vnode&&this.parent.$vnode.ssrContext,t||"undefined"===typeof __VUE_SSR_CONTEXT__||(t=__VUE_SSR_CONTEXT__),a&&a.call(this,t),t&&t._registeredComponents&&t._registeredComponents.add(o)},u._ssrRegister=c):a&&(c=s?function(){a.call(this,this.$root.$options.shadowRoot)}:a),c)if(u.functional){u._injectStyles=c;var l=u.render;u.render=function(t,e){return c.call(e),l(t,e)}}else{var f=u.beforeCreate;u.beforeCreate=f?[].concat(f,c):[c]}return{exports:t,options:u}}var b=y(v,p,m,!1,null,"98ac2448",null),D=b.exports,w=function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"calendar-time"},[n("select",{directives:[{name:"model",rawName:"v-model",value:t.hour,expression:"hour"}],staticClass:"hourselect form-control mr-1",attrs:{disabled:t.readonly},on:{change:function(e){var n=Array.prototype.filter.call(e.target.options,(function(t){return t.selected})).map((function(t){var e="_value"in t?t._value:t.value;return e}));t.hour=e.target.multiple?n:n[0]}}},t._l(t.hours,(function(e){return n("option",{key:e,domProps:{value:e}},[t._v(t._s(t._f("formatNumber")(e)))])})),0),t._v(" :"),n("select",{directives:[{name:"model",rawName:"v-model",value:t.minute,expression:"minute"}],staticClass:"minuteselect form-control ml-1",attrs:{disabled:t.readonly},on:{change:function(e){var n=Array.prototype.filter.call(e.target.options,(function(t){return t.selected})).map((function(t){var e="_value"in t?t._value:t.value;return e}));t.minute=e.target.multiple?n:n[0]}}},t._l(t.minutes,(function(e){return n("option",{key:e,domProps:{value:e}},[t._v(t._s(t._f("formatNumber")(e)))])})),0),t.secondPicker?[t._v(" :"),n("select",{directives:[{name:"model",rawName:"v-model",value:t.second,expression:"second"}],staticClass:"secondselect form-control ml-1",attrs:{disabled:t.readonly},on:{change:function(e){var n=Array.prototype.filter.call(e.target.options,(function(t){return t.selected})).map((function(t){var e="_value"in t?t._value:t.value;return e}));t.second=e.target.multiple?n:n[0]}}},t._l(60,(function(e){return n("option",{key:e-1,domProps:{value:e-1}},[t._v(t._s(t._f("formatNumber")(e-1)))])})),0)]:t._e(),t.hour24?t._e():n("select",{directives:[{name:"model",rawName:"v-model",value:t.ampm,expression:"ampm"}],staticClass:"ampmselect",attrs:{disabled:t.readonly},on:{change:function(e){var n=Array.prototype.filter.call(e.target.options,(function(t){return t.selected})).map((function(t){var e="_value"in t?t._value:t.value;return e}));t.ampm=e.target.multiple?n:n[0]}}},[n("option",{attrs:{value:"AM"}},[t._v("AM")]),n("option",{attrs:{value:"PM"}},[t._v("PM")])])],2)},x=[],S={filters:{formatNumber:function(t){return t<10?"0"+t.toString():t.toString()}},props:{miniuteIncrement:{type:Number,default:5},hour24:{type:Boolean,default:!0},secondPicker:{type:Boolean,default:!1},currentTime:{default:function(){return new Date}},readonly:{type:Boolean,default:!1}},data:function(){var t=this.currentTime?this.currentTime:new Date,e=t.getHours();return{hour:this.hour24?e:e%12||12,minute:t.getMinutes()-t.getMinutes()%this.miniuteIncrement,second:t.getSeconds(),ampm:e<12?"AM":"PM"}},computed:{hours:function(){for(var t=[],e=this.hour24?24:12,n=0;n<e;n++)t.push(this.hour24?n:n+1);return t},minutes:function(){for(var t=[],e=60,n=0;n<e;n+=this.miniuteIncrement)t.push(n);return t}},watch:{hour:function(){this.onChange()},minute:function(){this.onChange()},second:function(){this.onChange()},ampm:function(){this.onChange()}},methods:{getHour:function(){return this.hour24?this.hour:12===this.hour?"AM"===this.ampm?0:12:this.hour+("PM"===this.ampm?12:0)},onChange:function(){this.$emit("update",{hours:this.getHour(),minutes:this.minute,seconds:this.second})}}},M=S,k=y(M,w,x,!1,null,null,null),_=k.exports,O=function(){var t=this,e=t.$createElement,n=t._self._c||e;return n("div",{staticClass:"ranges"},[t.ranges?n("ul",[t._l(t.listedRanges,(function(e){return n("li",{key:e.label,class:t.range_class(e),attrs:{"data-range-key":e.label,tabindex:"0"},on:{click:function(n){return t.clickRange(e.value)}}},[t._v(t._s(e.label)+" ")])})),t.showCustomRangeLabel?n("li",{class:{active:t.customRangeActive||!t.selectedRange},attrs:{tabindex:"0"},on:{click:t.clickCustomRange}},[t._v(" "+t._s(t.localeData.customRangeLabel)+" ")]):t._e()],2):t._e()])},T=[],C={mixins:[h],props:{ranges:Object,selected:Object,localeData:Object,alwaysShowCalendars:Boolean},data:function(){return{customRangeActive:!1}},methods:{clickRange:function(t){this.customRangeActive=!1,this.$emit("click-range",t)},clickCustomRange:function(){this.customRangeActive=!0,this.$emit("show-custom-range")},range_class:function(t){return{active:!0===t.selected}}},computed:{listedRanges:function(){var t=this;return!!this.ranges&&Object.keys(this.ranges).map((function(e){return{label:e,value:t.ranges[e],selected:t.$dateUtil.isSame(t.selected.startDate,t.ranges[e][0])&&t.$dateUtil.isSame(t.selected.endDate,t.ranges[e][1])}}))},selectedRange:function(){return this.listedRanges.find((function(t){return!0===t.selected}))},showCustomRangeLabel:function(){return!this.alwaysShowCalendars}}},P=C,j=y(P,O,T,!1,null,null,null),A=j.exports,N={inserted:function(t,e,n){var r=n.context;if(r.appendToBody){var a=r.$refs.toggle.getBoundingClientRect(),i=a.height,o=a.top,s=a.left,c=a.width,u=a.right;t.unbindPosition=r.calculatePosition(t,r,{width:c,top:window.scrollY+o+i,left:window.scrollX+s,right:u}),document.body.appendChild(t)}else r.$el.appendChild(t)},unbind:function(t,e,n){var r=n.context;r.appendToBody&&(t.unbindPosition&&"function"===typeof t.unbindPosition&&t.unbindPosition(),t.parentNode&&t.parentNode.removeChild(t))}};function R(t,e){var n=Object.keys(t);if(Object.getOwnPropertySymbols){var r=Object.getOwnPropertySymbols(t);e&&(r=r.filter((function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable}))),n.push.apply(n,r)}return n}function $(t){for(var e=1;e<arguments.length;e++){var n=null!=arguments[e]?arguments[e]:{};e%2?R(Object(n),!0).forEach((function(e){Object(f["a"])(t,e,n[e])})):Object.getOwnPropertyDescriptors?Object.defineProperties(t,Object.getOwnPropertyDescriptors(n)):R(Object(n)).forEach((function(e){Object.defineProperty(t,e,Object.getOwnPropertyDescriptor(n,e))}))}return t}var E={inheritAttrs:!1,components:{Calendar:D,CalendarTime:_,CalendarRanges:A},mixins:[h],directives:{appendToBody:N},model:{prop:"dateRange",event:"update"},props:{minDate:{type:[String,Date],default:function(){return null}},maxDate:{type:[String,Date],default:function(){return null}},showWeekNumbers:{type:Boolean,default:!1},linkedCalendars:{type:Boolean,default:!0},singleDatePicker:{type:[Boolean,String],default:!1},showDropdowns:{type:Boolean,default:!1},timePicker:{type:Boolean,default:!1},timePickerIncrement:{type:Number,default:5},timePicker24Hour:{type:Boolean,default:!0},timePickerSeconds:{type:Boolean,default:!1},autoApply:{type:Boolean,default:!1},localeData:{type:Object,default:function(){return{}}},dateRange:{type:[Object],default:null,required:!0},ranges:{type:[Object,Boolean],default:function(){var t=new Date;t.setHours(0,0,0,0);var e=new Date;e.setHours(11,59,59,999);var n=new Date;n.setDate(t.getDate()-1),n.setHours(0,0,0,0);var r=new Date;r.setDate(t.getDate()-1),r.setHours(11,59,59,999);var a=new Date(t.getFullYear(),t.getMonth(),1),i=new Date(t.getFullYear(),t.getMonth()+1,0,11,59,59,999);return{Today:[t,e],Yesterday:[n,r],"This month":[a,i],"This year":[new Date(t.getFullYear(),0,1),new Date(t.getFullYear(),11,31,11,59,59,999)],"Last month":[new Date(t.getFullYear(),t.getMonth()-1,1),new Date(t.getFullYear(),t.getMonth(),0,11,59,59,999)]}}},opens:{type:String,default:"center"},dateFormat:Function,alwaysShowCalendars:{type:Boolean,default:!0},disabled:{type:Boolean,default:!1},controlContainerClass:{type:[Object,String],default:"form-control reportrange-text"},appendToBody:{type:Boolean,default:!1},calculatePosition:{type:Function,default:function(t,e,n){var r=n.width,a=n.top,i=n.left,o=n.right;"center"===e.opens?t.style.left=i+r/2+"px":"left"===e.opens?t.style.right=window.innerWidth-o+"px":"right"===e.opens&&(t.style.left=i+"px"),t.style.top=a+"px"}},closeOnEsc:{type:Boolean,default:!0},readonly:{type:Boolean}},data:function(){var t=d(),e={locale:t.localeData($({},this.localeData))},n=this.dateRange.startDate||null,r=this.dateRange.endDate||null;if(e.monthDate=n?new Date(n):new Date,e.nextMonthDate=t.nextMonth(e.monthDate),e.start=n?new Date(n):null,this.singleDatePicker&&"range"!==this.singleDatePicker?e.end=e.start:e.end=r?new Date(r):null,e.in_selection=!1,e.open=!1,e.showCustomRangeCalendars=!1,0!==e.locale.firstDay){var a=e.locale.firstDay,i=l(e.locale.daysOfWeek);while(a>0)i.push(i.shift()),a--;e.locale.daysOfWeek=i}return e},methods:{selectMonthDate:function(){var t=this.end||new Date;!1!==this.singleDatePicker?this.changeLeftMonth({year:t.getFullYear(),month:t.getMonth()+1}):this.changeRightMonth({year:t.getFullYear(),month:t.getMonth()+1})},dateFormatFn:function(t,e){var n=new Date(e);n.setHours(0,0,0,0);var r=new Date(this.start);r.setHours(0,0,0,0);var a=new Date(this.end);return a.setHours(0,0,0,0),t["in-range"]=n>=r&&n<=a,this.dateFormat?this.dateFormat(t,e):t},changeLeftMonth:function(t){var e=new Date(t.year,t.month-1,1);this.monthDate=e,(this.linkedCalendars||this.$dateUtil.yearMonth(this.monthDate)>=this.$dateUtil.yearMonth(this.nextMonthDate))&&(this.nextMonthDate=this.$dateUtil.validateDateRange(this.$dateUtil.nextMonth(e),this.minDate,this.maxDate),this.singleDatePicker||this.$dateUtil.yearMonth(this.monthDate)!==this.$dateUtil.yearMonth(this.nextMonthDate)||(this.monthDate=this.$dateUtil.validateDateRange(this.$dateUtil.prevMonth(this.monthDate),this.minDate,this.maxDate))),this.$emit("change-month",this.monthDate,0)},changeRightMonth:function(t){var e=new Date(t.year,t.month-1,1);this.nextMonthDate=e,(this.linkedCalendars||this.$dateUtil.yearMonth(this.nextMonthDate)<=this.$dateUtil.yearMonth(this.monthDate))&&(this.monthDate=this.$dateUtil.validateDateRange(this.$dateUtil.prevMonth(e),this.minDate,this.maxDate),this.$dateUtil.yearMonth(this.monthDate)===this.$dateUtil.yearMonth(this.nextMonthDate)&&(this.nextMonthDate=this.$dateUtil.validateDateRange(this.$dateUtil.nextMonth(this.nextMonthDate),this.minDate,this.maxDate))),this.$dateUtil.yearMonth(this.monthDate)===this.$dateUtil.yearMonth(this.nextMonthDate)&&(this.nextMonthDate=this.$dateUtil.nextMonth(this.nextMonthDate)),this.$emit("change-month",this.nextMonthDate,1)},normalizeDatetime:function(t,e){var n=new Date(t);return this.timePicker&&e&&(n.setHours(e.getHours()),n.setMinutes(e.getMinutes()),n.setSeconds(e.getSeconds()),n.setMilliseconds(e.getMilliseconds())),n},dateClick:function(t){if(this.readonly)return!1;this.in_selection?(this.in_selection=!1,this.$emit("finish-selection",t),this.onSelect(),this.autoApply&&this.clickedApply()):(this.start=this.normalizeDatetime(t,this.start),this.end=this.normalizeDatetime(t,this.end),this.singleDatePicker&&"range"!==this.singleDatePicker?(this.onSelect(),this.autoApply&&this.clickedApply()):(this.in_selection=this.end,this.$emit("start-selection",this.start)))},hoverDate:function(t){if(this.readonly)return!1;var e=this.normalizeDatetime(t,this.end),n=this.normalizeDatetime(t,this.start);this.in_selection&&(this.in_selection<=e&&(this.end=e),this.in_selection>=n&&(this.start=n)),this.$emit("hover-date",t)},onClickPicker:function(){this.disabled||this.togglePicker(null,!0)},togglePicker:function(t,e){this.open="boolean"===typeof t?t:!this.open,!0===e&&this.$emit("toggle",this.open,this.togglePicker)},clickedApply:function(){this.togglePicker(!1,!0),this.$emit("update",{startDate:this.start,endDate:this.singleDatePicker&&"range"!==this.singleDatePicker?this.start:this.end})},clickCancel:function(){if(this.open){var t=this.dateRange.startDate,e=this.dateRange.endDate;this.start=t?new Date(t):null,this.end=e?new Date(e):null,this.in_selection=!1,this.togglePicker(!1,!0)}},onSelect:function(){this.$emit("select",{startDate:this.start,endDate:this.end})},clickAway:function(t){t&&t.target&&!this.$el.contains(t.target)&&this.$refs.dropdown&&!this.$refs.dropdown.contains(t.target)&&this.clickCancel()},clickRange:function(t){this.in_selection=!1,this.$dateUtil.isValidDate(t[0])&&this.$dateUtil.isValidDate(t[1])?(this.start=this.$dateUtil.validateDateRange(new Date(t[0]),this.minDate,this.maxDate),this.end=this.$dateUtil.validateDateRange(new Date(t[1]),this.minDate,this.maxDate),this.changeLeftMonth({month:this.start.getMonth()+1,year:this.start.getFullYear()}),!1===this.linkedCalendars&&this.changeRightMonth({month:this.end.getMonth()+1,year:this.end.getFullYear()})):(this.start=null,this.end=null),this.onSelect(),this.autoApply&&this.clickedApply()},onUpdateStartTime:function(t){var e=new Date(this.start);e.setHours(t.hours),e.setMinutes(t.minutes),e.setSeconds(t.seconds),this.start=this.$dateUtil.validateDateRange(e,this.minDate,this.maxDate),this.autoApply&&this.$emit("update",{startDate:this.start,endDate:this.singleDatePicker&&"range"!==this.singleDatePicker?this.start:this.end})},onUpdateEndTime:function(t){var e=new Date(this.end);e.setHours(t.hours),e.setMinutes(t.minutes),e.setSeconds(t.seconds),this.end=this.$dateUtil.validateDateRange(e,this.minDate,this.maxDate),this.autoApply&&this.$emit("update",{startDate:this.start,endDate:this.end})},handleEscape:function(t){this.open&&27===t.keyCode&&this.closeOnEsc&&this.clickCancel()}},computed:{showRanges:function(){return!1!==this.ranges&&!this.readonly},showCalendars:function(){return this.alwaysShowCalendars||this.showCustomRangeCalendars},startText:function(){return null===this.start?"":this.$dateUtil.format(this.start,this.locale.format)},endText:function(){return null===this.end?"":this.$dateUtil.format(this.end,this.locale.format)},rangeText:function(){var t=this.startText;return this.singleDatePicker&&"range"!==this.singleDatePicker||(t+=this.locale.separator+this.endText),t},min:function(){return this.minDate?new Date(this.minDate):null},max:function(){return this.maxDate?new Date(this.maxDate):null},pickerStyles:function(){var t;return t={"show-calendar":this.open||"inline"===this.opens,"show-ranges":this.showRanges,"show-weeknumbers":this.showWeekNumbers,single:this.singleDatePicker},Object(f["a"])(t,"opens"+this.opens,!0),Object(f["a"])(t,"linked",this.linkedCalendars),Object(f["a"])(t,"hide-calendars",!this.showCalendars),t},isClear:function(){return!this.dateRange.startDate||!this.dateRange.endDate},isDirty:function(){var t=new Date(this.dateRange.startDate),e=new Date(this.dateRange.endDate);return!this.isClear&&(this.start.getTime()!==t.getTime()||this.end.getTime()!==e.getTime())}},watch:{minDate:function(){this.selectMonthDate()},maxDate:function(){this.selectMonthDate()},"dateRange.startDate":function(t){this.$dateUtil.isValidDate(new Date(t))&&(this.start=t&&!this.isClear&&this.$dateUtil.isValidDate(new Date(t))?new Date(t):null,this.isClear?(this.start=null,this.end=null):(this.start=new Date(this.dateRange.startDate),this.end=new Date(this.dateRange.endDate)))},"dateRange.endDate":function(t){this.$dateUtil.isValidDate(new Date(t))&&(this.end=t&&!this.isClear?new Date(t):null,this.isClear?(this.start=null,this.end=null):(this.start=new Date(this.dateRange.startDate),this.end=new Date(this.dateRange.endDate)))},open:{handler:function(t){var e=this;"object"===("undefined"===typeof document?"undefined":Object(o["a"])(document))&&(this.selectMonthDate(),this.$nextTick((function(){t?document.body.addEventListener("click",e.clickAway):document.body.removeEventListener("click",e.clickAway),t?document.addEventListener("keydown",e.handleEscape):document.removeEventListener("keydown",e.handleEscape),!e.alwaysShowCalendars&&e.ranges&&(e.showCustomRangeCalendars=!Object.keys(e.ranges).find((function(t){return e.$dateUtil.isSame(e.start,e.ranges[t][0],"date")&&e.$dateUtil.isSame(e.end,e.ranges[t][1],"date")})))})))},immediate:!0}}},U=E,F=(n("0e58"),n("ce5f"),y(U,a,i,!1,null,"1ebd09d2",null)),I=F.exports,L=I;e["default"]=L},fb6a:function(t,e,n){"use strict";var r=n("23e7"),a=n("861d"),i=n("e8b5"),o=n("23cb"),s=n("50c4"),c=n("fc6a"),u=n("8418"),l=n("1dde"),f=n("b622"),d=f("species"),h=[].slice,p=Math.max;r({target:"Array",proto:!0,forced:!l("slice")},{slice:function(t,e){var n,r,l,f=c(this),m=s(f.length),g=o(t,m),v=o(void 0===e?m:e,m);if(i(f)&&(n=f.constructor,"function"!=typeof n||n!==Array&&!i(n.prototype)?a(n)&&(n=n[d],null===n&&(n=void 0)):n=void 0,n===Array||void 0===n))return h.call(f,g,v);for(r=new(void 0===n?Array:n)(p(v-g,0)),l=0;g<v;g++,l++)g in f&&u(r,l,f[g]);return r.length=l,r}})},fc6a:function(t,e,n){var r=n("44ad"),a=n("1d80");t.exports=function(t){return r(a(t))}},fdbc:function(t,e){t.exports={CSSRuleList:0,CSSStyleDeclaration:0,CSSValueList:0,ClientRectList:0,DOMRectList:0,DOMStringList:0,DOMTokenList:1,DataTransferItemList:0,FileList:0,HTMLAllCollection:0,HTMLCollection:0,HTMLFormElement:0,HTMLSelectElement:0,MediaList:0,MimeTypeArray:0,NamedNodeMap:0,NodeList:1,PaintRequestList:0,Plugin:0,PluginArray:0,SVGLengthList:0,SVGNumberList:0,SVGPathSegList:0,SVGPointList:0,SVGStringList:0,SVGTransformList:0,SourceBufferList:0,StyleSheetList:0,TextTrackCueList:0,TextTrackList:0,TouchList:0}},fdbf:function(t,e,n){var r=n("4930");t.exports=r&&!Symbol.sham&&"symbol"==typeof Symbol()}})}));
+//# sourceMappingURL=vue2-daterange-picker.umd.min.js.map
+
+/***/ }),
+
 /***/ "./node_modules/axios/lib/adapters/adapters.js":
 /*!*****************************************************!*\
   !*** ./node_modules/axios/lib/adapters/adapters.js ***!
@@ -22836,7 +19103,7 @@ const isThenable = (thing) =>
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -22905,41 +19172,21 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
-/*!************************************!*\
-  !*** ./resources/js/bookcreate.js ***!
-  \************************************/
+/*!***************************************!*\
+  !*** ./resources/js/dashboardsvue.js ***!
+  \***************************************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
-/* harmony import */ var _components_CreateBooking_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/CreateBooking.vue */ "./resources/js/components/CreateBooking.vue");
-/* harmony import */ var _components_EditBooking_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/EditBooking.vue */ "./resources/js/components/EditBooking.vue");
-/* harmony import */ var _components_PriceBooking_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/PriceBooking.vue */ "./resources/js/components/PriceBooking.vue");
-/* harmony import */ var _components_TotalPriceBookingEmployee_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/TotalPriceBookingEmployee.vue */ "./resources/js/components/TotalPriceBookingEmployee.vue");
-/* harmony import */ var _components_TotalPriceBookingArtist_vue__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/TotalPriceBookingArtist.vue */ "./resources/js/components/TotalPriceBookingArtist.vue");
-/* harmony import */ var _components_TotalPriceBookingAll_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/TotalPriceBookingAll.vue */ "./resources/js/components/TotalPriceBookingAll.vue");
+/* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js");
+/* harmony import */ var _components_AdminDashboard_vue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./components/AdminDashboard.vue */ "./resources/js/components/AdminDashboard.vue");
 
 
-
-
-
-
-
-new vue__WEBPACK_IMPORTED_MODULE_6__["default"]({
-  el: '#app',
+new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
+  el: '#doashboard',
   components: {
-    CreateBooking: _components_CreateBooking_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
-    EditBooking: _components_EditBooking_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
-    PriceBooking: _components_PriceBooking_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
-  }
-});
-new vue__WEBPACK_IMPORTED_MODULE_6__["default"]({
-  el: '#price',
-  components: {
-    TotalPriceBookingEmployee: _components_TotalPriceBookingEmployee_vue__WEBPACK_IMPORTED_MODULE_3__["default"],
-    TotalPriceBookingArtists: _components_TotalPriceBookingArtist_vue__WEBPACK_IMPORTED_MODULE_4__["default"],
-    TotalPriceBookingAll: _components_TotalPriceBookingAll_vue__WEBPACK_IMPORTED_MODULE_5__["default"]
+    AdminDashboard: _components_AdminDashboard_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   data: {
-    userId: document.getElementById('price').getAttribute('data-user-id')
+    userId: document.getElementById('doashboard').getAttribute('data-user-id')
   }
 });
 })();

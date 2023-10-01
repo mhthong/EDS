@@ -6,20 +6,23 @@
     <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
       <div>
         <h4 class="col-12">
-          <p class="radio-header radio-text"> Service :  {{ selectedServicesName }}</p>
-
+          <p class="radio-header radio-text">
+            Service : {{ selectedServicesName }}
+          </p>
         </h4>
         <div class="col-12">
           <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
             <div class="controls">
               <input
                 id="depart"
-                class="floatLabel pointer-events-a "
+                class="floatLabel pointer-events-a"
                 type="date"
                 name="date"
                 v-model="selectedDate"
                 @change="filterActiveDays"
                 @input="checkSelectedDate"
+                @click="filterActiveDays"
+                @blur="filterActiveDays"
               />
               <label
                 for="selectedDate"
@@ -42,11 +45,12 @@
               <select
                 v-model="selectedArtist"
                 @input="checkselectedArtist"
+                @change="filterActiveDays"
                 id="artistSelect"
                 class="floatLabel pointer-events-a"
                 name="artist"
               >
-                <option :value="0">N/A</option>
+                <option :value="7" selected>N/A</option>
                 <option
                   v-for="artist in artists"
                   :key="artist.id"
@@ -62,94 +66,82 @@
             </div>
           </div>
 
-          <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
-            <div class="controls">
-              <input
-                class="floatLabe "
-                type="time"
-                id="start-time"
-                style=" pointer-events: none;"
-                v-model="startTime"
-                @input="validateTime"
-              />
-              <label for="artistSelect" class="label-date active"
-                ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;Start Time</label
-              >
-            </div>
-          </div>
+          <div class="col-12 col-sm-8 col-lg-8" v-if="showfilteredDays">
+            <div>
+              <div class="col-12">
+                <!-- Trường đầu vào cho thời gian bắt đầu -->
 
-          <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
-            <div class="controls">
-              <input
-                class="floatLabel"
-                type="time"
-                style=" pointer-events: none;"
-                id="end_time"
-                v-model="endTime"
-                @input="validateTime"
-              />
-              <label for="artistSelect" class="label-date active"
-                ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;End Time</label
+                <div class="radio-section col-12 col-sm-6 col-lg-6 p-2">
+                  <div class="controls">
+                    <input
+                      class="floatLabe"
+                      type="time"
+                      :id="startTime"
+                      name="start_time"
+                      v-model="startTime"
+                      @change="checkTimeConflict"
+                      step="1800"
+                    />
+                    <label for="artistSelect" class="label-date active"
+                      ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;Start
+                      Time</label
+                    >
+                  </div>
+                </div>
+
+                <div class="radio-section col-12 col-sm-6 col-lg-6 p-2">
+                  <!-- Trường đầu vào cho thời gian kết thúc -->
+                  <div class="controls">
+                    <input
+                      class="floatLabel"
+                      type="time"
+                      v-model="endTime"
+                      name="end_time"
+                      @change="checkTimeConflict"
+                      step="1800"
+                    />
+                    <label for="artistSelect" class="label-date active"
+                      ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;End
+                      Time</label
+                    >
+                  </div>
+                </div>
+
+                <div class="alert col-12 draft" v-if="showAlert">
+                  <i>The selected time conflicts or is invalid.</i>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="filteredDays.length > 0">
+              <span class="radio-text">Spot exists</span>
+
+              <div v-for="(schedule, index) in filteredDays" :key="index">
+                <!--          <h3>{{ day.day }}</h3> -->
+
+                <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
+                  <label class="label label-schedule m-0">
+                    <span class="radio-header radio-text"
+                      >Spot {{ index + 1 }} ( {{ formatTime(schedule.time) }} -
+                      {{ formatTime(schedule.time_end) }} )</span
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <span class="radio-text col-12 mb-3 mt-1"
+                >Please choose a time that does not coincide with the Spot's
+                existence .</span
               >
             </div>
+            <div v-else="filteredDays.length > 0">
+              <span class="radio-text ps-2">None spot exists .</span>
+            </div>
+
           </div>
         </div>
 
         <!-- Hiển thị danh sách các ngày active và working_hours -->
-
-        <div class="col-12" v-if="!showWarning && filteredDays.length > 0">
-          <div class="col-12" v-for="day in filteredDays" :key="day.id">
-            <div
-              class="radio-section col-12 col-sm-6 col-lg-3 p-2"
-              v-for="workingHour in day.working_hours"
-              :key="workingHour.id"
-            >
-              <div class="">
-                <label class="label m-0">
-                  <input
-                  class="pointer-events-a"
-                    type="radio"
-                    :value="workingHour"
-                    v-model="selectedWorkingHour"
-                    :disabled="
-                      isDisabled(
-                        day.day,
-                        workingHour.start_time,
-                        workingHour.end_time,
-                        selectedDate,
-                        selectedArtist
-                      )
-                    "
-                  />
-
-                  <input
-                
-                    style="display: none"
-                    class="floatLabel pointer-events-a "
-                    type="time"
-                    id="start-time"
-                    name="start_time"
-                    :value="selectedStartTime"
-                  />
-
-                  <input
-                    style="display: none"
-                    class="floatLabel pointer-events-a "
-                    type="time"
-                    id="start-time"
-                    name="end_time"
-                    :value="selectedEndTime"
-                  />
-
-                  <span class="radio-header radio-text">
-                    {{ workingHour.start_time }} -
-                    {{ workingHour.end_time }}</span
-                  >
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div
@@ -157,7 +149,7 @@
       >
         <div class="controls mb-4">
           <input
-            class="form-control pointer-events-a "
+            class="form-control pointer-events-a"
             type="text"
             id="name"
             name="name"
@@ -168,7 +160,7 @@
         </div>
         <div class="controls mb-4">
           <input
-            class="form-control pointer-events-a "
+            class="form-control pointer-events-a"
             type="email"
             id="email"
             name="email"
@@ -181,7 +173,7 @@
         <div class="controls mb-4">
           <label for="address" class="label-date active">Address:</label>
           <input
-            class="form-control pointer-events-a "
+            class="form-control pointer-events-a"
             type="text"
             id="address"
             name="address"
@@ -191,13 +183,38 @@
         <div class="controls mb-4">
           <label for="phone" class="label-date active">Phone:</label>
           <input
-            class="form-control pointer-events-a "
+            class="form-control pointer-events-a"
             type="tel"
             id="phone"
             name="phone"
             v-model="formData.phone"
           />
         </div>
+
+        <div class="controls mb-4">
+          <label :for="formData.source" class="label-date active"
+            >Source:</label
+          >
+          <input
+            class="form-control pointer-events-a"
+            type="text"
+            :id="formData.source"
+            name="source"
+            v-model="formData.source"
+          />
+        </div>
+
+        <div class="controls mb-4">
+          <label :for="formData.note" class="label-date active">Note:</label>
+          <textarea
+            name="note"
+            :id="formData.note"
+            cols="30"
+            rows="10"
+            v-model="formData.note"
+          ></textarea>
+        </div>
+
         <!--    <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p> -->
       </div>
       <div
@@ -205,7 +222,7 @@
       >
         <template v-if="step === 'showroom'">
           <button
-            class="custom-btn btn-16 "
+            class="custom-btn btn-16"
             @click="nextStep"
             type="button"
             :disabled="!selectedShowroom"
@@ -239,7 +256,8 @@
                 :key="service.id"
               >
                 <label class="flex-groupService">
-                  <input class="pointer-events-a"
+                  <input
+                    class="pointer-events-a"
                     name="service_id"
                     type="radio"
                     :value="service.id"
@@ -254,6 +272,40 @@
               </li>
             </ul>
           </div>
+
+          <ul>
+            <li class="mt-3 mb-3">
+              <div class="radio-header radio-text">Deposit Price</div>
+              <input
+                class="deposit"
+                name="deposit"
+                type="number"
+                v-model="selectedDepositPrice"
+                :max="maxDepositPrice"
+                :min="minDepositPrice"
+                @input="checkInputValue"
+              />
+              <p v-if="inputError" class="error-message">
+                Value exceeds limit.
+              </p>
+            </li>
+
+            <li class="mt-3 mb-3">
+              <div class="radio-header radio-text">Discount Price</div>
+              <input
+                class="deposit"
+                name="discount"
+                type="number"
+                v-model="selectedDiscountPrice"
+                :max="maxDiscountPrice"
+                :min="minDiscountPrice"
+                @input="checkInputValueDiscount"
+              />
+              <p v-if="inputError_01" class="error-message">
+                Value exceeds limit.
+              </p>
+            </li>
+          </ul>
 
           <button class="custom-btn btn-16" @click="prevStep" type="button">
             Back
@@ -278,9 +330,9 @@
                 type="submit"
                 name="submit"
                 value="save"
-                class="btn btn-info "
+                class="btn btn-info"
                 @click="SubmitEvent"
-                :disabled="submitted "
+                :disabled="submitted"
               >
                 <i class="fa fa-save"></i> Save
               </button>
@@ -291,9 +343,9 @@
                 value="apply"
                 class="btn btn-success"
                 @click="SubmitEvent"
-                :disabled="submitted "
+                :disabled="submitted"
               >
-                <i class="fa fa-check-circle"></i> Save &amp; Edit
+                <i class="fa fa-check-circle"></i> Save &amp; Exit
               </button>
 
               <div v-if="errorMessagesubmitted" class="error-message">
@@ -310,7 +362,7 @@
             <h4>
               <label
                 for="status"
-                class="m-0 control-label required "
+                class="m-0 control-label required"
                 aria-required="true"
                 >Status</label
               >
@@ -318,7 +370,7 @@
           </div>
           <div class="widget-body p-3">
             <div class="ui-select-wrapper form-group">
-              <div>
+              <div v-if="StatusPresent === 'Waiting'">
                 <select
                   class="form-control pointer-events-p"
                   v-model="selectedStatus"
@@ -330,21 +382,103 @@
                   <option value="Refund">Refund</option>
                 </select>
 
-                <div
-                  class="form-group"
-                  v-if="
-                    selectedStatus === 'Cancel' || selectedStatus === 'Refund'
-                  "
-                >
-                  <label for="">Note</label>
+                <div class="form-group" v-if="selectedStatus === 'Cancel'">
+                  <label for="">Reason cancel</label>
+
+                  <select
+                    class="form-control pointer-events-p"
+                    v-model="Cancel"
+                    name="Cancel"
+                  >
+                    <option value="Clients" selected>Clients</option>
+                    <option value="Operation">Operation</option>
+                  </select>
+                </div>
+
+                <div class="form-group" v-if="selectedStatus === 'Refund'">
+                  <label for="">Refund Price</label>
                   <!-- Input field for "Cancel" or "Refund" status -->
-                  <textarea
-                    type="text"
+                  <input
+                    type="number"
                     class="form-control"
-                    name="content"
-                    v-model="content"
+                    name="Refund"
+                    v-model="Refund"
+                    min="0"
+                    :max="this.maxRefund"
                     required
-                  >{{ this.content }}</textarea>
+                  />
+                </div>
+              </div>
+
+              <div v-if="StatusPresent === 'Done'">
+                <select
+                  class="form-control pointer-events-p"
+                  v-model="selectedStatus"
+                  name="status"
+                >
+                  <option value="Done">Done</option>
+                </select>
+              </div>
+
+              <div v-if="StatusPresent === 'Cancel'">
+                <select
+                  class="form-control pointer-events-p"
+                  v-model="selectedStatus"
+                  name="status"
+                >
+                  <option value="Cancel">Cancel</option>
+                  <option value="Refund">Refund</option>
+                </select>
+
+                <div class="form-group" v-if="selectedStatus === 'Cancel'">
+                  <label for="">Reason cancel</label>
+
+                  <select
+                    class="form-control pointer-events-p"
+                    v-model="Cancel"
+                    name="Cancel"
+                  >
+                    <option value="Clients" selected>Clients</option>
+                    <option value="Operation">Operation</option>
+                  </select>
+                </div>
+
+                <div class="form-group" v-if="selectedStatus === 'Refund'">
+                  <label for="">Refund Price</label>
+                  <!-- Input field for "Cancel" or "Refund" status -->
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="Refund"
+                    v-model="Refund"
+                    min="0"
+                    :max="this.maxRefund"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div v-if="StatusPresent === 'Refund'">
+                <select
+                  class="form-control pointer-events-p"
+                  v-model="selectedStatus"
+                  name="status"
+                >
+                  <option value="Refund">Refund</option>
+                </select>
+
+                <div class="form-group" v-if="selectedStatus === 'Refund'">
+                  <label for="">Refund Price</label>
+                  <!-- Input field for "Cancel" or "Refund" status -->
+                  <input
+                    type="number"
+                    class="form-control"
+                    name="Refund"
+                    v-model="Refund"
+                    min="0"
+                    :max="this.maxRefund"
+                    required
+                  />
                 </div>
               </div>
             </div>
@@ -372,9 +506,10 @@
                   name="payment_type"
                   v-model="selectedPaymentType"
                 >
-                  <option value="N/A">N/A</option>
                   <option value="Bank transfer">Bank transfer</option>
                   <option value="After Pay">After Pay</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Card">Card</option>
                 </select>
               </div>
             </div>
@@ -397,7 +532,11 @@
           <div class="widget-body p-3">
             <div class="ui-select-wrapper form-group">
               <div>
-                <select  class="form-control pointer-events-a pointer-events-p" name="action" v-model="action">
+                <select
+                  class="form-control pointer-events-a pointer-events-p"
+                  name="action"
+                  v-model="action"
+                >
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
                 </select>
@@ -420,7 +559,9 @@
                       class="btn btn-info pointer-events-a pointer-events-p"
                       @click="submitFormSendMail"
                       :disabled="
-                        sendmail.trim() === '' || submitted || !submitFormSendMail()
+                        sendmail.trim() === '' ||
+                        submitted ||
+                        !submitFormSendMail()
                       "
                     >
                       <i class="fa-regular fa-paper-plane"></i>
@@ -464,6 +605,11 @@ export default {
       selectedDate: "",
       showWarning: false, // Ngày tối thiểu cho trường input
       filteredDays: [],
+      startTime: null,
+      endTime: null,
+      isTimeConflict: false,
+      showAlert: false,
+      showfilteredDays: false,
       selectedWorkingHour: "",
       selectedWorkingHour_end_time: "",
       apiData: [],
@@ -473,19 +619,27 @@ export default {
         email: "",
         address: "",
         phone: "",
+        source: "",
+        note: "",
       },
       InputSelectedStatus: "",
       errorMessage: "", // Dữ liệu từ API
       jsonData: "",
       bookingData: "",
+      inputError_01: false,
       selectedDepositPrice: 0,
       maxDepositPrice: 0,
+      maxDiscountPrice: 0,
       minDepositPrice: 0,
+      minDiscountPrice: 0,
+      selectedDiscountPrice: 0,
       inputError: false,
       selectedStatus: "Waiting",
       selectedPaymentType: "N/A",
-      content: "",
-      sendmail:"",
+      Refund: 0,
+      maxRefund: "",
+      Cancel: "Clients",
+      sendmail: "",
       id: "",
       currentURL: "",
       apiData_id: [],
@@ -500,6 +654,7 @@ export default {
       isIconActive: false,
       selectedStartTime: "",
       selectedEndTime: "",
+      StatusPresent: "",
       /*   selectedOption: "option1", */
     };
   },
@@ -519,6 +674,10 @@ export default {
   },
 
   watch: {
+    selectedDateWatcher: function (newVal, oldVal) {
+      this.filterActiveDays();
+    },
+
     selectedArtist: function (newValue, oldValue) {
       // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
       this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
@@ -538,6 +697,10 @@ export default {
   },
 
   computed: {
+    selectedDateWatcher: function () {
+      return this.selectedDate;
+    },
+
     selectedShowroomMap() {
       // Lấy thông tin maps của showroom được chọn
       if (this.selectedShowroom) {
@@ -593,6 +756,7 @@ export default {
           this.selectedArtist = this.apiData_id[0].ArtistID;
           this.GetID = this.apiData_id[0].GetID;
           this.selectedStatus = this.apiData_id[0].status;
+          this.StatusPresent = this.apiData_id[0].status;
           this.selectedDate = this.apiData_id[0].date;
           this.selectedArtist = this.apiData_id[0].ArtistID;
           this.startTime = this.apiData_id[0].time;
@@ -600,7 +764,12 @@ export default {
           this.selectedServices = this.apiData_id[0].services[0].id;
           this.selectedServicesName = this.apiData_id[0].services[0].Name;
           this.content = this.apiData_id[0].content;
- 
+          this.Refund =
+            this.apiData_id[0].price.Deposit_price -
+            this.apiData_id[0].price.Total_price;
+          this.Cancel = this.apiData_id[0].content;
+          this.maxRefund = this.apiData_id[0].price.Deposit_price;
+          this.selectedDepositPrice = this.apiData_id[0].price.Deposit_price;
           if (this.apiData_id[0].ArtistID === 7) {
             this.selectedArtist = 0;
           } else {
@@ -614,17 +783,17 @@ export default {
             // Handle the case where payment data is not available
             this.selectedPaymentType = "N/A";
           }
-
           this.action = this.apiData_id[0].action;
-
           this.formData = {
             name: this.apiData_id[0].get.Name,
             email: this.apiData_id[0].get.Email,
             address: this.apiData_id[0].get.Address,
             phone: this.apiData_id[0].get.Phone,
+            source: this.apiData_id[0].get.Source,
+            note: this.apiData_id[0].get.Note,
           };
-
           this.fetchApiData();
+          this.fetchShowroomSchedule();
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);
@@ -660,12 +829,11 @@ export default {
         );
         this.apiData = response.data;
         console.log(this.selectedShowroom);
-        console.log("API data fetched:", this.apiData);
+        console.log("API data fetched selectedShowroom:", this.apiData);
       } catch (error) {
         console.error("Error fetching API data:", error);
       }
     },
-
     fetchArtists() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios
@@ -678,26 +846,12 @@ export default {
         });
     },
 
-
-    async fetchShowroomSchedule() {
-      try {
-        const response = await axios.get(
-          `/api/showroomschedule/${this.selectedShowroom}`
-        );
-        this.showroomSchedules = response.data;
-        console.log("selectedShowroom",this.selectedShowroom);
-        console.log("showroomSchedules", response.data);
-      } catch (error) {
-        console.error("Error fetching showroomschedule data:", error);
-      }
-    },
-
     fetchShowroomSchedule() {
       axios
-        .get(`/api/showroomschedule/${this.id}`)
+        .get(`/api/showroomschedule/${this.selectedShowroom}`)
         .then((response) => {
           this.showroomSchedules = response.data;
-          console.log("showroomSchedules", response.data);
+          console.log("showroomSchedules", this.showroomSchedules);
         })
         .catch((error) => {
           console.error("Error fetching showroomschedule:", error);
@@ -706,16 +860,73 @@ export default {
 
     filterActiveDays() {
       if (!this.selectedDate) return;
-      const selectedDay = this.selectedDateToDay(this.selectedDate);
-      const selectedShowroomSchedule = this.showroomSchedules.find(
-        (schedule) => schedule.day === selectedDay && schedule.active === "1"
+      this.showfilteredDays = true;
+      this.filteredDays = this.apiData.filter(
+        (schedule) =>
+          schedule.date === this.selectedDate &&
+          schedule.ArtistID === this.selectedArtist &&
+          schedule.id !== this.id
       );
-      this.filteredDays = selectedShowroomSchedule
-        ? [selectedShowroomSchedule]
-        : [];
 
-        console.log( this.filteredDays);
+      console.log(this.filteredDays);
     },
+
+    formatTime(time) {
+      // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
+      const timeParts = time.split(":");
+      const hours = parseInt(timeParts[0]);
+      const minutes = parseInt(timeParts[1]);
+
+      // Định dạng thời gian thành chuỗi với số 0 đứng trước nếu cần
+      const formattedHours = hours < 10 ? `0${hours}` : hours;
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+
+      // Kết hợp giờ và phút thành chuỗi định dạng
+      return `${formattedHours}:${formattedMinutes}`;
+    },
+
+    checkTimeConflict() {
+      if (!this.startTime || !this.endTime) {
+        this.isTimeConflict = false;
+        return;
+      }
+
+      const selectedStartTime = new Date(`1970-01-01T${this.startTime}`);
+      const selectedEndTime = new Date(`1970-01-01T${this.endTime}`);
+      // ...
+      // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
+      const isStartTimeValid =
+        selectedStartTime.getHours() >= 8 && selectedStartTime.getHours() < 20;
+      const isEndTimeValid =
+        selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
+      // Kiểm tra xung đột thời gian cho cả startTime và endTime
+      const conflict = this.filteredDays.some((schedule) => {
+        const startTime = new Date(`1970-01-01T${schedule.time}`);
+        const endTime = new Date(`1970-01-01T${schedule.time_end}`);
+        // ...
+
+        return (
+          (selectedStartTime >= startTime && selectedStartTime < endTime) ||
+          (selectedEndTime > startTime && selectedEndTime <= endTime)
+        );
+      });
+
+      if (
+        conflict ||
+        selectedStartTime >= selectedEndTime ||
+        !isStartTimeValid ||
+        !isEndTimeValid
+      ) {
+        this.isTimeConflict = true;
+        this.showAlert = true;
+        this.startTime = null;
+        this.endTime = null;
+      } else {
+        this.isTimeConflict = false;
+        this.showAlert = false;
+      }
+    },
+
     selectedDateToDay(dateString) {
       const date = new Date(dateString);
       const daysOfWeek = [
@@ -773,7 +984,8 @@ export default {
       // Kiểm tra xem ngày đã chọn có nằm trong khoảng 7 ngày không
       if (timeDiff < 0 /* || timeDiff < 7 * 24 * 60 * 60 * 1000 */) {
         // Ngày không hợp lệ, hiển thị thông báo
-        this.showWarning = true;
+        /*        this.showWarning = true; */
+        this.showWarning = false;
       } else {
         // Ngày hợp lệ, ẩn thông báo
         this.showWarning = false;
@@ -839,7 +1051,6 @@ export default {
       }
       return 0;
     },
-
     checkInputValue() {
       if (
         this.selectedDepositPrice > this.maxDepositPrice ||
@@ -849,6 +1060,19 @@ export default {
         this.inputError = true;
       } else {
         this.inputError = false;
+      }
+    },
+
+    checkInputValueDiscount() {
+      const max = this.maxDiscountPrice - this.selectedDepositPrice;
+      if (
+        this.selectedDiscountPrice > max ||
+        this.selectedDiscountPrice < this.minDiscountPrice ||
+        this.selectedDiscountPrice === ""
+      ) {
+        this.inputError_01 = true;
+      } else {
+        this.inputError_01 = false;
       }
     },
 
@@ -962,8 +1186,6 @@ export default {
         this.endTime = "";
       }
     },
-
-
 
     isNameValid(name) {
       // Kiểm tra dữ liệu tên (có thể có các yêu cầu riêng cho trường này)

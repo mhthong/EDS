@@ -125,6 +125,21 @@
                                                         </select>
 
                                                     </div>
+
+                                                    <div class="form-group">
+                                                        <label for="role" class="" aria-required="true">Role</label>
+                                                        <select class="form-control ui-select ui-select" id="status"
+                                                            name="role">
+                                                            <option value="Administrator" selected="selected">Administrator
+                                                            </option>
+                                                            <option value="Acoutant">Acoutant</option>
+                                                            <option value="Marketing">Marketing</option>
+                                                            <option value="Saleleader">Sale leader</option>
+                                                            <option value="Marketing">marketing</option>
+                                                            <option value="Operation">operation</option>
+                                                        </select>
+
+                                                    </div>
                                                     <!-- Add more fields as needed -->
                                                 </div>
                                                 <div class="modal-footer">

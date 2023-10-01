@@ -66,12 +66,7 @@
             </a>
             <ul class="sidebar__menu">
                 <li>
-                    <a href="#" class=""><i class="ph-house-fill"></i></a>
-                    <ul class="sidebar__submenu">
-                        <li class="title">Dashboard</li>
-                        <li><a href="#">Sales</a></li>
-                        <li><a href="#">Analytics</a></li>
-                    </ul>
+                    <a href="/admin" class=""><i class="ph-house-fill"></i></a>
                 </li>
                 <li>
                     <a href="#"><i class="fa-solid fa-pager"></i> </a>
@@ -113,23 +108,11 @@
                     <ul class="sidebar__submenu">
                     <li class="title">Employee</li>
                 
-   
                             <li><a href="{{ route('employee.index') }}">All Employee</a></li>
                             <li><a href="{{ route('employee.create') }}">Add New Employee </a></li>
-      
-
+    
                     </ul>
         
-                </li>
-                <li>
-                    @auth
-    @if(Auth::user()->super_user === 0 && Auth::user()->manage_supers === 0)
-        <p>User ID: {{ Auth::user()->id }}</p>
-        <p>Name: {{ Auth::user()->name }}</p>
-        <!-- Add more user information fields as needed -->
-    @endif
-@endauth
-
                 </li>
             
                 <li>
