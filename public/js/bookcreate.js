@@ -48,7 +48,8 @@ __webpack_require__.r(__webpack_exports__);
         address: "",
         phone: "",
         source: "",
-        note: ""
+        note: "",
+        source_data: ""
       },
       errorMessage: "",
       // Dữ liệu từ API
@@ -218,7 +219,7 @@ __webpack_require__.r(__webpack_exports__);
       console.log("this.fetchApiData:", this.apiData);
       console.log(this.selectedArtist);
       this.filteredDays = this.apiData.filter(function (schedule) {
-        return schedule.date === _this10.selectedDate && schedule.ArtistID === _this10.selectedArtist;
+        return schedule.date === _this10.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this10.selectedArtist);
       });
       console.log(this.filteredDays);
     },
@@ -702,6 +703,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         };
         _this4.fetchApiData();
         _this4.fetchShowroomSchedule();
+        _this4.calculateTotalSelectedServicesPrice();
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
@@ -773,7 +775,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       if (!this.selectedDate) return;
       this.showfilteredDays = true;
       this.filteredDays = this.apiData.filter(function (schedule) {
-        return schedule.date === _this10.selectedDate && schedule.ArtistID === _this10.selectedArtist && schedule.id !== _this10.id;
+        return schedule.date === _this10.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this10.selectedArtist) && parseInt(schedule.id) !== parseInt(_this10.id);
       });
       console.log(this.filteredDays);
     },
@@ -2171,6 +2173,55 @@ var render = function render() {
     }
   })]), _vm._v(" "), _c("div", {
     staticClass: "controls mb-4"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.source_data,
+      expression: "formData.source_data"
+    }],
+    attrs: {
+      name: "source_data",
+      id: "source_data"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.formData, "source_data", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "Facebook"
+    }
+  }, [_vm._v("Facebook")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Google"
+    }
+  }, [_vm._v("Google")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Website"
+    }
+  }, [_vm._v("Website")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Tiktok"
+    }
+  }, [_vm._v("Tiktok")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Order"
+    }
+  }, [_vm._v("Order")])]), _vm._v(" "), _c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": "name"
+    }
+  }, [_vm._v("Source :")])]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
   }, [_c("input", {
     directives: [{
       name: "model",
@@ -2199,7 +2250,7 @@ var render = function render() {
     attrs: {
       "for": "name"
     }
-  }, [_vm._v("Source :")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Source Note:")])]), _vm._v(" "), _c("div", {
     staticClass: "controls mb-4"
   }, [_c("textarea", {
     directives: [{
@@ -3248,7 +3299,7 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "fa-regular fa-paper-plane"
-  }), _vm._v("\n                    Send Mail\n                  ")])])])])])])])])])]);
+  }), _vm._v("\n                    Send\n                  ")])])])])])])])])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,

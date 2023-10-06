@@ -7,6 +7,8 @@ new Vue({
         AdminDashboard,
     },
     data: {
-        userId: document.getElementById('doashboard').getAttribute('data-user-id')
+        adminId: document.getElementById('doashboard').getAttribute('data-admin-id'),
+        artistId: document.getElementById('doashboard').getAttribute('data-artist-id'),
+        employeeId: document.getElementById('doashboard').getAttribute('data-employee-id')
     },
 });

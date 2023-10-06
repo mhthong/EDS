@@ -51,6 +51,8 @@ use App\Http\Controllers\GetController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeAuthController;
+use Unisharp\Laravelfilemanager\controllers\LfmController;
+use Unisharp\Laravelfilemanager\controllers\UploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,7 +90,7 @@ Route::get('/home', [PublicController::class, 'Home']);
 
 Route::get('/generate', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
-    
+
     echo 'ok';
 });
 
@@ -155,54 +157,56 @@ Route::middleware('auth:user')->prefix('user')->group(
 );
 
 
-Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web']], function () {
-    \UniSharp\LaravelFilemanager\Lfm::routes();
-});
 
-Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
+// Your other routes here...    
 
 
 Route::middleware('auth:artists')->prefix('artists')->group(
     function () {
 
-        Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
+        Route::group(['prefix' => '/laravel-filemanager'], function () {
             \UniSharp\LaravelFilemanager\Lfm::routes();
         });
-        
+
+        // Route to FileManagerController
+        Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
         Route::get('/', [ArtistAuthController::class, 'index'])->name('artists');
         Route::get('/your-setting', [ArtistAuthController::class, 'YourSetting'])->name('artists.your-setting');
         Route::post('/reset-password', [ArtistAuthController::class, 'ResetPassword'])->name('artists.reset-password');
         Route::post('/update-avatar', [ArtistAuthController::class, 'updateAvatar'])->name('artists.updateAvatar');
         Route::post('/update-infomation', [ArtistAuthController::class, 'updateInfomation'])->name('artists.updateInfomation');
 
-        Route::get('/filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+        Route::get('/sales', function () {
+            return view('layouts.sale'); // Tên của view bạn muốn hiển thị
+        })->name('sale-artists');
+        
+
+        Route::prefix('books')->group(
+            function () {
+
+                // Store - Store a newly created service in the database
+                Route::post('/store', [BookingController::class, 'store'])->name('artists.bookings.store');
+
+                Route::get('/index', [BookingController::class, 'index'])->name('artists.book.index');
+
+                // Edit page - Show the form for editing an existing service
+                Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('artists.bookings.edit');
+                // routes/web.php or routes/api.php
+        
+                // Update - Update the specified service in the database
+                Route::post('/{id}', [BookingController::class, 'update'])->name('artists.bookings.update');
+                // Destroy - Remove the specified service from the database
+                /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
+
+                // routes/web.php
+        
 
 
 
-    Route::prefix('books')->group(
-        function () {
-
-            // Store - Store a newly created service in the database
-            Route::post('/store', [BookingController::class, 'store'])->name('artists.bookings.store');
-
-            Route::get('/index', [BookingController::class, 'index'])->name('artists.book.index');
-
-            // Edit page - Show the form for editing an existing service
-            Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('artists.bookings.edit');
-            // routes/web.php or routes/api.php
-    
-            // Update - Update the specified service in the database
-            Route::post('/{id}', [BookingController::class, 'update'])->name('artists.bookings.update');
-            // Destroy - Remove the specified service from the database
-            /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
-
-            // routes/web.php
-
-
-
-
-        }
-    );
+            }
+        );
 
 
     }
@@ -213,6 +217,12 @@ Route::middleware('auth:artists')->prefix('artists')->group(
 
 Route::middleware('auth:employee')->prefix('employee')->group(function () {
 
+    Route::group(['prefix' => '/laravel-filemanager'], function () {
+        \UniSharp\LaravelFilemanager\Lfm::routes();
+    });
+
+    // Route to FileManagerController
+    Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
 
     Route::get('/', [EmployeeAuthController::class, 'index'])->name('employee');
@@ -221,9 +231,10 @@ Route::middleware('auth:employee')->prefix('employee')->group(function () {
     Route::post('/update-avatar', [EmployeeAuthController::class, 'updateAvatar'])->name('employee.updateAvatar');
     Route::post('/update-infomation', [EmployeeAuthController::class, 'updateInfomation'])->name('employee.updateInfomation');
 
-
-    Route::get('/filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
-
+    Route::get('/sales', function () {
+        return view('layouts.sale'); // Tên của view bạn muốn hiển thị
+    })->name('sale-employee');
+    
 
     Route::prefix('books')->group(
         function () {
@@ -259,6 +270,17 @@ Route::post('email', [EmailConfigurationController::class, 'sendEmail'])->name('
 Route::middleware('auth:admin')->prefix('admin')->group(
     function () {
 
+        Route::get('/sales', function () {
+            return view('layouts.sale'); // Tên của view bạn muốn hiển thị
+        })->name('sale-admin');
+        
+
+        Route::group(['prefix' => '/laravel-filemanager'], function () {
+            \UniSharp\LaravelFilemanager\Lfm::routes();
+        });
+
+        // Route to FileManagerController
+        Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
         Route::prefix('auth-admin')->group(
             function () {
@@ -274,7 +296,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
 
         Route::get('/', [AdminController::class, 'test'])->name('auth-admin.index');
-        Route::get('/', [AdminController::class, 'index']);
+        Route::get('/', [AdminController::class, 'index'])->name('admin.index');
         Route::get('/your-setting', [AdminController::class, 'YourSetting'])->name('your-setting');
         Route::post('/reset-password', [AdminController::class, 'ResetPassword'])->name('reset-password');
         Route::post('/update-avatar', [AdminController::class, 'updateAvatar'])->name('admin.updateAvatar');
@@ -289,12 +311,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
 
 
-        Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']], function () {
-            \UniSharp\LaravelFilemanager\Lfm::routes();
-        });
-
-        /*  */
-        Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
         Route::get('simple-slider', [SimpleSliderController::class, 'SimpleSlider'])->name('simple-slider');
         Route::get('simple-slider/edit/{id}', [SimpleSliderController::class, 'edit'])->name('SimpleSlider.edit');
@@ -488,11 +504,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{id}', [BlockController::class, 'destroy'])->name('blocks.delete');
                 Route::get('edit/{id}', [BlockController::class, 'edit'])->name('blocks.edit');
                 Route::post('update-block/{id}', [BlockController::class, 'update'])->name('blocks.update');
-                Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
-                    \UniSharp\LaravelFilemanager\Lfm::routes();
-                });
-                /*  */
-                Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
             }
         );
 
@@ -505,11 +517,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{id}', [StaticPostsController::class, 'destroy'])->name('statics.delete');
                 Route::get('edit/{id}', [StaticPostsController::class, 'edit'])->name('statics.edit');
                 Route::post('update-static/{id}', [StaticPostsController::class, 'update'])->name('statics.update');
-                Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
-                    \UniSharp\LaravelFilemanager\Lfm::routes();
-                });
-                /*  */
-                Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
             }
         );
 
@@ -522,11 +530,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{id}', [PostController::class, 'destroy'])->name('posts.delete');
                 Route::get('edit/{id}', [PostController::class, 'edit'])->name('edit-posts');
                 Route::post('update-posts/{id}', [PostController::class, 'update'])->name('update-posts');
-                Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
-                    \UniSharp\LaravelFilemanager\Lfm::routes();
-                });
-                /*  */
-                Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
+
             }
         );
 
@@ -553,11 +557,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::get('option', [SettingController::class, 'SettingValue'])->name('setting');
                 Route::post('option-post', [SettingController::class, 'Setting'])->name('setting-up');
 
-                Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
-                    \UniSharp\LaravelFilemanager\Lfm::routes();
-                });
-                /*  */
-                Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
             }
         );
 
@@ -570,17 +569,11 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::post('email-post', [SettingController::class, 'Setting'])->name('email.post');
                 /* email */
                 Route::post('compose-email', [EmailConfigurationController::class, 'sendEmail_ad'])->name('compose-email-form');
-
-
-
-
-                Route::group(['prefix' => 'laravel-filemanager', 'middleware'], function () {
-                    \UniSharp\LaravelFilemanager\Lfm::routes();
-                });
-                /*  */
-                Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
             }
         );
+
+
+
     }
 
 );
@@ -630,3 +623,11 @@ Route::prefix('page')->group(
         Route::get('{slug}', [SitemapController::class, 'page'])->name('page');
     }
 );
+
+
+Route::group(['prefix' => '/laravel-filemanager_edcgobal'], function () {
+    \UniSharp\LaravelFilemanager\Lfm::routes();
+});
+
+// Route to FileManagerController
+Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);

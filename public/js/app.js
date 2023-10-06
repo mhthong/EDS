@@ -3115,7 +3115,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _checkform_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_checkform_js__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _fancyapp_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./fancyapp.js */ "./resources/js/fancyapp.js");
 /* harmony import */ var _maxhight_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./maxhight.js */ "./resources/js/maxhight.js");
-/* harmony import */ var _maxhight_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_maxhight_js__WEBPACK_IMPORTED_MODULE_11__);
 /* harmony import */ var _esaing_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./esaing.js */ "./resources/js/esaing.js");
 /* harmony import */ var _esaing_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_esaing_js__WEBPACK_IMPORTED_MODULE_12__);
 /* harmony import */ var _fullpage_min_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./fullpage.min.js */ "./resources/js/fullpage.min.js");
@@ -3473,38 +3472,6 @@ document.addEventListener('click', function (e) {
     });
   }
 });
-
-// CHART: APEXCHART
-var options = {
-  series: [{
-    name: 'series1',
-    data: [31, 40, 28, 51, 42, 109, 100]
-  }, {
-    name: 'series2',
-    data: [11, 32, 45, 32, 34, 52, 41]
-  }],
-  chart: {
-    height: 350,
-    type: 'area'
-  },
-  dataLabels: {
-    enabled: false
-  },
-  stroke: {
-    curve: 'smooth'
-  },
-  xaxis: {
-    type: 'datetime',
-    categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-  },
-  tooltip: {
-    x: {
-      format: 'dd/MM/yy HH:mm'
-    }
-  }
-};
-var chart = new ApexCharts(document.querySelector("#chart"), options);
-chart.render();
 
 /***/ }),
 
@@ -6095,9 +6062,21 @@ __webpack_require__(/*! @master/css */ "./node_modules/@master/css/dist/index.bu
 /*!**********************************!*\
   !*** ./resources/js/maxhight.js ***!
   \**********************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-__webpack_require__(/*! jquery-match-height */ "./node_modules/jquery-match-height/dist/jquery.matchHeight.js");
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jquery_match_height__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery-match-height */ "./node_modules/jquery-match-height/dist/jquery.matchHeight.js");
+/* harmony import */ var jquery_match_height__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery_match_height__WEBPACK_IMPORTED_MODULE_1__);
+ // Import jQuery
+ // Import jquery-match-height
+
+// Áp dụng plugin cho các phần tử có lớp .fc-col-header-cell
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.fc-col-header-cell').matchHeight();
+});
 
 /***/ }),
 

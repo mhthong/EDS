@@ -565,7 +565,7 @@
                       "
                     >
                       <i class="fa-regular fa-paper-plane"></i>
-                      Send Mail
+                      Send
                     </button>
                   </div>
                 </div>
@@ -794,6 +794,7 @@ export default {
           };
           this.fetchApiData();
           this.fetchShowroomSchedule();
+          this.calculateTotalSelectedServicesPrice();
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);
@@ -864,8 +865,8 @@ export default {
       this.filteredDays = this.apiData.filter(
         (schedule) =>
           schedule.date === this.selectedDate &&
-          schedule.ArtistID === this.selectedArtist &&
-          schedule.id !== this.id
+          parseInt(schedule.ArtistID) === parseInt(this.selectedArtist) &&
+          parseInt(schedule.id) !== parseInt(this.id)
       );
 
       console.log(this.filteredDays);

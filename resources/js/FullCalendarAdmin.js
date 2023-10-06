@@ -6,5 +6,8 @@ new Vue({
     components: {
         FullcalendarAdmin,
     },
+    data: {
+        artistId: document.getElementById('doashboard').getAttribute('data-artist-id'),
+    },
 
 });

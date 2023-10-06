@@ -40,6 +40,7 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Status</th>
+                                            <th>Role</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
@@ -51,6 +52,7 @@
                                                 <td>{{ $admin->name }}</td>
                                                 <td>{{ $admin->email }}</td>
                                                 <td>{{ $admin->status }}</td>
+                                                <td>{{ $admin->super_user }}</td>
 
                                                 <td>
                                                     <!-- Add button to trigger Edit popup modal -->
@@ -91,12 +93,12 @@
                                                     <!-- Add form fields here -->
                                                     <div class="form-group">
                                                         <label for="name">User name</label>
-                                                        <input type="text" class="form-control" id="name" name="name"
+                                                        <input type="text" class="form-control"  name="name"
                                                             required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="Level Price">Email</label>
-                                                        <input type="email" class="form-control" id="email" name="email"
+                                                        <input type="email" class="form-control"  name="email"
                                                             required>
                                                     </div>
 
@@ -116,7 +118,7 @@
 
                                                     <div class="form-group">
                                                         <label for="status" class="" aria-required="true">Status</label>
-                                                        <select class="form-control ui-select ui-select" id="status"
+                                                        <select class="form-control ui-select ui-select" 
                                                             name="status">
                                                             <option value="published" selected="selected">Published
                                                             </option>
@@ -128,15 +130,14 @@
 
                                                     <div class="form-group">
                                                         <label for="role" class="" aria-required="true">Role</label>
-                                                        <select class="form-control ui-select ui-select" id="status"
+                                                        <select class="form-control ui-select ui-select" 
                                                             name="role">
                                                             <option value="Administrator" selected="selected">Administrator
                                                             </option>
                                                             <option value="Acoutant">Acoutant</option>
-                                                            <option value="Marketing">Marketing</option>
                                                             <option value="Saleleader">Sale leader</option>
-                                                            <option value="Marketing">marketing</option>
-                                                            <option value="Operation">operation</option>
+                                                            <option value="Marketing">Marketing</option>
+                                                            <option value="Operation">Operation</option>
                                                         </select>
 
                                                     </div>
@@ -172,12 +173,12 @@
                                                         <!-- Add form fields here -->
                                                         <div class="form-group">
                                                             <label for="name">User name</label>
-                                                            <input type="text" class="form-control" id="name"
+                                                            <input type="text" class="form-control" 
                                                                 name="name" value="{{ $admin->name }}" required>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="Level Price">Email</label>
-                                                            <input type="email" class="form-control" id="email"
+                                                            <input type="email" class="form-control" 
                                                                 name="email" value="{{ $admin->email }}" required>
                                                         </div>
 
@@ -201,7 +202,7 @@
                                                         <div class="form-group">
                                                             <label for="status" class=""
                                                                 aria-required="true">Status</label>
-                                                            <select class="form-control ui-select ui-select" id="status"
+                                                            <select class="form-control ui-select ui-select" 
                                                                 name="status">
                                                                 <option value="published"
                                                                     {{ $admin->status === 'published' ? 'selected' : '' }}>
@@ -213,6 +214,21 @@
                                                                     {{ $admin->status === 'draft' ? 'selected' : '' }}>Draft
                                                                 </option>
                                                             </select>
+                                                        </div>
+
+
+                                                        <div class="form-group">
+                                                            <label for="role" class="" aria-required="true">Role</label>
+                                                            <select class="form-control ui-select ui-select" 
+                                                                name="role">
+                                                                <option value="Administrator"  {{ $admin->super_user === 'Administrator' ? 'selected' : '' }}>Administrator
+                                                                </option>
+                                                                <option value="Acoutant"  {{ $admin->super_user === 'Acoutant' ? 'selected' : '' }}>Acoutant</option>
+                                                                <option value="Saleleader"  {{ $admin->super_user === 'Saleleader' ? 'selected' : '' }}>Sale leader</option>
+                                                                <option value="Marketing"  {{ $admin->super_user === 'Marketing' ? 'selected' : '' }}>Marketing</option>
+                                                                <option value="Operation"  {{ $admin->super_user === 'Operation' ? 'selected' : '' }}>Operation</option>
+                                                            </select>
+    
                                                         </div>
 
 

@@ -23,8 +23,6 @@ use Illuminate\Support\Str;
 
 class BookingController extends Controller
 {
-
-
     //
 
     public function index()
@@ -158,6 +156,7 @@ class BookingController extends Controller
             'Email' => $request->email,
             'Address' => $request->address,
             'Phone' => $request->phone,
+            'source_data' => $request->source_data,
             'Source' => $request->source,
             'Note' => $request->note,
             'After_img' => "",
@@ -181,8 +180,6 @@ class BookingController extends Controller
             'source_type' => $source_type,
             // Các trường khác của Price ở đây...
         ]);
-
-
  
         $Payment = Payment::create([
             'PricelD' => $price->id,
@@ -193,7 +190,6 @@ class BookingController extends Controller
             'payment_remainding'=>""
             
         ]);
-
 
 
         $serviceBookings = ServiceBooking::create([

@@ -11,22 +11,12 @@
                     <a href="#" class=""><i class="ph-house-fill"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Dashboard</li>
-                        <li><a href="#">Sales</a></li>
+                        <li><a href="{{ route('sale-artists') }}">Sales</a></li>
                         <li><a href="#">Analytics</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="#"><i class="fa-brands fa-servicestack"></i></a>
-                    <ul class="sidebar__submenu">
-                        <li class="title">Salon</li>
-        
-                        <li>
-                            <a href="#">Booking <i class="ph-caret-right-fill"></i></a>
-                            <ul class="sidebar__dropdown-menu">
-                                <li><a href="{{ route('artists.book.index') }}">All Booking</a></li>
-                            </ul>
-                        </li>
-                    </ul>
+                    <a href="{{ route('artists.book.index') }}"><i class="fa-brands fa-servicestack"></i></a>
                 </li>
                 <li>
                     <a class="dropdown-item logout" href="{{ route('logout') }}"
@@ -66,8 +56,14 @@
             </a>
             <ul class="sidebar__menu">
                 <li>
-                    <a href="/admin" class=""><i class="ph-house-fill"></i></a>
+                    <a href="#" class=""><i class="ph-house-fill"></i></a>
+                    <ul class="sidebar__submenu">
+                        <li class="title">Dashboard</li>
+                        <li><a href="{{ route('sale-admin') }}">Sales</a></li>
+                        <li><a href="#">Analytics</a></li>
+                    </ul>
                 </li>
+                @if( Auth::user()->manage_supers == 0)
                 <li>
                     <a href="#"><i class="fa-solid fa-pager"></i> </a>
                     <ul class="sidebar__submenu">
@@ -93,6 +89,8 @@
                         <li><a href="{{ route('static.create') }}">Add New Statics</a></li>
                     </ul>
                 </li>
+
+                @endif
                 {{--               <li>
                                     <a href="#"><i class="fa-solid fa-tag"></i></a>
                                     <ul class="sidebar__submenu">
@@ -101,7 +99,6 @@
                                         <li><a href="{{ route('tag-create') }}">Add New Tag</a></li>
                                     </ul>
                                 </li> --}}
-
 
                 <li>
                     <a href="#"><i class="fa-solid fa-clipboard-user"></i></a>
@@ -114,6 +111,7 @@
                     </ul>
         
                 </li>
+          
             
                 <li>
                     <a href="#"><i class="fa-brands fa-servicestack"></i></a>
@@ -151,11 +149,12 @@
                         </li>
                     </ul>
                 </li>
+         
                 <li>
                     <a href="{{ route('get.index') }}"><i class="fa-solid fa-address-book"></i></a>
                 </li>
 
-                
+                @if( Auth::user()->manage_supers == 0)
                 <li>
                     <a href="{{ route('auth-admin.index') }}"><i class="fa-solid fa-user"></i></a>
                 </li>
@@ -185,7 +184,10 @@
                             <a href="{{ route('setting') }}">Setting</a>
                         </li>
                     </ul>
-                <li>
+ 
+                        
+                @endif
+               <li>
                     <a class="dropdown-item logout" href="{{ route('logout') }}"8
                         onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
@@ -226,22 +228,12 @@
                         <a href="#" class=""><i class="ph-house-fill"></i></a>
                         <ul class="sidebar__submenu">
                             <li class="title">Dashboard</li>
-                            <li><a href="#">Sales</a></li>
+                            <li><a href="{{ route('sale-employee') }}">Sales</a></li>
                             <li><a href="#">Analytics</a></li>
                         </ul>
                     </li>
                     <li>
-                        <a href="#"><i class="fa-brands fa-servicestack"></i></a>
-                        <ul class="sidebar__submenu">
-                            <li class="title">Salon</li>
-            
-                            <li>
-                                <a href="#">Booking <i class="ph-caret-right-fill"></i></a>
-                                <ul class="sidebar__dropdown-menu">
-                                    <li><a href="{{ route('employee.book.index') }}">All Booking</a></li>
-                                </ul>
-                            </li>
-                        </ul>
+                        <a href="{{ route('employee.book.index')}}"><i class="fa-brands fa-servicestack"></i></a>
                     </li>
                     <li>
                         <a class="dropdown-item logout" href="{{ route('logout') }}"

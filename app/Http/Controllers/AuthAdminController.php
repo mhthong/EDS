@@ -8,29 +8,38 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\PasswordConfirmation;
+use App\Http\Controllers\CheckAdminAuthController;
 
 
 class AuthAdminController extends Controller
 {
+
+
+
     // ... (other CRUD methods)
     public function index()
     {
+ 
+
+        $manageSupers = (new CheckAdminAuthController())->checkAdminRole();
+
+
 
         $loggedInUser = Auth::user();
 
-        if ($loggedInUser->manage_supers == 0 && $loggedInUser->super_user == 0) {
+        if ($loggedInUser->manage_supers == 0) {
             // User does not have permission
             $admins = Admin::where('id', '!=', Auth::id())
-            ->where('manage_supers', '!=', 0)
-            ->where('super_user', '!=', 0)
+            ->where('super_user', '!=', "0")
             ->get();
 
-        $stt = 1;
+            $stt = 1;
+
 
         return view('admin.auth-admin.index', compact('admins', 'stt'));
         }
         else {
-            return view('admin.auth-admin.index', compact('none', 'stt'));
+            return redirect()->route('admin.index');
         }
 
     
@@ -48,7 +57,7 @@ class AuthAdminController extends Controller
     public function store(Request $request)
     {
 
-
+  
         // Validate the input
         $request->validate([
             'name' => 'required',
@@ -61,8 +70,28 @@ class AuthAdminController extends Controller
         $data =  $request->all();
 
         $data['password'] = Hash::make($request->input('password'));
-        $data['manage_supers'] = 1;
-        $data['super_user'] = 1;
+
+      
+
+        if( $data['role'] == "Administrator"){
+            $data['manage_supers'] = 0;
+            $data['super_user'] = "Administrator";
+
+        } elseif ( $data['role'] == "Acoutant"){
+            $data['manage_supers'] = 1;
+            $data['super_user'] = "Acoutant";
+        } elseif ( $data['role'] == "Marketing"){
+            $data['manage_supers'] = 2;
+            $data['super_user'] = "Marketing";
+        } elseif ( $data['role'] == "Saleleader"){
+            $data['manage_supers'] = 3;
+            $data['super_user'] == "Saleleader";
+        }  elseif ( $data['role'] == "Operation"){
+            $data['manage_supers'] = 4;
+            $data['super_user'] = "Operation";
+        }
+
+
 
         // Create a new admin
 
@@ -106,6 +135,25 @@ class AuthAdminController extends Controller
 
             $data['password'] = Hash::make($request->input('password'));
         }
+
+        if( $data['role'] == "Administrator"){
+            $data['manage_supers'] = 0;
+            $data['super_user'] = "Administrator";
+
+        } elseif ( $data['role'] == "Acoutant"){
+            $data['manage_supers'] = 1;
+            $data['super_user'] = "Acoutant";
+        } elseif ( $data['role'] == "Marketing"){
+            $data['manage_supers'] = 2;
+            $data['super_user'] = "Marketing";
+        } elseif ( $data['role'] == "Saleleader"){
+            $data['manage_supers'] = 3;
+            $data['super_user'] == "Saleleader";
+        }  elseif ( $data['role'] == "Operation"){
+            $data['manage_supers'] = 4;
+            $data['super_user'] = "Operation";
+        }
+
 
             // Validate the inpu
             $updateAuth_admin =   $auth_admin->update($data);

@@ -4641,6 +4641,10 @@ select.bootstrap-table-filter-control-status option[value="<i>published</i>"] {
   padding: 0 !important;
 }
 
+.main__body__data {
+  overflow: auto;
+}
+
 /*!
  * Bootstrap  v5.3.1 (https://getbootstrap.com/)
  * Copyright 2011-2023 The Bootstrap Authors
@@ -17574,6 +17578,160 @@ textarea.form-control-lg {
   margin: 2%;
 }
 
+/* 
+Fullcalendar */
+.fc-content {
+  background-color: #3788d8; /* Màu nền */
+  color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+
+.fc-content::-webkit-scrollbar {
+  display: none;
+}
+
+.fc-time {
+  font-size: 12px; /* Kích thước phông chữ */
+}
+
+.fc-title {
+  font-size: 16px; /* Kích thước phông chữ */
+}
+
+.fc-timegrid-col-frame {
+  width: 100%;
+}
+
+.fc-timegrid-event-harness {
+  width: 100%;
+}
+
+.fc-timegrid-col-events {
+  width: 100%;
+}
+
+.fc-event {
+  width: 100%;
+}
+
+.fc-col-header-cell {
+  flex: 1;
+  text-align: center !important; /* Căn giữa nội dung của thẻ th */
+  border: 1px solid #ddd !important; /* Đường viền */
+  padding: 8px !important; /* Khoảng cách giữa nội dung và đường viền */
+  background-color: #f2f2f2 !important; /* Màu nền */
+  height: 70px;
+}
+
+.fc-timegrid-axis {
+  width: 77px;
+  text-align: center !important; /* Căn giữa nội dung của thẻ th */
+  border: 0px solid #ffffff !important; /* Đường viền */
+  padding: 8px !important; /* Khoảng cách giữa nội dung và đường viền */
+  background-color: #ffffff !important; /* Màu nền */
+  height: 100%;
+}
+
+thead[role=presentation] > tr[role=row] {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fc-content-main {
+  overflow: scroll;
+}
+
+.fc-content-main::-webkit-scrollbar {
+  display: none;
+}
+
+.fc-col-header-cell-cushion {
+  color: #3a7a9d;
+  font-weight: 400;
+}
+
+/* Đặt màu nền và màu chữ cho class Cancel */
+.Cancel {
+  background-color: #f06a6a; /* Màu đỏ lợt */
+  color: #ffffff; /* Màu chữ trắng */
+}
+
+/* Đặt màu nền và màu chữ cho class Refund */
+.Refund {
+  background-color: #ff7e33; /* Màu vàng lợt */
+  color: #ffffff; /* Màu chữ đen */
+}
+
+/* Đặt màu nền và màu chữ cho class Done */
+.Done {
+  background-color: #56f561; /* Màu xanh lợt */
+  color: #ffffff; /* Màu chữ trắng */
+}
+
+/* Đặt màu nền và màu chữ cho class Waiting */
+.Waiting {
+  background-color: #33aaff; /* Màu xanh lợt */
+  color: #ffffff; /* Màu chữ trắng */
+}
+
+.fc-v-event {
+  background-color: #fff !important;
+  border: none !important;
+}
+
+.fc-toolbar-title {
+  font-size: 1.25em !important;
+  margin: 0px;
+}
+
+.fc-header-toolbar button {
+  border: none;
+  color: #000;
+  background: #599a96 !important;
+  border: none !important;
+}
+.fc-header-toolbar button:after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 100%;
+  top: 0;
+  left: 0;
+  direction: rtl;
+  z-index: -1;
+  box-shadow: -7px -7px 20px 0px rgba(255, 255, 255, 0.6), -4px -4px 5px 0px rgba(255, 255, 255, 0.6), 7px 7px 20px 0px rgba(0, 0, 0, 0.1333333333), 4px 4px 5px 0px rgba(0, 0, 0, 0.0666666667);
+  transition: all 0.3s ease;
+}
+.fc-header-toolbar button:active {
+  top: 2px;
+}
+.fc-header-toolbar button:focus {
+  box-shadow: none !important;
+  background: #33aaff !important;
+}
+
+/* Lớp phủ */
+/* CSS */
+/* CSS */
+.FullCalendarNone {
+  position: relative;
+}
+.FullCalendarNone .fc::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5); /* Màu nền với độ trong suốt */
+  z-index: 2; /* Số thứ tự hiển thị cao hơn so với gốc */
+}
+
 /* tao dau X */
 /*!
  * fullPage 4.0.15
@@ -23187,4 +23345,8 @@ select.bootstrap-table-filter-control-status option[value="<i>published</i>"] {
 
 .tr_footer th {
   padding: 0 !important;
+}
+
+.main__body__data {
+  overflow: auto;
 }

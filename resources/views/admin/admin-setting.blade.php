@@ -371,8 +371,6 @@
         <!-- Hiển thị nội dung dành cho khách truy cập -->
     @endif
 
-
-
     <script type="text/javascript">
         const validate = () => {
             const n1 = document.getElementById("password-new");

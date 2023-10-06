@@ -438,6 +438,18 @@
       </div>
 
       <div class="controls mb-4">
+
+        <select name="source_data" id="source_data"   v-model="formData.source_data">
+          <option value="Facebook">Facebook</option>
+          <option value="Google">Google</option>
+          <option value="Website">Website</option>
+          <option value="Tiktok">Tiktok</option>
+          <option value="Order">Order</option>
+        </select>
+        <label for="name" class="label-date active">Source :</label>
+      </div>
+
+      <div class="controls mb-4">
         <input
           class="form-control"
           type="text"
@@ -446,7 +458,7 @@
           v-model="formData.source"
           required
         />
-        <label for="name" class="label-date active">Source :</label>
+        <label for="name" class="label-date active">Source Note:</label>
       </div>
       <div class="controls mb-4">
         <textarea
@@ -510,6 +522,7 @@ export default {
         phone: "",
         source: "",
         note: "",
+        source_data:"",
       },
       errorMessage: "", // Dữ liệu từ API
       jsonData: "",
@@ -699,7 +712,7 @@ export default {
       this.filteredDays = this.apiData.filter(
         (schedule) =>
           schedule.date === this.selectedDate &&
-          schedule.ArtistID === this.selectedArtist
+          parseInt(schedule.ArtistID) === parseInt(this.selectedArtist)
       );
 
       console.log(this.filteredDays);

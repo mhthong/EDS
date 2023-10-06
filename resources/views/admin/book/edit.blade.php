@@ -283,22 +283,36 @@
     <script src="/js/bookcreate.js" defer></script>
 
     <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
+    @if (Auth::check())
+    @php
+        $route_prefix = '';
+        if (Auth::user() instanceof \App\Models\Artists) {
+            $route_prefix = '/artists/laravel-filemanager';
+        } elseif (Auth::user() instanceof \App\Models\Admin) {
+            $route_prefix = '/admin/laravel-filemanager';
+        } elseif (Auth::user() instanceof \App\Models\Employee) {
+            $route_prefix = '/employee/laravel-filemanager';
+        }
+    @endphp
+
     <script>
-        var route_prefix = "/laravel-filemanager";
+        var route_prefix = @json($route_prefix);
+
         $('#image_PaymentRemainingImage').filemanager('image', {
             prefix: route_prefix
         });
         $('#image_manager').filemanager('image', {
             prefix: route_prefix
         });
-
-        var route_prefix = "/laravel-filemanager";
         $('#image_AfterImage').filemanager('image', {
             prefix: route_prefix
         });
         $('#image_BeforeImage').filemanager('image', {
             prefix: route_prefix
         });
-
     </script>
+@endif
+
+
+
 @endsection

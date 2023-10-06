@@ -25,6 +25,8 @@ class BlockController extends Controller
 
     public function index()
     {
+
+        
         $Block = Block::paginate(10);
         $stt = 1;
         $pageNames = 'Tên Trang - Block';

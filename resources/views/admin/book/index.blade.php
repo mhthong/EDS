@@ -163,7 +163,6 @@
                                         <th data-field="ClientName">Client Name</th>
                                         <th data-field="ClientInfo">Client Info</th>
                                         <th data-field="Note">Note</th>
-                                        
                                         <th data-field="Services">Services</th>
                                         <th data-field="Source">Source</th>
                                         <th data-field="Price">Price</th>
@@ -240,7 +239,7 @@
                                             
                                             <td>{{ $booking->services->pluck('Name')->join(', ') }}</td>
                                             
-                                             <td>{{ $booking->get->Source }}</td>
+                                             <td><span>{{ $booking->get->Source }}</span></td>
                                             <td>{{ $booking->price ? $booking->price->servies_price : 'N/A' }}</td>
                                             <td>{{ $booking->showroom->Name }}</td>
                                             <td>{{ $booking->artist->name }}</td>
@@ -307,7 +306,6 @@
             const table = $('#table').DataTable({
                 scrollX: true,
                 order: [[0, 'desc']],
-                autoWidth: true,
                 columnDefs: [{
                     type: 'date',
                     targets: [7, 8]
@@ -315,7 +313,7 @@
                 columns: [
             { width: '50px' }, 
             { width: '200px' }, 
-            { width: '500px' },
+            { width: '250px' },
             { width: '200px' }, 
             { width: '200px' },
             { width: '200px' }, 
@@ -333,7 +331,6 @@
             { width: '200px' },
             { width: '200px' }, 
             { width: '200px' },
- 
         ],
                 
 
@@ -518,6 +515,14 @@ th, td {
 /* Bỏ thiết lập chiều rộng cố định cho th đầu tiên (nếu cần) */
 th:first-child {
     width: auto; /* Đặt chiều rộng tự động cho thứ tự đầu tiên */
+}
+
+td span {
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px; /* Đặt giới hạn 50 ký tự, tùy chỉnh theo nhu cầu */
 }
 
 
