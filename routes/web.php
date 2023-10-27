@@ -181,6 +181,10 @@ Route::middleware('auth:artists')->prefix('artists')->group(
         Route::get('/sales', function () {
             return view('layouts.sale'); // Tên của view bạn muốn hiển thị
         })->name('sale-artists');
+
+        Route::get('/analytics', function () {
+            return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
+        })->name('analytics-artists');
         
 
         Route::prefix('books')->group(
@@ -234,6 +238,10 @@ Route::middleware('auth:employee')->prefix('employee')->group(function () {
     Route::get('/sales', function () {
         return view('layouts.sale'); // Tên của view bạn muốn hiển thị
     })->name('sale-employee');
+
+    Route::get('/analytics', function () {
+        return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
+    })->name('analytics-employee');
     
 
     Route::prefix('books')->group(
@@ -274,6 +282,11 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             return view('layouts.sale'); // Tên của view bạn muốn hiển thị
         })->name('sale-admin');
         
+
+
+    Route::get('/analytics', function () {
+        return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
+    })->name('analytics-admin');
 
         Route::group(['prefix' => '/laravel-filemanager'], function () {
             \UniSharp\LaravelFilemanager\Lfm::routes();

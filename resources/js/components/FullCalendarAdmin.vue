@@ -27,10 +27,8 @@
     </div>
 
     <div class="col-12" v-if="step === 'FullCalendar'">
-      <FullCalendar :options="calendarOptions" />
 
-
-
+      <FullCalendar :options="calendarOptions" ref="fullCalendar" />
 
     </div>
 
@@ -50,6 +48,7 @@ import FullCalendar from "@fullcalendar/vue";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+
 
 export default {
   components: {
@@ -91,7 +90,6 @@ export default {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         initialView: "dayGridMonth",
         weekends: true,
-        events: [],
         eventTimeFormat: {
           hour: "numeric",
           minute: "2-digit",
@@ -107,7 +105,9 @@ export default {
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
         eventContent: this.customEventContent,
+        events: this.filterEventsByCurrentDate
       },
+      
     };
   },
 
@@ -124,6 +124,7 @@ export default {
         });
     },
 
+
     fetchArtists() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios
@@ -137,7 +138,10 @@ export default {
         });
     },
 
+    
+
     loadEvents() {
+
   let filteredEvents = []; // Đặt biến ở đầu hàm
 
   if (this.artistId !== null) {
@@ -157,10 +161,13 @@ export default {
 
   axios.get("/api/all-data").then((response) => {
     this.data = response.data;
-    console.log(this.selectedArtist);
-
+/*     console.log(this.selectedArtist);
+    console.log(this.selectedShowroom);
+    console.log(this.selectedStatus);
+ */
     filteredEvents = response.data.filter((event) => {
       // Kiểm tra nếu selectedShowroom và selectedArtist là 0 (tức là không có lựa chọn cụ thể) hoặc trùng với giá trị của sự kiện
+     /*  console.log( event.ShowroomID , this.selectedShowroom, event.ShowroomID === this.selectedShowroom , event.ArtistID == this.selectedArtist , event.status === this.selectedStatus); */
       const showroomMatch =
         this.selectedShowroom === 0 || event.ShowroomID === this.selectedShowroom;
       const artistMatch =
@@ -178,7 +185,7 @@ export default {
       return showroomMatch && artistMatch && StatusMatch && ActionMatch;
     });
 
-    console.log("filteredEvents", filteredEvents);
+  /*   console.log("filteredEvents", filteredEvents); */
 
     this.calendarOptions.events = filteredEvents.map((event) => {
       const startTime = new Date(event.date + "T" + event.time);
@@ -220,14 +227,14 @@ export default {
         html: `
       
           <div class="fc-content ${arg.event.title}">
-            <a href="${currentUrl}/books/${arg.event.id}/edit" class="text-white">
+            
             <div class="fc-content-main">
               <span class="fc-status">${arg.event.extendedProps.showroom} </span><br>
             <span class="fc-status">${arg.event.extendedProps.services} </span><br>
             <span class="fc-status"> ${arg.event.title}</span><br>
             <span class="fc-time">${startTime} - ${endTime}</span>
             </div>
-          </a>
+
           </div>
    
         `,
@@ -239,6 +246,9 @@ export default {
 
   },
 
+
+
+
   mounted() {
     this.artistId = this.$root.artistId;
     if(this.artistId !== null) {
@@ -247,7 +257,8 @@ export default {
     this.loadEvents();
     this.fetchShowrooms();
     this.fetchArtists();
-    console.log("Status",this.selectedStatus);
+      // Đăng ký sự kiện datesSet để theo dõi thay đổi phạm vi ngày
+  
   },
 };
 </script>

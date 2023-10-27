@@ -1,5 +1,5 @@
 @if (Auth::check())
-    
+
     @if (Auth::user() instanceof \App\Models\Artists)
         <!-- start: SIDEBAR -->
         <section id="sidebar">
@@ -8,22 +8,21 @@
             </a>
             <ul class="sidebar__menu">
                 <li>
-                    <a href="#" class=""><i class="ph-house-fill"></i></a>
+                    <a href="#" class=""><i class="fa-solid fa-house"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Dashboard</li>
                         <li><a href="{{ route('sale-artists') }}">Sales</a></li>
-                        <li><a href="#">Analytics</a></li>
+                        <li><a href="{{ route('analytics-artists') }}">Analytics</a></li>
                     </ul>
                 </li>
                 <li>
-                    <a href="{{ route('artists.book.index') }}"><i class="fa-brands fa-servicestack"></i></a>
+                    <a href="{{ route('artists.book.index') }}"><i class="fab fa-servicestack"></i></a>
                 </li>
                 <li>
                     <a class="dropdown-item logout" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
-                        <i class="ph-sign-out-fill">
-                        </i>
+                       <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -56,65 +55,28 @@
             </a>
             <ul class="sidebar__menu">
                 <li>
-                    <a href="#" class=""><i class="ph-house-fill"></i></a>
+                    <a href="#" class=""><i class="fa-solid fa-house"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Dashboard</li>
                         <li><a href="{{ route('sale-admin') }}">Sales</a></li>
-                        <li><a href="#">Analytics</a></li>
+                        <li><a href="{{ route('analytics-admin') }}">Analytics</a></li>
                     </ul>
                 </li>
-                @if( Auth::user()->manage_supers == 0)
-                <li>
-                    <a href="#"><i class="fa-solid fa-pager"></i> </a>
-                    <ul class="sidebar__submenu">
-                        <li class="title">Page</li>
-                        <li><a href="{{ route('blocks') }}">All Page</a></li>
-                        <li><a href="{{ route('block.create') }}">Add New</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#"><i class="ph-clipboard-fill"></i></a>
-                    <ul class="sidebar__submenu">
-                        <li class="title">Posts</li>
-                        <li><a href="{{ route('posts') }}">All Posts</a></li>
-                        <li><a href="{{ route('create') }}">Add New Posts</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-table-columns"></i></a>
-
-                    <ul class="sidebar__submenu">
-                        <li class="title">Statics</li>
-                        <li><a href="{{ route('statics') }}">All Statics</a></li>
-                        <li><a href="{{ route('static.create') }}">Add New Statics</a></li>
-                    </ul>
-                </li>
-
-                @endif
-                {{--               <li>
-                                    <a href="#"><i class="fa-solid fa-tag"></i></a>
-                                    <ul class="sidebar__submenu">
-                                        <li class="title">Tags</li>
-                                        <li><a style="" href="{{ route('tags') }}">Tag</a></li>
-                                        <li><a href="{{ route('tag-create') }}">Add New Tag</a></li>
-                                    </ul>
-                                </li> --}}
 
                 <li>
                     <a href="#"><i class="fa-solid fa-clipboard-user"></i></a>
                     <ul class="sidebar__submenu">
-                    <li class="title">Employee</li>
-                
-                            <li><a href="{{ route('employee.index') }}">All Employee</a></li>
-                            <li><a href="{{ route('employee.create') }}">Add New Employee </a></li>
-    
+                        <li class="title">Employee</li>
+
+                        <li><a href="{{ route('employee.index') }}">All Employee</a></li>
+                        <li><a href="{{ route('employee.create') }}">Add New Employee </a></li>
+
                     </ul>
-        
+
                 </li>
-          
-            
+
                 <li>
-                    <a href="#"><i class="fa-brands fa-servicestack"></i></a>
+                    <a href="#"><i class="fab fa-servicestack"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Salon</li>
                         <li>
@@ -149,50 +111,82 @@
                         </li>
                     </ul>
                 </li>
-         
+
                 <li>
                     <a href="{{ route('get.index') }}"><i class="fa-solid fa-address-book"></i></a>
                 </li>
 
-                @if( Auth::user()->manage_supers == 0)
-                <li>
-                    <a href="{{ route('auth-admin.index') }}"><i class="fa-solid fa-user"></i></a>
-                </li>
-                <li>
-                    <a href="#"><i class="fa-solid fa-bars"></i></a>
-                    <ul class="sidebar__submenu">
-                        <li class="title">Interface options</li>
-                        <li><a href=" {{ route('category') }}">Category</a></li>
-                        <li><a href="{{ route('simple-slider') }}">Simple slider</a></li>
-                    </ul>
-                </li>
-                <li class="divider"></li>
-                <li>
-                    <a href="#"><i class="ph-gear-fill"></i></a>
-                    <ul class="sidebar__submenu">
-                        <li>
-                            <a style="" href="{{ route('general') }}">
-                                Basic Layout
-                            </a>
-                        </li>
-                        <li>
-                            <a style="" href="{{ route('email') }}">
-                                Email
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('setting') }}">Setting</a>
-                        </li>
-                    </ul>
- 
-                        
+                @if (Auth::user()->manage_supers == 0)
+                    <li>
+                        <a href="{{ route('auth-admin.index') }}"><i class="fa-solid fa-user"></i></a>
+                    </li>
+                    <li>
+                        <a href="#"><i class="fa-solid fa-bars"></i></a>
+
+                        <ul class="sidebar__submenu">
+                            <li class="title">Interface options</li>
+             
+
+                            <li>
+                                <a href="#">Interface<i class="ph-caret-right-fill"></i></a>
+                                <ul class="sidebar__dropdown-menu">
+                                    <li><a href=" {{ route('category') }}">Category</a></li>
+                                    <li><a href="{{ route('simple-slider') }}">Simple slider</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a href="#">Page<i class="ph-caret-right-fill"></i></a>
+                                <ul class="sidebar__dropdown-menu">
+                                    <li><a href="{{ route('blocks') }}">All Page</a></li>
+                                    <li><a href="{{ route('block.create') }}">Add New</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a href="#">Posts<i class="ph-caret-right-fill"></i></a>
+                                <ul class="sidebar__dropdown-menu">
+                                    <li><a href="{{ route('posts') }}">All Posts</a></li>
+                                    <li><a href="{{ route('create') }}">Add New Posts</a></li>
+                                </ul>
+                            </li>
+
+                            <li>
+                                <a href="#">Statics<i class="ph-caret-right-fill"></i></a>
+                                <ul class="sidebar__dropdown-menu">
+                                    <li><a href="{{ route('statics') }}">All Statics</a></li>
+                                    <li><a href="{{ route('static.create') }}">Add New Statics</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a href="#"><i class="fa-solid fa-gear"></i></a>
+                        <ul class="sidebar__submenu">
+                            <li class="title">Setting</li>
+             
+                            <li>
+                                <a style="" href="{{ route('general') }}">
+                                    Basic Layout
+                                </a>
+                            </li>
+                            <li>
+                                <a style="" href="{{ route('email') }}">
+                                    Email
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('setting') }}">Setting</a>
+                            </li>
+                        </ul>
                 @endif
-               <li>
+                <li>
                     <a class="dropdown-item logout" href="{{ route('logout') }}"8
                         onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
-                        <i class="ph-sign-out-fill">
-                        </i>
+                       <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -217,56 +211,53 @@
         <!-- end: SIDEBAR MOBILE -->
         <!-- Hiển thị nội dung dành riêng cho admins -->
     @elseif (Auth::user() instanceof \App\Models\Employee)
-
-            <!-- start: SIDEBAR -->
-            <section id="sidebar">
-                <a href="/employee" class="brand">
-                    <i class="ph-flame-fill"></i>
-                </a>
-                <ul class="sidebar__menu">
-                    <li>
-                        <a href="#" class=""><i class="ph-house-fill"></i></a>
-                        <ul class="sidebar__submenu">
-                            <li class="title">Dashboard</li>
-                            <li><a href="{{ route('sale-employee') }}">Sales</a></li>
-                            <li><a href="#">Analytics</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="{{ route('employee.book.index')}}"><i class="fa-brands fa-servicestack"></i></a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item logout" href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
+        <!-- start: SIDEBAR -->
+        <section id="sidebar">
+            <a href="/employee" class="brand">
+                <i class="ph-flame-fill"></i>
+            </a>
+            <ul class="sidebar__menu">
+                <li>
+                    <a href="#" class=""><i class="fa-solid fa-house"></i></a>
+                    <ul class="sidebar__submenu">
+                        <li class="title">Dashboard</li>
+                        <li><a href="{{ route('sale-employee') }}">Sales</a></li>
+                        <li><a href="{{ route('analytics-employee') }}">Analytics</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{ route('employee.book.index') }}"><i class="fab fa-servicestack"></i></a>
+                </li>
+                <li>
+                    <a class="dropdown-item logout" href="{{ route('logout') }}"
+                        onclick="event.preventDefault();
                              document.getElementById('logout-form').submit();">
-                            <i class="ph-sign-out-fill">
-                            </i>
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
-                </ul>
-            </section>
-    
-            <!-- start: SIDEBAR OVERLAY -->
-            <div class="sidebar-overlay"></div>
-            <!-- end: SIDEBAR OVERLAY -->
-            <!-- end: SIDEBAR -->
-    
-            <!-- start: SIDEBAR MOBILE -->
-            <section id="sidebar-mobile">
-                <i class="ph-squares-four-fill toggle-sidebar"></i>
-                <a href="#" class="brand">
-                    <i class="ph-flame-fill"></i>
-                    Employee
-                </a>
-            </section>
-            <!-- end: SIDEBAR MOBILE -->
+                       <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                </li>
+            </ul>
+        </section>
+
+        <!-- start: SIDEBAR OVERLAY -->
+        <div class="sidebar-overlay"></div>
+        <!-- end: SIDEBAR OVERLAY -->
+        <!-- end: SIDEBAR -->
+
+        <!-- start: SIDEBAR MOBILE -->
+        <section id="sidebar-mobile">
+            <i class="ph-squares-four-fill toggle-sidebar"></i>
+            <a href="#" class="brand">
+                <i class="ph-flame-fill"></i>
+                Employee
+            </a>
+        </section>
+        <!-- end: SIDEBAR MOBILE -->
 
     @endif
 @else
     <p>Welcome, Guest!</p>
     <!-- Hiển thị nội dung dành cho khách truy cập -->
 @endif
-

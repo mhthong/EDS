@@ -67,7 +67,7 @@
 					</div>
 				</div>
 				<div class="members">
-					<div class="members__top">
+		{{-- 			<div class="members__top">
 						<h4>Members</h4>
 						<div class="members__menu">
 							<i class="ph-dots-three-outline-vertical-fill"></i>
@@ -170,7 +170,7 @@
 							</div>
 							<span>20 sales</span>
 						</li>
-					</ul>
+					</ul> --}}
 				</div>
 			</div> 
 		</div>

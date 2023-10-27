@@ -63,7 +63,6 @@ __webpack_require__.r(__webpack_exports__);
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__["default"], _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_3__["default"]],
         initialView: "dayGridMonth",
         weekends: true,
-        events: [],
         eventTimeFormat: {
           hour: "numeric",
           minute: "2-digit",
@@ -78,7 +77,8 @@ __webpack_require__.r(__webpack_exports__);
         selectable: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventContent: this.customEventContent
+        eventContent: this.customEventContent,
+        events: this.filterEventsByCurrentDate
       }
     };
   },
@@ -115,9 +115,13 @@ __webpack_require__.r(__webpack_exports__);
       }
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
         _this3.data = response.data;
-        console.log(_this3.selectedArtist);
+        /*     console.log(this.selectedArtist);
+            console.log(this.selectedShowroom);
+            console.log(this.selectedStatus);
+         */
         filteredEvents = response.data.filter(function (event) {
           // Kiểm tra nếu selectedShowroom và selectedArtist là 0 (tức là không có lựa chọn cụ thể) hoặc trùng với giá trị của sự kiện
+          /*  console.log( event.ShowroomID , this.selectedShowroom, event.ShowroomID === this.selectedShowroom , event.ArtistID == this.selectedArtist , event.status === this.selectedStatus); */
           var showroomMatch = _this3.selectedShowroom === 0 || event.ShowroomID === _this3.selectedShowroom;
           var artistMatch = _this3.selectedArtist === 0 || event.ArtistID == _this3.selectedArtist;
           var StatusMatch = _this3.selectedStatus === "None" || event.status === _this3.selectedStatus;
@@ -131,7 +135,9 @@ __webpack_require__.r(__webpack_exports__);
           // Sự kiện sẽ được bao gồm nếu cả showroomMatch, artistMatch, StatusMatch và ActionMatch đều là true
           return showroomMatch && artistMatch && StatusMatch && ActionMatch;
         });
-        console.log("filteredEvents", filteredEvents);
+
+        /*   console.log("filteredEvents", filteredEvents); */
+
         _this3.calendarOptions.events = filteredEvents.map(function (event) {
           var startTime = new Date(event.date + "T" + event.time);
           var endTime = new Date(event.date + "T" + event.time_end);
@@ -172,7 +178,7 @@ __webpack_require__.r(__webpack_exports__);
       });
       var currentUrl = window.location.href;
       return {
-        html: "\n      \n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            <a href=\"").concat(currentUrl, "/books/").concat(arg.event.id, "/edit\" class=\"text-white\">\n            <div class=\"fc-content-main\">\n              <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n          </a>\n          </div>\n   \n        ")
+        html: "\n      \n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            \n            <div class=\"fc-content-main\">\n              <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n\n          </div>\n   \n        ")
       };
     }
   },
@@ -184,7 +190,7 @@ __webpack_require__.r(__webpack_exports__);
     this.loadEvents();
     this.fetchShowrooms();
     this.fetchArtists();
-    console.log("Status", this.selectedStatus);
+    // Đăng ký sự kiện datesSet để theo dõi thay đổi phạm vi ngày
   }
 });
 
@@ -330,6 +336,7 @@ var render = function render() {
   }, [_vm._v("Refund")])])]), _vm._v(" "), _vm.step === "FullCalendar" ? _c("div", {
     staticClass: "col-12"
   }, [_c("FullCalendar", {
+    ref: "fullCalendar",
     attrs: {
       options: _vm.calendarOptions
     }

@@ -1,5 +1,7 @@
 <?php
 
+
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -11,168 +13,171 @@ use App\Models\ArtistLevel;
 use App\Models\ShowroomSchedule;
 use App\Models\Artists;
 use App\Models\Booking;
+use App\Models\Employee;
+use App\Models\Get;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class APIBookingController extends Controller
 {
-    //
-
     public function getShowrooms()
     {
-        $showrooms = Showroom::where('status', 'published')->get();
-        return response()->json($showrooms);
+        return $this->getCachedData('showrooms', function () {
+            return Showroom::where('status', 'published')->get();
+        });
+    }
+
+    public function getemployeeData()
+    {
+        return $this->getCachedData('employeeData', function () {
+            return Employee::get();
+        });
     }
 
     public function getGroupServices($showroomId)
     {
-        $serviceShowrooms = ServiceShowroom::with(['groupservice' => function ($query) {
-            $query->with(['services' => function ($query) {
-                $query->where('status', 'published');
-            }]);
-        }])->where('showroom_id', $showroomId)->get();
-    
-        $groupServiceData = [];
-    
-        foreach ($serviceShowrooms as $serviceShowroom) {
-            $groupService = $serviceShowroom->groupservice;
-    
-            if ($groupService) {
-                $groupServiceData[] = [
-                    'groupService' => $groupService,
-                ];
-            }
-        }
-    
-        return response()->json($groupServiceData);
-    }
-    
-
-    public function ShowroomSchedule($showroomId){
-        
-        $showroomSchedules = ShowroomSchedule::with('workingHours')->where('showroom_id', $showroomId)->get();
-
-        return response()->json($showroomSchedules);
-    
+        return $this->getCachedData('groupServices_' . $showroomId, function () use ($showroomId) {
+            // Lấy dữ liệu groupServices cho showroom có ID là $showroomId
+            // Thực hiện truy vấn dữ liệu ở đây và trả về kết quả
+        });
     }
 
-    
-    
-/*     public function getGroupServices($showroomId)
+    public function ShowroomSchedule($showroomId)
     {
-        $groupServices = Showroom::find($showroomId)->groupServices;
-        return response()->json($groupServices);
-    } */
+        return $this->getCachedData('showroomSchedule_' . $showroomId, function () use ($showroomId) {
+            // Lấy dữ liệu lịch làm việc của showroom có ID là $showroomId
+            // Thực hiện truy vấn dữ liệu ở đây và trả về kết quả
+        });
+    }
 
     public function getServices()
     {
-        $services = Service::where('status', 'published')->get();
-        return response()->json($services);
+        return $this->getCachedData('services', function () {
+            return Service::where('status', 'published')->get();
+        });
     }
-
 
     public function ArtistLevel()
     {
-        $artistLevels = ArtistLevel::all();
-        return response()->json($artistLevels);
+        return $this->getCachedData('artistLevels', function () {
+            return ArtistLevel::all();
+        });
     }
 
     public function Artist()
     {
-        $artist = Artists::where('name', '!=', 'N/A')->get();
-        return response()->json($artist);
+        return $this->getCachedData('artists', function () {
+            return Artists::where('name', '!=', 'N/A')->get();
+        });
     }
 
+    public function Get()
+    {
+        return $this->getCachedData('get', function () {
+            return Get::get();
+        });
+    }
 
     public function getAllData()
     {
-
-        $bookings = Booking::with([
-            'artist' => function ($query) {
-                $query->select('id', 'name', 'fullname');
-            },
-            'showroom',
-            'get',
-            'services',
-            'price',
-            'payment'
-        ])->orderBy('created_at', 'desc') // Sắp xếp theo thứ tự mới nhất dựa trên created_at
-            ->get();
-
-
-        return response()->json($bookings);
-
+        return $this->getCachedData('allData', function () {
+            return Booking::with([
+                'artist:id,name,fullname',
+                'showroom',
+                'get',
+                'services',
+                'price',
+                'payment'
+            ])->orderBy('created_at', 'desc')->get();
+        });
     }
+
+
+
+
+    public function getData($startDate, $endDate)
+    {
+
+        return $this->getCachedData('Data', function () use ($startDate, $endDate) {
+            return Booking::select('id', 'ArtistID', 'ShowroomID', 'status', 'action', 'source_data', 'source_name', 'source_id', 'source_type', 'created_at', 'updated_at', 'price_id')
+                ->with(['price'])
+                ->whereBetween('created_at', [$startDate, $endDate])
+                ->orderBy('created_at', 'desc')
+                ->get()
+                ->map(function ($booking) {
+                    if (is_null($booking->price)) {
+                        // Trường price là null, chúng tôi thay thế nó bằng một mảng trống
+                        $booking->price = [];
+                    }
+                    return $booking;
+                });
+        });
+    }
+    
 
     public function bookingsData($id)
     {
-
-
-        $bookingsData = Booking::with([
-            'artist' => function ($query) {
-                $query->select('id', 'name', 'fullname');
-            },
-            'showroom',
-            'get',
-            'services',
-            'price',
-            'payment'
-        ])->where('id', '=', $id)->get();
-
-        return response()->json($bookingsData);
-
+        return $this->getCachedData('bookingsData_' . $id, function () use ($id) {
+            return Booking::with([
+                'artist:id,name,fullname',
+                'showroom',
+                'get',
+                'services',
+                'price',
+                'payment'
+            ])->where('id', '=', $id)->get();
+        });
     }
-
 
     public function bookingsDataArtists($id)
     {
-        $bookingsData = Booking::with([
-            'artist' => function ($query) {
-                $query->select('id', 'name', 'fullname');
-            },
-            'showroom',
-            'get',
-            'services',
-            'price',
-            'payment'
-        ])->where('ArtistID', '=', $id)->get();
-
-        return response()->json($bookingsData);
-
+        return $this->getCachedData('bookingsDataArtists_' . $id, function () use ($id) {
+            return Booking::with([
+                'artist:id,name,fullname',
+                'showroom',
+                'get',
+                'services',
+                'price',
+                'payment'
+            ])->where('ArtistID', '=', $id)->get();
+        });
     }
-
-
 
     public function bookingsDataEmployee($id)
     {
-        $userId = $id;
-
-        $bookingsData = Booking::with([
-            'artist' => function ($query) {
-                $query->select('id', 'name', 'fullname');
-            },
-            'showroom',
-            'get',
-            'services',
-            'price',
-            'payment'
-        ])->where('source_id', '=', $userId)->where('source_type', '=', "App\Models\Employee")->get();
-
-        return response()->json($bookingsData);
-
+        return $this->getCachedData('bookingsDataEmployee_' . $id, function () use ($id) {
+            return Booking::with([
+                'artist:id,name,fullname',
+                'showroom',
+                'get',
+                'services',
+                'price',
+                'payment'
+            ])->where('source_id', '=', $id)->where('source_type', '=', "App\Models\Employee")->get();
+        });
     }
-
 
     public function getBookShowroomData($showroomId)
     {
-        $getBookShowroomData = Booking::with([
-            'artist:id,name,fullname',
-            'showroom',
-            'get',
-            'services',
-            'price',
-            'payment'
-        ])->where('status','=','Waiting')->where('ShowroomID', $showroomId)->get();
-
-        return response()->json($getBookShowroomData);
+        return $this->getCachedData('bookShowroomData_' . $showroomId, function () use ($showroomId) {
+            return Booking::with([
+                'artist:id,name,fullname',
+                'showroom',
+                'get',
+                'services',
+                'price',
+                'payment'
+            ])->where('status','=','Waiting')->where('ShowroomID', $showroomId)->get();
+        });
     }
 
+    protected function getCachedData($key, $callback, $minutes = 1)
+    {
+        $cachedData = Cache::get($key);
+        $newData = $callback();
+        if ($cachedData === null || $cachedData !== $newData) {
+            Cache::put($key, $newData, now()->addMinutes($minutes));
+        }
+        return $newData;
+    }
 }

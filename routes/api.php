@@ -33,19 +33,23 @@ Route::get('/showroomschedule/{showroomId}', [APIBookingController::class, 'Show
 Route::get('/services', [APIBookingController::class, 'getServices']);
 Route::get('/artist-levels', [APIBookingController::class, 'ArtistLevel']);
 Route::get('/artist', [APIBookingController::class, 'Artist']);
+Route::get('/get', [APIBookingController::class, 'Get']);
 
 
 Route::get('all-data', [APIBookingController::class, 'getAllData']);
+
+Route::get('data/{start}/{end}', [APIBookingController::class, 'getData']);
+
 
 Route::get('data-bookings/{id}', [APIBookingController::class, 'bookingsData']);
 
 Route::get('data-bookings-artists/{id}', [APIBookingController::class, 'bookingsDataArtists']);
 
-
 Route::get('data-bookings-employee/{id}', [APIBookingController::class, 'bookingsDataEmployee']);
 
-
 Route::get('/bookings/showroom/{showroomId}', [APIBookingController::class, 'getBookShowroomData']);
+
+Route::get('/employee', [APIBookingController::class, 'getemployeeData']);
 
 Route::post('/bookings-store', [APIBookingController::class, 'store']);
 

@@ -91,6 +91,7 @@ class AuthAdminController extends Controller
             $data['super_user'] = "Operation";
         }
 
+       dd( $data['super_user']);
 
 
         // Create a new admin

@@ -548,6 +548,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         address: "",
         phone: "",
         source: "",
+        source_data: "",
         note: ""
       },
       InputSelectedStatus: "",
@@ -699,6 +700,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           address: _this4.apiData_id[0].get.Address,
           phone: _this4.apiData_id[0].get.Phone,
           source: _this4.apiData_id[0].get.Source,
+          source_data: _this4.apiData_id[0].get.source_data,
           note: _this4.apiData_id[0].get.Note
         };
         _this4.fetchApiData();
@@ -951,6 +953,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           this.fetchArtistlevels();
           this.fetchGroupServices();
           this.fetchApiData();
+          this.selectedServices = null;
           this.step = "groupService";
         }
       }
@@ -2213,9 +2216,9 @@ var render = function render() {
     }
   }, [_vm._v("Tiktok")]), _vm._v(" "), _c("option", {
     attrs: {
-      value: "Order"
+      value: "Oder"
     }
-  }, [_vm._v("Order")])]), _vm._v(" "), _c("label", {
+  }, [_vm._v("Oder")])]), _vm._v(" "), _c("label", {
     staticClass: "label-date active",
     attrs: {
       "for": "name"
@@ -2689,6 +2692,55 @@ var render = function render() {
       }
     }
   })]), _vm._v(" "), _c("div", {
+    staticClass: "controls mb-4"
+  }, [_c("label", {
+    staticClass: "label-date active",
+    attrs: {
+      "for": _vm.formData.source_data
+    }
+  }, [_vm._v("Source Data:")]), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.formData.source_data,
+      expression: "formData.source_data"
+    }],
+    attrs: {
+      id: _vm.formData.source_data,
+      name: "source_data"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.$set(_vm.formData, "source_data", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "Facebook"
+    }
+  }, [_vm._v("Facebook")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Google"
+    }
+  }, [_vm._v("Google")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Website"
+    }
+  }, [_vm._v("Website")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Tiktok"
+    }
+  }, [_vm._v("Tiktok")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Order"
+    }
+  }, [_vm._v("Order")])])]), _vm._v(" "), _c("div", {
     staticClass: "controls mb-4"
   }, [_c("label", {
     staticClass: "label-date active",

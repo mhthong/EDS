@@ -175,6 +175,7 @@ class BookingController extends Controller
             'content' => "",
             'status' => $bookingData['Status'],
             'action' => "pending",
+            'source_data' => $request->source_data,
             'source_name' => $source_name,
             'source_id' => $source_id,
             'source_type' => $source_type,
@@ -411,6 +412,7 @@ class BookingController extends Controller
                 'date' => $data['date'],
                 'status' => $data['status'],
                 'content' => $content,
+                'source_data' =>  $data['source_data'],
                 'action' => 'pending',
             ]);
 
@@ -420,6 +422,7 @@ class BookingController extends Controller
                 'Address' => $data['address'],
                 'Phone' => $data['phone'],
                 'Source' => $data['source'],
+                'source_data' =>  $data['source_data'],
                 'Note' => $data['note'],
             ]);
 

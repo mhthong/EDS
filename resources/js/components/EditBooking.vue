@@ -204,6 +204,27 @@
           />
         </div>
 
+
+        <div class="controls mb-4">
+          <label :for="formData.source_data" class="label-date active"
+            >Source Data:</label
+          >
+  
+          <select
+          :id="formData.source_data"
+            name="source_data"
+            v-model="formData.source_data"
+              >
+              <option value="Facebook">Facebook</option>
+          <option value="Google">Google</option>
+          <option value="Website">Website</option>
+          <option value="Tiktok">Tiktok</option>
+          <option value="Order">Order</option>
+              </select>
+        </div>
+
+ 
+
         <div class="controls mb-4">
           <label :for="formData.note" class="label-date active">Note:</label>
           <textarea
@@ -620,6 +641,7 @@ export default {
         address: "",
         phone: "",
         source: "",
+        source_data: "",
         note: "",
       },
       InputSelectedStatus: "",
@@ -790,6 +812,7 @@ export default {
             address: this.apiData_id[0].get.Address,
             phone: this.apiData_id[0].get.Phone,
             source: this.apiData_id[0].get.Source,
+            source_data: this.apiData_id[0].get.source_data,
             note: this.apiData_id[0].get.Note,
           };
           this.fetchApiData();
@@ -1112,6 +1135,7 @@ export default {
           this.fetchArtistlevels();
           this.fetchGroupServices();
           this.fetchApiData();
+          this.selectedServices = null;
           this.step = "groupService";
         }
       }

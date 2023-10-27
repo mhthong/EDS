@@ -28,28 +28,27 @@
     
    			 @if (Auth::user() instanceof \App\Models\Artists)
 
-			<div id="chart-admin" data-artist-id="{{ auth()->id() }}">
+			<div id="analytics-admin" data-artist-id="{{ auth()->id() }}">
 				<!-- Render your AdminDashboard component here -->
-				<chart-admin></chart-admin>
+				<analytics-admin></analytics-admin>
 			</div>
 
 			@elseif (Auth::user() instanceof \App\Models\Admin)
-			<div id="chart-admin" data-admin-id="{{ auth()->id() }}">
+			<div id="analytics-admin" data-admin-id="{{ auth()->id() }}">
 				<!-- Render your AdminDashboard component here -->
-				<chart-admin></chart-admin>
+				<analytics-admin></analytics-admin>
 			</div>
 			
 			@elseif (Auth::user() instanceof \App\Models\Employee)
 
-			<div id="chart-admin" data-employee-id="{{ auth()->id() }}">
+			<div id="analytics-admin" data-employee-id="{{ auth()->id() }}">
 				<!-- Render your AdminDashboard component here -->
-				<chart-admin></chart-admin>
+				<analytics-admin></analytics-admin>
 			</div>
 
 			@endif
 			@else
 				<p>Welcome, Guest!</p>
-	
 			@endif
 
 	
@@ -61,7 +60,7 @@
 @endsection
 
 @section('script')
-<script src="/js/chart.js" defer></script>
+<script src="/js/analytics.js" defer></script>
 @endsection
 
 
