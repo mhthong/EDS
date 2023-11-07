@@ -3093,37 +3093,33 @@ function withinMaxClamp(min, value, max) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _bootstrap_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./bootstrap.js */ "./resources/js/bootstrap.js");
-/* harmony import */ var _bootstrap_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_bootstrap_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _checkbox_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./checkbox.js */ "./resources/js/checkbox.js");
-/* harmony import */ var _checkbox_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_checkbox_js__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./nav.js */ "./resources/js/nav.js");
-/* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_nav_js__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _slick_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./slick.js */ "./resources/js/slick.js");
-/* harmony import */ var _slick_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_slick_js__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _dashboards_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./dashboards.js */ "./resources/js/dashboards.js");
+/* harmony import */ var _dashboards_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_dashboards_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _bootstrap_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bootstrap.js */ "./resources/js/bootstrap.js");
+/* harmony import */ var _bootstrap_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_bootstrap_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _checkbox_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./checkbox.js */ "./resources/js/checkbox.js");
+/* harmony import */ var _checkbox_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_checkbox_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./nav.js */ "./resources/js/nav.js");
+/* harmony import */ var _nav_js__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_nav_js__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _product_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./product.js */ "./resources/js/product.js");
 /* harmony import */ var _product_js__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_product_js__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _input_number_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./input-number.js */ "./resources/js/input-number.js");
 /* harmony import */ var _input_number_js__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_input_number_js__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var _cart_nav_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./cart-nav.js */ "./resources/js/cart-nav.js");
 /* harmony import */ var _cart_nav_js__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_cart_nav_js__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _cart_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./cart.js */ "./resources/js/cart.js");
-/* harmony import */ var _cart_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_cart_js__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _master_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./master.js */ "./resources/js/master.js");
-/* harmony import */ var _master_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_master_js__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var _checkform_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./checkform.js */ "./resources/js/checkform.js");
-/* harmony import */ var _checkform_js__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_checkform_js__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _fancyapp_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./fancyapp.js */ "./resources/js/fancyapp.js");
-/* harmony import */ var _maxhight_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./maxhight.js */ "./resources/js/maxhight.js");
-/* harmony import */ var _esaing_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./esaing.js */ "./resources/js/esaing.js");
-/* harmony import */ var _esaing_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_esaing_js__WEBPACK_IMPORTED_MODULE_12__);
-/* harmony import */ var _fullpage_min_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./fullpage.min.js */ "./resources/js/fullpage.min.js");
-/* harmony import */ var _fullpage_min_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_fullpage_min_js__WEBPACK_IMPORTED_MODULE_13__);
-/* harmony import */ var _wow_min_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./wow.min.js */ "./resources/js/wow.min.js");
-/* harmony import */ var _wow_min_js__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_wow_min_js__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _dashboards_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./dashboards.js */ "./resources/js/dashboards.js");
-/* harmony import */ var _dashboards_js__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_dashboards_js__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _ziggy_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./ziggy.js */ "./resources/js/ziggy.js");
+/* harmony import */ var _master_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./master.js */ "./resources/js/master.js");
+/* harmony import */ var _master_js__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_master_js__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var _checkform_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./checkform.js */ "./resources/js/checkform.js");
+/* harmony import */ var _checkform_js__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_checkform_js__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _fancyapp_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./fancyapp.js */ "./resources/js/fancyapp.js");
+/* harmony import */ var _maxhight_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./maxhight.js */ "./resources/js/maxhight.js");
+/* harmony import */ var _esaing_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./esaing.js */ "./resources/js/esaing.js");
+/* harmony import */ var _esaing_js__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(_esaing_js__WEBPACK_IMPORTED_MODULE_11__);
+/* harmony import */ var _fullpage_min_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./fullpage.min.js */ "./resources/js/fullpage.min.js");
+/* harmony import */ var _fullpage_min_js__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(_fullpage_min_js__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _wow_min_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./wow.min.js */ "./resources/js/wow.min.js");
+/* harmony import */ var _wow_min_js__WEBPACK_IMPORTED_MODULE_13___default = /*#__PURE__*/__webpack_require__.n(_wow_min_js__WEBPACK_IMPORTED_MODULE_13__);
+/* harmony import */ var _ziggy_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./ziggy.js */ "./resources/js/ziggy.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes React and other helpers. It's a great starting point while
@@ -3143,9 +3139,13 @@ __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
+/* import './slick.js'; */
 
 
 
+
+
+/* import './cart.js'; */
 
 
 
@@ -3204,130 +3204,6 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 /***/ (() => {
 
 /* checkbox product */
-
-/***/ }),
-
-/***/ "./resources/js/cart.js":
-/*!******************************!*\
-  !*** ./resources/js/cart.js ***!
-  \******************************/
-/***/ (() => {
-
-/* Set rates + misc */
-var taxRate = 0.05;
-var shippingRate = 15.00;
-var fadeTime = 300;
-function cart() {
-  var element = document.getElementById("cart");
-  element.classList.toggle("cartmystyle");
-}
-$(document).ready(function () {
-  // Do stuff here, including _calling_ codeAddress(), but not _defining_ it!
-  $(".btncart").click(function () {
-    cart();
-  });
-});
-$(document).ready(function () {
-  document.getElementById("close-cart").onclick = function () {
-    cart();
-  };
-  // Do stuff here, including _calling_ codeAddress(), but not _defining_ it!
-});
-
-/* Assign actions */
-
-jQuery('<div class="product-quantity-nav"><div class="product-quantity-button product-quantity-up">+</div><div class="product-quantity-button product-quantity-down">-</div></div>').insertAfter('.product-quantity input');
-jQuery('.product-quantity').each(function () {
-  var spinner = jQuery(this),
-    btnUp = spinner.find('.product-quantity-up'),
-    input = spinner.find('input[type="number"]'),
-    btnDown = spinner.find('.product-quantity-down'),
-    min = input.attr('min'),
-    max = input.attr('max');
-  btnUp.click(function () {
-    var oldValue = parseFloat(input.val());
-    if (oldValue >= max) {
-      var newVal = oldValue;
-    } else {
-      var newVal = oldValue + 1;
-    }
-    spinner.find("input").val(newVal);
-    spinner.find("input").trigger("change");
-  });
-  btnDown.click(function () {
-    var oldValue = parseFloat(input.val());
-    if (oldValue <= min) {
-      var newVal = oldValue;
-    } else {
-      var newVal = oldValue - 1;
-    }
-    spinner.find("input").val(newVal);
-    spinner.find("input").trigger("change");
-  });
-});
-$('.product-quantity input').change(function () {
-  updateQuantity(this);
-});
-$('.product-removal button').click(function () {
-  removeItem(this);
-});
-
-/* Recalculate cart */
-function recalculateCart() {
-  var subtotal = 0;
-
-  /* Sum up row totals */
-  $('.product').each(function () {
-    subtotal += parseFloat($(this).children('.product-line-price').text());
-  });
-
-  /* Calculate totals */
-  var tax = subtotal * taxRate;
-  var shipping = subtotal > 0 ? shippingRate : 0;
-  var total = subtotal + tax + shipping;
-
-  /* Update totals display */
-  $('.totals-value').fadeOut(fadeTime, function () {
-    $('#cart-subtotal').html(subtotal.toFixed(2));
-    $('#cart-tax').html(tax.toFixed(2));
-    $('#cart-shipping').html(shipping.toFixed(2));
-    $('#cart-total').html(total.toFixed(2));
-    if (total == 0) {
-      $('.checkout').fadeOut(fadeTime);
-    } else {
-      $('.checkout').fadeIn(fadeTime);
-    }
-    $('.totals-value').fadeIn(fadeTime);
-  });
-}
-
-/* Update quantity */
-function updateQuantity(quantityInput) {
-  /* Calculate line price */
-  var productRow = $(quantityInput).parent().parent();
-  var price = parseFloat(productRow.children('.product-price').text());
-  var quantity = $(quantityInput).val();
-  var linePrice = price * quantity;
-
-  /* Update line price display and recalc cart totals */
-  productRow.children('.product-line-price').each(function () {
-    $(this).fadeOut(fadeTime, function () {
-      $(this).text(linePrice.toFixed(2));
-      recalculateCart();
-      $(this).fadeIn(fadeTime);
-    });
-  });
-}
-
-/* Remove item from cart */
-function removeItem(removeButton) {
-  /* Remove row from DOM and recalc cart total */
-  var productRow = $(removeButton).parent().parent();
-  productRow.slideUp(fadeTime, function () {
-    productRow.remove();
-    recalculateCart();
-  });
-}
 
 /***/ }),
 
@@ -3411,7 +3287,7 @@ allSidebarDropdownMenu.forEach(function (item) {
 });
 
 // SIDEBAR MOBILE: TOGGLE SIDEBAR
-var toggleSidebar = document.querySelector('#sidebar-mobile .toggle-sidebar');
+var toggleSidebar = document.querySelector('#sidebar-mobile .toggle-sidebar-active');
 var sidebar = document.querySelector('#sidebar');
 toggleSidebar.addEventListener('click', function () {
   sidebar.classList.add('active');
@@ -3452,14 +3328,11 @@ allMainBodyMenu.forEach(function (item) {
 
 // DOCUMENT EVENT
 document.addEventListener('click', function (e) {
-  if (!e.target.matches('#sidebar, #sidebar *')) {
+  if (!e.target.matches('#sidebar, #sidebar *') && !e.target.matches('#sidebar-mobile .toggle-sidebar-active')) {
     allSidebarSubmenu.forEach(function (item) {
       item.previousElementSibling.classList.remove('clicked');
       item.classList.remove('active');
     });
-  }
-  if (!e.target.matches('#sidebar, #sidebar *, #sidebar-mobile .toggle-sidebar')) {
-    sidebar.classList.remove('active');
   }
   if (!e.target.matches('#main .main__top .main__top__menu, #main .main__top .main__top__menu *')) {
     allMainDropdown.forEach(function (item) {
@@ -6183,125 +6056,6 @@ productImages.forEach(function (image) {
   return image.addEventListener("click", changeImage);
 });
 /* navItem.addEventListener('click', toggleNavigation()); */
-
-/***/ }),
-
-/***/ "./resources/js/slick.js":
-/*!*******************************!*\
-  !*** ./resources/js/slick.js ***!
-  \*******************************/
-/***/ (() => {
-
-$(document).ready(function () {
-  $('.partner-item').slick({
-    centerMode: true,
-    centerPadding: '0px',
-    slidesToShow: 5,
-    focusOnSelect: true,
-    autoplay: true,
-    autoplaySpeed: 1000,
-    arrows: true,
-    draggable: false,
-    prevArrow: '<button type="button" class="slick-prev pull-left"><i class="fa-sharp fa-solid fa-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next pull-right"><i class="fa-sharp fa-solid fa-arrow-right"></i></button>',
-    responsive: [{
-      breakpoint: 994,
-      settings: {
-        arrows: false,
-        centerMode: true,
-        slidesToShow: 3
-      }
-    }, {
-      breakpoint: 769,
-      settings: {
-        arrows: false,
-        centerMode: true,
-        slidesToShow: 2
-      }
-    }, {
-      breakpoint: 480,
-      settings: {
-        arrows: false,
-        centerMode: true,
-        slidesToShow: 1
-      }
-    }]
-  });
-  $('.slider-for').slick({
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: false,
-    fade: true,
-    asNavFor: '.slider-nav'
-  });
-  $('.slider-nav').slick({
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    centerPadding: '0px',
-    asNavFor: '.slider-for',
-    dots: false,
-    centerMode: true,
-    focusOnSelect: true
-  });
-  $('.slide-auto').slick({
-    centerMode: true,
-    centerPadding: '0px',
-    slidesToShow: 3,
-    focusOnSelect: true,
-    autoplay: true,
-    autoplaySpeed: 1000,
-    arrows: false,
-    draggable: false,
-    prevArrow: '<button type="button" class="slick-prev pull-left"><i class="fa-sharp fa-solid fa-arrow-left"></i></button>',
-    nextArrow: '<button type="button" class="slick-next pull-right"><i class="fa-sharp fa-solid fa-arrow-right"></i></button>',
-    responsive: [{
-      breakpoint: 1200,
-      settings: {
-        arrows: false,
-        centerMode: true,
-        slidesToShow: 2
-      }
-    }, {
-      breakpoint: 1024,
-      settings: {
-        arrows: false,
-        centerMode: true,
-        slidesToShow: 2
-      }
-    }, {
-      breakpoint: 768,
-      settings: {
-        arrows: false,
-        centerMode: true,
-        slidesToShow: 1
-      }
-    }, {
-      breakpoint: 480,
-      settings: {
-        arrows: false,
-        centerMode: true,
-        slidesToShow: 1
-      }
-    }]
-  });
-
-  ///slider
-
-  $('.slide-auto-slider').slick({
-    centerMode: true,
-    centerPadding: '0px',
-    slidesToShow: 1,
-    focusOnSelect: true,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    arrows: true,
-    draggable: true,
-    prevArrow: '<button type="button" class="slick-prev pull-left"></button>',
-    nextArrow: '<button type="button" class="slick-next pull-right"></button>'
-  });
-});
-
-///
 
 /***/ }),
 

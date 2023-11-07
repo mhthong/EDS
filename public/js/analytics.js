@@ -20,11 +20,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_3__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return { value: void 0, done: !0 }; } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable || "" === iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } throw new TypeError(_typeof(iterable) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
  // Import the CSS
@@ -38,26 +36,28 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     // Lấy ngày hiện tại
     var currentDate = new Date();
     return {
-      dateRange: [moment__WEBPACK_IMPORTED_MODULE_3___default()().startOf("day").add(1, "second"), moment__WEBPACK_IMPORTED_MODULE_3___default()().endOf("day").subtract(1, "second")],
+      dateRange: {
+        type: Object,
+        required: true // Nếu cần
+      },
+
+      newStartDate: null,
+      newEndDate: null,
       id: "",
       currentURL: "",
       apiData: [],
-      apiData_id: [],
+      apiDataNow: [],
+      apiDataPast: [],
       apiDataEmployee: [],
       apiDatalocation: [],
       apiDataGet: [],
       apiDataService: [],
-      Total_price: "",
-      Deposit_price: "",
-      Remaining_price: "",
-      servies_price: "",
-      Revenue: "",
-      RevenueDone: "",
-      RevenueRefund: "",
-      RevenueTatol: "",
-      Done_price: "",
-      Cancel_price: "",
-      Refund_price: "",
+      Total_price: 0,
+      Deposit_price: 0,
+      Remaining_price: 0,
+      servies_price: 0,
+      Revenue: 0,
+      RevenueTatol: 0,
       adminId: null,
       employeeId: null,
       artistId: null,
@@ -94,10 +94,13 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       fillerArrayService: [],
       fillerArrayServiceOld: [],
       PercentageService: [],
+      chartSplot: null,
       chartRevenue: null,
       resultArrayFilteredRevenue: [],
       updated_at_price: null,
       created_at_price: null,
+      fillerArrayEmployee: [],
+      fillerArrayEmployeeOld: [],
       key: null,
       resultArray: [],
       selectedOptions: [],
@@ -105,24 +108,35 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         Revenue: false,
         Service: false,
         Channel: false,
-        Location: false
+        Location: false,
+        splot: false
       }
     };
   },
   watch: {
-    dateRange: {
-      handler: function handler(newDateRange, oldDateRange) {
-        // Log khi dateRange thay đổi
-        this.dateRange.end = newDateRange.endDate;
-        this.dateRange.start = newDateRange.startDate;
-        this.chartRendered.Revenue = false;
-        this.chartRendered.Service = false;
-        this.chartRendered.Channel = false;
-        this.chartRendered.Location = false;
-        this.calculate();
-      },
-      deep: true // Theo dõi các sự thay đổi sâu trong object
-    }
+    dateRange: function dateRange(newDateRange, oldDateRange) {
+      var _this = this;
+      // Log khi dateRange thay đổi
+      this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_3___default()(newDateRange.endDate).format("YYYY-MM-DD");
+      this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_3___default()(newDateRange.startDate).format("YYYY-MM-DD");
+      var _this$calculateNewSta = this.calculateNewStartAndEndDates(this.dateRange.start, this.dateRange.end),
+        newStartDate = _this$calculateNewSta.newStartDate,
+        newEndDate = _this$calculateNewSta.newEndDate;
+      this.newStartDate = moment__WEBPACK_IMPORTED_MODULE_3___default()(newStartDate).format("YYYY-MM-DD");
+      this.newEndDate = moment__WEBPACK_IMPORTED_MODULE_3___default()(newEndDate).format("YYYY-MM-DD");
+      this.chartRendered.Revenue = false;
+      this.chartRendered.Service = false;
+      this.chartRendered.Channel = false;
+      this.chartRendered.Location = false;
+      this.chartRendered.splot = false;
+      Promise.all([this.fillerArrayLocation = [], this.fillerArrayLocationOld = [], this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end), this.fetchapiShowroomsDataPast(this.newStartDate, this.newEndDate), this.apiData_id = [], this.fetchapiData_id(this.dateRange.start, this.dateRange.end), this.fillerArraySource = [], this.fillerArraySourceOld = [], this.fetchapiSourceData(this.dateRange.start, this.dateRange.end), this.fetchapiSourceDataPast(this.newStartDate, this.newEndDate), this.fillerArrayService = [], this.fillerArrayServiceOld = [], this.fetchapiServiceData(this.dateRange.start, this.dateRange.end), this.fetchapiServiceDataPast(this.newStartDate, this.newEndDate), this.fillerArrayEmployee = [], this.fillerArrayEmployeeOld = [], this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end), this.fetchapiEmployeeDataPast(this.newStartDate, this.newEndDate)]).then(function () {
+        _this.Price();
+        // Tất cả API đã kết thúc
+        _this.toggleOption();
+        _this.handleSelectedOptions();
+      });
+    },
+    deep: true // Theo dõi các sự thay đổi sâu trong object
   },
   mounted: function mounted() {
     this.adminId = this.$root.adminId;
@@ -135,138 +149,269 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     // Kiểm tra nếu dateRange không có giá trị, đặt mặc định là ngày bắt đầu và ngày hiện tại
     if (!this.dateRange.start || !this.dateRange.end) {
       var _currentDate = new Date();
-      this.dateRange.start = new Date(_currentDate.getFullYear(), _currentDate.getMonth(), 1);
-      this.dateRange.end = _currentDate;
+      this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_3___default()(new Date(_currentDate.getFullYear(), _currentDate.getMonth(), 1)).format("YYYY-MM-DD");
+      this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_3___default()(_currentDate).format("YYYY-MM-DD");
     }
+    var _this$calculateNewSta2 = this.calculateNewStartAndEndDates(this.dateRange.start, this.dateRange.end),
+      newStartDate = _this$calculateNewSta2.newStartDate,
+      newEndDate = _this$calculateNewSta2.newEndDate;
+    this.newStartDate = moment__WEBPACK_IMPORTED_MODULE_3___default()(newStartDate).format("YYYY-MM-DD");
+    this.newEndDate = moment__WEBPACK_IMPORTED_MODULE_3___default()(newEndDate).format("YYYY-MM-DD");
     this.fetchapiDataEmployee();
     this.fetchShowrooms();
     this.fetchGet();
     this.fetchArtist();
     this.fetchServices();
-    this.fetchapiData_id();
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiServiceDataPast(this.newStartDate, this.newEndDate);
+    this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiShowroomsDataPast(this.newStartDate, this.newEndDate);
+    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiEmployeeDataPast(this.newStartDate, this.newEndDate);
+    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiSourceDataPast(this.newStartDate, this.newEndDate);
+    this.Price();
   },
   methods: {
-    fetchapiData_id: function fetchapiData_id() {
-      var _this = this;
+    fetchapiData_id: function fetchapiData_id(start, end) {
+      var _this2 = this;
       if (this.artistId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataArtist/ ".concat(start, "/").concat(end)).then(function (response) {
+          var _this2$totalByName;
           // Lọc dữ liệu dựa trên ArtistID
-          _this.apiData_id = response.data.filter(function (item) {
-            return item.ArtistID == _this.artistId && item.action === "approved";
-          });
-          _this.calculate();
+          _this2.apiData_id = Object.values(((_this2$totalByName = _this2.totalByName(response.data)) === null || _this2$totalByName === void 0 ? void 0 : _this2$totalByName.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this2.artistId);
+          })) || {});
+          _this2.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else if (this.employeeId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
-          // Lọc dữ liệu dựa trên source_id
-          _this.apiData_id = response.data.filter(function (item) {
-            return item.source_id == _this.employeeId;
-          });
-          _this.calculate();
+        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
+          var _this2$totalByName2;
+          _this2.apiData_id = Object.values(((_this2$totalByName2 = _this2.totalByName(response.data)) === null || _this2$totalByName2 === void 0 ? void 0 : _this2$totalByName2.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this2.employeeId);
+          })) || {});
+          _this2.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else {
-        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
-          _this.apiData_id = response.data;
-          _this.calculate();
+        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataShowroom/ ".concat(start, "/").concat(end)).then(function (response) {
+          // Nhận dữ liệu từ phản hồi
+          _this2.apiData_id = response.data;
+          _this2.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       }
     },
+    fetchapiShowroomsData: function fetchapiShowroomsData(start, end) {
+      var _this3 = this;
+      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataShowroom/ ".concat(start, "/").concat(end)).then(function (response) {
+        _this3.fillerArrayLocation = response.data;
+        // Tiếp tục xử lý dữ liệu và tính toán
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchapiShowroomsDataPast: function fetchapiShowroomsDataPast(start, end) {
+      var _this4 = this;
+      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataShowroom/".concat(start, "/").concat(end)).then(function (response) {
+        _this4.fillerArrayLocationOld = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchapiSourceData: function fetchapiSourceData(start, end) {
+      var _this5 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              _context.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataSource/ ".concat(start, "/").concat(end)).then(function (response) {
+                _this5.fillerArraySource = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context.next = 8;
+              break;
+            case 5:
+              _context.prev = 5;
+              _context.t0 = _context["catch"](0);
+              console.error("Error fetching API data:", _context.t0);
+            case 8:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee, null, [[0, 5]]);
+      }))();
+    },
+    fetchapiSourceDataPast: function fetchapiSourceDataPast(start, end) {
+      var _this6 = this;
+      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataSource/".concat(start, "/").concat(end)).then(function (response) {
+        _this6.fillerArraySourceOld = response.data;
+        // Tiếp tục xử lý dữ liệu và tính toán
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchapiServiceData: function fetchapiServiceData(start, end) {
+      var _this7 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              _context2.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataService/ ".concat(start, "/").concat(end)).then(function (response) {
+                _this7.fillerArrayService = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context2.next = 8;
+              break;
+            case 5:
+              _context2.prev = 5;
+              _context2.t0 = _context2["catch"](0);
+              console.error("Error fetching API data:", _context2.t0);
+            case 8:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2, null, [[0, 5]]);
+      }))();
+    },
+    fetchapiServiceDataPast: function fetchapiServiceDataPast(start, end) {
+      var _this8 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              _context3.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataService/".concat(start, "/").concat(end)).then(function (response) {
+                _this8.fillerArrayServiceOld = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context3.next = 8;
+              break;
+            case 5:
+              _context3.prev = 5;
+              _context3.t0 = _context3["catch"](0);
+              console.error("Error fetching API data:", _context3.t0);
+            case 8:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3, null, [[0, 5]]);
+      }))();
+    },
+    fetchapiEmployeeData: function fetchapiEmployeeData(start, end) {
+      var _this9 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              _context4.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataEmployee/ ".concat(start, "/").concat(end)).then(function (response) {
+                _this9.fillerArrayEmployee = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context4.next = 8;
+              break;
+            case 5:
+              _context4.prev = 5;
+              _context4.t0 = _context4["catch"](0);
+              console.error("Error fetching API data:", _context4.t0);
+            case 8:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4, null, [[0, 5]]);
+      }))();
+    },
+    fetchapiEmployeeDataPast: function fetchapiEmployeeDataPast(start, end) {
+      var _this10 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.prev = 0;
+              _context5.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
+                _this10.fillerArrayEmployeeOld = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context5.next = 8;
+              break;
+            case 5:
+              _context5.prev = 5;
+              _context5.t0 = _context5["catch"](0);
+              console.error("Error fetching API data:", _context5.t0);
+            case 8:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5, null, [[0, 5]]);
+      }))();
+    },
     fetchShowrooms: function fetchShowrooms() {
-      var _this2 = this;
+      var _this11 = this;
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/showrooms").then(function (response) {
-        _this2.apiDatalocation = response.data;
+        _this11.apiDatalocation = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
     fetchGet: function fetchGet() {
-      var _this3 = this;
+      var _this12 = this;
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/get").then(function (response) {
-        _this3.apiDataGet = response.data;
+        _this12.apiDataGet = response.data;
       })["catch"](function (error) {
         console.error("Error fetching Get::", error);
       });
     },
     fetchArtist: function fetchArtist() {
-      var _this4 = this;
+      var _this13 = this;
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/artist").then(function (response) {
-        _this4.apiDataAritst = response.data;
+        _this13.apiDataAritst = response.data;
       })["catch"](function (error) {
         console.error("Error fetching artist::", error);
       });
     },
     fetchServices: function fetchServices() {
-      var _this5 = this;
+      var _this14 = this;
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/services").then(function (response) {
-        _this5.apiDataServices = response.data;
+        _this14.apiDataServices = response.data;
       })["catch"](function (error) {
         console.error("Error fetching Services::", error);
       });
     },
     fetchapiDataEmployee: function fetchapiDataEmployee() {
-      var _this6 = this;
+      var _this15 = this;
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/employee").then(function (response) {
-        _this6.apiDataEmployee = response.data;
+        _this15.apiDataEmployee = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
-    },
-    calculate: function calculate() {
-      var _this7 = this;
-      // Kiểm tra nếu this.dateRange.end không có dữ liệu thì sử dụng ngày cuối của tháng hiện tại
-      if (!this.dateRange.end) {
-        var currentDate = new Date();
-        var lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        this.dateRange.end = lastDayOfMonth;
-      }
-
-      // Kiểm tra nếu this.dateRange.start không có dữ liệu thì sử dụng ngày đầu của tháng hiện tại
-      if (!this.dateRange.start) {
-        var _currentDate2 = new Date();
-        this.dateRange.start = new Date(_currentDate2.getFullYear(), _currentDate2.getMonth(), 1);
-      }
-      // Lọc các bản ghi thuộc tháng và năm hiện tại
-      this.filteredData = this.apiData_id.filter(function (booking) {
-        var updatedAtDate = new Date(booking.price.updated_at);
-        /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return updatedAtDate <= _this7.dateRange.end && updatedAtDate >= _this7.dateRange.start;
-      });
-      var startDate = new Date(this.dateRange.start);
-      var endDate = new Date(this.dateRange.end);
-      var monthsDifference = moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).diff(moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate), "months");
-      var newStartDate = new Date(startDate);
-      var newEndDate = new Date(endDate);
-      if (monthsDifference === 0) {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - 1);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - 1);
-      } else {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - monthsDifference);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - monthsDifference);
-      }
-      this.filteredDataChart = this.apiData_id.filter(function (booking) {
-        var updatedAtDate = new Date(booking.updated_at);
-        /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return updatedAtDate <= endDate && updatedAtDate >= newStartDate;
-      });
-      this.filteredData_con();
-      this.Price();
-      this.toggleOption();
     },
     toggleOption: function toggleOption(option) {
       if (this.selectedOptions.includes(option)) {
@@ -286,293 +431,78 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     handleSelectedOptions: function handleSelectedOptions() {
       // Handle different functions based on the selected options
       // Xử lý các hàm khác nhau dựa trên các lựa chọn đã chọn
-      if (this.selectedOptions.includes('Revenue') && !this.chartRendered.Revenue) {
+      if (this.selectedOptions.includes("Revenue") && !this.chartRendered.Revenue) {
         this.renderChartRevenue();
         this.chartRendered.Revenue = true;
       }
-      if (this.selectedOptions.includes('Service') && !this.chartRendered.Service) {
+      if (this.selectedOptions.includes("Service") && !this.chartRendered.Service && this.fillerArrayService != [] && this.fillerArrayServiceOld != []) {
         this.renderChartService();
         this.chartRendered.Service = true;
       }
-      if (this.selectedOptions.includes('Channel') && !this.chartRendered.Channel) {
+      if (this.selectedOptions.includes("Channel") && !this.chartRendered.Channel) {
         this.renderChartSource();
         this.chartRendered.Channel = true;
       }
-      if (this.selectedOptions.includes('Location') && !this.chartRendered.Location) {
+      if (this.selectedOptions.includes("Location") && !this.chartRendered.Location) {
         this.renderChartLocation();
         this.chartRendered.Location = true;
       }
-    },
-    filteredData_con: function filteredData_con() {
-      this.filteredDataWaiting = this.filteredData.filter(function (booking) {
-        var WaitingStatus = booking.status;
-        return WaitingStatus == "Waiting";
-      });
-      this.filteredDataDone = this.filteredData.filter(function (booking) {
-        var DoneStatus = booking.status;
-        return DoneStatus == "Done";
-      });
-      this.filteredDataRefund = this.filteredData.filter(function (booking) {
-        var RefundStatus = booking.status;
-        return RefundStatus == "Refund";
-      });
-      this.filteredDataCancel = this.filteredData.filter(function (booking) {
-        var CancelStatus = booking.status;
-        return CancelStatus == "Cancel";
-      });
+      if (this.selectedOptions.includes("splot") && !this.chartRendered.splot) {
+        this.renderChartSplot();
+        this.chartRendered.splot = true;
+      }
     },
     Price: function Price() {
-      var revenueCancel = this.filteredDataCancel.reduce(function (total, booking) {
-        var deposit = parseFloat(booking.price.Deposit_price);
-        if (!isNaN(deposit)) {
-          total += deposit;
-        }
-        return total;
-      }, 0);
+      var _this16 = this;
+      this.Total_price = 0;
+      this.Deposit_price = 0;
+      this.servies_price = 0;
+      this.RevenueTatol = 0;
+      this.numberOfBooks = 0;
+      if (this.adminId !== null) {
+        var data = this.totalByName(this.apiData_id);
+        data.forEach(function (item) {
+          _this16.Total_price += parseFloat(item.servies_price);
+          _this16.Deposit_price += parseFloat(item.Deposit_price);
+          _this16.servies_price += parseFloat(item.servies_price);
+          _this16.RevenueTatol += parseFloat(item.Revenue);
+          _this16.numberOfBooks = item.length;
+        });
+      } else {
+        var _data = this.apiData_id;
+        this.Total_price += parseFloat(_data[2]);
+        this.Deposit_price += parseFloat(_data[3]);
+        this.servies_price += parseFloat(_data[4]);
+        this.RevenueTatol += parseFloat(_data[5]);
+        this.numberOfBooks = _data[10];
+      }
 
-      // Tính tổng các giá trị từ dữ liệu đã lọc
-      this.Total_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Remaining_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Remaining_price);
-      }, 0).toFixed(2);
-      this.Deposit_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.Done_price = this.filteredDataDone.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Cancel_price = this.filteredDataCancel.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Refund_price = this.filteredDataRefund.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Revenue = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueDone = this.filteredDataDone.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueRefund = this.filteredDataRefund.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueTatol = parseFloat(this.RevenueRefund) + parseFloat(this.RevenueDone) + parseFloat(this.Revenue);
-      this.numberOfBooks = this.filteredData.length;
+      // Lặp qua danh sách dữ liệu và tính tổng
     },
     renderChartRevenue: function renderChartRevenue() {
-      var startDate = new Date(this.dateRange.start);
-      var endDate = new Date(this.dateRange.end);
-      var monthsDifference = moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).diff(moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate), "months");
-      var newStartDate = new Date(startDate);
-      var newEndDate = new Date(endDate);
-      if (monthsDifference === 0) {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - 1);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - 1);
-      } else {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - monthsDifference);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - monthsDifference);
-      }
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
-
+      var _this17 = this;
       var ctx = this.$refs.mychartRevenue.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMap = new Map();
-      var resultArrayEmployee = [];
-      var resultArrayEmployeeNew = [];
 
       // Xử lý dữ liệu apiDataEmployee trước
       var employeeDataMap = {};
       this.apiDataEmployee.forEach(function (employee) {
         employeeDataMap[employee.name] = employee;
       });
-      var currentDateEmployee = new Date(startDate);
-      var currentDateEmployeeNew = new Date(newStartDate);
-      this.fillerRangeDate(currentDateEmployee, endDate, employeeDataMap, resultArrayEmployee, this.filteredDataChart, "Revenue");
-      this.fillerRangeDate(currentDateEmployeeNew, newEndDate, employeeDataMap, resultArrayEmployeeNew, this.filteredDataChart, "Revenue");
-      this.calculateAllDataDate(resultArrayEmployeeNew);
-      this.calculateAllDataDate(resultArrayEmployee);
-      var Name_Chart = moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(startDate, endDate, resultArrayEmployee, Name_Chart);
-      var Name_Chart_New = moment__WEBPACK_IMPORTED_MODULE_3___default()(newStartDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(newEndDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(newStartDate, newEndDate, resultArrayEmployeeNew, Name_Chart_New);
-      var resultArray = [].concat(Object.values(resultArrayEmployee).filter(function (item) {
-        return item.source_name === Name_Chart;
-      }), Object.values(resultArrayEmployeeNew).filter(function (item) {
-        return item.source_name === Name_Chart_New;
-      }));
-      var groupedData = this.synthetic(resultArray);
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredRevenue = Object.values(groupedData);
-      var datasets = this.creatDatasetsMap(resultArray, datasetsMap);
-      if (this.chartRevenue) {
-        this.chartRevenue.destroy();
-      }
-      this.chartRevenue = this.createdChart(sortedLabels, datasets, ctx);
-    },
-    renderChartService: function renderChartService() {
-      var startDate = new Date(this.dateRange.start);
-      var endDate = new Date(this.dateRange.end);
-      var monthsDifference = moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).diff(moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate), "months");
-      var newStartDate = new Date(startDate);
-      var newEndDate = new Date(endDate);
-      if (monthsDifference === 0) {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - 1);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - 1);
-      } else {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - monthsDifference);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - monthsDifference);
-      }
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
-
-      var ctxService = this.$refs.myChartService.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMapService = new Map();
-      var resultArrayService = [];
-      var resultArrayServiceOld = [];
-      var ServiceDataMap = {};
-      this.apiDataServices.forEach(function (Service) {
-        ServiceDataMap[Service.Name] = Service;
-      });
-      var currentDateService = new Date(startDate);
-      var currentDateServiceOld = new Date(newStartDate);
-      this.fillerRangeDate(currentDateService, endDate, ServiceDataMap, resultArrayService, this.filteredDataChart, "Service");
-      this.fillerRangeDate(currentDateServiceOld, newEndDate, ServiceDataMap, resultArrayServiceOld, this.filteredDataChart, "Service");
-      this.calculateAllDataDate(resultArrayService);
-      this.calculateAllDataDate(resultArrayServiceOld);
-      var Name_Chart = moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(startDate, endDate, resultArrayService, Name_Chart);
-      var Name_Chart_New = moment__WEBPACK_IMPORTED_MODULE_3___default()(newStartDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(newEndDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(newStartDate, newEndDate, resultArrayServiceOld, Name_Chart_New);
-      var resultArray = [].concat(Object.values(resultArrayService).filter(function (item) {
-        return item.source_name === Name_Chart;
-      }), Object.values(resultArrayServiceOld).filter(function (item) {
-        return item.source_name === Name_Chart_New;
-      }));
-      this.fillerArrayService = this.synthetic(Object.values(resultArrayService).filter(function (item) {
-        return item.source_name !== Name_Chart;
-      }));
-      this.fillerArrayServiceOld = this.synthetic(Object.values(resultArrayServiceOld).filter(function (item) {
-        return item.source_name !== Name_Chart_New;
-      }));
-      this.PercentageService = this.compareArraysAndPrint(Object.values(this.fillerArrayService), Object.values(this.fillerArrayServiceOld));
-      var groupedData = this.synthetic(resultArray);
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredService = Object.values(groupedData);
-      var datasets = this.creatDatasetsMap(resultArray, datasetsMapService);
-      if (this.chartService) {
-        this.chartService.destroy();
-      }
-      this.chartService = this.createdChart(sortedLabels, datasets, ctxService);
-    },
-    renderChartSource: function renderChartSource() {
-      var _this8 = this;
-      // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = new Date(this.dateRange.start);
-      var endDate = new Date(this.dateRange.end);
-      var monthsDifference = moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).diff(moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate), "months");
-      var newStartDate = new Date(startDate);
-      var newEndDate = new Date(endDate);
-      if (monthsDifference === 0) {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - 1);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - 1);
-      } else {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - monthsDifference);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - monthsDifference);
-      }
-      var ctxSource = this.$refs.myChartSource.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMapSource = new Map();
-      var resultArraySource = [];
-      var resultArraySourceOld = [];
-      var SourceDataMap = {};
-      this.apiDataGet.forEach(function (Source) {
-        SourceDataMap[Source.source_data] = Source;
-      });
-      var currentDateSource = new Date(startDate);
-      var currentDateSourceOld = new Date(newStartDate);
-      this.fillerRangeDate(currentDateSource, endDate, SourceDataMap, resultArraySource, this.filteredDataChart, "Source");
-      this.fillerRangeDate(currentDateSourceOld, newEndDate, SourceDataMap, resultArraySourceOld, this.filteredDataChart, "Source");
-      this.calculateAllDataDate(resultArraySource);
-      this.calculateAllDataDate(resultArraySourceOld);
-      var Name_Chart = moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(startDate, endDate, resultArraySource, Name_Chart);
-      var Name_Chart_New = moment__WEBPACK_IMPORTED_MODULE_3___default()(newStartDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(newEndDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(newStartDate, newEndDate, resultArraySourceOld, Name_Chart_New);
-      this.fillerArraySource = this.synthetic(Object.values(resultArraySource).filter(function (item) {
-        return item.source_name !== Name_Chart;
-      }));
-      this.fillerArraySourceOld = this.synthetic(Object.values(resultArraySourceOld).filter(function (item) {
-        return item.source_name !== Name_Chart_New;
-      }));
-      var resultArray = [].concat(this.fillerArraySource, this.fillerArraySourceOld);
-      this.PercentageSource = this.compareArraysAndPrint(Object.values(this.fillerArraySource), Object.values(this.fillerArraySourceOld));
-      var resultArrayall = [].concat(Object.values(resultArraySource).filter(function (item) {
-        return item.source_name === Name_Chart;
-      }), Object.values(resultArraySourceOld).filter(function (item) {
-        return item.source_name === Name_Chart_New;
-      }));
-      var groupedData = this.synthetic(resultArrayall);
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredSource = Object.values(groupedData);
-      var sortedLabels = Object.keys(SourceDataMap);
+      var Name_Chart = this.dateRange.start + "  " + this.dateRange.end;
+      var Name_Chart_New = this.newStartDate + "  " + this.newEndDate;
+      var sortedLabels = Object.keys(employeeDataMap);
 
       // 2. Sử dụng map để tạo datasets
       var datasets = sortedLabels.map(function (label) {
+        var _this17$totalByName, _this17$totalByName2;
         // Tìm dữ liệu hiện tại và quá khứ dựa trên label
-        var currentDataForLabel = Object.values(_this8.fillerArraySource).find(function (filler) {
-          return filler.source_name === label;
-        });
-        var pastDataForLabel = Object.values(_this8.fillerArraySourceOld).find(function (filler) {
-          return filler.source_name === label;
-        });
+
+        var currentDataForLabel = Object.values(((_this17$totalByName = _this17.totalByName(_this17.fillerArrayEmployee)) === null || _this17$totalByName === void 0 ? void 0 : _this17$totalByName.find(function (filler) {
+          return filler.Name === label;
+        })) || {});
+        var pastDataForLabel = Object.values(((_this17$totalByName2 = _this17.totalByName(_this17.fillerArrayEmployeeOld)) === null || _this17$totalByName2 === void 0 ? void 0 : _this17$totalByName2.find(function (filler) {
+          return filler.Name === label;
+        })) || {});
 
         // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
         var currentData = [];
@@ -581,8 +511,319 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         // Kiểm tra nếu dữ liệu hiện tại và quá khứ tồn tại
         if (currentDataForLabel && pastDataForLabel) {
           // Đảm bảo rằng có hai giá trị tương ứng với quá khứ và hiện tại
-          currentData.push(currentDataForLabel.splot);
-          pastData.push(pastDataForLabel.splot);
+          currentData.push(currentDataForLabel[5]);
+          pastData.push(pastDataForLabel[5]);
+        } else {
+          // Trong trường hợp không tìm thấy dữ liệu, thêm giá trị 0
+          currentData.push(0);
+          pastData.push(0);
+        }
+        return {
+          label: label,
+          backgroundColor: ["rgba(75, 192, 192, 0.2)", "rgba(192, 75, 75, 0.2)"],
+          borderColor: ["rgba(75, 192, 192, 1)", "rgba(192, 75, 75, 1)"],
+          borderWidth: 1,
+          data: currentData.concat(pastData) // Dữ liệu cột hiện tại và quá khứ
+        };
+      });
+
+      // Tạo dữ liệu theo cấu trúc bạn yêu cầu
+      var data = {
+        labels: sortedLabels,
+        datasets: [{
+          label: Name_Chart,
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+          data: datasets.map(function (dataset) {
+            return dataset.data[0];
+          }) // Lấy giá trị hiện tại từ mảng datasets
+        }, {
+          label: Name_Chart_New,
+          backgroundColor: "rgba(192, 75, 75, 0.2)",
+          borderColor: "rgba(192, 75, 75, 1)",
+          borderWidth: 1,
+          data: datasets.map(function (dataset) {
+            return dataset.data[1];
+          }) // Lấy giá trị quá khứ từ mảng datasets
+        }]
+      };
+
+      if (this.chartRevenue) {
+        this.chartRevenue.destroy();
+      }
+      this.chartRevenue = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctx, {
+        type: "line",
+        // Chọn loại biểu đồ là line
+        data: data,
+        options: {
+          scales: {
+            x: {
+              maxRotation: 0,
+              // Góc xoay tối đa là 0 độ
+              minRotation: 0,
+              // Góc xoay tối thiểu là 0 độ
+              beginAtZero: true,
+              // Bắt đầu từ 0
+              maxTicksLimit: 10,
+              scaleLabel: {
+                display: true,
+                labelString: "X-axis Label"
+              }
+            },
+            y: {
+              stacked: false,
+              beginAtZero: true,
+              scaleLabel: {
+                display: true,
+                labelString: "Y-axis Label"
+              }
+            }
+          }
+        }
+      });
+    },
+    renderChartSplot: function renderChartSplot() {
+      var _this18 = this;
+      var ctx = this.$refs.mychartSplot.getContext("2d");
+
+      // Xử lý dữ liệu apiDataEmployee trước
+      var employeeDataMap = {};
+      this.apiDataEmployee.forEach(function (employee) {
+        employeeDataMap[employee.name] = employee;
+      });
+      var Name_Chart = this.dateRange.start + "  " + this.dateRange.end;
+      var Name_Chart_New = this.newStartDate + "  " + this.newEndDate;
+      var sortedLabels = Object.keys(employeeDataMap);
+
+      // 2. Sử dụng map để tạo datasets
+      var datasets = sortedLabels.map(function (label) {
+        var _this18$totalByName, _this18$totalByName2;
+        // Tìm dữ liệu hiện tại và quá khứ dựa trên label
+
+        var currentDataForLabel = Object.values(((_this18$totalByName = _this18.totalByName(_this18.fillerArrayEmployee)) === null || _this18$totalByName === void 0 ? void 0 : _this18$totalByName.find(function (filler) {
+          return filler.Name === label;
+        })) || {});
+        var pastDataForLabel = Object.values(((_this18$totalByName2 = _this18.totalByName(_this18.fillerArrayEmployeeOld)) === null || _this18$totalByName2 === void 0 ? void 0 : _this18$totalByName2.find(function (filler) {
+          return filler.Name === label;
+        })) || {});
+        console.log(_this18.fillerArrayEmployee, currentDataForLabel, pastDataForLabel);
+        // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
+        var currentData = [];
+        var pastData = [];
+
+        // Kiểm tra nếu dữ liệu hiện tại và quá khứ tồn tại
+        if (currentDataForLabel && pastDataForLabel) {
+          // Đảm bảo rằng có hai giá trị tương ứng với quá khứ và hiện tại
+          currentData.push(currentDataForLabel[11]);
+          pastData.push(pastDataForLabel[11]);
+        } else {
+          // Trong trường hợp không tìm thấy dữ liệu, thêm giá trị 0
+          currentData.push(0);
+          pastData.push(0);
+        }
+        console.log(currentData, pastData);
+        return {
+          label: label,
+          backgroundColor: ["rgba(75, 192, 192, 0.2)", "rgba(192, 75, 75, 0.2)"],
+          borderColor: ["rgba(75, 192, 192, 1)", "rgba(192, 75, 75, 1)"],
+          borderWidth: 1,
+          data: currentData.concat(pastData) // Dữ liệu cột hiện tại và quá khứ
+        };
+      });
+
+      // Tạo dữ liệu theo cấu trúc bạn yêu cầu
+      var data = {
+        labels: sortedLabels,
+        datasets: [{
+          label: Name_Chart,
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+          data: datasets.map(function (dataset) {
+            return dataset.data[0];
+          }) // Lấy giá trị hiện tại từ mảng datasets
+        }, {
+          label: Name_Chart_New,
+          backgroundColor: "rgba(192, 75, 75, 0.2)",
+          borderColor: "rgba(192, 75, 75, 1)",
+          borderWidth: 1,
+          data: datasets.map(function (dataset) {
+            return dataset.data[1];
+          }) // Lấy giá trị quá khứ từ mảng datasets
+        }]
+      };
+
+      if (this.chartSplot) {
+        this.chartSplot.destroy();
+      }
+      this.chartSplot = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctx, {
+        type: "line",
+        // Chọn loại biểu đồ là line
+        data: data,
+        options: {
+          scales: {
+            x: {
+              maxRotation: 0,
+              // Góc xoay tối đa là 0 độ
+              minRotation: 0,
+              // Góc xoay tối thiểu là 0 độ
+              beginAtZero: true,
+              // Bắt đầu từ 0
+              maxTicksLimit: 10,
+              scaleLabel: {
+                display: true,
+                labelString: "X-axis Label"
+              }
+            },
+            y: {
+              stacked: false,
+              beginAtZero: true,
+              scaleLabel: {
+                display: true,
+                labelString: "Y-axis Label"
+              }
+            }
+          }
+        }
+      });
+    },
+    renderChartService: function renderChartService() {
+      var _this19 = this;
+      var ctxService = this.$refs.myChartService.getContext("2d");
+      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
+
+      var Name_Chart = this.dateRange.start + "  " + this.dateRange.end;
+      var Name_Chart_New = this.newStartDate + "  " + this.newEndDate;
+      var ServiceDataMap = {};
+      this.apiDataServices.forEach(function (Service) {
+        ServiceDataMap[Service.Name] = Service;
+      });
+      var sortedLabels = Object.keys(ServiceDataMap);
+
+      // 2. Sử dụng map để tạo datasets
+      var datasets = sortedLabels.map(function (label) {
+        var _this19$totalByName, _this19$totalByName2;
+        // Tìm dữ liệu hiện tại và quá khứ dựa trên label
+
+        var currentDataForLabel = Object.values(((_this19$totalByName = _this19.totalByName(_this19.fillerArrayService)) === null || _this19$totalByName === void 0 ? void 0 : _this19$totalByName.find(function (filler) {
+          return filler.Name === label;
+        })) || {});
+        var pastDataForLabel = Object.values(((_this19$totalByName2 = _this19.totalByName(_this19.fillerArrayServiceOld)) === null || _this19$totalByName2 === void 0 ? void 0 : _this19$totalByName2.find(function (filler) {
+          return filler.Name === label;
+        })) || {});
+
+        // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
+        var currentData = [];
+        var pastData = [];
+
+        // Kiểm tra nếu dữ liệu hiện tại và quá khứ tồn tại
+        if (currentDataForLabel && pastDataForLabel) {
+          // Đảm bảo rằng có hai giá trị tương ứng với quá khứ và hiện tại
+          currentData.push(currentDataForLabel[3]);
+          pastData.push(pastDataForLabel[3]);
+        } else {
+          // Trong trường hợp không tìm thấy dữ liệu, thêm giá trị 0
+          currentData.push(0);
+          pastData.push(0);
+        }
+        return {
+          label: label,
+          backgroundColor: ["rgba(75, 192, 192, 0.2)", "rgba(192, 75, 75, 0.2)"],
+          borderColor: ["rgba(75, 192, 192, 1)", "rgba(192, 75, 75, 1)"],
+          borderWidth: 1,
+          data: currentData.concat(pastData) // Dữ liệu cột hiện tại và quá khứ
+        };
+      });
+
+      // Tạo dữ liệu theo cấu trúc bạn yêu cầu
+      var data = {
+        labels: sortedLabels,
+        datasets: [{
+          label: Name_Chart,
+          backgroundColor: "rgba(75, 192, 192, 0.2)",
+          borderColor: "rgba(75, 192, 192, 1)",
+          borderWidth: 1,
+          data: datasets.map(function (dataset) {
+            return dataset.data[0];
+          }) // Lấy giá trị hiện tại từ mảng datasets
+        }, {
+          label: Name_Chart_New,
+          backgroundColor: "rgba(192, 75, 75, 0.2)",
+          borderColor: "rgba(192, 75, 75, 1)",
+          borderWidth: 1,
+          data: datasets.map(function (dataset) {
+            return dataset.data[1];
+          }) // Lấy giá trị quá khứ từ mảng datasets
+        }]
+      };
+
+      if (this.chartService) {
+        this.chartService.destroy();
+      }
+      this.chartService = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctxService, {
+        type: "line",
+        // Chọn loại biểu đồ là line
+        data: data,
+        options: {
+          scales: {
+            x: {
+              maxRotation: 0,
+              // Góc xoay tối đa là 0 độ
+              minRotation: 0,
+              // Góc xoay tối thiểu là 0 độ
+              beginAtZero: true,
+              // Bắt đầu từ 0
+              maxTicksLimit: 10,
+              scaleLabel: {
+                display: true,
+                labelString: "X-axis Label"
+              }
+            },
+            y: {
+              stacked: false,
+              beginAtZero: true,
+              scaleLabel: {
+                display: true,
+                labelString: "Y-axis Label"
+              }
+            }
+          }
+        }
+      });
+    },
+    renderChartSource: function renderChartSource() {
+      var _this20 = this;
+      // Sắp xếp các labels theo thứ tự tăng dần
+      var ctxSource = this.$refs.myChartSource.getContext("2d");
+      var SourceDataMap = {};
+      this.apiDataGet.forEach(function (Source) {
+        SourceDataMap[Source.source_data] = Source;
+      });
+      var Name_Chart = this.dateRange.start + "  " + this.dateRange.end;
+      var Name_Chart_New = this.newStartDate + "  " + this.newEndDate;
+      var sortedLabels = Object.keys(SourceDataMap);
+
+      // 2. Sử dụng map để tạo datasets
+      var datasets = sortedLabels.map(function (label) {
+        // Tìm dữ liệu hiện tại và quá khứ dựa trên label
+
+        var currentDataForLabel = Object.values(_this20.totalByName(_this20.fillerArraySource).find(function (filler) {
+          return filler.Name === label;
+        }));
+        var pastDataForLabel = Object.values(_this20.totalByName(_this20.fillerArraySourceOld).find(function (filler) {
+          return filler.Name === label;
+        }));
+
+        // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
+        var currentData = [];
+        var pastData = [];
+
+        // Kiểm tra nếu dữ liệu hiện tại và quá khứ tồn tại
+        if (currentDataForLabel && pastDataForLabel) {
+          // Đảm bảo rằng có hai giá trị tương ứng với quá khứ và hiện tại
+          currentData.push(currentDataForLabel[3]);
+          pastData.push(pastDataForLabel[3]);
         } else {
           // Trong trường hợp không tìm thấy dữ liệu, thêm giá trị 0
           currentData.push(0);
@@ -640,78 +881,28 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       });
     },
     renderChartLocation: function renderChartLocation() {
-      var _this9 = this;
+      var _this21 = this;
       // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = new Date(this.dateRange.start);
-      var endDate = new Date(this.dateRange.end);
-      var monthsDifference = moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).diff(moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate), "months");
-      var newStartDate = new Date(startDate);
-      var newEndDate = new Date(endDate);
-      if (monthsDifference === 0) {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - 1);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - 1);
-      } else {
-        // Calculate the new start date that's one month earlier
-
-        newStartDate.setMonth(newStartDate.getMonth() - monthsDifference);
-
-        // Calculate the new end date that's one month earlier
-
-        newEndDate.setMonth(newEndDate.getMonth() - monthsDifference);
-      }
       var ctxLocation = this.$refs.myChartLocation.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMapLocation = new Map();
-      var resultArrayLocation = [];
-      var resultArrayLocationOld = [];
       var LocationDataMap = {};
       this.apiDatalocation.forEach(function (Location) {
         LocationDataMap[Location.Name] = Location;
       });
-      var currentDateLocation = new Date(startDate);
-      var currentDateLocationOld = new Date(newStartDate);
-      this.fillerRangeDate(currentDateLocation, endDate, LocationDataMap, resultArrayLocation, this.filteredDataChart, "Location");
-      this.fillerRangeDate(currentDateLocationOld, newEndDate, LocationDataMap, resultArrayLocationOld, this.filteredDataChart, "Location");
-      this.calculateAllDataDate(resultArrayLocation);
-      this.calculateAllDataDate(resultArrayLocationOld);
-      var Name_Chart = moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(startDate, endDate, resultArrayLocation, Name_Chart);
-      var Name_Chart_New = moment__WEBPACK_IMPORTED_MODULE_3___default()(newStartDate).format("YYYY-MM-DD") + "  " + moment__WEBPACK_IMPORTED_MODULE_3___default()(newEndDate).format("YYYY-MM-DD");
-      this.fillerRangeDateAll(newStartDate, newEndDate, resultArrayLocationOld, Name_Chart_New);
-      this.fillerArrayLocation = this.synthetic(Object.values(resultArrayLocation).filter(function (item) {
-        return item.source_name !== Name_Chart;
-      }));
-      this.fillerArrayLocationOld = this.synthetic(Object.values(resultArrayLocationOld).filter(function (item) {
-        return item.source_name !== Name_Chart_New;
-      }));
-      var resultArray = [].concat(this.fillerArrayLocation, this.fillerArrayLocationOld);
-      this.PercentageLocation = this.compareArraysAndPrint(Object.values(this.fillerArrayLocation), Object.values(this.fillerArrayLocationOld));
-      var resultArrayall = [].concat(Object.values(resultArrayLocation).filter(function (item) {
-        return item.source_name === Name_Chart;
-      }), Object.values(resultArrayLocationOld).filter(function (item) {
-        return item.source_name === Name_Chart_New;
-      }));
-      var groupedData = this.synthetic(resultArrayall);
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredLocation = Object.values(groupedData);
+      var Name_Chart = this.dateRange.start + "  " + this.dateRange.end;
+      var Name_Chart_New = this.newStartDate + "  " + this.newEndDate;
       var sortedLabels = Object.keys(LocationDataMap);
 
       // 2. Sử dụng map để tạo datasets
       var datasets = sortedLabels.map(function (label) {
+        var _this21$totalByName, _this21$totalByName2;
         // Tìm dữ liệu hiện tại và quá khứ dựa trên label
-        var currentDataForLabel = Object.values(_this9.fillerArrayLocation).find(function (filler) {
-          return filler.source_name === label;
-        });
-        var pastDataForLabel = Object.values(_this9.fillerArrayLocationOld).find(function (filler) {
-          return filler.source_name === label;
-        });
+
+        var currentDataForLabel = Object.values((_this21$totalByName = _this21.totalByName(_this21.fillerArrayLocation)) === null || _this21$totalByName === void 0 ? void 0 : _this21$totalByName.find(function (filler) {
+          return filler.Name === label;
+        }));
+        var pastDataForLabel = Object.values((_this21$totalByName2 = _this21.totalByName(_this21.fillerArrayLocationOld)) === null || _this21$totalByName2 === void 0 ? void 0 : _this21$totalByName2.find(function (filler) {
+          return filler.Name === label;
+        }));
 
         // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
         var currentData = [];
@@ -720,8 +911,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         // Kiểm tra nếu dữ liệu hiện tại và quá khứ tồn tại
         if (currentDataForLabel && pastDataForLabel) {
           // Đảm bảo rằng có hai giá trị tương ứng với quá khứ và hiện tại
-          currentData.push(currentDataForLabel.splot);
-          pastData.push(pastDataForLabel.splot);
+          currentData.push(currentDataForLabel[3]);
+          pastData.push(pastDataForLabel[3]);
         } else {
           // Trong trường hợp không tìm thấy dữ liệu, thêm giá trị 0
           currentData.push(0);
@@ -778,31 +969,53 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         }
       });
     },
-    synthetic: function synthetic(resultArray) {
-      var groupedData = {};
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach(function (item) {
-        var key = "".concat(item.source_id, "-").concat(item.source_name);
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
+    totalByName: function totalByName(data) {
+      // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
+      var totals = {};
+
+      // Lặp qua các ngày trong dữ liệu của bạn
+      for (var date in data) {
+        var fillerDatas = data[date];
+        for (var Id in fillerDatas) {
+          var fillerData = fillerDatas[Id];
+          var Name = fillerData.Name;
+          var id = fillerData.id;
+          var total_price = fillerData.Total_price;
+
+          // Nếu tên dịch vụ chưa tồn tại trong totals, thì khởi tạo nó với giá trị ban đầu
+          if (!totals[Name]) {
+            totals[Name] = {
+              id: id,
+              Name: Name,
               Total_price: 0,
               Deposit_price: 0,
               servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          };
+              Revenue: 0,
+              Done_price: 0,
+              Cancel_price: 0,
+              Refund_price: 0,
+              Remaining_price: 0,
+              length: 0,
+              length_real: 0
+            };
+          }
+          // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
+          totals[Name].Total_price += total_price;
+          totals[Name].Deposit_price += fillerData.Deposit_price;
+          totals[Name].servies_price += fillerData.servies_price;
+          totals[Name].Revenue += fillerData.revenue;
+          totals[Name].Done_price += fillerData.Done_price;
+          totals[Name].Cancel_price += fillerData.Cancel_price;
+          totals[Name].Refund_price += fillerData.Refund_price;
+          totals[Name].Remaining_price += fillerData.Remaining_price;
+          totals[Name].length += fillerData.length;
+          totals[Name].length_real += fillerData.length_real;
         }
-        // Tính tổng giá
-        for (var priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-      return groupedData;
+      }
+
+      // Chuyển đối tượng totals thành một mảng nếu cần
+      var totalsArray = Object.values(totals);
+      return totalsArray;
     },
     createdChart: function createdChart(sortedLabels, datasets, ctx) {
       // Check if a chartRevenue instance already exists and destroy it
@@ -833,302 +1046,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
       return thisChart;
     },
-    calculateAllDataDate: function calculateAllDataDate(Array) {
-      for (var i = 0; i < Object.values(Array).length; i++) {
-        // Bỏ qua nếu update_at là null
-        if (Object.values(Array)[i].updated_at < Object.values(Array)[i].created_at) {
-          continue;
-        }
-        for (var j = 0; j < Object.values(Array).length; j++) {
-          if (i !== j && Object.values(Array)[i].updated_at === Object.values(Array)[j].created_at) {
-            Object.values(Array)[j].price.Revenue += Object.values(Array)[i].price.Total_price - Object.values(Array)[i].price.Deposit_price;
-          }
-        }
-      }
-      return Array;
-    },
-    fillerRangeDate: function fillerRangeDate(start, end, DataMap, resultArray, filteredData, fillerkey) {
-      var _this10 = this;
-      var key;
-      var keydata;
-      var data;
-      var name_array;
-      var _loop = function _loop() {
-        var year = start.getFullYear();
-        var month = String(start.getMonth() + 1).padStart(2, "0");
-        var day = String(start.getDate()).padStart(2, "0");
-        var formattedDate = "".concat(year, "-").concat(month, "-").concat(day);
-        Object.keys(DataMap).forEach(function (name) {
-          if (fillerkey == "Revenue") {
-            data = DataMap[name];
-            name_array = data.name;
-            keydata = "".concat(name, "-").concat(data.id, "-").concat(year, "-").concat(month, "-").concat(day);
-          } else if (fillerkey == "Service") {
-            data = DataMap[name];
-            name_array = data.Name;
-            keydata = "".concat(data.id, "-").concat(year, "-").concat(month, "-").concat(day);
-          } else if (fillerkey == "Source") {
-            data = DataMap[name];
-            name_array = data.source_data;
-            keydata = "".concat(data.source_data, "-").concat(year, "-").concat(month, "-").concat(day);
-          } else if (fillerkey == "Location") {
-            data = DataMap[name];
-            name_array = data.Name;
-            keydata = "".concat(data.id, "-").concat(year, "-").concat(month, "-").concat(day);
-          }
-
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          var tempArray = [];
-          filteredData.forEach(function (item) {
-            var createdAt = new Date(item.price.created_at);
-            var itemYear = createdAt.getFullYear();
-            var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            var itemDay = String(createdAt.getDate()).padStart(2, "0");
-            if (fillerkey === "Revenue") {
-              key = "".concat(item.source_name, "-").concat(item.source_id, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            } else if (fillerkey == "Service") {
-              key = "".concat(item.services[0].id, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            } else if (fillerkey == "Source") {
-              key = "".concat(item.source_data, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            } else if (fillerkey == "Location") {
-              key = "".concat(item.ShowroomID, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            }
-            var updatedAtDate = new Date(item.price.updated_at);
-            var updateitemYear = updatedAtDate.getFullYear();
-            var updateitemMonth = String(updatedAtDate.getMonth() + 1).padStart(2, "0");
-            var updateitemDay = String(updatedAtDate.getDate()).padStart(2, "0");
-
-            // Add the 'status' property to the merged item.
-            if (key === keydata) {
-              _this10.statusbooking = item.status;
-              _this10.updated_at_price = "".concat(updateitemYear, "-").concat(updateitemMonth, "-").concat(updateitemDay);
-              tempArray.push(_objectSpread(_objectSpread({}, item), {}, {
-                status: _this10.statusbooking,
-                // Replace 'some_status_value' with the actual status property you want to add.
-                updated_at: _this10.updated_at_price
-              }));
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-            var mergedItem = tempArray.reduce(function (merged, item) {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.price.Revenue += parseInt(item.price.Deposit_price);
-              merged.splot += 1;
-              return merged;
-            }, {
-              source_name: name_array,
-              avatar: data.avatar,
-              source_id: data.id,
-              created_at: formattedDate,
-              updated_at: _this10.updated_at_price,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0
-              },
-              splot: 0,
-              status: _this10.statusbooking
-            });
-            if (!resultArray[keydata]) {
-              resultArray[keydata] = mergedItem;
-              // Update the 'status' property.
-            } else {
-              resultArray[keydata].price.Total_price += mergedItem.price.Total_price;
-              resultArray[keydata].price.Deposit_price += mergedItem.price.Deposit_price;
-              resultArray[keydata].price.servies_price += mergedItem.price.servies_price;
-              resultArray[keydata].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArray[keydata] = {
-              source_name: name_array,
-              avatar: data.avatar,
-              source_id: data.id,
-              created_at: formattedDate,
-              updated_at: _this10.updated_at_price,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0
-              },
-              splot: 0,
-              status: _this10.statusbooking
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        start.setDate(start.getDate() + 1);
-        _this10.updated_at_price = null;
-        _this10.statusbooking = null;
-      };
-      while (start <= end) {
-        _loop();
-      }
-      return resultArray;
-    },
-    fillerRangeDateAll: function fillerRangeDateAll(start, end, resultArray, name) {
-      var _loop2 = function _loop2() {
-        var year = start.getFullYear();
-        var month = String(start.getMonth() + 1).padStart(2, "0");
-        var day = String(start.getDate()).padStart(2, "0");
-        var formattedDate = "".concat(year, "-").concat(month, "-").concat(day);
-        var tempArrayAll = [];
-        Object.values(resultArray).forEach(function (item) {
-          var createdAt = new Date(item.created_at);
-          var itemYear = createdAt.getFullYear();
-          var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          var itemDay = String(createdAt.getDate()).padStart(2, "0");
-          var keyAll = "".concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-          if (keyAll === formattedDate) {
-            tempArrayAll.push(item);
-          }
-        });
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArray
-          var mergedItem = tempArrayAll.reduce(function (merged, item) {
-            merged.price.Total_price += parseInt(item.price.Total_price);
-            merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-            merged.price.servies_price += parseInt(item.price.servies_price);
-            merged.price.Revenue += parseInt(item.price.Revenue);
-            merged.splot += parseInt(item.splot);
-            return merged;
-          }, {
-            source_name: name,
-            avatar: name,
-            source_id: name,
-            created_at: formattedDate,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          });
-          if (!resultArray[formattedDate]) {
-            resultArray[formattedDate] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArray thay vì gán lại
-            resultArray[formattedDate].price.Total_price = mergedItem.price.Total_price;
-            resultArray[formattedDate].price.Deposit_price = mergedItem.price.Deposit_price;
-            resultArray[formattedDate].price.servies_price = mergedItem.price.servies_price;
-            resultArray[formattedDate].price.Revenue = mergedItem.price.Revenue;
-            resultArray[formattedDate].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArray[formattedDate] = {
-            source_name: name,
-            avatar: name,
-            source_id: name,
-            created_at: formattedDate,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        start.setDate(start.getDate() + 1);
-      };
-      while (start <= end) {
-        _loop2();
-      }
-      return resultArray;
-    },
-    creatDatasetsMap: function creatDatasetsMap(resultArray, datasetsMap) {
-      var _this11 = this;
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMap
-      resultArray.forEach(function (dataPoint) {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        var dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        _this11.key = "".concat(dataPoint.source_name);
-        var price = dataPoint.price.Revenue;
-        var created_at = dataPoint.created_at;
-        if (!datasetsMap.has(_this11.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          var backgroundColor = _this11.getRandomColor();
-          var borderColor = _this11.getRandomColor();
-          datasetsMap.set(_this11.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: false,
-            pointRadius: 0.3,
-            content: []
-          });
-        }
-        var dataset = datasetsMap.get(_this11.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-        dataset.content.push(created_at);
-      });
-
-      // Chuyển đổi datasetsMap thành một mảng các datasets và tính tổng giá trị tiền
-      var datasets = Array.from(datasetsMap.values()).map(function (dataset) {
-        var totalValue = dataset.data.reduce(function (total, value) {
-          return total + value;
-        }, 0);
-        return _objectSpread(_objectSpread({}, dataset), {}, {
-          data: dataset.data,
-          // Giữ lại giá trị tiền
-          totalValue: totalValue // Tổng giá trị tiền
-        });
-      });
-
-      return datasets;
-    },
-    compareArraysAndPrint: function compareArraysAndPrint(Array1, Array2) {
-      var comparisonResults = [];
-      if (!Array.isArray(Array1) || !Array.isArray(Array2)) {
-        // Handle cases where Array1 or Array2 is not an array
-        console.error("Input is not an array");
-        return comparisonResults;
-      }
-      Array1.forEach(function (item) {
-        var correspondingItem = Array2.find(function (oldItem) {
-          return oldItem.source_name === item.source_name;
-        });
-        if (correspondingItem) {
-          var depositPricePercentage = ((item.price.Deposit_price - correspondingItem.price.Deposit_price) / correspondingItem.price.Deposit_price * 100).toFixed(2);
-          var depositPrice = item.price.Deposit_price;
-          var revenuePercentage = ((item.price.Revenue - correspondingItem.price.Revenue) / correspondingItem.price.Revenue * 100).toFixed(2);
-          var revenue = item.price.Revenue;
-          var totalPricePercentage = ((item.price.Total_price - correspondingItem.price.Total_price) / correspondingItem.price.Total_price * 100).toFixed(2);
-          var total = item.price.Total_price;
-          var serviesPricePercentage = ((item.price.servies_price - correspondingItem.price.servies_price) / correspondingItem.price.servies_price * 100).toFixed(2);
-          var services = item.price.servies_price;
-          comparisonResults.push({
-            source_name: item.source_name,
-            depositPricePercentage: depositPricePercentage,
-            depositPrice: depositPrice,
-            revenuePercentage: revenuePercentage,
-            revenue: revenue,
-            totalPricePercentage: totalPricePercentage,
-            total: total,
-            serviesPricePercentage: serviesPricePercentage,
-            services: services
-          });
-        }
-      });
-      return comparisonResults;
-    },
     getRandomColor: function getRandomColor() {
       // Hàm này trả về một màu ngẫu nhiên dưới dạng rgba
       var r = Math.floor(Math.random() * 256);
@@ -1136,6 +1053,22 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var b = Math.floor(Math.random() * 256);
       var alpha = 0.5; // Độ trong suốt của màu
       return "rgba(".concat(r, ", ").concat(g, ", ").concat(b, ", ").concat(alpha, ")");
+    },
+    calculateNewStartAndEndDates: function calculateNewStartAndEndDates(startDate, endDate) {
+      var newStartDate = new Date(startDate);
+      var newEndDate = new Date(endDate);
+      var monthsDifference = moment__WEBPACK_IMPORTED_MODULE_3___default()(endDate).diff(moment__WEBPACK_IMPORTED_MODULE_3___default()(startDate), "months");
+      if (monthsDifference === 0) {
+        newStartDate.setMonth(newStartDate.getMonth() - 1);
+        newEndDate.setMonth(newEndDate.getMonth() - 1);
+      } else {
+        newStartDate.setMonth(newStartDate.getMonth() - monthsDifference);
+        newEndDate.setMonth(newEndDate.getMonth() - monthsDifference);
+      }
+      return {
+        newStartDate: newStartDate,
+        newEndDate: newEndDate
+      };
     }
   }
 });
@@ -1185,192 +1118,148 @@ var render = function render() {
     "class": {
       fade: _vm.isTransitioning
     }
-  }, [_c("li", [_c("i", {
-    staticClass: "fa-solid fa-money-bill-trend-up",
-    staticStyle: {
-      color: "#ff6666"
+  }, [_c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/total%20booking%20price.png",
+      alt: "",
+      srcset: ""
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Total_price)))]), _vm._v(" "), _c("p", [_vm._v("Total Booking Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.RevenueTatol))]), _vm._v(" "), _c("p", [_vm._v("Revenue")])])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Total Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Revenue.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.RevenueTatol))])])])]), _vm._v(" "), _c("div", {
     staticClass: "radio-section"
   }, [_c("button", {
-    staticClass: "btn",
+    staticClass: "btn custom-btn btn-16",
     "class": {
       active: _vm.selectedOptions.includes("Revenue")
+    },
+    attrs: {
+      disabled: this.fillerArrayEmployee.length === 0 || this.fillerArrayEmployeeOld.length === 0
     },
     on: {
       click: function click($event) {
         return _vm.toggleOption("Revenue");
       }
     }
-  }, [_vm._v("Revenue")]), _vm._v(" "), _c("button", {
-    staticClass: "btn",
+  }, [_vm._v("\n      Revenue\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
     "class": {
-      active: _vm.selectedOptions.includes("Service")
+      active: _vm.selectedOptions.includes("splot")
+    },
+    attrs: {
+      disabled: this.fillerArrayEmployee.length === 0 || this.fillerArrayEmployeeOld.length === 0
     },
     on: {
       click: function click($event) {
-        return _vm.toggleOption("Service");
+        return _vm.toggleOption("splot");
       }
     }
-  }, [_vm._v("Service Booking")]), _vm._v(" "), _c("button", {
-    staticClass: "btn",
+  }, [_vm._v("\n      Sales by splot\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
     "class": {
       active: _vm.selectedOptions.includes("Channel")
+    },
+    attrs: {
+      disabled: this.fillerArraySource.length === 0 || this.fillerArraySourceOld.length === 0
     },
     on: {
       click: function click($event) {
         return _vm.toggleOption("Channel");
       }
     }
-  }, [_vm._v("Channel Source")]), _vm._v(" "), _c("button", {
-    staticClass: "btn",
+  }, [_vm._v("\n      Channel Source\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
     "class": {
       active: _vm.selectedOptions.includes("Location")
+    },
+    attrs: {
+      disabled: this.fillerArrayLocation.length === 0 || this.fillerArrayLocationOld.length === 0
     },
     on: {
       click: function click($event) {
         return _vm.toggleOption("Location");
       }
     }
-  }, [_vm._v("Location")])]), _vm._v(" "), _c("div"), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n      Location\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("Service")
+    },
+    attrs: {
+      disabled: this.fillerArrayService.length === 0 || this.fillerArrayServiceOld.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("Service");
+      }
+    }
+  }, [_vm._v("\n      Service Booking\n    ")])]), _vm._v(" "), _c("div"), _vm._v(" "), _c("div", {
     staticClass: "main__body__data"
   }, [_c("div", {
     staticClass: "members"
-  }, [_c("div", {
-    staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Revenue")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("ul", _vm._l(_vm.resultArrayFilteredRevenue, function (item, index) {
-    return _c("li", {
-      key: "revenue-" + index
-    }, [index < 1 ? _c("span", [_vm._v("\n                Total Price Revenue : $" + _vm._s(item.price.Revenue) + "\n              ")]) : _vm._e(), _vm._v(" "), index > 0 ? _c("span", [_vm.resultArrayFilteredRevenue[index - 1].price.Revenue - item.price.Revenue >= 0 ? _c("div", {
-      staticStyle: {
-        color: "#005eff"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredRevenue[index - 1].price.Revenue - item.price.Revenue) / item.price.Revenue * 100).toFixed(2)) + "%\n                    increase")])]) : _vm._e(), _vm._v(" "), _vm.resultArrayFilteredRevenue[index - 1].price.Revenue - item.price.Revenue < 0 ? _c("div", {
-      staticStyle: {
-        color: "#ff0000"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredRevenue[index - 1].price.Revenue - item.price.Revenue) / item.price.Revenue * 100).toFixed(2)) + "%\n                    decrease")])]) : _vm._e()]) : _vm._e()]);
-  }), 0)])]), _vm._v(" "), _c("ul", {
-    staticClass: "members__user"
-  }), _vm._v(" "), _c("canvas", {
+  }, [_vm._m(0), _vm._v(" "), _c("canvas", {
     ref: "mychartRevenue"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
     staticClass: "members"
-  }, [_c("div", {
-    staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Service Booking")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("ul", _vm._l(_vm.resultArrayFilteredService, function (item, index) {
-    return _c("li", {
-      key: "Service" + index
-    }, [index < 1 ? _c("span", [_vm._v("\n                Total Servies Price : $" + _vm._s(item.price.servies_price) + "\n              ")]) : _vm._e(), _vm._v(" "), index > 0 ? _c("span", [_vm.resultArrayFilteredService[index - 1].price.servies_price - item.price.servies_price >= 0 ? _c("div", {
-      staticStyle: {
-        color: "#005eff"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredService[index - 1].price.servies_price - item.price.servies_price) / item.price.servies_price * 100).toFixed(2)) + "%\n                    increase")])]) : _vm._e(), _vm._v(" "), _vm.resultArrayFilteredService[index - 1].price.servies_price - item.price.servies_price < 0 ? _c("div", {
-      staticStyle: {
-        color: "#ff0000"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredService[index - 1].price.servies_price - item.price.servies_price) / item.price.servies_price * 100).toFixed(2)) + "%\n                    decrease")])]) : _vm._e()]) : _vm._e()]);
-  }), 0)])]), _vm._v(" "), _c("ul", {
-    staticClass: "members__user"
-  }, _vm._l(_vm.PercentageService, function (result, indexpercent) {
-    return _c("li", {
-      key: indexpercent
-    }, [_c("div", {
-      staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(result.source_name))]), _vm._v(" "), _c("p", [_vm._v("Service")])]), _vm._v(" "), result.serviesPricePercentage >= 0 ? _c("span", [_c("i", {
-      staticStyle: {
-        color: "#005eff"
-      }
-    }, [_vm._v("\n              $" + _vm._s(result.services) + "\n              increase\n              " + _vm._s(result.serviesPricePercentage) + " %\n            ")])]) : _vm._e(), _vm._v(" "), result.serviesPricePercentage < 0 ? _c("span", [_c("i", {
-      staticStyle: {
-        color: "#ff0000"
-      }
-    }, [_vm._v("\n              $" + _vm._s(result.services) + "\n              decrease\n              " + _vm._s(result.serviesPricePercentage) + " %\n            ")])]) : _vm._e()]);
-  }), 0), _vm._v(" "), _c("canvas", {
-    ref: "myChartService"
+  }, [_vm._m(1), _vm._v(" "), _c("canvas", {
+    ref: "mychartSplot"
   }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
     staticClass: "main__body__data"
   }, [_c("div", {
     staticClass: "members"
-  }, [_c("div", {
-    staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Channel source")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("ul", _vm._l(_vm.resultArrayFilteredSource, function (item, index) {
-    return _c("li", {
-      key: "Service" + index
-    }, [index < 1 ? _c("span", [_vm._v("\n                Total Servies Price : $" + _vm._s(item.price.servies_price) + "\n              ")]) : _vm._e(), _vm._v(" "), index > 0 ? _c("span", [_vm.resultArrayFilteredSource[index - 1].price.servies_price - item.price.servies_price >= 0 ? _c("div", {
-      staticStyle: {
-        color: "#005eff"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredSource[index - 1].price.servies_price - item.price.servies_price) / item.price.servies_price * 100).toFixed(2)) + "%\n                    increase")])]) : _vm._e(), _vm._v(" "), _vm.resultArrayFilteredSource[index - 1].price.servies_price - item.price.servies_price < 0 ? _c("div", {
-      staticStyle: {
-        color: "#ff0000"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredSource[index - 1].price.servies_price - item.price.servies_price) / item.price.servies_price * 100).toFixed(2)) + "%\n                    decrease")])]) : _vm._e()]) : _vm._e()]);
-  }), 0)])]), _vm._v(" "), _c("ul", {
-    staticClass: "members__user"
-  }, _vm._l(_vm.PercentageSource, function (result, indexpercent) {
-    return _c("li", {
-      key: "PercentageSource" + indexpercent
-    }, [_c("div", {
-      staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(result.source_name))])]), _vm._v(" "), result.serviesPricePercentage >= 0 ? _c("span", [_c("i", {
-      staticStyle: {
-        color: "#005eff"
-      }
-    }, [_vm._v("\n              $" + _vm._s(result.services) + "\n              increase\n              " + _vm._s(result.serviesPricePercentage) + " %\n            ")])]) : _vm._e(), _vm._v(" "), result.serviesPricePercentage < 0 ? _c("span", [_c("i", {
-      staticStyle: {
-        color: "#ff0000"
-      }
-    }, [_vm._v("\n              $" + _vm._s(result.services) + "\n              decrease\n              " + _vm._s(result.serviesPricePercentage) + " %\n            ")])]) : _vm._e()]);
-  }), 0), _vm._v(" "), _c("canvas", {
+  }, [_vm._m(2), _vm._v(" "), _c("canvas", {
     ref: "myChartSource"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
     staticClass: "members"
-  }, [_c("div", {
-    staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Location")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("ul", _vm._l(_vm.resultArrayFilteredLocation, function (item, index) {
-    return _c("li", {
-      key: "Location" + index
-    }, [index < 1 ? _c("span", [_vm._v("\n                Total Servies Price : $" + _vm._s(item.price.servies_price) + "\n              ")]) : _vm._e(), _vm._v(" "), index > 0 ? _c("span", [_vm.resultArrayFilteredLocation[index - 1].price.servies_price - item.price.servies_price >= 0 ? _c("div", {
-      staticStyle: {
-        color: "#005eff"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredLocation[index - 1].price.servies_price - item.price.servies_price) / item.price.servies_price * 100).toFixed(2)) + "%\n                    increase")])]) : _vm._e(), _vm._v(" "), _vm.resultArrayFilteredLocation[index - 1].price.servies_price - item.price.servies_price < 0 ? _c("div", {
-      staticStyle: {
-        color: "#ff0000"
-      }
-    }, [_c("i", [_vm._v("\n                    " + _vm._s(((_vm.resultArrayFilteredLocation[index - 1].price.servies_price - item.price.servies_price) / item.price.servies_price * 100).toFixed(2)) + "%\n                    decrease")])]) : _vm._e()]) : _vm._e()]);
-  }), 0)])]), _vm._v(" "), _c("ul", {
-    staticClass: "members__user"
-  }, _vm._l(_vm.PercentageLocation, function (result, indexpercent) {
-    return _c("li", {
-      key: "PercentageLocation" + indexpercent
-    }, [_c("div", {
-      staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(result.source_name))])]), _vm._v(" "), result.serviesPricePercentage >= 0 ? _c("span", [_c("i", {
-      staticStyle: {
-        color: "#005eff"
-      }
-    }, [_vm._v("\n              $" + _vm._s(result.services) + "\n              increase\n              " + _vm._s(result.serviesPricePercentage) + " %\n            ")])]) : _vm._e(), _vm._v(" "), result.serviesPricePercentage < 0 ? _c("span", [_c("i", {
-      staticStyle: {
-        color: "#ff0000"
-      }
-    }, [_vm._v("\n              $" + _vm._s(result.services) + "\n              decrease\n              " + _vm._s(result.serviesPricePercentage) + " %\n            ")])]) : _vm._e()]);
-  }), 0), _vm._v(" "), _c("canvas", {
+  }, [_vm._m(3), _vm._v(" "), _c("canvas", {
     ref: "myChartLocation"
+  }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
+    staticClass: "main__body__data"
+  }, [_c("div", {
+    staticClass: "members"
+  }, [_vm._m(4), _vm._v(" "), _c("canvas", {
+    ref: "myChartService"
   }), _vm._v(" "), _c("div")])])]);
 };
-var staticRenderFns = [];
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "members__top"
+  }, [_c("h4", [_vm._v("Revenue")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "members__top"
+  }, [_c("h4", [_vm._v("Customers number")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "members__top"
+  }, [_c("h4", [_vm._v("Channel source")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "members__top"
+  }, [_c("h4", [_vm._v("Location")])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "members__top"
+  }, [_c("h4", [_vm._v("Service Booking")])]);
+}];
 render._withStripped = true;
 
 
@@ -3488,7 +3377,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: auto;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\nbutton.active {\n  background: #b5ddff !important;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

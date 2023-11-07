@@ -120,8 +120,6 @@ export default {
         // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
         this.currentMonth = this.currentMonth - 1;
 
-        console.log(  this.currentMonth );
-
         // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
         if (this.currentMonth === 0) {
           this.currentMonth = 12;
@@ -140,7 +138,7 @@ export default {
           this.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
           // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
           this.currentMonth = this.currentMonth + 1;
-          console.log(  this.currentMonth );
+  
 
           // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
           if (this.currentMonth === 12) {

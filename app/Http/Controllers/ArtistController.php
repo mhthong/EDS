@@ -6,6 +6,7 @@ use App\Models\Artists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ArtistLevel;
+use Illuminate\Database\QueryException;
 
 class ArtistController extends Controller
 {
@@ -170,8 +171,14 @@ class ArtistController extends Controller
      */
     public function destroy(Artists $artist)
     {
-        $artist->delete();
-
-        return redirect()->route('artist.index')->with('success', 'Artist deleted successfully.');
+        try {
+            $artist->delete();
+            // Nếu xóa thành công, bạn có thể chuyển hướng và hiển thị thông báo thành công.
+            return redirect()->route('artist.index')->with('success', 'Artist deleted successfully.');
+        } catch (QueryException $e) {
+            // Xử lý ngoại lệ và hiển thị thông báo lỗi.
+            return redirect()->route('artist.index')->with('failed', 'Failed to delete artist.');
+        }
     }
+       
 }

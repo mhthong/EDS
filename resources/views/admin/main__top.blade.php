@@ -82,7 +82,7 @@
     </li> --}}
     <li class="notification">
         <a href="#">
-            <i class="ph-bell"></i>
+            <i class="fa-solid fa-bell" style="color: #ffffff;"></i>
         </a>
         <div class="main__dropdown">
             <div class="notification__top">
@@ -140,7 +140,7 @@
     </li>
     <li class="inbox">
         <a href="#">
-            <i class="ph-chat-circle-dots"></i>
+            <i class="fa-solid fa-message" style="color: #ffffff;"></i>
         </a>
         <span></span>
     </li>

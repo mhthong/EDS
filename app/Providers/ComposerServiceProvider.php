@@ -47,8 +47,11 @@ class ComposerServiceProvider extends ServiceProvider
 
         View::composer([
             'app',
+            'layouts.app',
             'layouts.header',
+            'layouts.nav-admin',
             'admin.Setting.email',
+            'admin.Setting.general',
             'playout',
             'layouts.footer',
             'layouts.content',

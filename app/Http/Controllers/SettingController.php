@@ -76,7 +76,7 @@ class SettingController extends Controller
     }
 
     public function general(){
-      return view('admin.Setting.general');
+      return view('admin.Setting.general',);
     }
 
     public function email(){

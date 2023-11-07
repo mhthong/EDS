@@ -20,7 +20,7 @@
             <!-- end: MAIN TOP -->
 
             <!-- start: MAIN BODY -->
-            <div id="app" class="main__body">
+            <div id="app" class="main__body" data-user-id = "{{ auth()->id() }}">
 
                 <price-booking></price-booking>
 
@@ -94,6 +94,7 @@
                         </div>
                     </div>
                 </div>
+                
             </div>
             <div class="main__body" style="box-shadow: none;">
                 @isset($bookingsData)

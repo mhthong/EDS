@@ -13,26 +13,26 @@
                 targets: [7, 8]
             }],
             columns: [
-        { width: '50px' }, 
-        { width: '200px' }, 
-        { width: '250px' },
-        { width: '200px' }, 
-        { width: '200px' },
-        { width: '200px' }, 
-        { width: '200px' },
-        { width: '200px' }, 
-        { width: '200px' },
-        { width: '200px' }, 
-        { width: '200px' },
-        { width: '200px' }, 
-        { width: '200px' },
-        { width: '200px' }, 
-        { width: '200px' },
-        { width: '200px' }, 
-        { width: '200px' },
-        { width: '200px' },
-        { width: '200px' }, 
-        { width: '200px' },
+        { width: '20px' }, 
+        { width: '100px' }, 
+        { width: '150px' },
+        { width: '100px' }, 
+        { width: '100px' },
+        { width: '100px' }, 
+        { width: '100px' },
+        { width: '100px' }, 
+        { width: '100px' },
+        { width: '100px' }, 
+        { width: '100px' },
+        { width: '100px' }, 
+        { width: '100px' },
+        { width: '100px' }, 
+        { width: '100px' },
+        { width: '100px' }, 
+        { width: '100px' },
+        { width: '100px' },
+        { width: '100px' }, 
+        { width: '100px' },
     ],
             
 
@@ -203,7 +203,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <!-- Add form fields here -->
-                                        <div id="app">
+                                        <div id="app" data-user-id = "{{ auth()->id() }}">
                                             <create-booking></create-booking>
                                         </div>
                                         <!-- Add more fields as needed -->
@@ -232,7 +232,7 @@
                                     @csrf
                                     <div class="modal-body">
                                         <!-- Add form fields here -->
-                                        <div id="app">
+                                        <div id="app" data-user-id = "{{ auth()->id() }}">
                                             <create-booking></create-booking>
                                         </div>
                                         <!-- Add more fields as needed -->
@@ -277,7 +277,7 @@
                         flex-wrap: wrap;">
                             <div class="controls col-12 col-md-4 col-lg-3 m-2">
                                 <label class="label-date active" for="">Date Columns : </label>
-                                <select name="datecolumns" id="datecolumns">
+                                <select class="p-2" name="datecolumns" id="datecolumns">
                                     <option value=""></option>
                                     <option value="3">Booking Date Create</option>
                                     <option value="4">Treatment Date</option>
@@ -285,11 +285,11 @@
                             </div>
                             <div class="controls col-12 col-md-4 col-lg-3 m-2">
                                 <label class="label-date active" for="start-date-filter">Start Date : </label>
-                                <input type="date" id="start-date-filter" class="filter-datepicker">
+                                <input type="date" id="start-date-filter" class="filter-datepicker p-2">
                             </div>
                             <div class="controls col-12 col-md-4 col-lg-3 m-2">
                                 <label class="label-date active" for="end-date-filter">End Date : </label>
-                                <input type="date" id="end-date-filter" class="filter-datepicker">
+                                <input type="date" id="end-date-filter" class="filter-datepicker p-2">
 
                             </div>
                         </div>
@@ -399,11 +399,12 @@
                                             <td>{{ $booking->price ? $booking->price->Total_price : 'N/A' }}</td>
                                             <td>{{ $booking->source_name }}</td>
                                            
-                                            <td>
+                                            <td style="display: flex;
+                                            gap: 10px;">
                                                  <a class="a" href="{{ route($route, ['id' => $booking->id]) }}">
                                                 <button
                                                 class="custom-btn btn-16"
-                                                type="button"
+                                                type="button" style="margin: 11px;"
                                               >
                                              Edit
                                               </button>
@@ -412,7 +413,7 @@
                                                 <form method="POST" action="{{ route('bookings.delete', $booking->id) }}">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="custom-btn btn-danger" style="color:rgb(255, 116, 116);">Delete </button>
+                                                <button type="submit" class="custom-btn btn-danger" style="color:rgb(255, 116, 116); margin: 11px;">Delete </button>
                                                 </form>
                                                </div>
    

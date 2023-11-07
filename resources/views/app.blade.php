@@ -22,7 +22,6 @@
     <!-- Facebook Meta Tags -->
         <meta property="og:url" content="{{env('APP_ENV')}}">
         <meta property="og:type" content="website">
-        <link rel="shortcut icon" href="{{ asset($setting_data['Favicon']) }}">
     <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
       

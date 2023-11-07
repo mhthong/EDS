@@ -38,7 +38,18 @@ Route::get('/get', [APIBookingController::class, 'Get']);
 
 Route::get('all-data', [APIBookingController::class, 'getAllData']);
 
-Route::get('data/{start}/{end}', [APIBookingController::class, 'getData']);
+Route::get('fullcalendar-data', [APIBookingController::class, 'getAllfullcalendar']);
+
+
+Route::get('getDataShowroom/{start}/{end}', [APIBookingController::class, 'getDataShowroom']);
+
+Route::get('getDataSource/{start}/{end}', [APIBookingController::class, 'getDataSource']);
+
+Route::get('getDataService/{start}/{end}', [APIBookingController::class, 'getDataService']);
+
+Route::get('getDataArtist/{start}/{end}', [APIBookingController::class, 'getDataArtist']);
+
+Route::get('getDataEmployee/{start}/{end}', [APIBookingController::class, 'getDataEmployee']);
 
 
 Route::get('data-bookings/{id}', [APIBookingController::class, 'bookingsData']);

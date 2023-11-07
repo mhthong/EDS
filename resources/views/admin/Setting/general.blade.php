@@ -53,8 +53,7 @@
                                                         <div class="d-flex mt-2 more-email align-items-center">
                                                             <input type="email" class="next-input form-control"
                                                                 placeholder="" name="admin_email"
-                                                                value="">
-
+                                                               value="@isset($setting_data['admin_email']) {{ $setting_data['admin_email'] }} @endisset" />
                                                         </div>
 
                                                     </div>
@@ -83,6 +82,9 @@
                                                         </label>
                                                         <div class="form-group ">
                                                             <div class="holder holder1" id="data-preview-admin-logo" value="">
+                                                                @isset($setting_data['admin-logo']) 
+                                                                <img src="{{ $setting_data['admin-logo'] }}" alt="" srcset="">
+                                                                @endisset
                                                             </div>
                                                             <div class="-space-y-px mb-4">
                                                                 <div class="containerInput input-group">
@@ -108,6 +110,9 @@
                                                         </label>
                                                         <div class="form-group ">
                                                             <div class="holder holder1" id="data-preview-admin-favicon" value="">
+                                                                @isset($setting_data['admin-favicon']) 
+                                                                <img src="{{ $setting_data['admin-favicon'] }}" alt="" srcset="">
+                                                                @endisset
                                                             </div>
                                                             <div class="-space-y-px mb-4">
                                                                 <div class="containerInput input-group">
@@ -134,6 +139,9 @@
                                                         </label>
                                                         <div class="form-group ">
                                                             <div class="holder holder1" id="data-preview-admin-login-screen-backgrounds" value="">
+                                                                @isset($setting_data['admin-login-screen-backgrounds']) 
+                                                                <img src="{{ $setting_data['admin-login-screen-backgrounds'] }}" alt="" srcset="">
+                                                                @endisset
                                                             </div>
                                                             <div class="-space-y-px mb-4">
                                                                 <div class="containerInput input-group">
@@ -159,7 +167,7 @@
                                                              admin</label>
                                                          <input class="form-control" data-counter="120" type="text" class="next-input"
                                                              name="admin_title" id="admin_title"
-                                                             value="PHUC LOC SCRAP">
+                                                             value="@isset($setting_data['admin_title']) {{ $setting_data['admin_title'] }} @endisset" >
                                                      </div>
 
                                                 </div>
@@ -182,7 +190,7 @@
                                                         <label class="text-title-field" for="google_analytics">Tracking
                                                             Code</label>
                                                         <input data-counter="120" type="text" class="next-input form-control"
-                                                            name="google_analytics" id="google_analytics" value=""
+                                                            name="google_analytics" id="google_analytics"    value="@isset($setting_data['google_analytics']) {{ $setting_data['google_analytics'] }} @endisset" 
                                                             placeholder="Example: GA-12586526-8">
                                                     </div>
                                                     <div class="form-group">
@@ -190,25 +198,14 @@
                                                             ID</label>
                                                         <input data-counter="120" type="text" class="next-input form-control"
                                                             name="analytics_view_id" id="analytics_view_id"
-                                                            value="" placeholder="Google Analytics View ID">
+                                                            value="@isset($setting_data['analytics_view_id']) {{ $setting_data['analytics_view_id'] }} @endisset"  placeholder="Google Analytics View ID">
                                                     </div>
                                                     <div class="form-group">
                                                         <label class="text-title-field"
                                                             for="analytics_service_account_credentials">Service Account
                                                             Credentials</label>
                                                         <textarea class="next-input form-control" name="analytics_service_account_credentials"
-                                                            id="analytics_service_account_credentials" rows="5" placeholder="Service Account Credentials">{
-                                                            "type": "service_account",
-                                                            "project_id": "august-cascade-288106",
-                                                            "private_key_id": "2d4dcbe0bb82d83e9d529d4988e6e53550fea11b",
-                                                            "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDQ3eDoVSVnJpn8\nWoz9B7/Gb/g7/u3K1nW3fEID9RPV6yrZ0lxaBG87fOidRfeT62LORHgfKwyyZ/Tx\nmeum4wXceUvs97oi6ETid5ITyu9koNZL31PcETlmCXueKx++JRyMxj9Dj4RE77Uh\n/xTeCJg3POrZACasPd4xNKASgJlObQbJi/Daa6xlHoQbIn+OLtvr1FUKjLtvmMKe\nhGG6dXeUTFHKh2Gzr2BeIUfAXt6jRUSyTknZZZJNMiZUmTbk5YQUy87MHs251HNb\n227G/BjR6+u6Zl3tjBuvsANdlLqhn0KRtKYT1fArcxKq/ZlWEs4g6StM3hkFkxTd\n0CG2i9WPAgMBAAECggEAI6A87RQc6Z/FcyxU0RIBzYyquD0O/WKgOJhawEcMx5ex\nuu6tLvODr49qM+1LwfDL7Sfzn0leBI5D0vPwpIojpUwRPc2xc6PPoBtKENM0CyN9\n+foRWT+c3UEv0zZC11GIMaDdCJ6Rrpp+eFqEiizIHd/npPToI8f3vsfdp9pEjAIw\npM+RX5E2OTiYFnVrYq1IxW6FgstOwWo064JI9kf04/bPsA357tcgC1qcYXSCYpy0\n7utwOfuySdLWbu1MjLZCT9ZW9hnaYtd3xIkrVc56/7EeEA/9D+kJv10PH7IjhHov\ncqDcFvuQvbrFPUAbqjGJAKRnGVrCUtLNj4//32B3vQKBgQD5CyY9ait3vQhC1s0E\najz9ZdVGk6QZpNa+RoJ6sfQXbG27pU7bwZP+v1Jhv2itYW3EYjDRbhlCbNYEEI+y\ncmJdkVcWNFRbfkG8TtNcjUMjFfOWsxYstKKBnDKW4x2O09t64H3vChLsZopPnywU\nv8msq3pFuf0p74p1NQsF2o1kuwKBgQDWs28qlBDxTlSJ9C4Mg7DASf0ceQUQBXoo\nNqLFnnazI8P7v8yrtr73cJoGn/dxtaaMj+i5zbekrcHMI94Eax6gIKsmcH8rq4Fv\nA/D0mnvgKz5tNUBu90xtjwLv/lvA6/GbXCboghSj/XC5+hLVdJUFPZFwBDgu3R8d\nfhHIgI2vPQKBgQDbtv1us2tUAT73kQBhQ8U5Hg1ybbEaOraGOjjFPJiHzc5l/Wq8\nMGV8G5j3yeH1DP7FgodlTYgVdWW/Qkk0evvTZvV5DoPaEGK4WqbYgXxYyPYV3zvS\nBy9Tv9VWD1s1di2tk78nFDErxS+DHX/LcoTfxI1kVLlItR/nVfu6l12lHwKBgFu8\nO0l0DnEsSM7Q+EP8mK7wbieWReV8kZ9RCOdrN8h/BaQxZWARKzNKd2VRQEbjmJAC\nhSuujELewylYQeqdYm6ExtwbwRqFoz4t7ux0fW1gzMGYuTkwjQVaz6R/h/C8X3VE\nQJOj0PHovhuYkCeIMowUrGmyQ9cyP7M4RJzo4KD5AoGAQacVDzI9NBWXODukzoEJ\nYLbqD80MbAmRbuix7TzeAM9Ru1JAOltnaJeSgvuPMP7qH8rihX31SGPp7PF8BRWA\nWVYZDyDGjHpAWi8iAg9AUtqc+5tMIjrGLnYDoyJXWtF3BJRCXsMWFZHAmcfZojKA\ngHO0p/XKcdVtNRh97ZCvys8=\n-----END PRIVATE KEY-----\n",
-                                                            "client_email": "triluc1@august-cascade-288106.iam.gserviceaccount.com",
-                                                            "client_id": "105636376897355695855",
-                                                            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                                                            "token_uri": "https://oauth2.googleapis.com/token",
-                                                            "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                                                            "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/triluc1%40august-cascade-288106.iam.gserviceaccount.com"
-                                                            }</textarea>
+                                                            id="analytics_service_account_credentials" rows="5" placeholder="Service Account Credentials"> @isset($setting_data['analytics_service_account_credentials']) {{ $setting_data['analytics_service_account_credentials'] }} @endisset</textarea>
                                                     </div>
                                                 </div>
                                             </div>
@@ -230,7 +227,7 @@
                                                             for="newsletter_mailchimp_api_key">Mailchimp API Key</label>
                                                         <input data-counter="120" type="text" class="next-input form-control"
                                                             name="newsletter_mailchimp_api_key"
-                                                            id="newsletter_mailchimp_api_key" value=""
+                                                            id="newsletter_mailchimp_api_key"  value="@isset($setting_data['newsletter_mailchimp_api_key']) {{ $setting_data['newsletter_mailchimp_api_key'] }} @endisset"
                                                             placeholder="Mailchimp API Key">
                                                     </div>
                                                     <div class="form-group">
@@ -238,7 +235,7 @@
                                                             for="newsletter_mailchimp_list_id">Mailchimp List ID</label>
                                                         <input data-counter="120" type="text" class="next-input form-control"
                                                             name="newsletter_mailchimp_list_id"
-                                                            id="newsletter_mailchimp_list_id" value=""
+                                                            id="newsletter_mailchimp_list_id"   value="@isset($setting_data['newsletter_mailchimp_list_id']) {{ $setting_data['newsletter_mailchimp_list_id'] }} @endisset"
                                                             placeholder="Mailchimp List ID">
                                                     </div>
 
@@ -247,7 +244,7 @@
                                                             for="newsletter_sendgrid_api_key">Sendgrid API Key</label>
                                                         <input data-counter="120" type="text" class="next-input form-control"
                                                             name="newsletter_sendgrid_api_key"
-                                                            id="newsletter_sendgrid_api_key" value=""
+                                                            id="newsletter_sendgrid_api_key"   value="@isset($setting_data['newsletter_sendgrid_api_key']) {{ $setting_data['newsletter_sendgrid_api_key'] }} @endisset"
                                                             placeholder="Sendgrid API Key">
                                                     </div>
                                                     <div class="form-group">
@@ -255,7 +252,7 @@
                                                             for="newsletter_sendgrid_list_id">Sendgrid List ID</label>
                                                         <input data-counter="120" type="text" class="next-input form-control"
                                                             name="newsletter_sendgrid_list_id"
-                                                            id="newsletter_sendgrid_list_id" value=""
+                                                            id="newsletter_sendgrid_list_id"   value="@isset($setting_data['newsletter_sendgrid_list_id']) {{ $setting_data['newsletter_sendgrid_list_id'] }} @endisset"
                                                             placeholder="Sendgrid List ID">
                                                     </div>
                                                 </div>
@@ -302,21 +299,7 @@
         @include('layouts.footerad')
     @endsection
     @section('script')
-        <script src={{ asset('ckeditor/ckeditor.js') }}></script>
 
-        <script>
-            var options = {
-                filebrowserImageBrowseUrl: 'laravel-filemanager?type=Images',
-                filebrowserImageUploadUrl: '/laravel-filemanager/upload?type=Images&_token=',
-                filebrowserBrowseUrl: '/laravel-filemanager?type=Files',
-                filebrowserUploadUrl: "{{ route('ckeditor.upload', ['_token' => csrf_token()]) }}",
-                filebrowserUploadMethod: 'form'
-            };
-        </script>
-        <script>
-            CKEDITOR.replace('editor1', options);
-            /*  $('textarea.editor1').ckeditor(options); */
-        </script>
         <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
         <script>
             var route_prefix = "/admin/laravel-filemanager";

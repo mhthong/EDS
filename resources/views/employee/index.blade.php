@@ -11,7 +11,7 @@
 @section('content')
 
 
-
+@include('admin.Notifications')
 	<!-- start: MAIN -->
 	<section id="main">
 		

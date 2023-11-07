@@ -17656,7 +17656,7 @@ thead[role=presentation] > tr[role=row] {
 }
 
 .fc-col-header-cell-cushion {
-  color: #3a7a9d;
+  color: #3f9ffe;
   font-weight: 400;
 }
 
@@ -17697,7 +17697,7 @@ thead[role=presentation] > tr[role=row] {
 .fc-header-toolbar button {
   border: none;
   color: #000;
-  background: #599a96 !important;
+  background: #3f9ffe !important;
   border: none !important;
 }
 .fc-header-toolbar button:after {
@@ -17717,7 +17717,7 @@ thead[role=presentation] > tr[role=row] {
 }
 .fc-header-toolbar button:focus {
   box-shadow: none !important;
-  background: #33aaff !important;
+  background: #3f9ffe !important;
 }
 
 /* Lớp phủ */
@@ -20102,6 +20102,10 @@ button {
   }
 }
 
+.table-striped {
+  font-size: 12px !important;
+}
+
 /* tao dau X */
 /*     #app{
         @include flexb-c();
@@ -21766,6 +21770,28 @@ grid-area: dùng cho phần tử con
     height:100%;
     margin-top:0;
 } */
+.Price {
+  background-image: url("/images/Group 2996.png?77eb17e51767cba39d3fab1d11bb2560") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  border-radius: 10px !important;
+  background-position: center !important;
+  background-color: rgba(255, 255, 255, 0) !important;
+  position: relative;
+}
+.Price h6 {
+  color: white;
+}
+.Price h4 {
+  color: white;
+}
+.Price img {
+  position: absolute;
+  width: 40px;
+  right: 15px;
+  top: 15px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -22382,7 +22408,7 @@ body {
 }
 
 #main .main__body .members__user {
-  max-height: 500px;
+  max-height: 200px;
   overflow-y: auto;
 }
 

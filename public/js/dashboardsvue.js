@@ -30,7 +30,11 @@ __webpack_require__.r(__webpack_exports__);
     // Lấy ngày hiện tại
     var currentDate = new Date();
     return {
-      dateRange: [moment__WEBPACK_IMPORTED_MODULE_2___default()().startOf('day').add(1, 'second'), moment__WEBPACK_IMPORTED_MODULE_2___default()().endOf('day').subtract(1, 'second')],
+      dateRange: {
+        type: Object,
+        required: true // Nếu cần
+      },
+
       dateCompare: {
         start: null,
         // Ngày bắt đầu
@@ -69,16 +73,9 @@ __webpack_require__.r(__webpack_exports__);
     dateRange: {
       handler: function handler(newDateRange, oldDateRange) {
         // Log khi dateRange thay đổi
-        this.dateRange.end = newDateRange.endDate;
-        this.dateRange.start = newDateRange.startDate;
-        this.calculateTotal();
-      },
-      deep: true // Theo dõi các sự thay đổi sâu trong object
-    },
-
-    dateCompare: {
-      handler: function handler(newDateCompare, oldDateCompare) {
-        // Log khi dateCompare thay đổi
+        this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_2___default()(newDateRange.endDate).format("YYYY-MM-DD");
+        this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_2___default()(newDateRange.startDate).format("YYYY-MM-DD");
+        this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
       },
       deep: true // Theo dõi các sự thay đổi sâu trong object
     }
@@ -91,164 +88,123 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    fetchapiData_id: function fetchapiData_id() {
+    fetchapiData_id: function fetchapiData_id(start, end) {
       var _this = this;
       if (this.artistId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/all-data").then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataArtist/ ".concat(start, "/").concat(end)).then(function (response) {
+          var _this$totalByName;
           // Lọc dữ liệu dựa trên ArtistID
-          _this.apiData_id = response.data.filter(function (item) {
-            return item.ArtistID == _this.artistId && item.action === "approved";
-          });
-          _this.calculateTotal();
+          _this.apiData_id = Object.values(((_this$totalByName = _this.totalByName(response.data)) === null || _this$totalByName === void 0 ? void 0 : _this$totalByName.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this.artistId);
+          })) || {});
+          _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else if (this.employeeId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/all-data").then(function (response) {
-          // Lọc dữ liệu dựa trên source_id
-          _this.apiData_id = response.data.filter(function (item) {
-            return item.source_id == _this.employeeId;
-          });
-          _this.calculateTotal();
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
+          var _this$totalByName2;
+          _this.apiData_id = Object.values(((_this$totalByName2 = _this.totalByName(response.data)) === null || _this$totalByName2 === void 0 ? void 0 : _this$totalByName2.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this.employeeId);
+          })) || {});
+          _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/all-data").then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataShowroom/ ".concat(start, "/").concat(end)).then(function (response) {
+          // Nhận dữ liệu từ phản hồi
           _this.apiData_id = response.data;
-          _this.calculateTotal();
+          _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       }
     },
-    filteredData_con: function filteredData_con() {
-      this.filteredDataWaiting = this.filteredData.filter(function (booking) {
-        var WaitingStatus = booking.status;
-        return WaitingStatus == "Waiting";
-      });
-      this.filteredDataDone = this.filteredData.filter(function (booking) {
-        var DoneStatus = booking.status;
-        return DoneStatus == "Done";
-      });
-      this.filteredDataRefund = this.filteredData.filter(function (booking) {
-        var RefundStatus = booking.status;
-        return RefundStatus == "Refund";
-      });
-      this.filteredDataCancel = this.filteredData.filter(function (booking) {
-        var CancelStatus = booking.status;
-        return CancelStatus == "Cancel";
-      });
-    },
-    calculateTotal: function calculateTotal() {
-      var _this2 = this;
-      // Kiểm tra nếu this.dateRange.end không có dữ liệu thì sử dụng ngày cuối của tháng hiện tại
-      if (!this.dateRange.end) {
-        var currentDate = new Date();
-        var lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        this.dateRange.end = lastDayOfMonth;
-      }
+    totalByName: function totalByName(data) {
+      // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
+      var totals = {};
 
-      // Kiểm tra nếu this.dateRange.start không có dữ liệu thì sử dụng ngày đầu của tháng hiện tại
-      if (!this.dateRange.start) {
-        var _currentDate = new Date();
-        this.dateRange.start = new Date(_currentDate.getFullYear(), _currentDate.getMonth(), 1);
-      }
-      console.log(this.dateRange.end, this.dateRange.start);
-      // Lọc các bản ghi thuộc tháng và năm hiện tại
-      this.filteredData = this.apiData_id.filter(function (booking) {
-        var updatedAtDate = new Date(booking.price.updated_at);
-        /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return updatedAtDate <= _this2.dateRange.end && updatedAtDate >= _this2.dateRange.start;
-      });
-      this.filteredData_con();
-      var revenueCancel = this.filteredDataCancel.reduce(function (total, booking) {
-        var deposit = parseFloat(booking.price.Deposit_price);
-        if (!isNaN(deposit)) {
-          total += deposit;
-        }
-        return total;
-      }, 0);
+      // Lặp qua các ngày trong dữ liệu của bạn
+      for (var date in data) {
+        var fillerDatas = data[date];
+        for (var Id in fillerDatas) {
+          var fillerData = fillerDatas[Id];
+          var Name = fillerData.Name;
+          var id = fillerData.id;
+          var total_price = fillerData.Total_price;
 
-      // Tính tổng các giá trị từ dữ liệu đã lọc
-      this.Total_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Remaining_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Remaining_price);
-      }, 0).toFixed(2);
-      this.Deposit_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.Done_price = this.filteredDataDone.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Cancel_price = this.filteredDataCancel.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Refund_price = this.filteredDataRefund.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Revenue = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueDone = this.filteredDataDone.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueRefund = this.filteredDataRefund.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueTatol = parseFloat(this.RevenueRefund) + parseFloat(this.RevenueDone) + parseFloat(this.Revenue);
-      this.numberOfBooks = this.filteredData.length;
-    },
-    showPreviousMonths: function showPreviousMonths() {
-      var _this3 = this;
-      this.isTransitioning = true; // Bắt đầu hiệu ứng
-      setTimeout(function () {
-        _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-        // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
-        _this3.currentMonth = _this3.currentMonth - 1;
-        console.log(_this3.currentMonth);
-
-        // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
-        if (_this3.currentMonth === 0) {
-          _this3.currentMonth = 12;
-          _this3.currentYear = _this3.currentYear - 1;
-        }
-        _this3.calculateTotal();
-        _this3.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-      }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
-    },
-    showNextMonths: function showNextMonths() {
-      var _this4 = this;
-      if (this.currentMonth < 12) {
-        this.isTransitioning = true; // Bắt đầu hiệu ứng
-        setTimeout(function () {
-          _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-          // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
-          _this4.currentMonth = _this4.currentMonth + 1;
-          console.log(_this4.currentMonth);
-
-          // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
-          if (_this4.currentMonth === 12) {
-            _this4.currentMonth = 1;
-            _this4.currentYear = _this4.currentYear + 1;
+          // Nếu tên dịch vụ chưa tồn tại trong totals, thì khởi tạo nó với giá trị ban đầu
+          if (!totals[Name]) {
+            totals[Name] = {
+              id: id,
+              Name: Name,
+              Total_price: 0,
+              Deposit_price: 0,
+              servies_price: 0,
+              Revenue: 0,
+              Done_price: 0,
+              Cancel_price: 0,
+              Refund_price: 0,
+              Remaining_price: 0,
+              length: 0
+            };
           }
-          _this4.calculateTotal();
-          _this4.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-        }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
+          // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
+          totals[Name].Total_price += total_price;
+          totals[Name].Deposit_price += fillerData.Deposit_price;
+          totals[Name].servies_price += fillerData.servies_price;
+          totals[Name].Revenue += fillerData.revenue;
+          totals[Name].Done_price += fillerData.Done_price;
+          totals[Name].Cancel_price += fillerData.Cancel_price;
+          totals[Name].Refund_price += fillerData.Refund_price;
+          totals[Name].Remaining_price += fillerData.Remaining_price;
+          totals[Name].length += fillerData.length;
+        }
       }
+
+      // Chuyển đối tượng totals thành một mảng nếu cần
+      var totalsArray = Object.values(totals);
+      return totalsArray;
     },
-    checkDisableNextButton: function checkDisableNextButton() {
-      var currentDate = new Date();
-      var currentMonth = currentDate.getMonth() + 1;
-      var currentYear = currentDate.getFullYear();
-      // Nút "Xem các tháng sau" sẽ bị vô hiệu hóa nếu tháng hiện tại là tháng cuối cùng trong danh sách
-      if (this.currentMonth >= currentMonth && this.currentYear >= currentYear) {
-        this.disableNextButton = true;
+    Price: function Price() {
+      var _this2 = this;
+      this.Total_price = 0;
+      this.Deposit_price = 0;
+      this.servies_price = 0;
+      this.RevenueTatol = 0;
+      this.Cancel_price = 0;
+      this.Refund_price = 0;
+      this.Done_price = 0;
+      this.Remaining_price = 0;
+      this.numberOfBooks = 0;
+      if (this.adminId !== null) {
+        var data = this.totalByName(this.apiData_id);
+        data.forEach(function (item) {
+          _this2.Total_price += parseFloat(item.servies_price);
+          _this2.Deposit_price += parseFloat(item.Deposit_price);
+          _this2.servies_price += parseFloat(item.servies_price);
+          _this2.RevenueTatol += parseFloat(item.Revenue);
+          _this2.Cancel_price += parseFloat(item.Cancel_price);
+          _this2.Refund_price += parseFloat(item.Refund_price);
+          _this2.Done_price += parseFloat(item.Done_price);
+          _this2.Remaining_price += parseFloat(item.Remaining_price);
+          _this2.numberOfBooks = item.length;
+        });
       } else {
-        this.disableNextButton = false;
+        var _data = this.apiData_id;
+        this.Total_price += parseFloat(_data[2]);
+        this.Deposit_price += parseFloat(_data[3]);
+        this.servies_price += parseFloat(_data[4]);
+        this.RevenueTatol += parseFloat(_data[5]);
+        this.Cancel_price += parseFloat(_data[7]);
+        this.Refund_price += parseFloat(_data[8]);
+        this.Done_price += parseFloat(_data[6]);
+        this.Remaining_price += parseFloat(_data[9]);
+        this.numberOfBooks = _data[10];
       }
+
+      // Lặp qua danh sách dữ liệu và tính tổng
     }
   },
   mounted: function mounted() {
@@ -259,13 +215,13 @@ __webpack_require__.r(__webpack_exports__);
     this.currentMonth = currentDate.getMonth() + 1;
     this.currentYear = currentDate.getFullYear();
 
-    // Kiểm tra nếu dateRange không có giá trị, đặt mặc định là ngày bắt đầu và kết thúc của tháng hiện tại
+    // Kiểm tra nếu dateRange không có giá trị, đặt mặc định là ngày bắt đầu và ngày hiện tại
     if (!this.dateRange.start || !this.dateRange.end) {
-      this.dateRange.start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      this.dateRange.end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+      var _currentDate = new Date();
+      this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_2___default()(new Date(_currentDate.getFullYear(), _currentDate.getMonth(), 1)).format("YYYY-MM-DD");
+      this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_2___default()(_currentDate).format("YYYY-MM-DD");
     }
-    this.fetchapiData_id();
-    this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau" khi ban đầu tải trang
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
   }
 });
 
@@ -310,43 +266,72 @@ var render = function render() {
       expression: "dateRange"
     }
   })], 1)]), _vm._v(" "), _c("div", [_c("ul", {
+    staticClass: "main__body__box-info admin_dashboard",
+    "class": {
+      fade: _vm.isTransitioning
+    }
+  }, [_c("li", {
+    staticClass: "Price Total_Booking_Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/total%20booking%20price.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Total Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Revenue_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Revenue.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.RevenueTatol))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Done_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Done.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Done")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Done_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Remaining_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Remaining.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Remaining")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Remaining_price)))])])]), _vm._v(" "), _c("ul", {
     staticClass: "main__body__box-info",
     "class": {
       fade: _vm.isTransitioning
     }
-  }, [_c("li", [_c("i", {
-    staticClass: "fa-solid fa-money-bill-trend-up",
-    staticStyle: {
-      color: "#ff6666"
+  }, [_c("li", {
+    staticClass: "Price Deposit_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Deposit.png",
+      alt: "",
+      srcset: ""
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Total_price)))]), _vm._v(" "), _c("p", [_vm._v("Total Booking Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.RevenueTatol))]), _vm._v(" "), _c("p", [_vm._v("Revenue")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#56f561"
+  }), _vm._v(" "), _c("h6", [_vm._v("Deposit")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Deposit_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Cancel_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Cancel.png",
+      alt: "",
+      srcset: ""
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Done_price)))]), _vm._v(" "), _c("p", [_vm._v("Done ")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#4efc96"
+  }), _vm._v(" "), _c("h6", [_vm._v("Cancel")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Cancel_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Refund_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Refund.png",
+      alt: "",
+      srcset: ""
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Remaining_price)))]), _vm._v(" "), _c("p", [_vm._v("Remaining ")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#03876b"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Deposit_price)))]), _vm._v(" "), _c("p", [_vm._v("Deposit ")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#f06a6a"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Cancel_price)))]), _vm._v(" "), _c("p", [_vm._v("Cancel ")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#ff7e33"
-    }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Refund_price)))]), _vm._v(" "), _c("p", [_vm._v("Refund  ")])])])])]);
+  }), _vm._v(" "), _c("h6", [_vm._v("Refund")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_price)))])])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2466,7 +2451,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar{\n  gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n\n\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

@@ -215,13 +215,9 @@ __webpack_require__.r(__webpack_exports__);
     filterActiveDays: function filterActiveDays() {
       var _this10 = this;
       if (!this.selectedDate) return;
-      console.log("selectedDate:", this.selectedDate);
-      console.log("this.fetchApiData:", this.apiData);
-      console.log(this.selectedArtist);
       this.filteredDays = this.apiData.filter(function (schedule) {
         return schedule.date === _this10.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this10.selectedArtist);
       });
-      console.log(this.filteredDays);
     },
     selectedDateToDay: function selectedDateToDay(dateString) {
       var date = new Date(dateString);
@@ -292,7 +288,6 @@ __webpack_require__.r(__webpack_exports__);
     handleFileChange: function handleFileChange() {
       // Handle the file selection here, e.g., store it in a data property
       this.paymentImage = this.$refs.fileInput.files[0];
-      console.log(this.paymentImage);
     },
     fetchServices: function fetchServices() {
       var _this11 = this;
@@ -368,7 +363,6 @@ __webpack_require__.r(__webpack_exports__);
         var servicePrice = this.getServicePrice(this.selectedServices);
         var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
         serviceTotalPrice = parseFloat(servicePrice);
-        console.log(serviceTotalPrice);
       }
       this.maxDepositPrice = serviceTotalPrice;
       this.maxDiscountPrice = serviceTotalPrice;
@@ -389,13 +383,11 @@ __webpack_require__.r(__webpack_exports__);
           this.step = "groupService";
         }
       } else if (this.step === "groupService") {
-        console.log(this.selectedServices);
         if (this.selectedServices) {
           this.fetchArtistlevels();
           this.step = "artistlevels";
         }
       } else if (this.step === "artistlevels") {
-        console.log(this.selectedShowroom);
         if (this.selectedShowroom) {
           this.fetchShowroomSchedule();
           this.step = "showroomschedule";
@@ -420,7 +412,6 @@ __webpack_require__.r(__webpack_exports__);
             Status: this.selectedStatus,
             PaymentType: this.selectedPaymentType
           };
-          console.log(bookingDatavalue);
           this.bookingData = JSON.stringify(bookingDatavalue);
         }
       }
@@ -739,19 +730,17 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
             case 3:
               response = _context.sent;
               _this7.apiData = response.data;
-              console.log(_this7.selectedShowroom);
-              console.log("API data fetched selectedShowroom:", _this7.apiData);
-              _context.next = 12;
+              _context.next = 10;
               break;
-            case 9:
-              _context.prev = 9;
+            case 7:
+              _context.prev = 7;
               _context.t0 = _context["catch"](0);
               console.error("Error fetching API data:", _context.t0);
-            case 12:
+            case 10:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[0, 9]]);
+        }, _callee, null, [[0, 7]]);
       }))();
     },
     fetchArtists: function fetchArtists() {
@@ -767,7 +756,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var _this9 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
         _this9.showroomSchedules = response.data;
-        console.log("showroomSchedules", _this9.showroomSchedules);
       })["catch"](function (error) {
         console.error("Error fetching showroomschedule:", error);
       });
@@ -779,7 +767,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.filteredDays = this.apiData.filter(function (schedule) {
         return schedule.date === _this10.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this10.selectedArtist) && parseInt(schedule.id) !== parseInt(_this10.id);
       });
-      console.log(this.filteredDays);
     },
     formatTime: function formatTime(time) {
       // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
@@ -1198,7 +1185,6 @@ __webpack_require__.r(__webpack_exports__);
         _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
         // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
         _this3.currentMonth = _this3.currentMonth - 1;
-        console.log(_this3.currentMonth);
 
         // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
         if (_this3.currentMonth === 0) {
@@ -1217,8 +1203,6 @@ __webpack_require__.r(__webpack_exports__);
           _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
           // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
           _this4.currentMonth = _this4.currentMonth + 1;
-          console.log(_this4.currentMonth);
-
           // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
           if (_this4.currentMonth === 12) {
             _this4.currentMonth = 1;
@@ -1334,7 +1318,6 @@ __webpack_require__.r(__webpack_exports__);
         _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
         // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
         _this3.currentMonth = _this3.currentMonth - 1;
-        console.log(_this3.currentMonth);
 
         // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
         if (_this3.currentMonth === 0) {
@@ -1353,7 +1336,6 @@ __webpack_require__.r(__webpack_exports__);
           _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
           // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
           _this4.currentMonth = _this4.currentMonth + 1;
-          console.log(_this4.currentMonth);
 
           // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
           if (_this4.currentMonth === 12) {
@@ -1470,7 +1452,6 @@ __webpack_require__.r(__webpack_exports__);
         _this3.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
         // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
         _this3.currentMonth = _this3.currentMonth - 1;
-        console.log(_this3.currentMonth);
 
         // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
         if (_this3.currentMonth === 0) {
@@ -1489,7 +1470,6 @@ __webpack_require__.r(__webpack_exports__);
           _this4.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
           // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
           _this4.currentMonth = _this4.currentMonth + 1;
-          console.log(_this4.currentMonth);
 
           // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
           if (_this4.currentMonth === 12) {
@@ -3451,21 +3431,39 @@ var render = function render() {
     _c = _vm._self._c;
   return _c("div", [_c("ul", {
     staticClass: "main__body__box-info"
-  }, [_c("li", [_c("i", {
-    staticClass: "fa-solid fa-money-bill-trend-up",
-    staticStyle: {
-      color: "#ff6666"
+  }, [_c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Revenue.png",
+      alt: "",
+      srcset: ""
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Total_price))]), _vm._v(" "), _c("p", [_vm._v("Total Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Remaining_price))]), _vm._v(" "), _c("p", [_vm._v("Remaining Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-shopping-bag-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.Deposit_price))]), _vm._v(" "), _c("p", [_vm._v("Deposit Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "fa-brands fa-servicestack",
-    staticStyle: {
-      color: "#eab3e0"
+  }), _vm._v(" "), _c("h6", [_vm._v("Total Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Total_price))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Remaining.png",
+      alt: "",
+      srcset: ""
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.servies_price))]), _vm._v(" "), _c("p", [_vm._v("Booking Price")])])])]);
+  }), _vm._v(" "), _c("h6", [_vm._v("Remaining")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Remaining_price))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Deposit.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Deposit")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Deposit_price))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/total%20booking%20price.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.servies_price))])])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;

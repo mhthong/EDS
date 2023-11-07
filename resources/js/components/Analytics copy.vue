@@ -19,7 +19,7 @@
         <li>
           <i class="fa-solid fa-money-bill-trend-up" style="color: #ff6666"></i>
           <h5>${{ parseFloat(this.Total_price) }}</h5>
-          <p>Total Booking Price</p>
+          <p>Total Booking Price </p>
         </li>
         <li>
           <i class="ph-wallet-fill"></i>

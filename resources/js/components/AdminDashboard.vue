@@ -1,63 +1,65 @@
 <template>
   <div>
-  <div>
-    <label :for="dateRange">
-      <date-range-picker
-        v-model="dateRange"
-        :id="dateRange"
-        :locale-data="{ firstDay: 1, format: 'dd-mm-yyyy HH:mm:ss' }"
-        label="Date range"
-        locale="en-AU"
-        :value="dateRange"
-        :timePicker="true"
-      ></date-range-picker>
-    </label>
-
-
+    <div>
+      <label :for="dateRange">
+        <date-range-picker
+          v-model="dateRange"
+          :id="dateRange"
+          :locale-data="{ firstDay: 1, format: 'dd-mm-yyyy HH:mm:ss' }"
+          label="Date range"
+          locale="en-AU"
+          :value="dateRange"
+          :timePicker="true"
+        ></date-range-picker>
+      </label>
     </div>
     <div>
       <!-- Hiển thị các thông tin và nút để xem các tháng -->
 
+      <ul class="main__body__box-info admin_dashboard" :class="{ fade: isTransitioning }">
+        <li class="Price Total_Booking_Price">
+          <img :src="'/assets/images/total%20booking%20price.png'" alt="" srcset="">
+          <h6>Total Booking Price</h6>
+          <h4>${{ parseFloat(this.servies_price) }}</h4>
+        </li>
+        <li class="Price Revenue_price">
+          <img :src="'/assets/images/Revenue.png'" alt="" srcset="">
+          <h6>Revenue</h6>
+          <h4>${{ this.RevenueTatol }}</h4>
+         
+        </li>
+
+        <li class=" Price Done_price">
+          <img :src="'/assets/images/Done.png'" alt="" srcset="">
+          <h6>Done</h6>
+          <h4>${{ parseFloat(this.Done_price) }}</h4>
+        </li>
+
+        <li class="Price Remaining_price">
+          <img :src="'/assets/images/Remaining.png'" alt="" srcset="">
+          <h6>Remaining</h6>
+          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
+        </li>
+    
+      </ul>
+
       <ul class="main__body__box-info" :class="{ fade: isTransitioning }">
-        <li>
-          <i class="fa-solid fa-money-bill-trend-up" style="color: #ff6666"></i>
-          <h5>${{ parseFloat(this.Total_price) }}</h5>
-          <p>Total Booking Price</p>
-        </li>
-        <li>
-          <i class="ph-wallet-fill"></i>
-          <h5>${{ this.RevenueTatol }}</h5>
-          <p>Revenue</p>
+        <li class="Price Deposit_price">
+          <img :src="'/assets/images/Deposit.png'" alt="" srcset="">
+          <h6>Deposit</h6>
+          <h4>${{ parseFloat(this.Deposit_price) }}</h4>
         </li>
 
-        <li>
-          <i class="fa-brands fa-servicestack" style="color: #56f561;"></i>
-          <h5>${{   parseFloat(this.Done_price) }}</h5>
-          <p>Done </p>
+        <li class="Price Cancel_price">
+          <img :src="'/assets/images/Cancel.png'" alt="" srcset="">
+          <h6>Cancel</h6>
+          <h4>${{ parseFloat(this.Cancel_price) }}</h4>
         </li>
 
-        <li>
-          <i class="fa-brands fa-servicestack" style="color: #4efc96;"></i>
-          <h5>${{   parseFloat(this.Remaining_price) }}</h5>
-          <p>Remaining </p>
-        </li>
-
-        <li>
-          <i class="fa-brands fa-servicestack" style="color: #03876b;"></i>
-          <h5>${{   parseFloat(this.Deposit_price) }}</h5>
-          <p>Deposit </p>
-        </li>
-
-        <li>
-          <i class="fa-brands fa-servicestack" style="color: #f06a6a;"></i>
-          <h5>${{   parseFloat(this.Cancel_price) }}</h5>
-          <p>Cancel </p>
-        </li>
-
-        <li>
-          <i class="fa-brands fa-servicestack" style="color: #ff7e33;"></i>
-          <h5>${{   parseFloat(this.Refund_price) }}</h5>
-          <p>Refund  </p>
+        <li class="Price Refund_price">
+          <img :src="'/assets/images/Refund.png'" alt="" srcset="">
+          <h6>Refund</h6>
+          <h4>${{ parseFloat(this.Refund_price) }}</h4>
         </li>
 
       </ul>
@@ -69,8 +71,7 @@
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css"; // Import the CSS
 import axios from "axios";
-import moment from 'moment';
-
+import moment from "moment";
 
 export default {
   components: {
@@ -80,9 +81,11 @@ export default {
     // Lấy ngày hiện tại
     const currentDate = new Date();
 
-
     return {
-       dateRange: [moment().startOf('day').add(1, 'second'), moment().endOf('day').subtract(1, 'second')],
+      dateRange: {
+        type: Object,
+        required: true, // Nếu cần
+      },
 
       dateCompare: {
         start: null, // Ngày bắt đầu
@@ -91,19 +94,19 @@ export default {
 
       id: "",
       currentURL: "",
-      apiData:[],
+      apiData: [],
       apiData_id: [],
       Total_price: "",
       Deposit_price: "",
       Remaining_price: "",
       servies_price: "",
-      Revenue:"",
-      RevenueDone:"",
-      RevenueRefund:"",
-      RevenueTatol:"",
-      Done_price:"",
-      Cancel_price:"",
-      Refund_price:"",
+      Revenue: "",
+      RevenueDone: "",
+      RevenueRefund: "",
+      RevenueTatol: "",
+      Done_price: "",
+      Cancel_price: "",
+      Refund_price: "",
       adminId: null,
       employeeId: null,
       artistId: null,
@@ -121,19 +124,18 @@ export default {
   watch: {
     dateRange: {
       handler(newDateRange, oldDateRange) {
+
         // Log khi dateRange thay đổi
-        this.dateRange.end = newDateRange.endDate;
-        this.dateRange.start = newDateRange.startDate;
-        this.calculateTotal();
+        this.dateRange.end = moment(newDateRange.endDate).format("YYYY-MM-DD");
+      this.dateRange.start = moment(newDateRange.startDate).format(
+        "YYYY-MM-DD"
+      );
+
+         this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
       },
       deep: true, // Theo dõi các sự thay đổi sâu trong object
     },
-    dateCompare: {
-      handler(newDateCompare, oldDateCompare) {
-        // Log khi dateCompare thay đổi
-      },
-      deep: true, // Theo dõi các sự thay đổi sâu trong object
-    },
+ 
   },
 
   computed: {
@@ -144,256 +146,166 @@ export default {
   },
 
   methods: {
-    fetchapiData_id() {
-  if (this.artistId !== null) {
-    axios
-      .get(`/api/all-data`)
-      .then((response) => {
-        // Lọc dữ liệu dựa trên ArtistID
-        this.apiData_id = response.data.filter(item => item.ArtistID == this.artistId  && item.action === "approved");
-        this.calculateTotal();
-      })
-      .catch((error) => {
-        console.error("Error fetching API data:", error);
-      });
-  } else if (this.employeeId !== null) {
-    axios
-      .get(`/api/all-data`)
-      .then((response) => {
-        // Lọc dữ liệu dựa trên source_id
-        this.apiData_id = response.data.filter(item => item.source_id == this.employeeId);
-        this.calculateTotal();
-      })
-      .catch((error) => {
-        console.error("Error fetching API data:", error);
-      });
-  } else {
-    axios
-      .get(`/api/all-data`)
-      .then((response) => {
-        this.apiData_id = response.data;
-        this.calculateTotal();
-      })
-      .catch((error) => {
-        console.error("Error fetching API data:", error);
-      });
-  }
-},
+    fetchapiData_id(start, end) {
+      if (this.artistId !== null) {
+        axios
+          .get(`/api/getDataArtist/ ${start}/${end}`)
+          .then((response) => {
+            // Lọc dữ liệu dựa trên ArtistID
+            this.apiData_id = Object.values(
+              this.totalByName(response.data)?.find(
+                (filler) => parseInt(filler.id) === parseInt(this.artistId)
+              ) || {}
+            );
+            this.Price();
+          })
 
-
-    filteredData_con() {
-
-      this.filteredDataWaiting = this.filteredData.filter((booking) => {
-        const WaitingStatus = booking.status;
-        return WaitingStatus == "Waiting";
-      });
-
-      this.filteredDataDone = this.filteredData.filter((booking) => {
-        const DoneStatus = booking.status;
-
-        return DoneStatus == "Done";
-      });
-
-      this.filteredDataRefund = this.filteredData.filter((booking) => {
-        const RefundStatus = booking.status;
-
-        return RefundStatus == "Refund";
-      });
-
-      this.filteredDataCancel = this.filteredData.filter((booking) => {
-        const CancelStatus = booking.status;
-
-        return CancelStatus == "Cancel";
-      });
-    },
-
-    calculateTotal() {
-
-
-      // Kiểm tra nếu this.dateRange.end không có dữ liệu thì sử dụng ngày cuối của tháng hiện tại
-      if (!this.dateRange.end) {
-        const currentDate = new Date();
-        const lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        this.dateRange.end = lastDayOfMonth;
-      }
-
-      // Kiểm tra nếu this.dateRange.start không có dữ liệu thì sử dụng ngày đầu của tháng hiện tại
-      if (!this.dateRange.start) {
-        const currentDate = new Date();
-        this.dateRange.start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-      }
-
-    console.log(this.dateRange.end , this.dateRange.start);
-      // Lọc các bản ghi thuộc tháng và năm hiện tại
-      this.filteredData = this.apiData_id.filter((booking) => {
-        const updatedAtDate = new Date(booking.price.updated_at);
-      /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return (
-          updatedAtDate <= this.dateRange.end &&
-          updatedAtDate >= this.dateRange.start
-        );
-      });
-
-      this.filteredData_con();
-
-      const revenueCancel = this.filteredDataCancel.reduce((total, booking) => {
-
-          const deposit = parseFloat(booking.price.Deposit_price);
-
-          if (!isNaN(deposit)) {
-            total += deposit;
-          }
-
-          return total;
-        }, 0);
-
-
-
-      // Tính tổng các giá trị từ dữ liệu đã lọc
-      this.Total_price =  this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.servies_price);
-        }, 0)
-        .toFixed(2);
-
-
-        this.Remaining_price =  this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.Remaining_price);
-        }, 0)
-        .toFixed(2);
-
-        this.	Deposit_price =  this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.Deposit_price);
-        }, 0)
-        .toFixed(2);
-
-        this.Done_price = this.filteredDataDone
-        .reduce((total, booking) => {
-          return total +  parseFloat(booking.price.servies_price) ;
-        }, 0)
-        .toFixed(2);
-
-
-        this.Cancel_price = this.filteredDataCancel
-        .reduce((total, booking) => {
-          return total +  parseFloat(booking.price.servies_price) ;
-        }, 0)
-        .toFixed(2);
-
-        this.Refund_price = this.filteredDataRefund
-        .reduce((total, booking) => {
-          return total +  parseFloat(booking.price.servies_price) ;
-        }, 0)
-        .toFixed(2);
-
-
-      this.Revenue = this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.Deposit_price);
-        }, 0)
-        .toFixed(2);
-
-      this.RevenueDone = this.filteredDataDone
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price) ;
-        }, 0)
-        .toFixed(2);
-
-      this.RevenueRefund = this.filteredDataRefund
-        .reduce((total, booking) => {
-          return total +  parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price);
-        }, 0)
-        .toFixed(2);
-
-
-      this.RevenueTatol = parseFloat(this.RevenueRefund) +    parseFloat(this.RevenueDone) +   parseFloat(this.Revenue)  ;
-
-        
-      this.numberOfBooks = this.filteredData.length;
-    },
-
-    showPreviousMonths() {
-      this.isTransitioning = true; // Bắt đầu hiệu ứng
-      setTimeout(() => {
-        this.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-        // Trừ đi 1 để lấy tháng trước đó và cập nhật dữ liệu
-        this.currentMonth = this.currentMonth - 1;
-
-        console.log(this.currentMonth);
-
-        // Nếu tháng hiện tại là tháng 1, thì tháng trước đó là tháng 12 của năm trước
-        if (this.currentMonth === 0) {
-          this.currentMonth = 12;
-          this.currentYear = this.currentYear - 1;
-        }
-
-        this.calculateTotal();
-        this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-      }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
-    },
-
-    showNextMonths() {
-      if (this.currentMonth < 12) {
-        this.isTransitioning = true; // Bắt đầu hiệu ứng
-        setTimeout(() => {
-          this.isTransitioning = false; // Kết thúc hiệu ứng sau 0.5s (thời gian transition)
-          // Kiểm tra nếu tháng tiếp theo nhỏ hơn hoặc bằng tháng hiện tại
-          this.currentMonth = this.currentMonth + 1;
-          console.log(this.currentMonth);
-
-          // Nếu tháng hiện tại là tháng 12, thì khi bạn nhấp vào "Xem các tháng tiếp theo", nó sẽ thay đổi thành tháng 1 của năm sau
-          if (this.currentMonth === 12) {
-            this.currentMonth = 1;
-            this.currentYear = this.currentYear + 1;
-          }
-
-          this.calculateTotal();
-          this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau"
-        }, 500); // Chờ 0.5s trước khi kết thúc hiệu ứng
-      }
-    },
-
-    checkDisableNextButton() {
-      const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentYear = currentDate.getFullYear();
-      // Nút "Xem các tháng sau" sẽ bị vô hiệu hóa nếu tháng hiện tại là tháng cuối cùng trong danh sách
-      if (
-        this.currentMonth >= currentMonth &&
-        this.currentYear >= currentYear
-      ) {
-        this.disableNextButton = true;
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } else if (this.employeeId !== null) {
+        axios
+          .get(`/api/getDataEmployee/${start}/${end}`)
+          .then((response) => {
+            this.apiData_id = Object.values(
+              this.totalByName(response.data)?.find(
+                (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+              ) || {}
+            );
+            this.Price();
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
       } else {
-        this.disableNextButton = false;
+        axios
+          .get(`/api/getDataShowroom/ ${start}/${end}`)
+          .then((response) => {
+            // Nhận dữ liệu từ phản hồi
+            this.apiData_id = response.data;
+
+            this.Price();
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
       }
+    },
+
+    totalByName(data) {
+      // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
+      const totals = {};
+
+      // Lặp qua các ngày trong dữ liệu của bạn
+      for (const date in data) {
+        const fillerDatas = data[date];
+        for (const Id in fillerDatas) {
+          const fillerData = fillerDatas[Id];
+          const Name = fillerData.Name;
+          const id = fillerData.id;
+          const total_price = fillerData.Total_price;
+
+          // Nếu tên dịch vụ chưa tồn tại trong totals, thì khởi tạo nó với giá trị ban đầu
+          if (!totals[Name]) {
+            totals[Name] = {
+              id: id,
+              Name: Name,
+              Total_price: 0,
+              Deposit_price: 0,
+              servies_price: 0,
+              Revenue: 0,
+              Done_price: 0,
+              Cancel_price: 0,
+              Refund_price: 0,
+              Remaining_price: 0,
+              length: 0,
+            };
+          }
+          // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
+          totals[Name].Total_price += total_price;
+          totals[Name].Deposit_price += fillerData.Deposit_price;
+          totals[Name].servies_price += fillerData.servies_price;
+          totals[Name].Revenue += fillerData.revenue;
+          totals[Name].Done_price += fillerData.Done_price;
+          totals[Name].Cancel_price += fillerData.Cancel_price;
+          totals[Name].Refund_price += fillerData.Refund_price;
+          totals[Name].Remaining_price += fillerData.Remaining_price;
+          totals[Name].length += fillerData.length;
+        }
+      }
+
+      // Chuyển đối tượng totals thành một mảng nếu cần
+      const totalsArray = Object.values(totals);
+
+      return totalsArray;
+    },
+
+    Price() {
+
+
+      this.Total_price = 0;
+      this.Deposit_price = 0;
+      this.servies_price = 0;
+      this.RevenueTatol = 0;
+      this.Cancel_price = 0;
+      this.Refund_price = 0;
+      this.Done_price = 0;
+      this.Remaining_price = 0;
+      this.numberOfBooks = 0;
+
+      if (this.adminId !== null) {
+        const data = this.totalByName(this.apiData_id);
+
+        data.forEach((item) => {
+          this.Total_price += parseFloat(item.servies_price);
+          this.Deposit_price += parseFloat(item.Deposit_price);
+          this.servies_price += parseFloat(item.servies_price);
+          this.RevenueTatol += parseFloat(item.Revenue);
+          this.Cancel_price += parseFloat(item.Cancel_price);
+          this.Refund_price += parseFloat(item.Refund_price);
+          this.Done_price += parseFloat(item.Done_price);
+          this.Remaining_price += parseFloat(item.Remaining_price);
+          this.numberOfBooks = item.length;
+        });
+      } else {
+        const data = this.apiData_id;
+        this.Total_price += parseFloat(data[2]);
+        this.Deposit_price += parseFloat(data[3]);
+        this.servies_price += parseFloat(data[4]);
+        this.RevenueTatol += parseFloat(data[5]);
+        this.Cancel_price += parseFloat(data[7]);
+        this.Refund_price += parseFloat(data[8]);
+        this.Done_price += parseFloat(data[6]);
+        this.Remaining_price += parseFloat(data[9]);
+
+        this.numberOfBooks = data[10];
+      }
+
+      // Lặp qua danh sách dữ liệu và tính tổng
     },
   },
 
   mounted() {
-
     this.adminId = this.$root.adminId;
-  
 
     this.artistId = this.$root.artistId;
 
-
     this.employeeId = this.$root.employeeId;
- 
 
+    const currentDate = new Date();
+    this.currentMonth = currentDate.getMonth() + 1;
+    this.currentYear = currentDate.getFullYear();
+
+    // Kiểm tra nếu dateRange không có giá trị, đặt mặc định là ngày bắt đầu và ngày hiện tại
+    if (!this.dateRange.start || !this.dateRange.end) {
       const currentDate = new Date();
-      this.currentMonth = currentDate.getMonth() + 1;
-      this.currentYear = currentDate.getFullYear();
-      
-      // Kiểm tra nếu dateRange không có giá trị, đặt mặc định là ngày bắt đầu và kết thúc của tháng hiện tại
-      if (!this.dateRange.start || !this.dateRange.end) {
-        this.dateRange.start = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        this.dateRange.end = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-      }
+      this.dateRange.start = moment(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+      ).format("YYYY-MM-DD");
+      this.dateRange.end = moment(currentDate).format("YYYY-MM-DD");
+    }
 
-    this.fetchapiData_id();
-    this.checkDisableNextButton(); // Kiểm tra nút "Xem các tháng sau" khi ban đầu tải trang
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
   },
 };
 </script>
@@ -553,7 +465,6 @@ export default {
 
 .vue-daterange-picker[data-v-1ebd09d2] {
   min-width: 300px;
-
 }
 
 @media (max-width: 768px) {
@@ -562,14 +473,13 @@ export default {
     left: 50% !important;
     -webkit-transform: translate(-50%);
     transform: translate(-50%);
-}
+  }
 
-.fc-header-toolbar{
-  gap: 7px;
+  .fc-header-toolbar {
+    gap: 7px;
     align-items: baseline;
     flex-direction: column-reverse;
-
-}
+  }
 }
 
 @media (min-width: 768px) {
@@ -578,8 +488,6 @@ export default {
     left: 100% !important;
     -webkit-transform: translate(-50%);
     transform: translate(-50%);
+  }
 }
-}
-
-
 </style>

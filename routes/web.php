@@ -178,13 +178,13 @@ Route::middleware('auth:artists')->prefix('artists')->group(
         Route::post('/update-avatar', [ArtistAuthController::class, 'updateAvatar'])->name('artists.updateAvatar');
         Route::post('/update-infomation', [ArtistAuthController::class, 'updateInfomation'])->name('artists.updateInfomation');
 
-        Route::get('/sales', function () {
+   /*      Route::get('/sales', function () {
             return view('layouts.sale'); // Tên của view bạn muốn hiển thị
         })->name('sale-artists');
 
         Route::get('/analytics', function () {
             return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
-        })->name('analytics-artists');
+        })->name('analytics-artists'); */
         
 
         Route::prefix('books')->group(
@@ -235,13 +235,13 @@ Route::middleware('auth:employee')->prefix('employee')->group(function () {
     Route::post('/update-avatar', [EmployeeAuthController::class, 'updateAvatar'])->name('employee.updateAvatar');
     Route::post('/update-infomation', [EmployeeAuthController::class, 'updateInfomation'])->name('employee.updateInfomation');
 
-    Route::get('/sales', function () {
+/*     Route::get('/sales', function () {
         return view('layouts.sale'); // Tên của view bạn muốn hiển thị
     })->name('sale-employee');
 
     Route::get('/analytics', function () {
         return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
-    })->name('analytics-employee');
+    })->name('analytics-employee'); */
     
 
     Route::prefix('books')->group(

@@ -63,6 +63,7 @@ __webpack_require__.r(__webpack_exports__);
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__["default"], _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_3__["default"]],
         initialView: "dayGridMonth",
         weekends: true,
+        events: [],
         eventTimeFormat: {
           hour: "numeric",
           minute: "2-digit",
@@ -77,8 +78,7 @@ __webpack_require__.r(__webpack_exports__);
         selectable: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventContent: this.customEventContent,
-        events: this.filterEventsByCurrentDate
+        eventContent: this.customEventContent
       }
     };
   },
@@ -100,8 +100,17 @@ __webpack_require__.r(__webpack_exports__);
         console.error("Error fetching API data:", error);
       });
     },
-    loadEvents: function loadEvents() {
+    fetchData: function fetchData() {
       var _this3 = this;
+      // Gọi API và cập nhật biến apiData với dữ liệu từ API
+      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
+        _this3.data = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    loadEvents: function loadEvents() {
+      var _this4 = this;
       var filteredEvents = []; // Đặt biến ở đầu hàm
 
       if (this.artistId !== null) {
@@ -113,58 +122,52 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         this.step = "FullCalendar";
       }
-      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
-        _this3.data = response.data;
-        /*     console.log(this.selectedArtist);
-            console.log(this.selectedShowroom);
-            console.log(this.selectedStatus);
-         */
-        filteredEvents = response.data.filter(function (event) {
-          // Kiểm tra nếu selectedShowroom và selectedArtist là 0 (tức là không có lựa chọn cụ thể) hoặc trùng với giá trị của sự kiện
-          /*  console.log( event.ShowroomID , this.selectedShowroom, event.ShowroomID === this.selectedShowroom , event.ArtistID == this.selectedArtist , event.status === this.selectedStatus); */
-          var showroomMatch = _this3.selectedShowroom === 0 || event.ShowroomID === _this3.selectedShowroom;
-          var artistMatch = _this3.selectedArtist === 0 || event.ArtistID == _this3.selectedArtist;
-          var StatusMatch = _this3.selectedStatus === "None" || event.status === _this3.selectedStatus;
-          var ActionMatch = true;
+      filteredEvents = this.data.filter(function (event) {
+        // Kiểm tra nếu selectedShowroom và selectedArtist là 0 (tức là không có lựa chọn cụ thể) hoặc trùng với giá trị của sự kiện
+        var showroomMatch = _this4.selectedShowroom === 0 || parseInt(event.ShowroomID) === _this4.selectedShowroom;
+        var artistMatch = _this4.selectedArtist === 0 || parseInt(event.ArtistID) === _this4.selectedArtist;
+        var StatusMatch = _this4.selectedStatus === "None" || event.status === _this4.selectedStatus;
+        var ActionMatch = true;
 
-          // Kiểm tra ActionMatch chỉ khi artistId khác null
-          if (_this3.artistId !== null) {
-            ActionMatch = event.action === "approved";
+        // Kiểm tra ActionMatch chỉ khi artistId khác null
+        if (_this4.artistId !== null) {
+          ActionMatch = event.action === "approved";
+        }
+
+        // Sự kiện sẽ được bao gồm nếu cả showroomMatch, artistMatch, StatusMatch và ActionMatch đều là true
+        return showroomMatch && artistMatch && StatusMatch && ActionMatch;
+      });
+      console.log(this.data, filteredEvents);
+      this.calendarOptions.events = filteredEvents.map(function (event) {
+        var startTime = new Date(event.date + "T" + event.time);
+        var endTime = new Date(event.date + "T" + event.time_end);
+        var serviceNames = event.services.map(function (service) {
+          return service.Name;
+        }).join(", ");
+        return {
+          id: event.id,
+          title: event.status,
+          start: startTime,
+          end: endTime,
+          extendedProps: {
+            // Thêm thông tin mở rộng
+            artist: event.artist.name,
+            // Tên nghệ sĩ
+            source: event.source_name,
+            // Tên nghệ sĩ
+            get: event.get.Name,
+            // Tên nghệ sĩ
+            showroom: event.showroom.Name,
+            // Tên showroom
+            services: event.services.map(function (service) {
+              return service.Name;
+            }).join(", "),
+            // Dịch vụ
+            price: event.price.Total_price,
+            // Giá
+            paymentType: event.payment.payment_type // Loại thanh toán
           }
-
-          // Sự kiện sẽ được bao gồm nếu cả showroomMatch, artistMatch, StatusMatch và ActionMatch đều là true
-          return showroomMatch && artistMatch && StatusMatch && ActionMatch;
-        });
-
-        /*   console.log("filteredEvents", filteredEvents); */
-
-        _this3.calendarOptions.events = filteredEvents.map(function (event) {
-          var startTime = new Date(event.date + "T" + event.time);
-          var endTime = new Date(event.date + "T" + event.time_end);
-          var serviceNames = event.services.map(function (service) {
-            return service.Name;
-          }).join(", ");
-          return {
-            id: event.id,
-            title: event.status,
-            start: startTime,
-            end: endTime,
-            extendedProps: {
-              // Thêm thông tin mở rộng
-              artist: event.artist.name,
-              // Tên nghệ sĩ
-              showroom: event.showroom.Name,
-              // Tên showroom
-              services: event.services.map(function (service) {
-                return service.Name;
-              }).join(", "),
-              // Dịch vụ
-              price: event.price.Total_price,
-              // Giá
-              paymentType: event.payment.payment_type // Loại thanh toán
-            }
-          };
-        });
+        };
       });
     },
     customEventContent: function customEventContent(arg) {
@@ -178,19 +181,19 @@ __webpack_require__.r(__webpack_exports__);
       });
       var currentUrl = window.location.href;
       return {
-        html: "\n      \n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            \n            <div class=\"fc-content-main\">\n              <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n\n          </div>\n   \n        ")
+        html: "\n      \n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            <a href=\"").concat(currentUrl, "/books/").concat(arg.event.id, "/edit\" style=\"color: white\">\n            <div class=\"fc-content-main\">\n            <span class=\"fc-status\">Booking person : ").concat(arg.event.extendedProps.source, " </span><br>\n            <span class=\"fc-status\">Client : ").concat(arg.event.extendedProps.get, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n            </a>\n          </div>\n  \n   \n        ")
       };
     }
   },
   mounted: function mounted() {
+    var _this5 = this;
     this.artistId = this.$root.artistId;
     if (this.artistId !== null) {
       this.selectedArtist = this.artistId;
     }
-    this.loadEvents();
-    this.fetchShowrooms();
-    this.fetchArtists();
-    // Đăng ký sự kiện datesSet để theo dõi thay đổi phạm vi ngày
+    Promise.all([this.fetchData(), this.fetchShowrooms(), this.fetchArtists()]).then(function () {
+      _this5.loadEvents();
+    });
   }
 });
 
@@ -226,7 +229,8 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      id: "showroomSelect"
+      id: "showroomSelect",
+      disabled: this.data.length === 0
     },
     on: {
       change: [function ($event) {
@@ -246,13 +250,13 @@ var render = function render() {
     domProps: {
       value: 0
     }
-  }, [_vm._v(" Showroom")]), _vm._v(" "), _vm._l(_vm.showrooms, function (showroom) {
+  }, [_vm._v("Showroom")]), _vm._v(" "), _vm._l(_vm.showrooms, function (showroom) {
     return _c("option", {
       key: showroom.id,
       domProps: {
         value: showroom.id
       }
-    }, [_vm._v(_vm._s(showroom.Name))]);
+    }, [_vm._v("\n        " + _vm._s(showroom.Name) + "\n      ")]);
   })], 2)]), _vm._v(" "), _c("div", {
     staticClass: "col-3 m-2"
   }, [_c("select", {
@@ -265,7 +269,7 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       id: "showroomSelect",
-      disabled: _vm.artistId !== null
+      disabled: _vm.artistId !== null || this.data.length === 0
     },
     on: {
       change: [function ($event) {
@@ -285,13 +289,13 @@ var render = function render() {
     domProps: {
       value: 0
     }
-  }, [_vm._v(" Artists")]), _vm._v(" "), _vm._l(_vm.artists, function (artist) {
+  }, [_vm._v("Artists")]), _vm._v(" "), _vm._l(_vm.artists, function (artist) {
     return _c("option", {
       key: artist.id,
       domProps: {
         value: artist.id
       }
-    }, [_vm._v(_vm._s(artist.name))]);
+    }, [_vm._v("\n        " + _vm._s(artist.name) + "\n      ")]);
   })], 2)]), _vm._v(" "), _c("div", {
     staticClass: "col-3 m-2"
   }, [_c("select", {
@@ -302,6 +306,9 @@ var render = function render() {
       expression: "selectedStatus"
     }],
     staticClass: "form-control",
+    attrs: {
+      disabled: this.data.length === 0
+    },
     on: {
       change: [function ($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
@@ -336,7 +343,6 @@ var render = function render() {
   }, [_vm._v("Refund")])])]), _vm._v(" "), _vm.step === "FullCalendar" ? _c("div", {
     staticClass: "col-12"
   }, [_c("FullCalendar", {
-    ref: "fullCalendar",
     attrs: {
       options: _vm.calendarOptions
     }

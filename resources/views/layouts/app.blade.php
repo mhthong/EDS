@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    @isset($setting_data['Favicon'])
+    <link rel="shortcut icon" href="{{ asset($setting_data['Favicon']) }}">
+    @endisset
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @routes()
@@ -20,13 +22,11 @@
         @endif
 
     @endif
-
+ 
     <link href="/css/vendor.css" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
     <script src="/js/vendor.js"></script>
     @stack('styles')
-
-    
     @yield('head')
     
     <style>
@@ -46,7 +46,6 @@
     @yield('content')
 
     @yield('footer')
-
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="/js/style.js" defer></script>
     @yield('script')

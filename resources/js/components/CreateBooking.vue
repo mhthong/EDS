@@ -705,9 +705,7 @@ export default {
     }, */
     filterActiveDays() {
       if (!this.selectedDate) return;
-      console.log("selectedDate:", this.selectedDate);
-      console.log("this.fetchApiData:", this.apiData);
-      console.log(this.selectedArtist);
+     
 
       this.filteredDays = this.apiData.filter(
         (schedule) =>
@@ -715,7 +713,7 @@ export default {
           parseInt(schedule.ArtistID) === parseInt(this.selectedArtist)
       );
 
-      console.log(this.filteredDays);
+   
     },
 
     selectedDateToDay(dateString) {
@@ -814,7 +812,7 @@ export default {
     handleFileChange() {
       // Handle the file selection here, e.g., store it in a data property
       this.paymentImage = this.$refs.fileInput.files[0];
-      console.log(this.paymentImage);
+      
     },
 
     fetchServices() {
@@ -914,7 +912,7 @@ export default {
 
         serviceTotalPrice = parseFloat(servicePrice);
 
-        console.log(serviceTotalPrice);
+      
       }
 
       this.maxDepositPrice = serviceTotalPrice;
@@ -948,13 +946,13 @@ export default {
           this.step = "groupService";
         }
       } else if (this.step === "groupService") {
-        console.log(this.selectedServices);
+      
         if (this.selectedServices) {
           this.fetchArtistlevels();
           this.step = "artistlevels";
         }
       } else if (this.step === "artistlevels") {
-        console.log(this.selectedShowroom);
+       
         if (this.selectedShowroom) {
           this.fetchShowroomSchedule();
           this.step = "showroomschedule";
@@ -983,7 +981,7 @@ export default {
             PaymentType: this.selectedPaymentType,
           };
 
-          console.log(bookingDatavalue);
+      
 
           this.bookingData = JSON.stringify(bookingDatavalue);
         }

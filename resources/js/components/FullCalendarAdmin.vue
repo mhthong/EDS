@@ -1,39 +1,63 @@
 <template>
-  <div style="
-    height: 100%;
-">
-    <div class="col-3 m-2 ">
-      <select class="form-control "  id="showroomSelect" v-model="selectedShowroom" @change="loadEvents">
-        <option :value="0" selected > Showroom</option>
-        <option v-for="showroom in showrooms" :key="showroom.id" :value="showroom.id" >{{ showroom.Name }}</option>
+  <div style="height: 100%">
+    <div class="col-3 m-2">
+      <select
+        class="form-control"
+        id="showroomSelect"
+        v-model="selectedShowroom"
+        @change="loadEvents"
+        :disabled="this.data.length === 0"
+      >
+        <option :value="0" selected>Showroom</option>
+        <option
+          v-for="showroom in showrooms"
+          :key="showroom.id"
+          :value="showroom.id"
+      
+        >
+          {{ showroom.Name }}
+        </option>
       </select>
     </div>
 
-    <div class="col-3 m-2" >
-      <select class="form-control "  id="showroomSelect" v-model="selectedArtist" @change="loadEvents" :disabled="artistId !== null">
-        <option :value="0" selected > Artists</option>
-        <option v-for="artist in artists" :key="artist.id" :value="artist.id" >{{ artist.name }}</option>
+    <div class="col-3 m-2">
+      <select
+        class="form-control"
+        id="showroomSelect"
+        v-model="selectedArtist"
+        @change="loadEvents"
+        :disabled="artistId !== null ||  this.data.length === 0"
+      >
+        <option :value="0" selected>Artists</option>
+        <option v-for="artist in artists" :key="artist.id" :value="artist.id">
+          {{ artist.name }}
+        </option>
       </select>
     </div>
 
-    <div class="col-3 m-2 ">
-      <select class="form-control " v-model="selectedStatus" @change="loadEvents">
-            <option value="None">Status</option>
-            <option value="Waiting" >Waiting</option>
-            <option value="Done" >Done</option>
-            <option value="Cancel">Cancel</option>
-            <option value="Refund">Refund</option>
-        </select>
+    <div class="col-3 m-2">
+      <select
+        class="form-control"
+        v-model="selectedStatus"
+        @change="loadEvents"
+        :disabled="this.data.length === 0"
+      >
+        <option value="None">Status</option>
+        <option value="Waiting">Waiting</option>
+        <option value="Done">Done</option>
+        <option value="Cancel">Cancel</option>
+        <option value="Refund">Refund</option>
+      </select>
     </div>
 
     <div class="col-12" v-if="step === 'FullCalendar'">
-
-      <FullCalendar :options="calendarOptions" ref="fullCalendar" />
-
+      <FullCalendar :options="calendarOptions" />
     </div>
 
     <div class="col-12" v-if="step === 'none'">
-      <div class="mb-4"><i >Please select Showroom and Artists to display the Calendar</i></div>
+      <div class="mb-4">
+        <i>Please select Showroom and Artists to display the Calendar</i>
+      </div>
       <div class="FullCalendarNone">
         <FullCalendar :options="calendarOptionsNone" />
       </div>
@@ -49,7 +73,6 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 
-
 export default {
   components: {
     FullCalendar,
@@ -62,9 +85,9 @@ export default {
       showrooms: [], // Thêm showrooms và selectedShowroom vào phần data chính
       selectedShowroom: 0,
       step: "none",
-      selectedStatus:"None",
-  
-      data:[],
+      selectedStatus: "None",
+
+      data: [],
       calendarOptions: {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         initialView: "dayGridMonth",
@@ -90,6 +113,7 @@ export default {
         plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
         initialView: "dayGridMonth",
         weekends: true,
+        events: [],
         eventTimeFormat: {
           hour: "numeric",
           minute: "2-digit",
@@ -105,9 +129,7 @@ export default {
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
         eventContent: this.customEventContent,
-        events: this.filterEventsByCurrentDate
       },
-      
     };
   },
 
@@ -117,13 +139,11 @@ export default {
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
-
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
         });
     },
-
 
     fetchArtists() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
@@ -131,85 +151,91 @@ export default {
         .get(`/api/artist`)
         .then((response) => {
           this.artists = response.data;
-
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);
         });
     },
 
-    
+    fetchData() {
+      // Gọi API và cập nhật biến apiData với dữ liệu từ API
+      axios
+        .get(`/api/all-data`)
+        .then((response) => {
+          this.data = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
 
     loadEvents() {
+      let filteredEvents = []; // Đặt biến ở đầu hàm
 
-  let filteredEvents = []; // Đặt biến ở đầu hàm
-
-  if (this.artistId !== null) {
-    this.selectedArtist = this.$root.artistId;
-  }
-
-  if (
-    this.selectedArtist == 0 &&
-    this.selectedShowroom == 0 &&
-    this.selectedStatus == "None"
-  ) {
-    this.step = "none";
-    return;
-  } else {
-    this.step = "FullCalendar";
-  }
-
-  axios.get("/api/all-data").then((response) => {
-    this.data = response.data;
-/*     console.log(this.selectedArtist);
-    console.log(this.selectedShowroom);
-    console.log(this.selectedStatus);
- */
-    filteredEvents = response.data.filter((event) => {
-      // Kiểm tra nếu selectedShowroom và selectedArtist là 0 (tức là không có lựa chọn cụ thể) hoặc trùng với giá trị của sự kiện
-     /*  console.log( event.ShowroomID , this.selectedShowroom, event.ShowroomID === this.selectedShowroom , event.ArtistID == this.selectedArtist , event.status === this.selectedStatus); */
-      const showroomMatch =
-        this.selectedShowroom === 0 || event.ShowroomID === this.selectedShowroom;
-      const artistMatch =
-        this.selectedArtist === 0 || event.ArtistID == this.selectedArtist;
-      const StatusMatch =
-        this.selectedStatus === "None" || event.status === this.selectedStatus;
-      let ActionMatch = true;
-
-      // Kiểm tra ActionMatch chỉ khi artistId khác null
       if (this.artistId !== null) {
-        ActionMatch = event.action === "approved";
+        this.selectedArtist = this.$root.artistId;
       }
 
-      // Sự kiện sẽ được bao gồm nếu cả showroomMatch, artistMatch, StatusMatch và ActionMatch đều là true
-      return showroomMatch && artistMatch && StatusMatch && ActionMatch;
-    });
+      if (
+        this.selectedArtist == 0 &&
+        this.selectedShowroom == 0 &&
+        this.selectedStatus == "None"
+      ) {
+        this.step = "none";
+        return;
+      } else {
+        this.step = "FullCalendar";
+      }
 
-  /*   console.log("filteredEvents", filteredEvents); */
+      filteredEvents = this.data.filter((event) => {
+        // Kiểm tra nếu selectedShowroom và selectedArtist là 0 (tức là không có lựa chọn cụ thể) hoặc trùng với giá trị của sự kiện
+        const showroomMatch =
+          this.selectedShowroom === 0 ||
+          parseInt(event.ShowroomID) === this.selectedShowroom;
+        const artistMatch =
+          this.selectedArtist === 0 || parseInt(event.ArtistID) === this.selectedArtist;
 
-    this.calendarOptions.events = filteredEvents.map((event) => {
-      const startTime = new Date(event.date + "T" + event.time);
-      const endTime = new Date(event.date + "T" + event.time_end);
-      const serviceNames = event.services.map((service) => service.Name).join(", ");
+        const StatusMatch =
+          this.selectedStatus === "None" ||
+          event.status === this.selectedStatus;
+        let ActionMatch = true;
 
-      return {
-        id: event.id,
-        title: event.status,
-        start: startTime,
-        end: endTime,
-        extendedProps: { // Thêm thông tin mở rộng
-          artist: event.artist.name, // Tên nghệ sĩ
-          showroom: event.showroom.Name, // Tên showroom
-          services: event.services.map((service) => service.Name).join(", "), // Dịch vụ
-          price: event.price.Total_price, // Giá
-          paymentType: event.payment.payment_type, // Loại thanh toán
-        },
-      };
-    });
+        // Kiểm tra ActionMatch chỉ khi artistId khác null
+        if (this.artistId !== null) {
+          ActionMatch = event.action === "approved";
+        }
 
-  });
-},
+        // Sự kiện sẽ được bao gồm nếu cả showroomMatch, artistMatch, StatusMatch và ActionMatch đều là true
+        return showroomMatch && artistMatch && StatusMatch && ActionMatch;
+      });
 
+      console.log(this.data,filteredEvents);
+
+      this.calendarOptions.events = filteredEvents.map((event) => {
+        const startTime = new Date(event.date + "T" + event.time);
+        const endTime = new Date(event.date + "T" + event.time_end);
+        const serviceNames = event.services
+          .map((service) => service.Name)
+          .join(", ");
+
+        return {
+          id: event.id,
+          title: event.status,
+          start: startTime,
+          end: endTime,
+          extendedProps: {
+            // Thêm thông tin mở rộng
+            artist: event.artist.name, // Tên nghệ sĩ
+            source: event.source_name, // Tên nghệ sĩ
+            get: event.get.Name, // Tên nghệ sĩ
+            showroom: event.showroom.Name, // Tên showroom
+            services: event.services.map((service) => service.Name).join(", "), // Dịch vụ
+            price: event.price.Total_price, // Giá
+            paymentType: event.payment.payment_type, // Loại thanh toán
+          },
+        };
+      });
+    },
 
     customEventContent(arg) {
       const startTime = arg.event.start.toLocaleTimeString([], {
@@ -227,38 +253,39 @@ export default {
         html: `
       
           <div class="fc-content ${arg.event.title}">
-            
+            <a href="${currentUrl}/books/${arg.event.id}/edit" style="color: white">
             <div class="fc-content-main">
-              <span class="fc-status">${arg.event.extendedProps.showroom} </span><br>
+            <span class="fc-status">Booking person : ${arg.event.extendedProps.source} </span><br>
+            <span class="fc-status">Client : ${arg.event.extendedProps.get} </span><br>
+            <span class="fc-status">${arg.event.extendedProps.showroom} </span><br>
             <span class="fc-status">${arg.event.extendedProps.services} </span><br>
             <span class="fc-status"> ${arg.event.title}</span><br>
             <span class="fc-time">${startTime} - ${endTime}</span>
             </div>
-
+            </a>
           </div>
+  
    
         `,
       };
     },
-
-
-
-
   },
-
-
-
 
   mounted() {
     this.artistId = this.$root.artistId;
-    if(this.artistId !== null) {
-      this.selectedArtist = this.artistId
+    if (this.artistId !== null) {
+      this.selectedArtist = this.artistId;
     }
-    this.loadEvents();
-    this.fetchShowrooms();
-    this.fetchArtists();
-      // Đăng ký sự kiện datesSet để theo dõi thay đổi phạm vi ngày
-  
+
+    Promise.all([
+      this.fetchData(),
+      this.fetchShowrooms(),
+      this.fetchArtists(),
+      ]).then(() => {
+        this.loadEvents();
+      });
+
+
   },
 };
 </script>

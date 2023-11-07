@@ -14,13 +14,15 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+import './dashboards.js';
+
 import './bootstrap.js';
 
 import './checkbox.js';
 
 import './nav.js'
 
-import './slick.js';
+/* import './slick.js'; */
 
 import './product.js';
 
@@ -28,7 +30,7 @@ import './input-number.js';
 
 import './cart-nav.js';
 
-import './cart.js';
+/* import './cart.js'; */
 
 import './master.js';
 
@@ -43,8 +45,6 @@ import './esaing.js';
 import './fullpage.min.js';
 
 import './wow.min.js';
-
-import './dashboards.js';
 
 import './ziggy.js';
 

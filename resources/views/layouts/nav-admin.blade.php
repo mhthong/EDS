@@ -3,17 +3,27 @@
     @if (Auth::user() instanceof \App\Models\Artists)
         <!-- start: SIDEBAR -->
         <section id="sidebar">
-            <a href="/artists" class="brand">
-                <i class="ph-flame-fill"></i>
-            </a>
+    
             <ul class="sidebar__menu">
-                <li>
+                {{--                 <li>
                     <a href="#" class=""><i class="fa-solid fa-house"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Dashboard</li>
                         <li><a href="{{ route('sale-artists') }}">Sales</a></li>
                         <li><a href="{{ route('analytics-artists') }}">Analytics</a></li>
                     </ul>
+                </li> --}}
+                <li>
+                    <a href="/artists" class="brand" style="
+                    display: flex;
+                    justify-content: center;
+                ">
+
+                            @isset($setting_data['admin-logo'])
+                                <img src="{{ asset($setting_data['admin-logo']) }}" alt="" style="width:40px; padding:5px">
+                            @endisset
+  
+                    </a>
                 </li>
                 <li>
                     <a href="{{ route('artists.book.index') }}"><i class="fab fa-servicestack"></i></a>
@@ -22,7 +32,7 @@
                     <a class="dropdown-item logout" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
-                       <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -38,9 +48,16 @@
 
         <!-- start: SIDEBAR MOBILE -->
         <section id="sidebar-mobile">
-            <i class="ph-squares-four-fill toggle-sidebar"></i>
+            <i class="toggle-sidebar-active"><i class="fa-solid fa-bars"></i></i>
             <a href="#" class="brand">
-                <i class="ph-flame-fill"></i>
+                <i style="
+                        display: flex;
+                        justify-content: center;
+                    ">
+                    @isset($setting_data['admin-logo'])
+                        <img src="{{ asset($setting_data['admin-logo']) }}" alt="" style="width:40px; padding:5px">
+                    @endisset
+                </i>
                 Artirst
             </a>
         </section>
@@ -50,10 +67,21 @@
     @elseif (Auth::user() instanceof \App\Models\Admin)
         <!-- start: SIDEBAR -->
         <section id="sidebar">
-            <a href="/admin" class="brand">
-                <i class="ph-flame-fill"></i>
-            </a>
+ 
             <ul class="sidebar__menu">
+             
+                <li>
+                    <a href="/admin" class="brand" style="
+                    display: flex;
+                    justify-content: center;
+                ">
+            
+               @isset($setting_data['admin-logo'])
+               <img src="{{ asset($setting_data['admin-logo']) }}" alt="" style="width:40px; padding:5px">
+                @endisset
+ 
+                    </a>
+                </li>
                 <li>
                     <a href="#" class=""><i class="fa-solid fa-house"></i></a>
                     <ul class="sidebar__submenu">
@@ -103,11 +131,7 @@
                         </li>
 
                         <li>
-                            <a href="#">Booking <i class="ph-caret-right-fill"></i></a>
-                            <ul class="sidebar__dropdown-menu">
-                                <li><a href="{{ route('book.index') }}">All Booking</a></li>
-
-                            </ul>
+                            <a href="{{ route('book.index') }}">Booking <i class="ph-caret-right-fill"></i></a>
                         </li>
                     </ul>
                 </li>
@@ -125,7 +149,7 @@
 
                         <ul class="sidebar__submenu">
                             <li class="title">Interface options</li>
-             
+
 
                             <li>
                                 <a href="#">Interface<i class="ph-caret-right-fill"></i></a>
@@ -166,7 +190,7 @@
                         <a href="#"><i class="fa-solid fa-gear"></i></a>
                         <ul class="sidebar__submenu">
                             <li class="title">Setting</li>
-             
+
                             <li>
                                 <a style="" href="{{ route('general') }}">
                                     Basic Layout
@@ -186,7 +210,7 @@
                     <a class="dropdown-item logout" href="{{ route('logout') }}"8
                         onclick="event.preventDefault();
                          document.getElementById('logout-form').submit();">
-                       <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -202,9 +226,16 @@
 
         <!-- start: SIDEBAR MOBILE -->
         <section id="sidebar-mobile">
-            <i class="ph-squares-four-fill toggle-sidebar"></i>
+            <i class="toggle-sidebar-active"><i class="fa-solid fa-bars"></i></i>
             <a href="#" class="brand">
-                <i class="ph-flame-fill"></i>
+                <i style="
+                        display: flex;
+                        justify-content: center;
+                    ">
+                    @isset($setting_data['admin-logo'])
+                        <img src="{{ asset($setting_data['admin-logo']) }}" alt="" style="width:40px; padding:5px">
+                    @endisset
+                </i>
                 Admin
             </a>
         </section>
@@ -213,17 +244,27 @@
     @elseif (Auth::user() instanceof \App\Models\Employee)
         <!-- start: SIDEBAR -->
         <section id="sidebar">
-            <a href="/employee" class="brand">
-                <i class="ph-flame-fill"></i>
-            </a>
+   
             <ul class="sidebar__menu">
-                <li>
+                {{--                 <li>
                     <a href="#" class=""><i class="fa-solid fa-house"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Dashboard</li>
                         <li><a href="{{ route('sale-employee') }}">Sales</a></li>
                         <li><a href="{{ route('analytics-employee') }}">Analytics</a></li>
                     </ul>
+                </li> --}}
+                <li>
+                    <a href="/employee" class="brand" style="
+                    display: flex;
+                    justify-content: center;
+                ">
+             
+                            @isset($setting_data['admin-logo'])
+                                <img src="{{ asset($setting_data['admin-logo']) }}" alt="" style="width:40px; padding:5px">
+                            @endisset
+
+                    </a>
                 </li>
                 <li>
                     <a href="{{ route('employee.book.index') }}"><i class="fab fa-servicestack"></i></a>
@@ -232,7 +273,7 @@
                     <a class="dropdown-item logout" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                              document.getElementById('logout-form').submit();">
-                       <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="color: #ff0000;"></i>
                     </a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
@@ -248,9 +289,16 @@
 
         <!-- start: SIDEBAR MOBILE -->
         <section id="sidebar-mobile">
-            <i class="ph-squares-four-fill toggle-sidebar"></i>
+            <i class="toggle-sidebar-active"><i class="fa-solid fa-bars"></i></i>
             <a href="#" class="brand">
-                <i class="ph-flame-fill"></i>
+                <i style="
+                        display: flex;
+                        justify-content: center;
+                    ">
+                    @isset($setting_data['admin-logo'])
+                        <img src="{{ asset($setting_data['admin-logo']) }}" alt="" style="width:40px; padding:5px">
+                    @endisset
+                </i>
                 Employee
             </a>
         </section>

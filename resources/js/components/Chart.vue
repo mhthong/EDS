@@ -16,21 +16,84 @@
     <div>
       <!-- Hiển thị các thông tin và nút để xem các tháng -->
       <ul class="main__body__box-info" :class="{ fade: isTransitioning }">
-        <li>
-          <i class="fa-solid fa-money-bill-trend-up" style="color: #ff6666"></i>
-          <h5>${{ parseFloat(this.Total_price) }}</h5>
-          <p>Total Booking Price</p>
+        <li class="Price">
+          <img :src="'/assets/images/total%20booking%20price.png'" alt="" srcset="">
+          <h6>Total Booking Price</h6>
+          <h4>${{ parseFloat(this.servies_price) }}</h4>
         </li>
-        <li>
-          <i class="ph-wallet-fill"></i>
-          <h5>${{ this.RevenueTatol }}</h5>
-          <p>Revenue</p>
+        <li class="Price">
+          <img :src="'/assets/images/Revenue.png'" alt="" srcset="">
+          <h6>Revenue</h6>
+          <h4>${{ this.RevenueTatol }}</h4>
         </li>
       </ul>
     </div>
 
+    <div class="radio-section">
+      <button
+        class="btn custom-btn btn-16"
+        :class="{ active: selectedOptions.includes('Revenue') }"
+        @click="toggleOption('Revenue')"
+        :disabled="this.fillerArrayEmployee.length === 0"
+      >
+        Revenue
+      </button>
+      <button
+        class="btn custom-btn btn-16"
+        :class="{ active: selectedOptions.includes('splot') }"
+        @click="toggleOption('splot')"
+        :disabled="
+          this.fillerArrayEmployee.length === 0
+        "
+      >
+        Sales by splot
+      </button>
+
+      <button
+        class="btn custom-btn btn-16"
+        :class="{ active: selectedOptions.includes('Saler') }"
+        @click="toggleOption('Saler')"
+        :disabled="this.fillerArrayEmployee.length === 0"
+      >
+        Saler
+      </button>
+
+      <button
+        class="btn custom-btn btn-16"
+        :class="{ active: selectedOptions.includes('Location') }"
+        @click="toggleOption('Location')"
+        :disabled="this.fillerArrayLocation.length === 0"
+      >
+        Location
+      </button>
+      <button
+        class="btn custom-btn btn-16"
+        :class="{ active: selectedOptions.includes('Channel') }"
+        @click="toggleOption('Channel')"
+        :disabled="this.fillerArraySource.length === 0"
+      >
+        Channel Source
+      </button>
+      <button
+        class="btn custom-btn btn-16"
+        :class="{ active: selectedOptions.includes('Artist') }"
+        @click="toggleOption('Artist')"
+        :disabled="this.fillerArrayArtist.length === 0"
+      >
+        Artist
+      </button>
+      <button
+        class="btn custom-btn btn-16"
+        :class="{ active: selectedOptions.includes('Service') }"
+        @click="toggleOption('Service')"
+        :disabled="this.fillerArrayService.length === 0"
+      >
+        Service Booking
+      </button>
+    </div>
+
     <div class="main__body__data">
-      <div class="members">
+        <div class="members">
         <div class="members__top">
           <h4>Revenue</h4>
           <div class="members__menu">
@@ -45,28 +108,27 @@
             </ul>
           </div>
         </div>
+
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredRevenue" :key="index">
             <div class="profile">
-              <h5>{{ item.source_name }}</h5>
-              <p>Revenue</p>
+              <p class="mb-0">{{ item[1] }}</p>
             </div>
-            <span v-if="item.splot === 0">
-              {{ item.price.Revenue }} $ / {{ item.splot }} Spot (AOV : 0 $)
+            <span v-if="item[10] === 0">
+              <p class="mb-0">{{ item[5] }} $ / {{ item[10] }} Spot</p>
             </span>
             <span v-else>
-              {{ item.price.Revenue }} $ / {{ item.splot }} Spot
+              <p class="mb-0">{{ item[5] }} $ / {{ item[10] }} Spot</p>
             </span>
           </li>
         </ul>
         <canvas ref="mychartRevenue"></canvas>
-        <div>
-          <!--  <canvas ref="lineChartShowroom"></canvas> -->
-        </div>
+        <div></div>
       </div>
+
       <div class="members">
         <div class="members__top">
-          <h4>Service Booking</h4>
+          <h4>Customers number</h4>
           <div class="members__menu">
             <i class="ph-dots-three-outline-vertical-fill"></i>
             <ul class="menu">
@@ -80,27 +142,25 @@
           </div>
         </div>
         <ul class="members__user">
-          <li v-for="(item, index) in resultArrayFilteredService" :key="index">
+          <li v-for="(item, index) in resultArrayFilteredSplot" :key="index">
             <div class="profile">
-              <h5>{{ item.source_name }}</h5>
-              <p>Service</p>
+              <p class="mb-0">{{ item[1] }}</p>
             </div>
-            <span v-if="item.splot === 0">
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot (AOV : 0
-              $)
+            <span v-if="item[10] === 0">
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[11] }} Spot (AOV : 0 $)
+              </p>
             </span>
             <span v-else>
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot (AOV :
-              {{
-                (
-                  parseInt(item.price.servies_price) / parseInt(item.splot)
-                ).toFixed(2)
-              }}
-              $)
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[11] }} Spot (AOV :
+                {{ (parseInt(item[4]) / parseInt(item[11])).toFixed(2) }}
+                $)
+              </p>
             </span>
           </li>
         </ul>
-        <canvas ref="myChartService"></canvas>
+        <canvas ref="mychartSplot"></canvas>
         <div>
           <!--  <canvas ref="lineChartShowroom"></canvas> -->
         </div>
@@ -125,17 +185,21 @@
         </div>
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredEmployee" :key="index">
-            <!--             <img :src="item.avatar" alt="" style="border-radius: 50%" /> -->
+
             <div class="profile">
-              <h5>{{ item.source_name }}</h5>
-              <p>Sale</p>
+              <p class="mb-0">{{ item[1] }}</p>
             </div>
-            <span v-if="item.splot === 0">
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot (AOV : 0
-              $)
+            <span v-if="item[10] === 0">
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[10] }} Spot (AOV : 0 $)
+              </p>
             </span>
             <span v-else>
-              {{ item.price.servies_price }} $ / {{ item.splot }}
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[10] }} Spot (AOV :
+                {{ (parseInt(item[4]) / parseInt(item[10])).toFixed(2) }}
+                $)
+              </p>
             </span>
           </li>
         </ul>
@@ -163,21 +227,19 @@
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredLocation" :key="index">
             <div class="profile">
-              <h5>{{ item.source_name }}</h5>
-              <p>Location</p>
+              <p class="mb-0">{{ item[1] }}</p>
             </div>
-            <span v-if="item.splot === 0">
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot (AOV : 0
-              $)
+            <span v-if="item[10] === 0">
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[10] }} Spot (AOV : 0 $)
+              </p>
             </span>
             <span v-else>
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot (AOV :
-              {{
-                (
-                  parseInt(item.price.servies_price) / parseInt(item.splot)
-                ).toFixed(2)
-              }}
-              $)
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[10] }} Spot(AOV :
+                {{ (parseInt(item[4]) / parseInt(item[10])).toFixed(2) }}
+                $)
+              </p>
             </span>
           </li>
         </ul>
@@ -207,15 +269,13 @@
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredSource" :key="index">
             <div class="profile">
-              <h5>{{ item.source_name }}</h5>
-              <p>Source</p>
+              <p class="mb-0">{{ item[1] }}</p>
             </div>
-            <span v-if="item.splot === 0">
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot (AOV : 0
-              $)
+            <span v-if="item[10] === 0">
+              <p class="mb-0">{{ item[4] }} $ / {{ item[10] }} Spot</p>
             </span>
             <span v-else>
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot
+              <p class="mb-0">{{ item[4] }} $ / {{ item[10] }} Spot</p>
             </span>
           </li>
         </ul>
@@ -243,15 +303,13 @@
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredArtist" :key="index">
             <div class="profile">
-              <h5>{{ item.source_name }}</h5>
-              <p>Artist</p>
+              <p class="mb-0">{{ item[1] }}</p>
             </div>
-            <span v-if="item.splot === 0">
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot (AOV : 0
-              $)
+            <span v-if="item[10] === 0">
+              <p class="mb-0">{{ item[4] }} $ / {{ item[10] }} Spot</p>
             </span>
             <span v-else>
-              {{ item.price.servies_price }} $ / {{ item.splot }} Spot
+              <p class="mb-0">{{ item[4] }} $ / {{ item[10] }} Spot</p>
             </span>
           </li>
         </ul>
@@ -261,15 +319,62 @@
         </div>
       </div>
     </div>
+
+    <div class="main__body__data">
+      <div class="members">
+        <div class="members__top">
+          <h4>Service Booking</h4>
+          <div class="members__menu">
+            <i class="ph-dots-three-outline-vertical-fill"></i>
+            <ul class="menu">
+              <li>
+                <a href="#">Edit</a>
+              </li>
+              <li>
+                <a href="#">Remove</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ul class="members__user">
+          <li v-for="(item, index) in resultArrayFilteredService" :key="index">
+            <div class="profile">
+              <p class="mb-0">{{ item[1] }}</p>
+            </div>
+            <span v-if="item[10] === 0">
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[10] }} Spot (AOV : 0 $)
+              </p>
+            </span>
+            <span v-else>
+              <p class="mb-0">
+                {{ item[4] }} $ / {{ item[10] }} Spot (AOV :
+                {{ (parseInt(item[4]) / parseInt(item[10])).toFixed(2) }}
+                $)
+              </p>
+            </span>
+          </li>
+        </ul>
+        <canvas ref="myChartService"></canvas>
+        <div>
+          <!--  <canvas ref="lineChartShowroom"></canvas> -->
+        </div>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <script>
 import { Chart } from "chart.js/auto";
+import ChartZoom from "chartjs-plugin-zoom";
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css"; // Import the CSS
 import axios from "axios";
 import moment from "moment";
+
+// Thêm plugin vào Chart.js
+Chart.register(ChartZoom);
 
 export default {
   components: {
@@ -281,10 +386,10 @@ export default {
     const currentDate = new Date();
 
     return {
-      dateRange: [
-        moment().startOf("day").add(1, "second"),
-        moment().endOf("day").subtract(1, "second"),
-      ],
+      dateRange: {
+        type: Object,
+        required: true, // Nếu cần
+      },
 
       id: "",
       currentURL: "",
@@ -314,6 +419,7 @@ export default {
       filteredData: [],
       filteredDataEmployee: [],
       filteredDataChart: [],
+      resultArrayFilteredSplot:[],
       filteredDataWaiting: null,
       filteredDataCancel: null,
       filteredDataDone: null,
@@ -324,38 +430,91 @@ export default {
 
       chart: null,
       resultArrayFilteredEmployee: [],
+      fillerArrayEmployee: [],
 
       chartLocation: null,
       resultArrayFilteredLocation: [],
+      fillerArrayLocation: [],
 
       chartSource: null,
       resultArrayFilteredSource: [],
+      fillerArraySource: [],
 
       chartArtist: null,
       resultArrayFilteredArtist: [],
+      fillerArrayArtist: [],
 
       chartService: null,
       resultArrayFilteredService: [],
+      fillerArrayService: [],
 
+      chartSplot: null,
       chartRevenue: null,
       resultArrayFilteredRevenue: [],
+      fillerArrayRevenue: [],
+
       updated_at_price: null,
 
       key: null,
       resultArray: [],
+      selectedOptions: [],
+      chartRendered: {
+        Revenue: false,
+        Service: false,
+        Channel: false,
+        Location: false,
+        Artist: false,
+        Saler: false,
+        splot: false,
+      },
     };
   },
 
   watch: {
-    dateRange: {
-      handler(newDateRange, oldDateRange) {
-        // Log khi dateRange thay đổi
-        this.dateRange.end = newDateRange.endDate;
-        this.dateRange.start = newDateRange.startDate;
-        this.calculate();
-      },
-      deep: true, // Theo dõi các sự thay đổi sâu trong object
+    dateRange(newDateRange, oldDateRange) {
+      // Log khi dateRange thay đổi
+      this.dateRange.end = moment(newDateRange.endDate).format("YYYY-MM-DD");
+      this.dateRange.start = moment(newDateRange.startDate).format(
+        "YYYY-MM-DD"
+      );
+
+      this.chartRendered.Revenue = false;
+      this.chartRendered.Service = false;
+      this.chartRendered.Channel = false;
+      this.chartRendered.Location = false;
+      this.chartRendered.Saler = false;
+      this.chartRendered.Artist = false;
+      this.chartRendered.splot = false;
+
+      Promise.all([
+
+      (this.fillerArrayArtist = []),
+        this.fetchapiArtistData(this.dateRange.start, this.dateRange.end),
+
+        (this.apiData_id = []),
+        this.fetchapiData_id(this.dateRange.start, this.dateRange.end),
+
+        (this.fillerArrayLocation = []),
+        this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end),
+
+        (this.fillerArraySource = []),
+        this.fetchapiSourceData(this.dateRange.start, this.dateRange.end),
+
+        (this.fillerArrayService = []),
+        this.fetchapiServiceData(this.dateRange.start, this.dateRange.end),
+
+        (this.fillerArrayEmployee = []),
+        this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end),
+
+ 
+        ]).then(() => {
+        this.Price();
+        // Tất cả API đã kết thúc
+        this.toggleOption();
+        this.handleSelectedOptions();
+      });
     },
+    deep: true, // Theo dõi các sự thay đổi sâu trong object
   },
 
   mounted() {
@@ -372,12 +531,10 @@ export default {
     // Kiểm tra nếu dateRange không có giá trị, đặt mặc định là ngày bắt đầu và ngày hiện tại
     if (!this.dateRange.start || !this.dateRange.end) {
       const currentDate = new Date();
-      this.dateRange.start = new Date(
-        currentDate.getFullYear(),
-        currentDate.getMonth(),
-        1
-      );
-      this.dateRange.end = currentDate;
+      this.dateRange.start = moment(
+        new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+      ).format("YYYY-MM-DD");
+      this.dateRange.end = moment(currentDate).format("YYYY-MM-DD");
     }
 
     this.fetchapiDataEmployee();
@@ -386,48 +543,138 @@ export default {
     this.fetchArtist();
     this.fetchServices();
 
-    this.fetchapiData_id();
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+
+    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end);
+
+    this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end);
+
+    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end);
+
+    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end);
+
+    this.fetchapiArtistData(this.dateRange.start, this.dateRange.end);
+
+    if (this.apiData_id.length !== 0) {
+      this.Price();
+    }
   },
   methods: {
-    fetchapiData_id() {
+    fetchapiData_id(start, end) {
       if (this.artistId !== null) {
         axios
-          .get(`/api/all-data`)
+          .get(`/api/getDataArtist/${start}/${end}`)
           .then((response) => {
             // Lọc dữ liệu dựa trên ArtistID
-            this.apiData_id = response.data.filter(
-              (item) =>
-                item.ArtistID == this.artistId && item.action === "approved"
+            this.apiData_id = Object.values(
+              this.totalByName(response.data)?.find(
+                (filler) => parseInt(filler.id) === parseInt(this.artistId)
+              ) || {}
             );
-            this.calculate();
+            this.Price();
           })
+
           .catch((error) => {
             console.error("Error fetching API data:", error);
           });
       } else if (this.employeeId !== null) {
         axios
-          .get(`/api/all-data`)
+          .get(`/api/getDataEmployee/${start}/${end}`)
           .then((response) => {
-            // Lọc dữ liệu dựa trên source_id
-            this.apiData_id = response.data.filter(
-              (item) => item.source_id == this.employeeId
+            this.apiData_id = Object.values(
+              this.totalByName(response.data)?.find(
+                (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+              ) || {}
             );
-
-            this.calculate();
+            this.Price();
           })
           .catch((error) => {
             console.error("Error fetching API data:", error);
           });
       } else {
         axios
-          .get(`/api/all-data`)
+          .get(`/api/getDataShowroom/ ${start}/${end}`)
           .then((response) => {
+            // Nhận dữ liệu từ phản hồi
             this.apiData_id = response.data;
-            this.calculate();
+
+            this.Price();
           })
           .catch((error) => {
             console.error("Error fetching API data:", error);
           });
+      }
+    },
+
+    fetchapiShowroomsData(start, end) {
+      axios
+        .get(`/api/getDataShowroom/${start}/${end}`)
+        .then((response) => {
+          this.fillerArrayLocation = response.data;
+          // Tiếp tục xử lý dữ liệu và tính toán
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
+    fetchapiArtistData(start, end) {
+      axios
+        .get(`/api/getDataArtist/${start}/${end}`)
+        .then((response) => {
+          this.fillerArrayArtist = response.data;
+          // Tiếp tục xử lý dữ liệu và tính toán
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
+    async fetchapiSourceData(start, end) {
+      try {
+        await axios
+          .get(`/api/getDataSource/${start}/${end}`)
+          .then((response) => {
+            this.fillerArraySource = response.data;
+            // Tiếp tục xử lý dữ liệu và tính toán
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching API data:", error);
+      }
+    },
+
+    async fetchapiServiceData(start, end) {
+      try {
+        await axios
+          .get(`/api/getDataService/${start}/${end}`)
+          .then((response) => {
+            this.fillerArrayService = response.data;
+            // Tiếp tục xử lý dữ liệu và tính toán
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching API data:", error);
+      }
+    },
+
+    async fetchapiEmployeeData(start, end) {
+      try {
+        await axios
+          .get(`/api/getDataEmployee/${start}/${end}`)
+          .then((response) => {
+            this.fillerArrayEmployee = response.data;
+            // Tiếp tục xử lý dữ liệu và tính toán
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } catch (error) {
+        console.error("Error fetching API data:", error);
       }
     },
 
@@ -463,6 +710,7 @@ export default {
           console.error("Error fetching artist::", error);
         });
     },
+
     fetchServices() {
       axios
         .get("/api/services")
@@ -485,2099 +733,398 @@ export default {
         });
     },
 
-    filteredData_con() {
-      this.filteredDataWaiting = this.filteredData.filter((booking) => {
-        const WaitingStatus = booking.status;
-        return WaitingStatus == "Waiting";
-      });
-
-      this.filteredDataDone = this.filteredData.filter((booking) => {
-        const DoneStatus = booking.status;
-
-        return DoneStatus == "Done";
-      });
-
-      this.filteredDataRefund = this.filteredData.filter((booking) => {
-        const RefundStatus = booking.status;
-
-        return RefundStatus == "Refund";
-      });
-
-      this.filteredDataCancel = this.filteredData.filter((booking) => {
-        const CancelStatus = booking.status;
-
-        return CancelStatus == "Cancel";
-      });
-    },
-
     Price() {
-      const revenueCancel = this.filteredDataCancel.reduce((total, booking) => {
-        const deposit = parseFloat(booking.price.Deposit_price);
+      this.Total_price = 0;
+      this.Deposit_price = 0;
+      this.servies_price = 0;
+      this.RevenueTatol = 0;
+      this.numberOfBooks = 0;
 
-        if (!isNaN(deposit)) {
-          total += deposit;
-        }
+      if (this.adminId !== null) {
+        const data = this.totalByName(this.apiData_id);
 
-        return total;
-      }, 0);
+        data.forEach((item) => {
+          this.Total_price += parseFloat(item.servies_price);
+          this.Deposit_price += parseFloat(item.Deposit_price);
+          this.servies_price += parseFloat(item.servies_price);
+          this.RevenueTatol += parseFloat(item.Revenue);
+          this.numberOfBooks = item.length;
+        });
+      } else {
+        const data = this.apiData_id;
+        this.Total_price += parseFloat(data[2]);
+        this.Deposit_price += parseFloat(data[3]);
+        this.servies_price += parseFloat(data[4]);
+        this.RevenueTatol += parseFloat(data[5]);
+        this.numberOfBooks = data[10];
+      }
 
-      // Tính tổng các giá trị từ dữ liệu đã lọc
-      this.Total_price = this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.servies_price);
-        }, 0)
-        .toFixed(2);
-
-      this.Remaining_price = this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.Remaining_price);
-        }, 0)
-        .toFixed(2);
-
-      this.Deposit_price = this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.Deposit_price);
-        }, 0)
-        .toFixed(2);
-
-      this.Done_price = this.filteredDataDone
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.servies_price);
-        }, 0)
-        .toFixed(2);
-
-      this.Cancel_price = this.filteredDataCancel
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.servies_price);
-        }, 0)
-        .toFixed(2);
-
-      this.Refund_price = this.filteredDataRefund
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.servies_price);
-        }, 0)
-        .toFixed(2);
-
-      this.Revenue = this.filteredData
-        .reduce((total, booking) => {
-          return total + parseFloat(booking.price.Deposit_price);
-        }, 0)
-        .toFixed(2);
-
-      this.RevenueDone = this.filteredDataDone
-        .reduce((total, booking) => {
-          return (
-            total +
-            parseFloat(booking.price.Total_price) -
-            parseFloat(booking.price.Deposit_price)
-          );
-        }, 0)
-        .toFixed(2);
-
-      this.RevenueRefund = this.filteredDataRefund
-        .reduce((total, booking) => {
-          return (
-            total +
-            parseFloat(booking.price.Total_price) -
-            parseFloat(booking.price.Deposit_price)
-          );
-        }, 0)
-        .toFixed(2);
-
-      this.RevenueTatol =
-        parseFloat(this.RevenueRefund) +
-        parseFloat(this.RevenueDone) +
-        parseFloat(this.Revenue);
-
-      this.numberOfBooks = this.filteredData.length;
+      // Lặp qua danh sách dữ liệu và tính tổng
     },
 
-    calculate() {
-      // Kiểm tra nếu this.dateRange.end không có dữ liệu thì sử dụng ngày cuối của tháng hiện tại
-      if (!this.dateRange.end) {
-        const currentDate = new Date();
-        const lastDayOfMonth = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth() + 1,
-          0
+    createChart(ctx, data, arrayFine) {
+      const dates = Object.keys(data); // Lấy danh sách ngày
+      const names = [
+        ...new Set(
+          Object.values(data)
+            .map((item) => Object.values(item).map((inner) => inner.Name))
+            .flat()
+        ),
+      ]; // Lấy danh sách tên duy nhất
+
+      let datasets, totalRevenue;
+
+      if (arrayFine == "revenue") {
+        // Tạo dòng biểu đồ cho mỗi tên
+        datasets = names.map((name) => ({
+          label: name,
+          data: dates.map(
+            (date) =>
+              data[date][
+                Object.keys(data[date]).find(
+                  (key) => data[date][key].Name === name
+                )
+              ].revenue
+          ),
+          borderColor: "#" + Math.floor(Math.random() * 16777215).toString(16), // Màu sắc ngẫu nhiên
+          borderWidth: 1.2,
+          fill: true,
+          pointRadius: 0.3,
+        }));
+
+        // Tính tổng doanh thu từ tất cả các tên
+        totalRevenue = dates.map((date) =>
+          names.reduce(
+            (total, name) =>
+              total +
+              data[date][
+                Object.keys(data[date]).find(
+                  (key) => data[date][key].Name === name
+                )
+              ].revenue,
+            0
+          )
         );
-        this.dateRange.end = lastDayOfMonth;
+      } else  if (arrayFine == "servies_price"){
+        // Tạo dòng biểu đồ cho mỗi tên
+        datasets = names.map((name) => ({
+          label: name,
+          data: dates.map(
+            (date) =>
+              data[date][
+                Object.keys(data[date]).find(
+                  (key) => data[date][key].Name === name
+                )
+              ].servies_price
+          ),
+          borderColor: "#" + Math.floor(Math.random() * 16777215).toString(16), // Màu sắc ngẫu nhiên
+          borderWidth: 1.2,
+          fill: true,
+          pointRadius: 0.3,
+        }));
+
+        // Tính tổng doanh thu từ tất cả các tên
+        totalRevenue = dates.map((date) =>
+          names.reduce(
+            (total, name) =>
+              total +
+              data[date][
+                Object.keys(data[date]).find(
+                  (key) => data[date][key].Name === name
+                )
+              ].servies_price,
+            0
+          )
+        );
+      } else {
+               // Tạo dòng biểu đồ cho mỗi tên
+          datasets = names.map((name) => ({
+          label: name,
+          data: dates.map(
+            (date) =>
+              data[date][
+                Object.keys(data[date]).find(
+                  (key) => data[date][key].Name === name
+                )
+              ].length_real
+          ),
+          borderColor: "#" + Math.floor(Math.random() * 16777215).toString(16), // Màu sắc ngẫu nhiên
+          borderWidth: 1.2,
+          fill: true,
+          pointRadius: 0.3,
+        }));
+
+        // Tính tổng doanh thu từ tất cả các tên
+        totalRevenue = dates.map((date) =>
+          names.reduce(
+            (total, name) =>
+              total +
+              data[date][
+                Object.keys(data[date]).find(
+                  (key) => data[date][key].Name === name
+                )
+              ].length_real,
+            0
+          )
+        );
       }
 
-      // Kiểm tra nếu this.dateRange.start không có dữ liệu thì sử dụng ngày đầu của tháng hiện tại
-      if (!this.dateRange.start) {
-        const currentDate = new Date();
-        this.dateRange.start = new Date(
-          currentDate.getFullYear(),
-          currentDate.getMonth(),
-          1
-        );
-      }
-      // Lọc các bản ghi thuộc tháng và năm hiện tại
-      this.filteredData = this.apiData_id.filter((booking) => {
-        const updatedAtDate = new Date(booking.price.updated_at);
-        /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return (
-          updatedAtDate <= this.dateRange.end &&
-          updatedAtDate >= this.dateRange.start
-        );
+      // Thêm dòng biểu đồ cho tổng doanh thu
+      datasets.push({
+        label: "Total",
+        data: totalRevenue,
+        borderColor: "blue", // Màu sắc của dòng biểu đồ tổng doanh thu
+        fill: false,
+        borderWidth: 1.2,
+        fill: true,
+        pointRadius: 0.3,
+      });
+      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
+      const chart = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: dates,
+          datasets: datasets,
+        },
+        options: {
+          elements: {
+            line: {
+              tension: 0.4, // Điều chỉnh độ bo cong của đường
+            },
+          },
+          plugins: {
+            filler: {
+              propagate: true, // Cho phép lớp phủ
+              use: ["start", "origin"], // Sử dụng lớp phủ từ "start" hoặc "origin"
+            },
+
+            zoom: {
+      wheel: {
+        enabled: true, // Cho phép zoom bằng cách sử dụng bánh xe chuột
+      },
+      drag: {
+        enabled: true, // Cho phép kéo để zoom
+      },
+      pinch: {
+        enabled: true, // Cho phép zoom bằng cách pinch (ngón tay cự đại)
+      },
+    },
+          },
+        },
       });
 
-      this.filteredDataChart = this.apiData_id.filter((booking) => {
-        const updatedAtDate = new Date(booking.updated_at);
-        /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return (
-          updatedAtDate <= this.dateRange.end &&
-          updatedAtDate >= this.dateRange.start
-        );
-      });
-
-      this.filteredData_con();
-      this.Price();
-
-      this.renderChartService();
-      this.renderChartRevenue();
-      this.renderChart();
-      this.renderChartLocation();
-      this.renderChartSource();
-      this.renderChartArtist();
+      return chart;
     },
 
     renderChart() {
-      // Sắp xếp các labels theo thứ tự tăng dần
-      const startDate = this.dateRange.start; // Ngày bắt đầu
-      const endDate = this.dateRange.end; // Ngày kết thúc
-
       const ctx = this.$refs.myChart.getContext("2d");
 
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      const datasetsMap = new Map();
-
-      const resultArrayEmployee = [];
-
-      // Xử lý dữ liệu apiDataEmployee trước
-      const employeeDataMap = {};
-      this.apiDataEmployee.forEach((employee) => {
-        employeeDataMap[employee.name] = employee;
-      });
-
-      const currentDateEmployee = new Date(startDate);
-
-      while (currentDateEmployee <= endDate) {
-        const year = currentDateEmployee.getFullYear();
-        const month = String(currentDateEmployee.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateEmployee.getDate()).padStart(2, "0");
-        const formattedDateEmployee = `${year}-${month}-${day}`;
-
-        Object.keys(employeeDataMap).forEach((name) => {
-          const employee = employeeDataMap[name];
-          const keyemployee = `${name}-${employee.id}-${year}-${month}-${day}`;
-
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          const tempArray = [];
-          const tempArrayAll = [];
-
-          this.filteredDataChart.forEach((item) => {
-            const createdAt = new Date(item.created_at);
-            const itemYear = createdAt.getFullYear();
-            const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            const itemDay = String(createdAt.getDate()).padStart(2, "0");
-            const key = `${item.source_name}-${item.source_id}-${itemYear}-${itemMonth}-${itemDay}`;
-            const keyAll = `${item.source_type}-${itemYear}-${itemMonth}-${itemDay}`;
-
-            // Add the 'status' property to the merged item.
-            if (key === keyemployee) {
-              this.statusbooking = item.status;
-              tempArray.push({
-                ...item,
-                status: this.statusbooking, // Replace 'some_status_value' with the actual status property you want to add.
-              });
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-            const mergedItem = tempArray.reduce(
-              (merged, item) => {
-                merged.price.Total_price += parseInt(item.price.Total_price);
-                merged.price.Deposit_price += parseInt(
-                  item.price.Deposit_price
-                );
-                merged.price.servies_price += parseInt(
-                  item.price.servies_price
-                );
-
-                let RefundRevenue = 0;
-                let DoneRevenue = 0;
-
-                if (this.statusbooking === "Refund") {
-                  RefundRevenue =
-                    parseInt(item.price.Total_price) -
-                    parseInt(item.price.Deposit_price);
-                } else if (this.statusbooking === "Done") {
-                  DoneRevenue =
-                    parseInt(item.price.Total_price) -
-                    parseInt(item.price.Deposit_price);
-                }
-
-                merged.price.Revenue +=
-                  parseInt(item.price.Deposit_price) +
-                  parseInt(RefundRevenue) +
-                  parseInt(DoneRevenue);
-
-                merged.splot += 1;
-                return merged;
-              },
-              {
-                source_name: employee.name,
-                avatar: employee.avatar,
-                source_id: employee.id,
-                created_at: formattedDateEmployee,
-                price: {
-                  Total_price: 0,
-                  Deposit_price: 0,
-                  servies_price: 0,
-                  Revenue: 0,
-                },
-                splot: 0,
-                status: this.statusbooking,
-              }
-            );
-
-            if (!resultArrayEmployee[keyemployee]) {
-              resultArrayEmployee[keyemployee] = mergedItem;
-              // Update the 'status' property.
-            } else {
-              resultArrayEmployee[keyemployee].price.Total_price +=
-                mergedItem.price.Total_price;
-              resultArrayEmployee[keyemployee].price.Deposit_price +=
-                mergedItem.price.Deposit_price;
-              resultArrayEmployee[keyemployee].price.servies_price +=
-                mergedItem.price.servies_price;
-              resultArrayEmployee[keyemployee].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayEmployee[keyemployee] = {
-              source_name: employee.name,
-              avatar: employee.avatar,
-              source_id: employee.id,
-              created_at: formattedDateEmployee,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0,
-              },
-              splot: 0,
-              status: this.statusbooking,
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateEmployee.setDate(currentDateEmployee.getDate() + 1);
-      }
-
-      const currentDateEmployeeALl = new Date(startDate);
-
-      while (currentDateEmployeeALl <= new Date(endDate)) {
-        const year = currentDateEmployeeALl.getFullYear();
-        const month = String(currentDateEmployeeALl.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateEmployeeALl.getDate()).padStart(2, "0");
-        const formattedDateEmployee = `${year}-${month}-${day}`;
-
-        const tempArrayAll = [];
-
-        Object.values(resultArrayEmployee).forEach((item) => {
-          const createdAt = new Date(item.created_at);
-          const itemYear = createdAt.getFullYear();
-          const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          const itemDay = String(createdAt.getDate()).padStart(2, "0");
-          const keyAll = `${itemYear}-${itemMonth}-${itemDay}`;
-
-          if (keyAll === formattedDateEmployee) {
-            tempArrayAll.push(item);
-          }
-        });
-
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-          const mergedItem = tempArrayAll.reduce(
-            (merged, item) => {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.price.Revenue += parseInt(item.price.Revenue);
-              merged.splot += parseInt(item.splot);
-              return merged;
-            },
-            {
-              source_name: "All",
-              avatar: "All",
-              source_id: "All",
-              created_at: formattedDateEmployee,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0,
-              },
-              splot: 0,
-            }
-          );
-
-          if (!resultArrayEmployee[formattedDateEmployee]) {
-            resultArrayEmployee[formattedDateEmployee] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayEmployee thay vì gán lại
-            resultArrayEmployee[formattedDateEmployee].price.Total_price =
-              mergedItem.price.Total_price;
-            resultArrayEmployee[formattedDateEmployee].price.Deposit_price =
-              mergedItem.price.Deposit_price;
-            resultArrayEmployee[formattedDateEmployee].price.servies_price =
-              mergedItem.price.servies_price;
-            resultArrayEmployee[formattedDateEmployee].price.Revenue =
-              mergedItem.price.Revenue;
-            resultArrayEmployee[formattedDateEmployee].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayEmployee[formattedDateEmployee] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateEmployee,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0,
-            },
-            splot: 0,
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateEmployeeALl.setDate(currentDateEmployeeALl.getDate() + 1);
-      }
-
-      const resultArray = Object.values(resultArrayEmployee);
-
-      const groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach((item) => {
-        const key = `${item.source_id}-${item.source_name}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            avatar: item.avatar,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: { Total_price: 0, Deposit_price: 0, servies_price: 0 },
-            splot: 0,
-          };
-        }
-        // Tính tổng giá
-        for (const priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredEmployee = Object.values(groupedData).sort(
-        (a, b) => {
-          // Sắp xếp theo giá servies_price giảm dần
-          return b.price.servies_price - a.price.servies_price;
-        }
-      );
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMap
-      resultArray.forEach((dataPoint) => {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        const dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        this.key = `${dataPoint.source_name}_${dataPoint.source_id}`;
-
-        let price = dataPoint.price.servies_price;
-
-        if (!datasetsMap.has(this.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          const backgroundColor = this.getRandomColor();
-          const borderColor = this.getRandomColor();
-          datasetsMap.set(this.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3,
-          });
-        }
-        const dataset = datasetsMap.get(this.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMap thành một mảng các datasets và tính tổng giá trị tiền
-      const datasets = Array.from(datasetsMap.values()).map((dataset) => {
-        const totalValue = dataset.data.reduce(
-          (total, value) => total + value,
-          0
-        );
-        return {
-          ...dataset,
-          data: dataset.data, // Giữ lại giá trị tiền
-          totalValue: totalValue, // Tổng giá trị tiền
-        };
-      });
-
-      const sortedLabels = [];
-      const currentDate = new Date(startDate);
-
-      while (currentDate <= endDate) {
-        sortedLabels.push(
-          `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${currentDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`
-        );
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
-
-      // Check if a chart instance already exists and destroy it
       if (this.chart) {
         this.chart.destroy();
       }
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chart = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets,
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4, // Điều chỉnh độ bo cong của đường
-            },
-          },
-          plugins: {
-            filler: {
-              propagate: true, // Cho phép lớp phủ
-              use: ["start", "origin"], // Sử dụng lớp phủ từ "start" hoặc "origin"
-            },
-          },
-        },
+      this.chart = this.createChart(
+        ctx,
+        this.fillerArrayEmployee,
+        "servies_price"
+      );
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      const DataMap = {};
+
+      this.apiDataEmployee.forEach((Employee) => {
+        DataMap[Employee.name] = Employee;
       });
+
+      const sortedLabels = Object.keys(DataMap);
+
+      this.resultArrayFilteredEmployee = this.resultArrayFiltered(
+        this.fillerArrayEmployee,
+        sortedLabels
+      ).sort((a, b) => b[4] - a[4]);
     },
 
     renderChartRevenue() {
       // Sắp xếp các labels theo thứ tự tăng dần
-      const startDate = this.dateRange.start; // Ngày bắt đầu
-      const endDate = this.dateRange.end; // Ngày kết thúc
-
       const ctx = this.$refs.mychartRevenue.getContext("2d");
 
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      const datasetsMap = new Map();
-
-      const resultArrayEmployee = [];
-
-      // Xử lý dữ liệu apiDataEmployee trước
-      const employeeDataMap = {};
-      this.apiDataEmployee.forEach((employee) => {
-        employeeDataMap[employee.name] = employee;
-      });
-
-      const currentDateEmployee = new Date(startDate);
-
-      while (currentDateEmployee <= endDate) {
-        const year = currentDateEmployee.getFullYear();
-        const month = String(currentDateEmployee.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateEmployee.getDate()).padStart(2, "0");
-        const formattedDateEmployee = `${year}-${month}-${day}`;
-
-        Object.keys(employeeDataMap).forEach((name) => {
-          const employee = employeeDataMap[name];
-          const keyemployee = `${name}-${employee.id}-${year}-${month}-${day}`;
-
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          const tempArray = [];
-          const tempArrayAll = [];
-
-          this.filteredDataChart.forEach((item) => {
-            const createdAt = new Date(item.price.created_at);
-            const itemYear = createdAt.getFullYear();
-            const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            const itemDay = String(createdAt.getDate()).padStart(2, "0");
-            const key = `${item.source_name}-${item.source_id}-${itemYear}-${itemMonth}-${itemDay}`;
-
-            const updatedAtDate = new Date(item.price.updated_at);
-            const updateitemYear = updatedAtDate.getFullYear();
-            const updateitemMonth = String(
-              updatedAtDate.getMonth() + 1
-            ).padStart(2, "0");
-            const updateitemDay = String(updatedAtDate.getDate()).padStart(
-              2,
-              "0"
-            );
-
-            const keyAll = `${item.source_type}-${itemYear}-${itemMonth}-${itemDay}`;
-
-            // Add the 'status' property to the merged item.
-            if (key === keyemployee) {
-              this.statusbooking = item.status;
-              this.updated_at_price = `${updateitemYear}-${updateitemMonth}-${updateitemDay}`;
-
-              tempArray.push({
-                ...item,
-                status: this.statusbooking, // Replace 'some_status_value' with the actual status property you want to add.
-              });
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-            const mergedItem = tempArray.reduce(
-              (merged, item) => {
-                merged.price.Total_price += parseInt(item.price.Total_price);
-                merged.price.Deposit_price += parseInt(
-                  item.price.Deposit_price
-                );
-                merged.price.servies_price += parseInt(
-                  item.price.servies_price
-                );
-                merged.price.Revenue += parseInt(item.price.Deposit_price);
-                merged.splot += 1;
-                return merged;
-              },
-              {
-                source_name: employee.name,
-                avatar: employee.avatar,
-                source_id: employee.id,
-                created_at: formattedDateEmployee,
-                updated_at: this.updated_at_price,
-                price: {
-                  Total_price: 0,
-                  Deposit_price: 0,
-                  servies_price: 0,
-                  Revenue: 0,
-                },
-                splot: 0,
-                status: this.statusbooking,
-              }
-            );
-
-            if (!resultArrayEmployee[keyemployee]) {
-              resultArrayEmployee[keyemployee] = mergedItem;
-              // Update the 'status' property.
-            } else {
-              resultArrayEmployee[keyemployee].price.Total_price +=
-                mergedItem.price.Total_price;
-              resultArrayEmployee[keyemployee].price.Deposit_price +=
-                mergedItem.price.Deposit_price;
-              resultArrayEmployee[keyemployee].price.servies_price +=
-                mergedItem.price.servies_price;
-              resultArrayEmployee[keyemployee].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayEmployee[keyemployee] = {
-              source_name: employee.name,
-              avatar: employee.avatar,
-              source_id: employee.id,
-              created_at: formattedDateEmployee,
-              updated_at: this.updated_at_price,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0,
-              },
-              splot: 0,
-              status: this.statusbooking,
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateEmployee.setDate(currentDateEmployee.getDate() + 1);
-      }
-
-      for (let i = 0; i < Object.values(resultArrayEmployee).length; i++) {
-        // Bỏ qua nếu update_at là null
-        if (
-          Object.values(resultArrayEmployee)[i].updated_at <
-          Object.values(resultArrayEmployee)[i].created_at
-        ) {
-          continue;
-        }
-
-        for (let j = 0; j < Object.values(resultArrayEmployee).length; j++) {
-          if (
-            i !== j &&
-            Object.values(resultArrayEmployee)[i].updated_at ===
-              Object.values(resultArrayEmployee)[j].created_at
-          ) {
-            Object.values(resultArrayEmployee)[j].price.Revenue +=
-              Object.values(resultArrayEmployee)[i].price.Total_price -
-              Object.values(resultArrayEmployee)[i].price.Deposit_price;
-          }
-        }
-      }
-
-      const currentDateEmployeeALl = new Date(startDate);
-
-      while (currentDateEmployeeALl <= new Date(endDate)) {
-        const year = currentDateEmployeeALl.getFullYear();
-        const month = String(currentDateEmployeeALl.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateEmployeeALl.getDate()).padStart(2, "0");
-        const formattedDateEmployee = `${year}-${month}-${day}`;
-
-        const tempArrayAll = [];
-
-        Object.values(resultArrayEmployee).forEach((item) => {
-          const createdAt = new Date(item.created_at);
-          const itemYear = createdAt.getFullYear();
-          const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          const itemDay = String(createdAt.getDate()).padStart(2, "0");
-          const keyAll = `${itemYear}-${itemMonth}-${itemDay}`;
-
-          if (keyAll === formattedDateEmployee) {
-            tempArrayAll.push(item);
-          }
-        });
-
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-          const mergedItem = tempArrayAll.reduce(
-            (merged, item) => {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.price.Revenue += parseInt(item.price.Revenue);
-              merged.splot += parseInt(item.splot);
-              return merged;
-            },
-            {
-              source_name: "All",
-              avatar: "All",
-              source_id: "All",
-              created_at: formattedDateEmployee,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0,
-              },
-              splot: 0,
-            }
-          );
-
-          if (!resultArrayEmployee[formattedDateEmployee]) {
-            resultArrayEmployee[formattedDateEmployee] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayEmployee thay vì gán lại
-            resultArrayEmployee[formattedDateEmployee].price.Total_price =
-              mergedItem.price.Total_price;
-            resultArrayEmployee[formattedDateEmployee].price.Deposit_price =
-              mergedItem.price.Deposit_price;
-            resultArrayEmployee[formattedDateEmployee].price.servies_price =
-              mergedItem.price.servies_price;
-            resultArrayEmployee[formattedDateEmployee].price.Revenue =
-              mergedItem.price.Revenue;
-            resultArrayEmployee[formattedDateEmployee].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayEmployee[formattedDateEmployee] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateEmployee,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0,
-            },
-            splot: 0,
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateEmployeeALl.setDate(currentDateEmployeeALl.getDate() + 1);
-      }
-
-      const resultArray = Object.values(resultArrayEmployee);
-
-      const groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach((item) => {
-        const key = `${item.source_id}-${item.source_name}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            avatar: item.avatar,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0,
-            },
-            splot: 0,
-          };
-        }
-        // Tính tổng giá
-        for (const priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredRevenue = Object.values(groupedData).sort(
-        (a, b) => {
-          // Sắp xếp theo giá servies_price giảm dần
-          return b.price.Revenue - a.price.Revenue;
-        }
-      );
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMap
-      resultArray.forEach((dataPoint) => {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        const dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        this.key = `${dataPoint.source_name}_${dataPoint.source_id}`;
-
-        let price = dataPoint.price.Revenue;
-
-        if (!datasetsMap.has(this.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          const backgroundColor = this.getRandomColor();
-          const borderColor = this.getRandomColor();
-          datasetsMap.set(this.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3,
-          });
-        }
-        const dataset = datasetsMap.get(this.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMap thành một mảng các datasets và tính tổng giá trị tiền
-      const datasets = Array.from(datasetsMap.values()).map((dataset) => {
-        const totalValue = dataset.data.reduce(
-          (total, value) => total + value,
-          0
-        );
-        return {
-          ...dataset,
-          data: dataset.data, // Giữ lại giá trị tiền
-          totalValue: totalValue, // Tổng giá trị tiền
-        };
-      });
-
-      const sortedLabels = [];
-      const currentDate = new Date(startDate);
-
-      while (currentDate <= endDate) {
-        sortedLabels.push(
-          `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${currentDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`
-        );
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
-
-      // Check if a chartRevenue instance already exists and destroy it
       if (this.chartRevenue) {
         this.chartRevenue.destroy();
       }
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartRevenue = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets,
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4, // Điều chỉnh độ bo cong của đường
-            },
-          },
-          plugins: {
-            filler: {
-              propagate: true, // Cho phép lớp phủ
-              use: ["start", "origin"], // Sử dụng lớp phủ từ "start" hoặc "origin"
-            },
-          },
-        },
+      this.chartRevenue = this.createChart(
+        ctx,
+        this.fillerArrayEmployee,
+        "revenue"
+      );
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      const DataMap = {};
+
+      this.apiDataEmployee.forEach((Employee) => {
+        DataMap[Employee.name] = Employee;
       });
+
+      const sortedLabels = Object.keys(DataMap);
+
+      this.resultArrayFilteredRevenue = this.resultArrayFiltered(
+        this.fillerArrayEmployee,
+        sortedLabels
+      ).sort((a, b) => b[5] - a[5]);
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+    },
+
+
+    renderChartSplot() {
+      // Sắp xếp các labels theo thứ tự tăng dần
+      const ctx = this.$refs.mychartSplot.getContext("2d");
+
+      if (this.chartSplot) {
+        this.chartSplot.destroy();
+      }
+
+      this.chartSplot = this.createChart(
+        ctx,
+        this.fillerArrayEmployee,
+        "lenght_real"
+      );
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      const DataMap = {};
+
+      this.apiDataEmployee.forEach((Employee) => {
+        DataMap[Employee.name] = Employee;
+      });
+
+      const sortedLabels = Object.keys(DataMap);
+
+      this.resultArrayFilteredSplot = this.resultArrayFiltered(
+        this.fillerArrayEmployee,
+        sortedLabels
+      ).sort((a, b) => b[5] - a[5]);
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
     },
 
     renderChartLocation() {
-      // Sắp xếp các labels theo thứ tự tăng dần
-      const startDate = this.dateRange.start; // Ngày bắt đầu
-      const endDate = this.dateRange.end; // Ngày kết thúc
-
-      const ctxLocation = this.$refs.myChartLocation.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      const datasetsMapLocation = new Map();
-
-      const resultArrayLocation = [];
-
-      const locationDataMap = {};
-
-      this.apiDatalocation.forEach((location) => {
-        locationDataMap[location.Name] = location;
-      });
-
-      const currentDatelocation = new Date(startDate);
-
-      while (currentDatelocation <= endDate) {
-        const year = currentDatelocation.getFullYear();
-        const month = String(currentDatelocation.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDatelocation.getDate()).padStart(2, "0");
-        const formattedDatelocation = `${year}-${month}-${day}`;
-
-        Object.keys(locationDataMap).forEach((name) => {
-          const location = locationDataMap[name];
-          const keylocation = `${location.id}-${year}-${month}-${day}`;
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          const tempArray = [];
-
-          this.filteredDataChart.forEach((item) => {
-            const createdAt = new Date(item.created_at);
-            const itemYear = createdAt.getFullYear();
-            const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            const itemDay = String(createdAt.getDate()).padStart(2, "0");
-            const key = `${item.ShowroomID}-${itemYear}-${itemMonth}-${itemDay}`;
-
-            if (key === keylocation) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayLocation
-            const mergedItem = tempArray.reduce(
-              (merged, item) => {
-                merged.price.Total_price += parseInt(item.price.Total_price);
-                merged.price.Deposit_price += parseInt(
-                  item.price.Deposit_price
-                );
-                merged.price.servies_price += parseInt(
-                  item.price.servies_price
-                );
-                merged.splot += 1;
-                return merged;
-              },
-              {
-                source_name: location.Name,
-                source_id: location.id,
-                created_at: formattedDatelocation,
-                price: {
-                  Total_price: 0,
-                  Deposit_price: 0,
-                  servies_price: 0,
-                },
-                splot: 0,
-              }
-            );
-
-            if (!resultArrayLocation[keylocation]) {
-              resultArrayLocation[keylocation] = mergedItem;
-            } else {
-              resultArrayLocation[keylocation].price.Total_price +=
-                mergedItem.price.Total_price;
-              resultArrayLocation[keylocation].price.Deposit_price +=
-                mergedItem.price.Deposit_price;
-              resultArrayLocation[keylocation].price.servies_price +=
-                mergedItem.price.servies_price;
-              resultArrayLocation[keylocation].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayLocation[keylocation] = {
-              source_name: location.Name,
-              source_id: location.id,
-              created_at: formattedDatelocation,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDatelocation.setDate(currentDatelocation.getDate() + 1);
-      }
-
-      const currentDateLocationall = new Date(startDate);
-
-      while (currentDateLocationall <= new Date(endDate)) {
-        const year = currentDateLocationall.getFullYear();
-        const month = String(currentDateLocationall.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateLocationall.getDate()).padStart(2, "0");
-        const formattedDatelocation = `${year}-${month}-${day}`;
-
-        const tempArrayAll = [];
-
-        Object.values(resultArrayLocation).forEach((item) => {
-          const createdAt = new Date(item.created_at);
-          const itemYear = createdAt.getFullYear();
-          const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          const itemDay = String(createdAt.getDate()).padStart(2, "0");
-          const keyAll = `${itemYear}-${itemMonth}-${itemDay}`;
-
-          if (keyAll === formattedDatelocation) {
-            tempArrayAll.push(item);
-          }
-        });
-
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayLocation
-          const mergedItem = tempArrayAll.reduce(
-            (merged, item) => {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += parseInt(item.splot);
-              return merged;
-            },
-            {
-              source_name: "All",
-              avatar: "All",
-              source_id: "All",
-              created_at: formattedDatelocation,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            }
-          );
-
-          if (!resultArrayLocation[formattedDatelocation]) {
-            resultArrayLocation[formattedDatelocation] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayLocation thay vì gán lại
-            resultArrayLocation[formattedDatelocation].price.Total_price =
-              mergedItem.price.Total_price;
-            resultArrayLocation[formattedDatelocation].price.Deposit_price =
-              mergedItem.price.Deposit_price;
-            resultArrayLocation[formattedDatelocation].price.servies_price =
-              mergedItem.price.servies_price;
-            resultArrayLocation[formattedDatelocation].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayLocation[formattedDatelocation] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDatelocation,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-            },
-            splot: 0,
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateLocationall.setDate(currentDateLocationall.getDate() + 1);
-      }
-
-      const resultArray = Object.values(resultArrayLocation);
-
-      const groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach((item) => {
-        const key = `${item.source_id}-${item.source_name}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: { Total_price: 0, Deposit_price: 0, servies_price: 0 },
-            splot: 0,
-          };
-        }
-        // Tính tổng giá
-        for (const priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredLocation = Object.values(groupedData).sort(
-        (a, b) => {
-          // Sắp xếp theo giá servies_price giảm dần
-          return b.price.servies_price - a.price.servies_price;
-        }
-      );
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapLocation
-      resultArray.forEach((dataPoint) => {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        const dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        this.key = `${dataPoint.source_name}_${dataPoint.source_id}`;
-
-        let price = dataPoint.price.servies_price;
-
-        if (!datasetsMapLocation.has(this.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          const backgroundColor = this.getRandomColor();
-          const borderColor = this.getRandomColor();
-          datasetsMapLocation.set(this.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3,
-          });
-        }
-        const dataset = datasetsMapLocation.get(this.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapLocation thành một mảng các datasets và tính tổng giá trị tiền
-      const datasets = Array.from(datasetsMapLocation.values()).map(
-        (dataset) => {
-          const totalValue = dataset.data.reduce(
-            (total, value) => total + value,
-            0
-          );
-          return {
-            ...dataset,
-            data: dataset.data, // Giữ lại giá trị tiền
-            totalValue: totalValue, // Tổng giá trị tiền
-          };
-        }
-      );
-
-      const sortedLabels = [];
-      const currentDate = new Date(startDate);
-
-      while (currentDate <= endDate) {
-        sortedLabels.push(
-          `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${currentDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`
-        );
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      const ctx = this.$refs.myChartLocation.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartLocation) {
         this.chartLocation.destroy();
       }
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartLocation = new Chart(ctxLocation, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets,
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4, // Điều chỉnh độ bo cong của đường
-            },
-          },
-          plugins: {
-            filler: {
-              propagate: true, // Cho phép lớp phủ
-              use: ["start", "origin"], // Sử dụng lớp phủ từ "start" hoặc "origin"
-            },
-          },
-        },
+      this.chartLocation = this.createChart(
+        ctx,
+        this.fillerArrayLocation,
+        "servies_price"
+      );
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      const DataMap = {};
+
+      this.apiDatalocation.forEach((location) => {
+        DataMap[location.Name] = location;
       });
+
+      const sortedLabels = Object.keys(DataMap);
+
+      this.resultArrayFilteredLocation = this.resultArrayFiltered(
+        this.fillerArrayLocation,
+        sortedLabels
+      ).sort((a, b) => b[4] - a[4]);
     },
 
     renderChartSource() {
       // Sắp xếp các labels theo thứ tự tăng dần
-      const startDate = this.dateRange.start; // Ngày bắt đầu
-      const endDate = this.dateRange.end; // Ngày kết thúc
-
-      const ctxSource = this.$refs.myChartSource.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      const datasetsMapSource = new Map();
-
-      const resultArraySource = [];
-
-      const SourceDataMap = {};
-
-      this.apiDataGet.forEach((Source) => {
-        SourceDataMap[Source.source_data] = Source;
-      });
-
-      const currentDateSource = new Date(startDate);
-
-      while (currentDateSource <= endDate) {
-        const year = currentDateSource.getFullYear();
-        const month = String(currentDateSource.getMonth() + 1).padStart(2, "0");
-        const day = String(currentDateSource.getDate()).padStart(2, "0");
-        const formattedDateSource = `${year}-${month}-${day}`;
-
-        Object.keys(SourceDataMap).forEach((name) => {
-          const Source = SourceDataMap[name];
-          const keySource = `${Source.source_data}-${year}-${month}-${day}`;
-
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          const tempArray = [];
-
-          this.filteredDataChart.forEach((item) => {
-            const createdAt = new Date(item.created_at);
-            const itemYear = createdAt.getFullYear();
-            const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            const itemDay = String(createdAt.getDate()).padStart(2, "0");
-            const key = `${item.source_data}-${itemYear}-${itemMonth}-${itemDay}`;
-
-            if (key === keySource) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArraySource
-            const mergedItem = tempArray.reduce(
-              (merged, item) => {
-                merged.price.Total_price += parseInt(item.price.Total_price);
-                merged.price.Deposit_price += parseInt(
-                  item.price.Deposit_price
-                );
-                merged.price.servies_price += parseInt(
-                  item.price.servies_price
-                );
-                merged.splot += 1;
-                return merged;
-              },
-              {
-                source_name: Source.source_data,
-                source_id: Source.id,
-                created_at: formattedDateSource,
-                price: {
-                  Total_price: 0,
-                  Deposit_price: 0,
-                  servies_price: 0,
-                },
-                splot: 0,
-              }
-            );
-
-            if (!resultArraySource[keySource]) {
-              resultArraySource[keySource] = mergedItem;
-            } else {
-              resultArraySource[keySource].price.Total_price +=
-                mergedItem.price.Total_price;
-              resultArraySource[keySource].price.Deposit_price +=
-                mergedItem.price.Deposit_price;
-              resultArraySource[keySource].price.servies_price +=
-                mergedItem.price.servies_price;
-              resultArraySource[keySource].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArraySource[keySource] = {
-              source_name: Source.source_data,
-              source_id: Source.id,
-              created_at: formattedDateSource,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateSource.setDate(currentDateSource.getDate() + 1);
-      }
-
-      ///
-
-      const currentDateSourceall = new Date(startDate);
-
-      while (currentDateSourceall <= new Date(endDate)) {
-        const year = currentDateSourceall.getFullYear();
-        const month = String(currentDateSourceall.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateSourceall.getDate()).padStart(2, "0");
-        const formattedDateSource = `${year}-${month}-${day}`;
-
-        const tempArrayAll = [];
-
-        Object.values(resultArraySource).forEach((item) => {
-          const createdAt = new Date(item.created_at);
-          const itemYear = createdAt.getFullYear();
-          const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          const itemDay = String(createdAt.getDate()).padStart(2, "0");
-          const keyAll = `${itemYear}-${itemMonth}-${itemDay}`;
-
-          if (keyAll === formattedDateSource) {
-            tempArrayAll.push(item);
-          }
-        });
-
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArraySource
-          const mergedItem = tempArrayAll.reduce(
-            (merged, item) => {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += parseInt(item.splot);
-              return merged;
-            },
-            {
-              source_name: "All",
-              avatar: "All",
-              source_id: "All",
-              created_at: formattedDateSource,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            }
-          );
-
-          if (!resultArraySource[formattedDateSource]) {
-            resultArraySource[formattedDateSource] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArraySource thay vì gán lại
-            resultArraySource[formattedDateSource].price.Total_price =
-              mergedItem.price.Total_price;
-            resultArraySource[formattedDateSource].price.Deposit_price =
-              mergedItem.price.Deposit_price;
-            resultArraySource[formattedDateSource].price.servies_price =
-              mergedItem.price.servies_price;
-            resultArraySource[formattedDateSource].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArraySource[formattedDateSource] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateSource,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-            },
-            splot: 0,
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateSourceall.setDate(currentDateSourceall.getDate() + 1);
-      }
-
-      ///
-
-      const resultArray = Object.values(resultArraySource);
-
-      const groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach((item) => {
-        const key = `${item.source_id}-${item.source_name}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: { Total_price: 0, Deposit_price: 0, servies_price: 0 },
-            splot: 0,
-          };
-        }
-
-        // Tính tổng giá
-        for (const priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredSource = Object.values(groupedData).sort(
-        (a, b) => {
-          // Sắp xếp theo giá servies_price giảm dần
-          return b.price.servies_price - a.price.servies_price;
-        }
-      );
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapSource
-      resultArray.forEach((dataPoint) => {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        const dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        this.key = `${dataPoint.source_name}_${dataPoint.source_id}`;
-
-        let price = dataPoint.price.servies_price;
-
-        if (!datasetsMapSource.has(this.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          const backgroundColor = this.getRandomColor();
-          const borderColor = this.getRandomColor();
-          datasetsMapSource.set(this.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3,
-          });
-        }
-        const dataset = datasetsMapSource.get(this.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapSource thành một mảng các datasets và tính tổng giá trị tiền
-      const datasets = Array.from(datasetsMapSource.values()).map((dataset) => {
-        const totalValue = dataset.data.reduce(
-          (total, value) => total + value,
-          0
-        );
-        return {
-          ...dataset,
-          data: dataset.data, // Giữ lại giá trị tiền
-          totalValue: totalValue, // Tổng giá trị tiền
-        };
-      });
-
-      const sortedLabels = [];
-      const currentDate = new Date(startDate);
-
-      while (currentDate <= endDate) {
-        sortedLabels.push(
-          `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${currentDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`
-        );
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      const ctx = this.$refs.myChartSource.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartSource) {
         this.chartSource.destroy();
       }
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartSource = new Chart(ctxSource, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets,
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4, // Điều chỉnh độ bo cong của đường
-            },
-          },
-          plugins: {
-            filler: {
-              propagate: true, // Cho phép lớp phủ
-              use: ["start", "origin"], // Sử dụng lớp phủ từ "start" hoặc "origin"
-            },
-          },
-        },
+      this.chartSource = this.createChart(
+        ctx,
+        this.fillerArraySource,
+        "servies_price"
+      );
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      const DataMap = {};
+
+      this.apiDataGet.forEach((source) => {
+        DataMap[source.source_data] = source;
       });
+
+      const sortedLabels = Object.keys(DataMap);
+
+      this.resultArrayFilteredSource = this.resultArrayFiltered(
+        this.fillerArraySource,
+        sortedLabels
+      ).sort((a, b) => b[4] - a[4]);
     },
 
     renderChartArtist() {
       // Sắp xếp các labels theo thứ tự tăng dần
-      const startDate = this.dateRange.start; // Ngày bắt đầu
-      const endDate = this.dateRange.end; // Ngày kết thúc
 
-      const ctxArtist = this.$refs.myChartArtist.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      const datasetsMapArtist = new Map();
-
-      const resultArrayArtist = [];
-
-      const ArtistDataMap = {};
-
-      this.apiDataAritst.forEach((Artist) => {
-        ArtistDataMap[Artist.name] = Artist;
-      });
-
-      const currentDateArtist = new Date(startDate);
-
-      while (currentDateArtist <= endDate) {
-        const year = currentDateArtist.getFullYear();
-        const month = String(currentDateArtist.getMonth() + 1).padStart(2, "0");
-        const day = String(currentDateArtist.getDate()).padStart(2, "0");
-        const formattedDateArtist = `${year}-${month}-${day}`;
-
-        Object.keys(ArtistDataMap).forEach((name) => {
-          const Artist = ArtistDataMap[name];
-          const keyArtist = `${Artist.id}-${year}-${month}-${day}`;
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          const tempArray = [];
-
-          this.filteredDataChart.forEach((item) => {
-            const createdAt = new Date(item.created_at);
-            const itemYear = createdAt.getFullYear();
-            const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            const itemDay = String(createdAt.getDate()).padStart(2, "0");
-            const key = `${item.ArtistID}-${itemYear}-${itemMonth}-${itemDay}`;
-
-            if (key === keyArtist) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayArtist
-            const mergedItem = tempArray.reduce(
-              (merged, item) => {
-                merged.price.Total_price += parseInt(item.price.Total_price);
-                merged.price.Deposit_price += parseInt(
-                  item.price.Deposit_price
-                );
-                merged.price.servies_price += parseInt(
-                  item.price.servies_price
-                );
-                merged.splot += 1;
-                return merged;
-              },
-              {
-                source_name: Artist.name,
-                source_id: Artist.id,
-                created_at: formattedDateArtist,
-                price: {
-                  Total_price: 0,
-                  Deposit_price: 0,
-                  servies_price: 0,
-                },
-                splot: 0,
-              }
-            );
-
-            if (!resultArrayArtist[keyArtist]) {
-              resultArrayArtist[keyArtist] = mergedItem;
-            } else {
-              resultArrayArtist[keyArtist].price.Total_price +=
-                mergedItem.price.Total_price;
-              resultArrayArtist[keyArtist].price.Deposit_price +=
-                mergedItem.price.Deposit_price;
-              resultArrayArtist[keyArtist].price.servies_price +=
-                mergedItem.price.servies_price;
-
-              resultArrayArtist[keyArtist].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayArtist[keyArtist] = {
-              source_name: Artist.name,
-              source_id: Artist.id,
-              created_at: formattedDateArtist,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateArtist.setDate(currentDateArtist.getDate() + 1);
-      }
-
-      ///
-
-      const currentDateArtistall = new Date(startDate);
-
-      while (currentDateArtistall <= new Date(endDate)) {
-        const year = currentDateArtistall.getFullYear();
-        const month = String(currentDateArtistall.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateArtistall.getDate()).padStart(2, "0");
-        const formattedDateArtist = `${year}-${month}-${day}`;
-
-        const tempArrayAll = [];
-
-        Object.values(resultArrayArtist).forEach((item) => {
-          const createdAt = new Date(item.created_at);
-          const itemYear = createdAt.getFullYear();
-          const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          const itemDay = String(createdAt.getDate()).padStart(2, "0");
-          const keyAll = `${itemYear}-${itemMonth}-${itemDay}`;
-
-          if (keyAll === formattedDateArtist) {
-            tempArrayAll.push(item);
-          }
-        });
-
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayArtist
-          const mergedItem = tempArrayAll.reduce(
-            (merged, item) => {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += parseInt(item.splot);
-              return merged;
-            },
-            {
-              source_name: "All",
-              avatar: "All",
-              source_id: "All",
-              created_at: formattedDateArtist,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            }
-          );
-
-          if (!resultArrayArtist[formattedDateArtist]) {
-            resultArrayArtist[formattedDateArtist] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayArtist thay vì gán lại
-            resultArrayArtist[formattedDateArtist].price.Total_price =
-              mergedItem.price.Total_price;
-            resultArrayArtist[formattedDateArtist].price.Deposit_price =
-              mergedItem.price.Deposit_price;
-            resultArrayArtist[formattedDateArtist].price.servies_price =
-              mergedItem.price.servies_price;
-            resultArrayArtist[formattedDateArtist].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayArtist[formattedDateArtist] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateArtist,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-            },
-            splot: 0,
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateArtistall.setDate(currentDateArtistall.getDate() + 1);
-      }
-
-      ///
-
-      const resultArray = Object.values(resultArrayArtist);
-
-      const groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach((item) => {
-        const key = `${item.source_id}-${item.source_name}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: { Total_price: 0, Deposit_price: 0, servies_price: 0 },
-            splot: 0,
-          };
-        }
-        // Tính tổng giá
-        for (const priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredArtist = Object.values(groupedData).sort(
-        (a, b) => {
-          // Sắp xếp theo giá servies_price giảm dần
-          return b.price.servies_price - a.price.servies_price;
-        }
-      );
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapArtist
-      resultArray.forEach((dataPoint) => {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        const dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        this.key = `${dataPoint.source_name}_${dataPoint.source_id}`;
-
-        let price = dataPoint.price.servies_price;
-
-        if (!datasetsMapArtist.has(this.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          const backgroundColor = this.getRandomColor();
-          const borderColor = this.getRandomColor();
-          datasetsMapArtist.set(this.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3,
-          });
-        }
-        const dataset = datasetsMapArtist.get(this.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapArtist thành một mảng các datasets và tính tổng giá trị tiền
-      const datasets = Array.from(datasetsMapArtist.values()).map((dataset) => {
-        const totalValue = dataset.data.reduce(
-          (total, value) => total + value,
-          0
-        );
-        return {
-          ...dataset,
-          data: dataset.data, // Giữ lại giá trị tiền
-          totalValue: totalValue, // Tổng giá trị tiền
-        };
-      });
-
-      const sortedLabels = [];
-      const currentDate = new Date(startDate);
-
-      while (currentDate <= endDate) {
-        sortedLabels.push(
-          `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${currentDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`
-        );
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      const ctx = this.$refs.myChartArtist.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartArtist) {
         this.chartArtist.destroy();
       }
+        console.log(this.fillerArrayArtist);
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartArtist = new Chart(ctxArtist, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets,
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4, // Điều chỉnh độ bo cong của đường
-            },
-          },
-          plugins: {
-            filler: {
-              propagate: true, // Cho phép lớp phủ
-              use: ["start", "origin"], // Sử dụng lớp phủ từ "start" hoặc "origin"
-            },
-          },
-        },
+      this.chartArtist = this.createChart(
+        ctx,
+        this.fillerArrayArtist,
+        "servies_price"
+      );
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      const DataMap = {};
+
+      this.apiDataAritst.forEach((Aritst) => {
+        DataMap[Aritst.name] = Aritst;
       });
+
+      const sortedLabels = Object.keys(DataMap);
+
+      this.resultArrayFilteredArtist = this.resultArrayFiltered(
+        this.fillerArrayArtist,
+        sortedLabels
+      ).sort((a, b) => b[4] - a[4]);
     },
 
     renderChartService() {
       // Sắp xếp các labels theo thứ tự tăng dần
-      const startDate = this.dateRange.start; // Ngày bắt đầu
-      const endDate = this.dateRange.end; // Ngày kết thúc
 
-      const ctxService = this.$refs.myChartService.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      const datasetsMapService = new Map();
-
-      const resultArrayService = [];
-
-      const ServiceDataMap = {};
-
-      this.apiDataServices.forEach((Service) => {
-        ServiceDataMap[Service.Name] = Service;
-      });
-
-      const currentDateService = new Date(startDate);
-
-      while (currentDateService <= endDate) {
-        const year = currentDateService.getFullYear();
-        const month = String(currentDateService.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateService.getDate()).padStart(2, "0");
-        const formattedDateService = `${year}-${month}-${day}`;
-
-        Object.keys(ServiceDataMap).forEach((name) => {
-          const Service = ServiceDataMap[name];
-          const keyService = `${Service.id}-${year}-${month}-${day}`;
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          const tempArray = [];
-
-          this.filteredDataChart.forEach((item) => {
-            const createdAt = new Date(item.created_at);
-            const itemYear = createdAt.getFullYear();
-            const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            const itemDay = String(createdAt.getDate()).padStart(2, "0");
-            const key = `${item.services[0].id}-${itemYear}-${itemMonth}-${itemDay}`;
-
-            if (key === keyService) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayService
-            const mergedItem = tempArray.reduce(
-              (merged, item) => {
-                merged.price.Total_price += parseInt(item.price.Total_price);
-                merged.price.Deposit_price += parseInt(
-                  item.price.Deposit_price
-                );
-                merged.price.servies_price += parseInt(
-                  item.price.servies_price
-                );
-                merged.splot += 1;
-                return merged;
-              },
-              {
-                source_name: Service.Name,
-                source_id: Service.id,
-                created_at: formattedDateService,
-                price: {
-                  Total_price: 0,
-                  Deposit_price: 0,
-                  servies_price: 0,
-                },
-                splot: 0,
-              }
-            );
-
-            if (!resultArrayService[keyService]) {
-              resultArrayService[keyService] = mergedItem;
-            } else {
-              resultArrayService[keyService].price.Total_price +=
-                mergedItem.price.Total_price;
-              resultArrayService[keyService].price.Deposit_price +=
-                mergedItem.price.Deposit_price;
-              resultArrayService[keyService].price.servies_price +=
-                mergedItem.price.servies_price;
-              resultArrayService[keyService].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayService[keyService] = {
-              source_name: Service.Name,
-              source_id: Service.id,
-              created_at: formattedDateService,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateService.setDate(currentDateService.getDate() + 1);
-      }
-
-      ///
-
-      const currentDateServiceall = new Date(startDate);
-
-      while (currentDateServiceall <= new Date(endDate)) {
-        const year = currentDateServiceall.getFullYear();
-        const month = String(currentDateServiceall.getMonth() + 1).padStart(
-          2,
-          "0"
-        );
-        const day = String(currentDateServiceall.getDate()).padStart(2, "0");
-        const formattedDateService = `${year}-${month}-${day}`;
-
-        const tempArrayAll = [];
-
-        Object.values(resultArrayService).forEach((item) => {
-          const createdAt = new Date(item.created_at);
-          const itemYear = createdAt.getFullYear();
-          const itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          const itemDay = String(createdAt.getDate()).padStart(2, "0");
-          const keyAll = `${itemYear}-${itemMonth}-${itemDay}`;
-
-          if (keyAll === formattedDateService) {
-            tempArrayAll.push(item);
-          }
-        });
-
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayService
-          const mergedItem = tempArrayAll.reduce(
-            (merged, item) => {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += parseInt(item.splot);
-              return merged;
-            },
-            {
-              source_name: "All",
-              avatar: "All",
-              source_id: "All",
-              created_at: formattedDateService,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-              },
-              splot: 0,
-            }
-          );
-
-          if (!resultArrayService[formattedDateService]) {
-            resultArrayService[formattedDateService] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayService thay vì gán lại
-            resultArrayService[formattedDateService].price.Total_price =
-              mergedItem.price.Total_price;
-            resultArrayService[formattedDateService].price.Deposit_price =
-              mergedItem.price.Deposit_price;
-            resultArrayService[formattedDateService].price.servies_price =
-              mergedItem.price.servies_price;
-            resultArrayService[formattedDateService].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayService[formattedDateService] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateService,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-            },
-            splot: 0,
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateServiceall.setDate(currentDateServiceall.getDate() + 1);
-      }
-
-      ///
-
-      const resultArray = Object.values(resultArrayService);
-      const groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach((item) => {
-        const key = `${item.source_id}-${item.source_name}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: { Total_price: 0, Deposit_price: 0, servies_price: 0 },
-            splot: 0, // Initialize splot to 0
-          };
-        }
-        // Tính tổng giá
-        for (const priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        // Tính tổng splot
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredService = Object.values(groupedData).sort(
-        (a, b) => {
-          // Sắp xếp theo giá servies_price giảm dần
-          return b.price.servies_price - a.price.servies_price;
-        }
-      );
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapService
-      resultArray.forEach((dataPoint) => {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        const dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        this.key = `${dataPoint.source_name}_${dataPoint.source_id}`;
-
-        let price = dataPoint.price.servies_price;
-
-        if (!datasetsMapService.has(this.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          const backgroundColor = this.getRandomColor();
-          const borderColor = this.getRandomColor();
-          datasetsMapService.set(this.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3,
-          });
-        }
-        const dataset = datasetsMapService.get(this.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapService thành một mảng các datasets và tính tổng giá trị tiền
-      const datasets = Array.from(datasetsMapService.values()).map(
-        (dataset) => {
-          const totalValue = dataset.data.reduce(
-            (total, value) => total + value,
-            0
-          );
-          return {
-            ...dataset,
-            data: dataset.data, // Giữ lại giá trị tiền
-            totalValue: totalValue, // Tổng giá trị tiền
-          };
-        }
-      );
-
-      const sortedLabels = [];
-      const currentDate = new Date(startDate);
-
-      while (currentDate <= endDate) {
-        sortedLabels.push(
-          `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0")}-${currentDate
-            .getDate()
-            .toString()
-            .padStart(2, "0")}`
-        );
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      const ctx = this.$refs.myChartService.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartService) {
         this.chartService.destroy();
       }
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartService = new Chart(ctxService, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets,
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4, // Điều chỉnh độ bo cong của đường
-            },
-          },
-          plugins: {
-            filler: {
-              propagate: true, // Cho phép lớp phủ
-              use: ["start", "origin"], // Sử dụng lớp phủ từ "start" hoặc "origin"
-            },
-          },
-        },
+      this.chartService = this.createChart(
+        ctx,
+        this.fillerArrayService,
+        "servies_price"
+      );
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      const DataMap = {};
+
+      this.apiDataServices.forEach((Service) => {
+        DataMap[Service.Name] = Service;
       });
+
+      const sortedLabels = Object.keys(DataMap);
+
+      this.resultArrayFilteredService = this.resultArrayFiltered(
+        this.fillerArrayService,
+        sortedLabels
+      ).sort((a, b) => b[4] - a[4]);
     },
 
     getRandomColor() {
@@ -2587,6 +1134,157 @@ export default {
       const b = Math.floor(Math.random() * 256);
       const alpha = 0.5; // Độ trong suốt của màu
       return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    },
+
+    totalByName(data) {
+      // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
+      const totals = {};
+
+      // Lặp qua các ngày trong dữ liệu của bạn
+      for (const date in data) {
+        const fillerDatas = data[date];
+        for (const Id in fillerDatas) {
+          const fillerData = fillerDatas[Id];
+          const Name = fillerData.Name;
+          const id = fillerData.id;
+          const total_price = fillerData.Total_price;
+
+          // Nếu tên dịch vụ chưa tồn tại trong totals, thì khởi tạo nó với giá trị ban đầu
+          if (!totals[Name]) {
+            totals[Name] = {
+              id: id,
+              Name: Name,
+              Total_price: 0,
+              Deposit_price: 0,
+              servies_price: 0,
+              Revenue: 0,
+              Done_price: 0,
+              Cancel_price: 0,
+              Refund_price: 0,
+              Remaining_price: 0,
+              length: 0,
+              length_real: 0,
+            };
+          }
+          // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
+          totals[Name].Total_price += total_price;
+          totals[Name].Deposit_price += fillerData.Deposit_price;
+          totals[Name].servies_price += fillerData.servies_price;
+          totals[Name].Revenue += fillerData.revenue;
+          totals[Name].Done_price += fillerData.Done_price;
+          totals[Name].Cancel_price += fillerData.Cancel_price;
+          totals[Name].Refund_price += fillerData.Refund_price;
+          totals[Name].Remaining_price += fillerData.Remaining_price;
+          totals[Name].length += fillerData.length;
+          totals[Name].length_real += fillerData.length_real;
+        }
+      }
+
+      // Chuyển đối tượng totals thành một mảng nếu cần
+      const totalsArray = Object.values(totals);
+
+      return totalsArray;
+    },
+
+    resultArrayFiltered(fillerArray, sortedLabels) {
+      const result = sortedLabels.map((label) => {
+        // Tìm dữ liệu hiện tại và quá khứ dựa trên label
+
+        const DataForLabel = Object.values(
+          this.totalByName(fillerArray)?.find(
+            (filler) => filler.Name === label
+          ) || {}
+        );
+
+        // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
+        const Data = [];
+
+        // Kiểm tra nếu dữ liệu hiện tại và quá khứ tồn tại
+        if (DataForLabel) {
+          // Đảm bảo rằng có hai giá trị tương ứng với quá khứ và hiện tại
+          Data.push(...DataForLabel);
+        }
+
+        return Data;
+      });
+
+      return result;
+    },
+
+    destroyChart(chart) {
+      if (chart) {
+        chart.destroy();
+      }
+    },
+
+    toggleOption(option) {
+      if (this.selectedOptions.includes(option)) {
+        // If the option is already selected, remove it
+        const index = this.selectedOptions.indexOf(option);
+        if (index !== -1) {
+          this.selectedOptions.splice(index, 1);
+        }
+      } else {
+        // If the option is not selected, add it
+        this.selectedOptions.push(option);
+      }
+
+      console.log( this.selectedOptions);
+      // Call different functions based on the selected options
+      this.handleSelectedOptions();
+    },
+
+    
+
+    handleSelectedOptions() {
+      // Handle different functions based on the selected options
+      // Xử lý các hàm khác nhau dựa trên các lựa chọn đã chọn
+      if (
+        this.selectedOptions.includes("Revenue") &&
+        !this.chartRendered.Revenue
+      ) {
+        this.renderChartRevenue();
+        this.chartRendered.Revenue = true;
+      }
+      if (
+        this.selectedOptions.includes("splot") &&
+        !this.chartRendered.splot
+      ) {
+        this.renderChartSplot();
+        this.chartRendered.splot = true;
+      }
+      if (
+        this.selectedOptions.includes("Service") &&
+        !this.chartRendered.Service
+      ) {
+        this.renderChartService();
+        this.chartRendered.Service = true;
+      }
+      if (
+        this.selectedOptions.includes("Channel") &&
+        !this.chartRendered.Channel
+      ) {
+        this.renderChartSource();
+        this.chartRendered.Channel = true;
+      }
+      if (
+        this.selectedOptions.includes("Location") &&
+        !this.chartRendered.Location
+      ) {
+        this.renderChartLocation();
+        this.chartRendered.Location = true;
+      }
+      if (
+        this.selectedOptions.includes("Artist") &&
+        !this.chartRendered.Artist
+      ) {
+        this.renderChartArtist();
+        this.chartRendered.Artist = true;
+      }
+      if (this.selectedOptions.includes("Saler") && !this.chartRendered.Saler) {
+        this.renderChart();
+        this.chartRendered.Saler = true;
+      }
     },
   },
 };
@@ -2657,7 +1355,7 @@ export default {
 }
 
 .custom-btn {
-  width: 130px;
+  width: auto;
   height: 40px;
   color: #fff;
   border-radius: 5px;
@@ -2680,19 +1378,7 @@ export default {
   border: none;
   color: #000;
 }
-.btn-16:after {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 100%;
-  top: 0;
-  left: 0;
-  direction: rtl;
-  z-index: -1;
-  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,
-    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;
-  transition: all 0.3s ease;
-}
+
 .btn-16:hover {
   color: #000;
 }
@@ -2703,6 +1389,10 @@ export default {
 }
 .btn-16:active {
   top: 2px;
+}
+
+button.active {
+  background: #b5ddff !important;
 }
 
 .groupService {

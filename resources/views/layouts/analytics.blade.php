@@ -37,7 +37,7 @@
 			<div id="analytics-admin" data-admin-id="{{ auth()->id() }}">
 				<!-- Render your AdminDashboard component here -->
 				<analytics-admin></analytics-admin>
-			</div>
+			</div>			
 			
 			@elseif (Auth::user() instanceof \App\Models\Employee)
 

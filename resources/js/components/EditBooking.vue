@@ -852,8 +852,7 @@ export default {
           `/api/bookings/showroom/${this.selectedShowroom}`
         );
         this.apiData = response.data;
-        console.log(this.selectedShowroom);
-        console.log("API data fetched selectedShowroom:", this.apiData);
+      
       } catch (error) {
         console.error("Error fetching API data:", error);
       }
@@ -875,7 +874,7 @@ export default {
         .get(`/api/showroomschedule/${this.selectedShowroom}`)
         .then((response) => {
           this.showroomSchedules = response.data;
-          console.log("showroomSchedules", this.showroomSchedules);
+       
         })
         .catch((error) => {
           console.error("Error fetching showroomschedule:", error);
@@ -892,7 +891,7 @@ export default {
           parseInt(schedule.id) !== parseInt(this.id)
       );
 
-      console.log(this.filteredDays);
+     
     },
 
     formatTime(time) {

@@ -13,32 +13,48 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var chart_js_auto__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chart.js/auto */ "./node_modules/chart.js/auto/auto.js");
-/* harmony import */ var vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue2-daterange-picker */ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.umd.min.js");
-/* harmony import */ var vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var vue2_daterange_picker_dist_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue2-daterange-picker/dist/vue2-daterange-picker.css */ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var chartjs_plugin_zoom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chartjs-plugin-zoom */ "./node_modules/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.esm.js");
+/* harmony import */ var vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue2-daterange-picker */ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.umd.min.js");
+/* harmony import */ var vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var vue2_daterange_picker_dist_vue2_daterange_picker_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! vue2-daterange-picker/dist/vue2-daterange-picker.css */ "./node_modules/vue2-daterange-picker/dist/vue2-daterange-picker.css");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return { value: void 0, done: !0 }; } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable || "" === iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } throw new TypeError(_typeof(iterable) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 
 
  // Import the CSS
 
 
+
+// Thêm plugin vào Chart.js
+chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
-    DateRangePicker: (vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_1___default())
+    DateRangePicker: (vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_2___default())
   },
   data: function data() {
     // Lấy ngày hiện tại
     var currentDate = new Date();
     return {
-      dateRange: [moment__WEBPACK_IMPORTED_MODULE_3___default()().startOf("day").add(1, "second"), moment__WEBPACK_IMPORTED_MODULE_3___default()().endOf("day").subtract(1, "second")],
+      dateRange: {
+        type: Object,
+        required: true // Nếu cần
+      },
+
       id: "",
       currentURL: "",
       apiData: [],
@@ -67,6 +83,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       filteredData: [],
       filteredDataEmployee: [],
       filteredDataChart: [],
+      resultArrayFilteredSplot: [],
       filteredDataWaiting: null,
       filteredDataCancel: null,
       filteredDataDone: null,
@@ -75,31 +92,59 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       statusbookingall: null,
       chart: null,
       resultArrayFilteredEmployee: [],
+      fillerArrayEmployee: [],
       chartLocation: null,
       resultArrayFilteredLocation: [],
+      fillerArrayLocation: [],
       chartSource: null,
       resultArrayFilteredSource: [],
+      fillerArraySource: [],
       chartArtist: null,
       resultArrayFilteredArtist: [],
+      fillerArrayArtist: [],
       chartService: null,
       resultArrayFilteredService: [],
+      fillerArrayService: [],
+      chartSplot: null,
       chartRevenue: null,
       resultArrayFilteredRevenue: [],
+      fillerArrayRevenue: [],
       updated_at_price: null,
       key: null,
-      resultArray: []
+      resultArray: [],
+      selectedOptions: [],
+      chartRendered: {
+        Revenue: false,
+        Service: false,
+        Channel: false,
+        Location: false,
+        Artist: false,
+        Saler: false,
+        splot: false
+      }
     };
   },
   watch: {
-    dateRange: {
-      handler: function handler(newDateRange, oldDateRange) {
-        // Log khi dateRange thay đổi
-        this.dateRange.end = newDateRange.endDate;
-        this.dateRange.start = newDateRange.startDate;
-        this.calculate();
-      },
-      deep: true // Theo dõi các sự thay đổi sâu trong object
-    }
+    dateRange: function dateRange(newDateRange, oldDateRange) {
+      var _this = this;
+      // Log khi dateRange thay đổi
+      this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_4___default()(newDateRange.endDate).format("YYYY-MM-DD");
+      this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_4___default()(newDateRange.startDate).format("YYYY-MM-DD");
+      this.chartRendered.Revenue = false;
+      this.chartRendered.Service = false;
+      this.chartRendered.Channel = false;
+      this.chartRendered.Location = false;
+      this.chartRendered.Saler = false;
+      this.chartRendered.Artist = false;
+      this.chartRendered.splot = false;
+      Promise.all([this.fillerArrayArtist = [], this.fetchapiArtistData(this.dateRange.start, this.dateRange.end), this.apiData_id = [], this.fetchapiData_id(this.dateRange.start, this.dateRange.end), this.fillerArrayLocation = [], this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end), this.fillerArraySource = [], this.fetchapiSourceData(this.dateRange.start, this.dateRange.end), this.fillerArrayService = [], this.fetchapiServiceData(this.dateRange.start, this.dateRange.end), this.fillerArrayEmployee = [], this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end)]).then(function () {
+        _this.Price();
+        // Tất cả API đã kết thúc
+        _this.toggleOption();
+        _this.handleSelectedOptions();
+      });
+    },
+    deep: true // Theo dõi các sự thay đổi sâu trong object
   },
   mounted: function mounted() {
     this.adminId = this.$root.adminId;
@@ -112,1843 +157,501 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     // Kiểm tra nếu dateRange không có giá trị, đặt mặc định là ngày bắt đầu và ngày hiện tại
     if (!this.dateRange.start || !this.dateRange.end) {
       var _currentDate = new Date();
-      this.dateRange.start = new Date(_currentDate.getFullYear(), _currentDate.getMonth(), 1);
-      this.dateRange.end = _currentDate;
+      this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_4___default()(new Date(_currentDate.getFullYear(), _currentDate.getMonth(), 1)).format("YYYY-MM-DD");
+      this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_4___default()(_currentDate).format("YYYY-MM-DD");
     }
     this.fetchapiDataEmployee();
     this.fetchShowrooms();
     this.fetchGet();
     this.fetchArtist();
     this.fetchServices();
-    this.fetchapiData_id();
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiArtistData(this.dateRange.start, this.dateRange.end);
+    if (this.apiData_id.length !== 0) {
+      this.Price();
+    }
   },
   methods: {
-    fetchapiData_id: function fetchapiData_id() {
-      var _this = this;
+    fetchapiData_id: function fetchapiData_id(start, end) {
+      var _this2 = this;
       if (this.artistId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataArtist/".concat(start, "/").concat(end)).then(function (response) {
+          var _this2$totalByName;
           // Lọc dữ liệu dựa trên ArtistID
-          _this.apiData_id = response.data.filter(function (item) {
-            return item.ArtistID == _this.artistId && item.action === "approved";
-          });
-          _this.calculate();
+          _this2.apiData_id = Object.values(((_this2$totalByName = _this2.totalByName(response.data)) === null || _this2$totalByName === void 0 ? void 0 : _this2$totalByName.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this2.artistId);
+          })) || {});
+          _this2.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else if (this.employeeId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
-          // Lọc dữ liệu dựa trên source_id
-          _this.apiData_id = response.data.filter(function (item) {
-            return item.source_id == _this.employeeId;
-          });
-          _this.calculate();
+        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
+          var _this2$totalByName2;
+          _this2.apiData_id = Object.values(((_this2$totalByName2 = _this2.totalByName(response.data)) === null || _this2$totalByName2 === void 0 ? void 0 : _this2$totalByName2.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this2.employeeId);
+          })) || {});
+          _this2.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else {
-        axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
-          _this.apiData_id = response.data;
-          _this.calculate();
+        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataShowroom/ ".concat(start, "/").concat(end)).then(function (response) {
+          // Nhận dữ liệu từ phản hồi
+          _this2.apiData_id = response.data;
+          _this2.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       }
     },
+    fetchapiShowroomsData: function fetchapiShowroomsData(start, end) {
+      var _this3 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataShowroom/".concat(start, "/").concat(end)).then(function (response) {
+        _this3.fillerArrayLocation = response.data;
+        // Tiếp tục xử lý dữ liệu và tính toán
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchapiArtistData: function fetchapiArtistData(start, end) {
+      var _this4 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataArtist/".concat(start, "/").concat(end)).then(function (response) {
+        _this4.fillerArrayArtist = response.data;
+        // Tiếp tục xử lý dữ liệu và tính toán
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchapiSourceData: function fetchapiSourceData(start, end) {
+      var _this5 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              _context.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataSource/".concat(start, "/").concat(end)).then(function (response) {
+                _this5.fillerArraySource = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context.next = 8;
+              break;
+            case 5:
+              _context.prev = 5;
+              _context.t0 = _context["catch"](0);
+              console.error("Error fetching API data:", _context.t0);
+            case 8:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee, null, [[0, 5]]);
+      }))();
+    },
+    fetchapiServiceData: function fetchapiServiceData(start, end) {
+      var _this6 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.prev = 0;
+              _context2.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataService/".concat(start, "/").concat(end)).then(function (response) {
+                _this6.fillerArrayService = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context2.next = 8;
+              break;
+            case 5:
+              _context2.prev = 5;
+              _context2.t0 = _context2["catch"](0);
+              console.error("Error fetching API data:", _context2.t0);
+            case 8:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2, null, [[0, 5]]);
+      }))();
+    },
+    fetchapiEmployeeData: function fetchapiEmployeeData(start, end) {
+      var _this7 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              _context3.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
+                _this7.fillerArrayEmployee = response.data;
+                // Tiếp tục xử lý dữ liệu và tính toán
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 3:
+              _context3.next = 8;
+              break;
+            case 5:
+              _context3.prev = 5;
+              _context3.t0 = _context3["catch"](0);
+              console.error("Error fetching API data:", _context3.t0);
+            case 8:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3, null, [[0, 5]]);
+      }))();
+    },
     fetchShowrooms: function fetchShowrooms() {
-      var _this2 = this;
-      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/showrooms").then(function (response) {
-        _this2.apiDatalocation = response.data;
+      var _this8 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/showrooms").then(function (response) {
+        _this8.apiDatalocation = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
     fetchGet: function fetchGet() {
-      var _this3 = this;
-      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/get").then(function (response) {
-        _this3.apiDataGet = response.data;
+      var _this9 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/get").then(function (response) {
+        _this9.apiDataGet = response.data;
       })["catch"](function (error) {
         console.error("Error fetching Get::", error);
       });
     },
     fetchArtist: function fetchArtist() {
-      var _this4 = this;
-      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/artist").then(function (response) {
-        _this4.apiDataAritst = response.data;
+      var _this10 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/artist").then(function (response) {
+        _this10.apiDataAritst = response.data;
       })["catch"](function (error) {
         console.error("Error fetching artist::", error);
       });
     },
     fetchServices: function fetchServices() {
-      var _this5 = this;
-      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/services").then(function (response) {
-        _this5.apiDataServices = response.data;
+      var _this11 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/services").then(function (response) {
+        _this11.apiDataServices = response.data;
       })["catch"](function (error) {
         console.error("Error fetching Services::", error);
       });
     },
     fetchapiDataEmployee: function fetchapiDataEmployee() {
-      var _this6 = this;
-      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/employee").then(function (response) {
-        _this6.apiDataEmployee = response.data;
+      var _this12 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/employee").then(function (response) {
+        _this12.apiDataEmployee = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
-    filteredData_con: function filteredData_con() {
-      this.filteredDataWaiting = this.filteredData.filter(function (booking) {
-        var WaitingStatus = booking.status;
-        return WaitingStatus == "Waiting";
-      });
-      this.filteredDataDone = this.filteredData.filter(function (booking) {
-        var DoneStatus = booking.status;
-        return DoneStatus == "Done";
-      });
-      this.filteredDataRefund = this.filteredData.filter(function (booking) {
-        var RefundStatus = booking.status;
-        return RefundStatus == "Refund";
-      });
-      this.filteredDataCancel = this.filteredData.filter(function (booking) {
-        var CancelStatus = booking.status;
-        return CancelStatus == "Cancel";
-      });
-    },
     Price: function Price() {
-      var revenueCancel = this.filteredDataCancel.reduce(function (total, booking) {
-        var deposit = parseFloat(booking.price.Deposit_price);
-        if (!isNaN(deposit)) {
-          total += deposit;
-        }
-        return total;
-      }, 0);
-
-      // Tính tổng các giá trị từ dữ liệu đã lọc
-      this.Total_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Remaining_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Remaining_price);
-      }, 0).toFixed(2);
-      this.Deposit_price = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.Done_price = this.filteredDataDone.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Cancel_price = this.filteredDataCancel.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Refund_price = this.filteredDataRefund.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.servies_price);
-      }, 0).toFixed(2);
-      this.Revenue = this.filteredData.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueDone = this.filteredDataDone.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueRefund = this.filteredDataRefund.reduce(function (total, booking) {
-        return total + parseFloat(booking.price.Total_price) - parseFloat(booking.price.Deposit_price);
-      }, 0).toFixed(2);
-      this.RevenueTatol = parseFloat(this.RevenueRefund) + parseFloat(this.RevenueDone) + parseFloat(this.Revenue);
-      this.numberOfBooks = this.filteredData.length;
-    },
-    calculate: function calculate() {
-      var _this7 = this;
-      // Kiểm tra nếu this.dateRange.end không có dữ liệu thì sử dụng ngày cuối của tháng hiện tại
-      if (!this.dateRange.end) {
-        var currentDate = new Date();
-        var lastDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        this.dateRange.end = lastDayOfMonth;
-      }
-
-      // Kiểm tra nếu this.dateRange.start không có dữ liệu thì sử dụng ngày đầu của tháng hiện tại
-      if (!this.dateRange.start) {
-        var _currentDate2 = new Date();
-        this.dateRange.start = new Date(_currentDate2.getFullYear(), _currentDate2.getMonth(), 1);
-      }
-      // Lọc các bản ghi thuộc tháng và năm hiện tại
-      this.filteredData = this.apiData_id.filter(function (booking) {
-        var updatedAtDate = new Date(booking.price.updated_at);
-        /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return updatedAtDate <= _this7.dateRange.end && updatedAtDate >= _this7.dateRange.start;
-      });
-      this.filteredDataChart = this.apiData_id.filter(function (booking) {
-        var updatedAtDate = new Date(booking.updated_at);
-        /*   console.log("updatedAtDate", updatedAtDate , this.dateRange.end ,this.dateRange.start, updatedAtDate <= this.dateRange.end ,updatedAtDate >= this.dateRange.start); */
-        return updatedAtDate <= _this7.dateRange.end && updatedAtDate >= _this7.dateRange.start;
-      });
-      this.filteredData_con();
-      this.Price();
-      this.renderChartService();
-      this.renderChartRevenue();
-      this.renderChart();
-      this.renderChartLocation();
-      this.renderChartSource();
-      this.renderChartArtist();
-    },
-    renderChart: function renderChart() {
-      var _this8 = this;
-      // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = this.dateRange.start; // Ngày bắt đầu
-      var endDate = this.dateRange.end; // Ngày kết thúc
-
-      var ctx = this.$refs.myChart.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMap = new Map();
-      var resultArrayEmployee = [];
-
-      // Xử lý dữ liệu apiDataEmployee trước
-      var employeeDataMap = {};
-      this.apiDataEmployee.forEach(function (employee) {
-        employeeDataMap[employee.name] = employee;
-      });
-      var currentDateEmployee = new Date(startDate);
-      var _loop = function _loop() {
-        var year = currentDateEmployee.getFullYear();
-        var month = String(currentDateEmployee.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateEmployee.getDate()).padStart(2, "0");
-        var formattedDateEmployee = "".concat(year, "-").concat(month, "-").concat(day);
-        Object.keys(employeeDataMap).forEach(function (name) {
-          var employee = employeeDataMap[name];
-          var keyemployee = "".concat(name, "-").concat(employee.id, "-").concat(year, "-").concat(month, "-").concat(day);
-
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          var tempArray = [];
-          var tempArrayAll = [];
-          _this8.filteredDataChart.forEach(function (item) {
-            var createdAt = new Date(item.created_at);
-            var itemYear = createdAt.getFullYear();
-            var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            var itemDay = String(createdAt.getDate()).padStart(2, "0");
-            var key = "".concat(item.source_name, "-").concat(item.source_id, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            var keyAll = "".concat(item.source_type, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-
-            // Add the 'status' property to the merged item.
-            if (key === keyemployee) {
-              _this8.statusbooking = item.status;
-              tempArray.push(_objectSpread(_objectSpread({}, item), {}, {
-                status: _this8.statusbooking // Replace 'some_status_value' with the actual status property you want to add.
-              }));
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-            var mergedItem = tempArray.reduce(function (merged, item) {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              var RefundRevenue = 0;
-              var DoneRevenue = 0;
-              if (_this8.statusbooking === "Refund") {
-                RefundRevenue = parseInt(item.price.Total_price) - parseInt(item.price.Deposit_price);
-              } else if (_this8.statusbooking === "Done") {
-                DoneRevenue = parseInt(item.price.Total_price) - parseInt(item.price.Deposit_price);
-              }
-              merged.price.Revenue += parseInt(item.price.Deposit_price) + parseInt(RefundRevenue) + parseInt(DoneRevenue);
-              merged.splot += 1;
-              return merged;
-            }, {
-              source_name: employee.name,
-              avatar: employee.avatar,
-              source_id: employee.id,
-              created_at: formattedDateEmployee,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0
-              },
-              splot: 0,
-              status: _this8.statusbooking
-            });
-            if (!resultArrayEmployee[keyemployee]) {
-              resultArrayEmployee[keyemployee] = mergedItem;
-              // Update the 'status' property.
-            } else {
-              resultArrayEmployee[keyemployee].price.Total_price += mergedItem.price.Total_price;
-              resultArrayEmployee[keyemployee].price.Deposit_price += mergedItem.price.Deposit_price;
-              resultArrayEmployee[keyemployee].price.servies_price += mergedItem.price.servies_price;
-              resultArrayEmployee[keyemployee].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayEmployee[keyemployee] = {
-              source_name: employee.name,
-              avatar: employee.avatar,
-              source_id: employee.id,
-              created_at: formattedDateEmployee,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0
-              },
-              splot: 0,
-              status: _this8.statusbooking
-            };
-          }
+      var _this13 = this;
+      this.Total_price = 0;
+      this.Deposit_price = 0;
+      this.servies_price = 0;
+      this.RevenueTatol = 0;
+      this.numberOfBooks = 0;
+      if (this.adminId !== null) {
+        var data = this.totalByName(this.apiData_id);
+        data.forEach(function (item) {
+          _this13.Total_price += parseFloat(item.servies_price);
+          _this13.Deposit_price += parseFloat(item.Deposit_price);
+          _this13.servies_price += parseFloat(item.servies_price);
+          _this13.RevenueTatol += parseFloat(item.Revenue);
+          _this13.numberOfBooks = item.length;
         });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateEmployee.setDate(currentDateEmployee.getDate() + 1);
-      };
-      while (currentDateEmployee <= endDate) {
-        _loop();
+      } else {
+        var _data = this.apiData_id;
+        this.Total_price += parseFloat(_data[2]);
+        this.Deposit_price += parseFloat(_data[3]);
+        this.servies_price += parseFloat(_data[4]);
+        this.RevenueTatol += parseFloat(_data[5]);
+        this.numberOfBooks = _data[10];
       }
-      var currentDateEmployeeALl = new Date(startDate);
-      var _loop2 = function _loop2() {
-        var year = currentDateEmployeeALl.getFullYear();
-        var month = String(currentDateEmployeeALl.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateEmployeeALl.getDate()).padStart(2, "0");
-        var formattedDateEmployee = "".concat(year, "-").concat(month, "-").concat(day);
-        var tempArrayAll = [];
-        Object.values(resultArrayEmployee).forEach(function (item) {
-          var createdAt = new Date(item.created_at);
-          var itemYear = createdAt.getFullYear();
-          var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          var itemDay = String(createdAt.getDate()).padStart(2, "0");
-          var keyAll = "".concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-          if (keyAll === formattedDateEmployee) {
-            tempArrayAll.push(item);
-          }
+
+      // Lặp qua danh sách dữ liệu và tính tổng
+    },
+    createChart: function createChart(ctx, data, arrayFine) {
+      var _datasets$push;
+      var dates = Object.keys(data); // Lấy danh sách ngày
+      var names = _toConsumableArray(new Set(Object.values(data).map(function (item) {
+        return Object.values(item).map(function (inner) {
+          return inner.Name;
         });
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-          var mergedItem = tempArrayAll.reduce(function (merged, item) {
-            merged.price.Total_price += parseInt(item.price.Total_price);
-            merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-            merged.price.servies_price += parseInt(item.price.servies_price);
-            merged.price.Revenue += parseInt(item.price.Revenue);
-            merged.splot += parseInt(item.splot);
-            return merged;
-          }, {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateEmployee,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          });
-          if (!resultArrayEmployee[formattedDateEmployee]) {
-            resultArrayEmployee[formattedDateEmployee] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayEmployee thay vì gán lại
-            resultArrayEmployee[formattedDateEmployee].price.Total_price = mergedItem.price.Total_price;
-            resultArrayEmployee[formattedDateEmployee].price.Deposit_price = mergedItem.price.Deposit_price;
-            resultArrayEmployee[formattedDateEmployee].price.servies_price = mergedItem.price.servies_price;
-            resultArrayEmployee[formattedDateEmployee].price.Revenue = mergedItem.price.Revenue;
-            resultArrayEmployee[formattedDateEmployee].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayEmployee[formattedDateEmployee] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateEmployee,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          };
-        }
+      }).flat())); // Lấy danh sách tên duy nhất
 
-        // Tiến hành tới ngày tiếp theo
-        currentDateEmployeeALl.setDate(currentDateEmployeeALl.getDate() + 1);
-      };
-      while (currentDateEmployeeALl <= new Date(endDate)) {
-        _loop2();
-      }
-      var resultArray = Object.values(resultArrayEmployee);
-      var groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach(function (item) {
-        var key = "".concat(item.source_id, "-").concat(item.source_name);
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            avatar: item.avatar,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-        // Tính tổng giá
-        for (var priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredEmployee = Object.values(groupedData).sort(function (a, b) {
-        // Sắp xếp theo giá servies_price giảm dần
-        return b.price.servies_price - a.price.servies_price;
-      });
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMap
-      resultArray.forEach(function (dataPoint) {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        var dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        _this8.key = "".concat(dataPoint.source_name, "_").concat(dataPoint.source_id);
-        var price = dataPoint.price.servies_price;
-        if (!datasetsMap.has(_this8.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          var backgroundColor = _this8.getRandomColor();
-          var borderColor = _this8.getRandomColor();
-          datasetsMap.set(_this8.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
+      var datasets, totalRevenue;
+      if (arrayFine == "revenue") {
+        // Tạo dòng biểu đồ cho mỗi tên
+        datasets = names.map(function (name) {
+          return {
+            label: name,
+            data: dates.map(function (date) {
+              return data[date][Object.keys(data[date]).find(function (key) {
+                return data[date][key].Name === name;
+              })].revenue;
+            }),
+            borderColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+            // Màu sắc ngẫu nhiên
             borderWidth: 1.2,
             fill: true,
             pointRadius: 0.3
-          });
-        }
-        var dataset = datasetsMap.get(_this8.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMap thành một mảng các datasets và tính tổng giá trị tiền
-      var datasets = Array.from(datasetsMap.values()).map(function (dataset) {
-        var totalValue = dataset.data.reduce(function (total, value) {
-          return total + value;
-        }, 0);
-        return _objectSpread(_objectSpread({}, dataset), {}, {
-          data: dataset.data,
-          // Giữ lại giá trị tiền
-          totalValue: totalValue // Tổng giá trị tiền
+          };
         });
-      });
 
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
+        // Tính tổng doanh thu từ tất cả các tên
+        totalRevenue = dates.map(function (date) {
+          return names.reduce(function (total, name) {
+            return total + data[date][Object.keys(data[date]).find(function (key) {
+              return data[date][key].Name === name;
+            })].revenue;
+          }, 0);
+        });
+      } else if (arrayFine == "servies_price") {
+        // Tạo dòng biểu đồ cho mỗi tên
+        datasets = names.map(function (name) {
+          return {
+            label: name,
+            data: dates.map(function (date) {
+              return data[date][Object.keys(data[date]).find(function (key) {
+                return data[date][key].Name === name;
+              })].servies_price;
+            }),
+            borderColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+            // Màu sắc ngẫu nhiên
+            borderWidth: 1.2,
+            fill: true,
+            pointRadius: 0.3
+          };
+        });
+
+        // Tính tổng doanh thu từ tất cả các tên
+        totalRevenue = dates.map(function (date) {
+          return names.reduce(function (total, name) {
+            return total + data[date][Object.keys(data[date]).find(function (key) {
+              return data[date][key].Name === name;
+            })].servies_price;
+          }, 0);
+        });
+      } else {
+        // Tạo dòng biểu đồ cho mỗi tên
+        datasets = names.map(function (name) {
+          return {
+            label: name,
+            data: dates.map(function (date) {
+              return data[date][Object.keys(data[date]).find(function (key) {
+                return data[date][key].Name === name;
+              })].length_real;
+            }),
+            borderColor: "#" + Math.floor(Math.random() * 16777215).toString(16),
+            // Màu sắc ngẫu nhiên
+            borderWidth: 1.2,
+            fill: true,
+            pointRadius: 0.3
+          };
+        });
+
+        // Tính tổng doanh thu từ tất cả các tên
+        totalRevenue = dates.map(function (date) {
+          return names.reduce(function (total, name) {
+            return total + data[date][Object.keys(data[date]).find(function (key) {
+              return data[date][key].Name === name;
+            })].length_real;
+          }, 0);
+        });
       }
 
-      // Check if a chart instance already exists and destroy it
+      // Thêm dòng biểu đồ cho tổng doanh thu
+      datasets.push((_datasets$push = {
+        label: "Total",
+        data: totalRevenue,
+        borderColor: "blue",
+        // Màu sắc của dòng biểu đồ tổng doanh thu
+        fill: false,
+        borderWidth: 1.2
+      }, _defineProperty(_datasets$push, "fill", true), _defineProperty(_datasets$push, "pointRadius", 0.3), _datasets$push));
+      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
+      var chart = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctx, {
+        type: "line",
+        data: {
+          labels: dates,
+          datasets: datasets
+        },
+        options: {
+          elements: {
+            line: {
+              tension: 0.4 // Điều chỉnh độ bo cong của đường
+            }
+          },
+
+          plugins: {
+            filler: {
+              propagate: true,
+              // Cho phép lớp phủ
+              use: ["start", "origin"] // Sử dụng lớp phủ từ "start" hoặc "origin"
+            },
+
+            zoom: {
+              wheel: {
+                enabled: true // Cho phép zoom bằng cách sử dụng bánh xe chuột
+              },
+
+              drag: {
+                enabled: true // Cho phép kéo để zoom
+              },
+
+              pinch: {
+                enabled: true // Cho phép zoom bằng cách pinch (ngón tay cự đại)
+              }
+            }
+          }
+        }
+      });
+
+      return chart;
+    },
+    renderChart: function renderChart() {
+      var ctx = this.$refs.myChart.getContext("2d");
       if (this.chart) {
         this.chart.destroy();
       }
+      this.chart = this.createChart(ctx, this.fillerArrayEmployee, "servies_price");
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chart = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctx, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4 // Điều chỉnh độ bo cong của đường
-            }
-          },
-
-          plugins: {
-            filler: {
-              propagate: true,
-              // Cho phép lớp phủ
-              use: ["start", "origin"] // Sử dụng lớp phủ từ "start" hoặc "origin"
-            }
-          }
-        }
+      var DataMap = {};
+      this.apiDataEmployee.forEach(function (Employee) {
+        DataMap[Employee.name] = Employee;
+      });
+      var sortedLabels = Object.keys(DataMap);
+      this.resultArrayFilteredEmployee = this.resultArrayFiltered(this.fillerArrayEmployee, sortedLabels).sort(function (a, b) {
+        return b[4] - a[4];
       });
     },
     renderChartRevenue: function renderChartRevenue() {
-      var _this9 = this;
       // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = this.dateRange.start; // Ngày bắt đầu
-      var endDate = this.dateRange.end; // Ngày kết thúc
-
       var ctx = this.$refs.mychartRevenue.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMap = new Map();
-      var resultArrayEmployee = [];
-
-      // Xử lý dữ liệu apiDataEmployee trước
-      var employeeDataMap = {};
-      this.apiDataEmployee.forEach(function (employee) {
-        employeeDataMap[employee.name] = employee;
-      });
-      var currentDateEmployee = new Date(startDate);
-      var _loop3 = function _loop3() {
-        var year = currentDateEmployee.getFullYear();
-        var month = String(currentDateEmployee.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateEmployee.getDate()).padStart(2, "0");
-        var formattedDateEmployee = "".concat(year, "-").concat(month, "-").concat(day);
-        Object.keys(employeeDataMap).forEach(function (name) {
-          var employee = employeeDataMap[name];
-          var keyemployee = "".concat(name, "-").concat(employee.id, "-").concat(year, "-").concat(month, "-").concat(day);
-
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          var tempArray = [];
-          var tempArrayAll = [];
-          _this9.filteredDataChart.forEach(function (item) {
-            var createdAt = new Date(item.price.created_at);
-            var itemYear = createdAt.getFullYear();
-            var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            var itemDay = String(createdAt.getDate()).padStart(2, "0");
-            var key = "".concat(item.source_name, "-").concat(item.source_id, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            var updatedAtDate = new Date(item.price.updated_at);
-            var updateitemYear = updatedAtDate.getFullYear();
-            var updateitemMonth = String(updatedAtDate.getMonth() + 1).padStart(2, "0");
-            var updateitemDay = String(updatedAtDate.getDate()).padStart(2, "0");
-            var keyAll = "".concat(item.source_type, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-
-            // Add the 'status' property to the merged item.
-            if (key === keyemployee) {
-              _this9.statusbooking = item.status;
-              _this9.updated_at_price = "".concat(updateitemYear, "-").concat(updateitemMonth, "-").concat(updateitemDay);
-              tempArray.push(_objectSpread(_objectSpread({}, item), {}, {
-                status: _this9.statusbooking // Replace 'some_status_value' with the actual status property you want to add.
-              }));
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-            var mergedItem = tempArray.reduce(function (merged, item) {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.price.Revenue += parseInt(item.price.Deposit_price);
-              merged.splot += 1;
-              return merged;
-            }, {
-              source_name: employee.name,
-              avatar: employee.avatar,
-              source_id: employee.id,
-              created_at: formattedDateEmployee,
-              updated_at: _this9.updated_at_price,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0
-              },
-              splot: 0,
-              status: _this9.statusbooking
-            });
-            if (!resultArrayEmployee[keyemployee]) {
-              resultArrayEmployee[keyemployee] = mergedItem;
-              // Update the 'status' property.
-            } else {
-              resultArrayEmployee[keyemployee].price.Total_price += mergedItem.price.Total_price;
-              resultArrayEmployee[keyemployee].price.Deposit_price += mergedItem.price.Deposit_price;
-              resultArrayEmployee[keyemployee].price.servies_price += mergedItem.price.servies_price;
-              resultArrayEmployee[keyemployee].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayEmployee[keyemployee] = {
-              source_name: employee.name,
-              avatar: employee.avatar,
-              source_id: employee.id,
-              created_at: formattedDateEmployee,
-              updated_at: _this9.updated_at_price,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0,
-                Revenue: 0
-              },
-              splot: 0,
-              status: _this9.statusbooking
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateEmployee.setDate(currentDateEmployee.getDate() + 1);
-      };
-      while (currentDateEmployee <= endDate) {
-        _loop3();
-      }
-      for (var i = 0; i < Object.values(resultArrayEmployee).length; i++) {
-        // Bỏ qua nếu update_at là null
-        if (Object.values(resultArrayEmployee)[i].updated_at < Object.values(resultArrayEmployee)[i].created_at) {
-          continue;
-        }
-        for (var j = 0; j < Object.values(resultArrayEmployee).length; j++) {
-          if (i !== j && Object.values(resultArrayEmployee)[i].updated_at === Object.values(resultArrayEmployee)[j].created_at) {
-            Object.values(resultArrayEmployee)[j].price.Revenue += Object.values(resultArrayEmployee)[i].price.Total_price - Object.values(resultArrayEmployee)[i].price.Deposit_price;
-          }
-        }
-      }
-      var currentDateEmployeeALl = new Date(startDate);
-      var _loop4 = function _loop4() {
-        var year = currentDateEmployeeALl.getFullYear();
-        var month = String(currentDateEmployeeALl.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateEmployeeALl.getDate()).padStart(2, "0");
-        var formattedDateEmployee = "".concat(year, "-").concat(month, "-").concat(day);
-        var tempArrayAll = [];
-        Object.values(resultArrayEmployee).forEach(function (item) {
-          var createdAt = new Date(item.created_at);
-          var itemYear = createdAt.getFullYear();
-          var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          var itemDay = String(createdAt.getDate()).padStart(2, "0");
-          var keyAll = "".concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-          if (keyAll === formattedDateEmployee) {
-            tempArrayAll.push(item);
-          }
-        });
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayEmployee
-          var mergedItem = tempArrayAll.reduce(function (merged, item) {
-            merged.price.Total_price += parseInt(item.price.Total_price);
-            merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-            merged.price.servies_price += parseInt(item.price.servies_price);
-            merged.price.Revenue += parseInt(item.price.Revenue);
-            merged.splot += parseInt(item.splot);
-            return merged;
-          }, {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateEmployee,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          });
-          if (!resultArrayEmployee[formattedDateEmployee]) {
-            resultArrayEmployee[formattedDateEmployee] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayEmployee thay vì gán lại
-            resultArrayEmployee[formattedDateEmployee].price.Total_price = mergedItem.price.Total_price;
-            resultArrayEmployee[formattedDateEmployee].price.Deposit_price = mergedItem.price.Deposit_price;
-            resultArrayEmployee[formattedDateEmployee].price.servies_price = mergedItem.price.servies_price;
-            resultArrayEmployee[formattedDateEmployee].price.Revenue = mergedItem.price.Revenue;
-            resultArrayEmployee[formattedDateEmployee].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayEmployee[formattedDateEmployee] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateEmployee,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateEmployeeALl.setDate(currentDateEmployeeALl.getDate() + 1);
-      };
-      while (currentDateEmployeeALl <= new Date(endDate)) {
-        _loop4();
-      }
-      var resultArray = Object.values(resultArrayEmployee);
-      var groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach(function (item) {
-        var key = "".concat(item.source_id, "-").concat(item.source_name);
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            avatar: item.avatar,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0
-            },
-            splot: 0
-          };
-        }
-        // Tính tổng giá
-        for (var priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredRevenue = Object.values(groupedData).sort(function (a, b) {
-        // Sắp xếp theo giá servies_price giảm dần
-        return b.price.Revenue - a.price.Revenue;
-      });
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMap
-      resultArray.forEach(function (dataPoint) {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        var dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        _this9.key = "".concat(dataPoint.source_name, "_").concat(dataPoint.source_id);
-        var price = dataPoint.price.Revenue;
-        if (!datasetsMap.has(_this9.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          var backgroundColor = _this9.getRandomColor();
-          var borderColor = _this9.getRandomColor();
-          datasetsMap.set(_this9.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3
-          });
-        }
-        var dataset = datasetsMap.get(_this9.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMap thành một mảng các datasets và tính tổng giá trị tiền
-      var datasets = Array.from(datasetsMap.values()).map(function (dataset) {
-        var totalValue = dataset.data.reduce(function (total, value) {
-          return total + value;
-        }, 0);
-        return _objectSpread(_objectSpread({}, dataset), {}, {
-          data: dataset.data,
-          // Giữ lại giá trị tiền
-          totalValue: totalValue // Tổng giá trị tiền
-        });
-      });
-
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
-
-      // Check if a chartRevenue instance already exists and destroy it
       if (this.chartRevenue) {
         this.chartRevenue.destroy();
       }
+      this.chartRevenue = this.createChart(ctx, this.fillerArrayEmployee, "revenue");
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartRevenue = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctx, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4 // Điều chỉnh độ bo cong của đường
-            }
-          },
-
-          plugins: {
-            filler: {
-              propagate: true,
-              // Cho phép lớp phủ
-              use: ["start", "origin"] // Sử dụng lớp phủ từ "start" hoặc "origin"
-            }
-          }
-        }
+      var DataMap = {};
+      this.apiDataEmployee.forEach(function (Employee) {
+        DataMap[Employee.name] = Employee;
       });
+      var sortedLabels = Object.keys(DataMap);
+      this.resultArrayFilteredRevenue = this.resultArrayFiltered(this.fillerArrayEmployee, sortedLabels).sort(function (a, b) {
+        return b[5] - a[5];
+      });
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+    },
+    renderChartSplot: function renderChartSplot() {
+      // Sắp xếp các labels theo thứ tự tăng dần
+      var ctx = this.$refs.mychartSplot.getContext("2d");
+      if (this.chartSplot) {
+        this.chartSplot.destroy();
+      }
+      this.chartSplot = this.createChart(ctx, this.fillerArrayEmployee, "lenght_real");
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
+
+      var DataMap = {};
+      this.apiDataEmployee.forEach(function (Employee) {
+        DataMap[Employee.name] = Employee;
+      });
+      var sortedLabels = Object.keys(DataMap);
+      this.resultArrayFilteredSplot = this.resultArrayFiltered(this.fillerArrayEmployee, sortedLabels).sort(function (a, b) {
+        return b[5] - a[5];
+      });
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
     },
     renderChartLocation: function renderChartLocation() {
-      var _this10 = this;
-      // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = this.dateRange.start; // Ngày bắt đầu
-      var endDate = this.dateRange.end; // Ngày kết thúc
-
-      var ctxLocation = this.$refs.myChartLocation.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMapLocation = new Map();
-      var resultArrayLocation = [];
-      var locationDataMap = {};
-      this.apiDatalocation.forEach(function (location) {
-        locationDataMap[location.Name] = location;
-      });
-      var currentDatelocation = new Date(startDate);
-      var _loop5 = function _loop5() {
-        var year = currentDatelocation.getFullYear();
-        var month = String(currentDatelocation.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDatelocation.getDate()).padStart(2, "0");
-        var formattedDatelocation = "".concat(year, "-").concat(month, "-").concat(day);
-        Object.keys(locationDataMap).forEach(function (name) {
-          var location = locationDataMap[name];
-          var keylocation = "".concat(location.id, "-").concat(year, "-").concat(month, "-").concat(day);
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          var tempArray = [];
-          _this10.filteredDataChart.forEach(function (item) {
-            var createdAt = new Date(item.created_at);
-            var itemYear = createdAt.getFullYear();
-            var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            var itemDay = String(createdAt.getDate()).padStart(2, "0");
-            var key = "".concat(item.ShowroomID, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            if (key === keylocation) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayLocation
-            var mergedItem = tempArray.reduce(function (merged, item) {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += 1;
-              return merged;
-            }, {
-              source_name: location.Name,
-              source_id: location.id,
-              created_at: formattedDatelocation,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            });
-            if (!resultArrayLocation[keylocation]) {
-              resultArrayLocation[keylocation] = mergedItem;
-            } else {
-              resultArrayLocation[keylocation].price.Total_price += mergedItem.price.Total_price;
-              resultArrayLocation[keylocation].price.Deposit_price += mergedItem.price.Deposit_price;
-              resultArrayLocation[keylocation].price.servies_price += mergedItem.price.servies_price;
-              resultArrayLocation[keylocation].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayLocation[keylocation] = {
-              source_name: location.Name,
-              source_id: location.id,
-              created_at: formattedDatelocation,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDatelocation.setDate(currentDatelocation.getDate() + 1);
-      };
-      while (currentDatelocation <= endDate) {
-        _loop5();
-      }
-      var currentDateLocationall = new Date(startDate);
-      var _loop6 = function _loop6() {
-        var year = currentDateLocationall.getFullYear();
-        var month = String(currentDateLocationall.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateLocationall.getDate()).padStart(2, "0");
-        var formattedDatelocation = "".concat(year, "-").concat(month, "-").concat(day);
-        var tempArrayAll = [];
-        Object.values(resultArrayLocation).forEach(function (item) {
-          var createdAt = new Date(item.created_at);
-          var itemYear = createdAt.getFullYear();
-          var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          var itemDay = String(createdAt.getDate()).padStart(2, "0");
-          var keyAll = "".concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-          if (keyAll === formattedDatelocation) {
-            tempArrayAll.push(item);
-          }
-        });
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayLocation
-          var mergedItem = tempArrayAll.reduce(function (merged, item) {
-            merged.price.Total_price += parseInt(item.price.Total_price);
-            merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-            merged.price.servies_price += parseInt(item.price.servies_price);
-            merged.splot += parseInt(item.splot);
-            return merged;
-          }, {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDatelocation,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          });
-          if (!resultArrayLocation[formattedDatelocation]) {
-            resultArrayLocation[formattedDatelocation] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayLocation thay vì gán lại
-            resultArrayLocation[formattedDatelocation].price.Total_price = mergedItem.price.Total_price;
-            resultArrayLocation[formattedDatelocation].price.Deposit_price = mergedItem.price.Deposit_price;
-            resultArrayLocation[formattedDatelocation].price.servies_price = mergedItem.price.servies_price;
-            resultArrayLocation[formattedDatelocation].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayLocation[formattedDatelocation] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDatelocation,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateLocationall.setDate(currentDateLocationall.getDate() + 1);
-      };
-      while (currentDateLocationall <= new Date(endDate)) {
-        _loop6();
-      }
-      var resultArray = Object.values(resultArrayLocation);
-      var groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach(function (item) {
-        var key = "".concat(item.source_id, "-").concat(item.source_name);
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-        // Tính tổng giá
-        for (var priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredLocation = Object.values(groupedData).sort(function (a, b) {
-        // Sắp xếp theo giá servies_price giảm dần
-        return b.price.servies_price - a.price.servies_price;
-      });
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapLocation
-      resultArray.forEach(function (dataPoint) {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        var dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        _this10.key = "".concat(dataPoint.source_name, "_").concat(dataPoint.source_id);
-        var price = dataPoint.price.servies_price;
-        if (!datasetsMapLocation.has(_this10.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          var backgroundColor = _this10.getRandomColor();
-          var borderColor = _this10.getRandomColor();
-          datasetsMapLocation.set(_this10.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3
-          });
-        }
-        var dataset = datasetsMapLocation.get(_this10.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapLocation thành một mảng các datasets và tính tổng giá trị tiền
-      var datasets = Array.from(datasetsMapLocation.values()).map(function (dataset) {
-        var totalValue = dataset.data.reduce(function (total, value) {
-          return total + value;
-        }, 0);
-        return _objectSpread(_objectSpread({}, dataset), {}, {
-          data: dataset.data,
-          // Giữ lại giá trị tiền
-          totalValue: totalValue // Tổng giá trị tiền
-        });
-      });
-
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      var ctx = this.$refs.myChartLocation.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartLocation) {
         this.chartLocation.destroy();
       }
+      this.chartLocation = this.createChart(ctx, this.fillerArrayLocation, "servies_price");
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartLocation = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctxLocation, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4 // Điều chỉnh độ bo cong của đường
-            }
-          },
-
-          plugins: {
-            filler: {
-              propagate: true,
-              // Cho phép lớp phủ
-              use: ["start", "origin"] // Sử dụng lớp phủ từ "start" hoặc "origin"
-            }
-          }
-        }
+      var DataMap = {};
+      this.apiDatalocation.forEach(function (location) {
+        DataMap[location.Name] = location;
+      });
+      var sortedLabels = Object.keys(DataMap);
+      this.resultArrayFilteredLocation = this.resultArrayFiltered(this.fillerArrayLocation, sortedLabels).sort(function (a, b) {
+        return b[4] - a[4];
       });
     },
     renderChartSource: function renderChartSource() {
-      var _this11 = this;
       // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = this.dateRange.start; // Ngày bắt đầu
-      var endDate = this.dateRange.end; // Ngày kết thúc
-
-      var ctxSource = this.$refs.myChartSource.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMapSource = new Map();
-      var resultArraySource = [];
-      var SourceDataMap = {};
-      this.apiDataGet.forEach(function (Source) {
-        SourceDataMap[Source.source_data] = Source;
-      });
-      var currentDateSource = new Date(startDate);
-      var _loop7 = function _loop7() {
-        var year = currentDateSource.getFullYear();
-        var month = String(currentDateSource.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateSource.getDate()).padStart(2, "0");
-        var formattedDateSource = "".concat(year, "-").concat(month, "-").concat(day);
-        Object.keys(SourceDataMap).forEach(function (name) {
-          var Source = SourceDataMap[name];
-          var keySource = "".concat(Source.source_data, "-").concat(year, "-").concat(month, "-").concat(day);
-
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          var tempArray = [];
-          _this11.filteredDataChart.forEach(function (item) {
-            var createdAt = new Date(item.created_at);
-            var itemYear = createdAt.getFullYear();
-            var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            var itemDay = String(createdAt.getDate()).padStart(2, "0");
-            var key = "".concat(item.source_data, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            if (key === keySource) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArraySource
-            var mergedItem = tempArray.reduce(function (merged, item) {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += 1;
-              return merged;
-            }, {
-              source_name: Source.source_data,
-              source_id: Source.id,
-              created_at: formattedDateSource,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            });
-            if (!resultArraySource[keySource]) {
-              resultArraySource[keySource] = mergedItem;
-            } else {
-              resultArraySource[keySource].price.Total_price += mergedItem.price.Total_price;
-              resultArraySource[keySource].price.Deposit_price += mergedItem.price.Deposit_price;
-              resultArraySource[keySource].price.servies_price += mergedItem.price.servies_price;
-              resultArraySource[keySource].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArraySource[keySource] = {
-              source_name: Source.source_data,
-              source_id: Source.id,
-              created_at: formattedDateSource,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateSource.setDate(currentDateSource.getDate() + 1);
-      };
-      while (currentDateSource <= endDate) {
-        _loop7();
-      }
-
-      ///
-
-      var currentDateSourceall = new Date(startDate);
-      var _loop8 = function _loop8() {
-        var year = currentDateSourceall.getFullYear();
-        var month = String(currentDateSourceall.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateSourceall.getDate()).padStart(2, "0");
-        var formattedDateSource = "".concat(year, "-").concat(month, "-").concat(day);
-        var tempArrayAll = [];
-        Object.values(resultArraySource).forEach(function (item) {
-          var createdAt = new Date(item.created_at);
-          var itemYear = createdAt.getFullYear();
-          var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          var itemDay = String(createdAt.getDate()).padStart(2, "0");
-          var keyAll = "".concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-          if (keyAll === formattedDateSource) {
-            tempArrayAll.push(item);
-          }
-        });
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArraySource
-          var mergedItem = tempArrayAll.reduce(function (merged, item) {
-            merged.price.Total_price += parseInt(item.price.Total_price);
-            merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-            merged.price.servies_price += parseInt(item.price.servies_price);
-            merged.splot += parseInt(item.splot);
-            return merged;
-          }, {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateSource,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          });
-          if (!resultArraySource[formattedDateSource]) {
-            resultArraySource[formattedDateSource] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArraySource thay vì gán lại
-            resultArraySource[formattedDateSource].price.Total_price = mergedItem.price.Total_price;
-            resultArraySource[formattedDateSource].price.Deposit_price = mergedItem.price.Deposit_price;
-            resultArraySource[formattedDateSource].price.servies_price = mergedItem.price.servies_price;
-            resultArraySource[formattedDateSource].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArraySource[formattedDateSource] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateSource,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateSourceall.setDate(currentDateSourceall.getDate() + 1);
-      };
-      while (currentDateSourceall <= new Date(endDate)) {
-        _loop8();
-      }
-
-      ///
-
-      var resultArray = Object.values(resultArraySource);
-      var groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach(function (item) {
-        var key = "".concat(item.source_id, "-").concat(item.source_name);
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-
-        // Tính tổng giá
-        for (var priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredSource = Object.values(groupedData).sort(function (a, b) {
-        // Sắp xếp theo giá servies_price giảm dần
-        return b.price.servies_price - a.price.servies_price;
-      });
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapSource
-      resultArray.forEach(function (dataPoint) {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        var dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        _this11.key = "".concat(dataPoint.source_name, "_").concat(dataPoint.source_id);
-        var price = dataPoint.price.servies_price;
-        if (!datasetsMapSource.has(_this11.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          var backgroundColor = _this11.getRandomColor();
-          var borderColor = _this11.getRandomColor();
-          datasetsMapSource.set(_this11.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3
-          });
-        }
-        var dataset = datasetsMapSource.get(_this11.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapSource thành một mảng các datasets và tính tổng giá trị tiền
-      var datasets = Array.from(datasetsMapSource.values()).map(function (dataset) {
-        var totalValue = dataset.data.reduce(function (total, value) {
-          return total + value;
-        }, 0);
-        return _objectSpread(_objectSpread({}, dataset), {}, {
-          data: dataset.data,
-          // Giữ lại giá trị tiền
-          totalValue: totalValue // Tổng giá trị tiền
-        });
-      });
-
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      var ctx = this.$refs.myChartSource.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartSource) {
         this.chartSource.destroy();
       }
+      this.chartSource = this.createChart(ctx, this.fillerArraySource, "servies_price");
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartSource = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctxSource, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4 // Điều chỉnh độ bo cong của đường
-            }
-          },
-
-          plugins: {
-            filler: {
-              propagate: true,
-              // Cho phép lớp phủ
-              use: ["start", "origin"] // Sử dụng lớp phủ từ "start" hoặc "origin"
-            }
-          }
-        }
+      var DataMap = {};
+      this.apiDataGet.forEach(function (source) {
+        DataMap[source.source_data] = source;
+      });
+      var sortedLabels = Object.keys(DataMap);
+      this.resultArrayFilteredSource = this.resultArrayFiltered(this.fillerArraySource, sortedLabels).sort(function (a, b) {
+        return b[4] - a[4];
       });
     },
     renderChartArtist: function renderChartArtist() {
-      var _this12 = this;
       // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = this.dateRange.start; // Ngày bắt đầu
-      var endDate = this.dateRange.end; // Ngày kết thúc
 
-      var ctxArtist = this.$refs.myChartArtist.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMapArtist = new Map();
-      var resultArrayArtist = [];
-      var ArtistDataMap = {};
-      this.apiDataAritst.forEach(function (Artist) {
-        ArtistDataMap[Artist.name] = Artist;
-      });
-      var currentDateArtist = new Date(startDate);
-      var _loop9 = function _loop9() {
-        var year = currentDateArtist.getFullYear();
-        var month = String(currentDateArtist.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateArtist.getDate()).padStart(2, "0");
-        var formattedDateArtist = "".concat(year, "-").concat(month, "-").concat(day);
-        Object.keys(ArtistDataMap).forEach(function (name) {
-          var Artist = ArtistDataMap[name];
-          var keyArtist = "".concat(Artist.id, "-").concat(year, "-").concat(month, "-").concat(day);
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          var tempArray = [];
-          _this12.filteredDataChart.forEach(function (item) {
-            var createdAt = new Date(item.created_at);
-            var itemYear = createdAt.getFullYear();
-            var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            var itemDay = String(createdAt.getDate()).padStart(2, "0");
-            var key = "".concat(item.ArtistID, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            if (key === keyArtist) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayArtist
-            var mergedItem = tempArray.reduce(function (merged, item) {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += 1;
-              return merged;
-            }, {
-              source_name: Artist.name,
-              source_id: Artist.id,
-              created_at: formattedDateArtist,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            });
-            if (!resultArrayArtist[keyArtist]) {
-              resultArrayArtist[keyArtist] = mergedItem;
-            } else {
-              resultArrayArtist[keyArtist].price.Total_price += mergedItem.price.Total_price;
-              resultArrayArtist[keyArtist].price.Deposit_price += mergedItem.price.Deposit_price;
-              resultArrayArtist[keyArtist].price.servies_price += mergedItem.price.servies_price;
-              resultArrayArtist[keyArtist].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayArtist[keyArtist] = {
-              source_name: Artist.name,
-              source_id: Artist.id,
-              created_at: formattedDateArtist,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateArtist.setDate(currentDateArtist.getDate() + 1);
-      };
-      while (currentDateArtist <= endDate) {
-        _loop9();
-      }
-
-      ///
-
-      var currentDateArtistall = new Date(startDate);
-      var _loop10 = function _loop10() {
-        var year = currentDateArtistall.getFullYear();
-        var month = String(currentDateArtistall.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateArtistall.getDate()).padStart(2, "0");
-        var formattedDateArtist = "".concat(year, "-").concat(month, "-").concat(day);
-        var tempArrayAll = [];
-        Object.values(resultArrayArtist).forEach(function (item) {
-          var createdAt = new Date(item.created_at);
-          var itemYear = createdAt.getFullYear();
-          var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          var itemDay = String(createdAt.getDate()).padStart(2, "0");
-          var keyAll = "".concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-          if (keyAll === formattedDateArtist) {
-            tempArrayAll.push(item);
-          }
-        });
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayArtist
-          var mergedItem = tempArrayAll.reduce(function (merged, item) {
-            merged.price.Total_price += parseInt(item.price.Total_price);
-            merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-            merged.price.servies_price += parseInt(item.price.servies_price);
-            merged.splot += parseInt(item.splot);
-            return merged;
-          }, {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateArtist,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          });
-          if (!resultArrayArtist[formattedDateArtist]) {
-            resultArrayArtist[formattedDateArtist] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayArtist thay vì gán lại
-            resultArrayArtist[formattedDateArtist].price.Total_price = mergedItem.price.Total_price;
-            resultArrayArtist[formattedDateArtist].price.Deposit_price = mergedItem.price.Deposit_price;
-            resultArrayArtist[formattedDateArtist].price.servies_price = mergedItem.price.servies_price;
-            resultArrayArtist[formattedDateArtist].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayArtist[formattedDateArtist] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateArtist,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateArtistall.setDate(currentDateArtistall.getDate() + 1);
-      };
-      while (currentDateArtistall <= new Date(endDate)) {
-        _loop10();
-      }
-
-      ///
-
-      var resultArray = Object.values(resultArrayArtist);
-      var groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach(function (item) {
-        var key = "".concat(item.source_id, "-").concat(item.source_name);
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-        // Tính tổng giá
-        for (var priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredArtist = Object.values(groupedData).sort(function (a, b) {
-        // Sắp xếp theo giá servies_price giảm dần
-        return b.price.servies_price - a.price.servies_price;
-      });
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapArtist
-      resultArray.forEach(function (dataPoint) {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        var dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        _this12.key = "".concat(dataPoint.source_name, "_").concat(dataPoint.source_id);
-        var price = dataPoint.price.servies_price;
-        if (!datasetsMapArtist.has(_this12.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          var backgroundColor = _this12.getRandomColor();
-          var borderColor = _this12.getRandomColor();
-          datasetsMapArtist.set(_this12.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3
-          });
-        }
-        var dataset = datasetsMapArtist.get(_this12.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapArtist thành một mảng các datasets và tính tổng giá trị tiền
-      var datasets = Array.from(datasetsMapArtist.values()).map(function (dataset) {
-        var totalValue = dataset.data.reduce(function (total, value) {
-          return total + value;
-        }, 0);
-        return _objectSpread(_objectSpread({}, dataset), {}, {
-          data: dataset.data,
-          // Giữ lại giá trị tiền
-          totalValue: totalValue // Tổng giá trị tiền
-        });
-      });
-
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      var ctx = this.$refs.myChartArtist.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartArtist) {
         this.chartArtist.destroy();
       }
+      console.log(this.fillerArrayArtist);
+      this.chartArtist = this.createChart(ctx, this.fillerArrayArtist, "servies_price");
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartArtist = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctxArtist, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4 // Điều chỉnh độ bo cong của đường
-            }
-          },
-
-          plugins: {
-            filler: {
-              propagate: true,
-              // Cho phép lớp phủ
-              use: ["start", "origin"] // Sử dụng lớp phủ từ "start" hoặc "origin"
-            }
-          }
-        }
+      var DataMap = {};
+      this.apiDataAritst.forEach(function (Aritst) {
+        DataMap[Aritst.name] = Aritst;
+      });
+      var sortedLabels = Object.keys(DataMap);
+      this.resultArrayFilteredArtist = this.resultArrayFiltered(this.fillerArrayArtist, sortedLabels).sort(function (a, b) {
+        return b[4] - a[4];
       });
     },
     renderChartService: function renderChartService() {
-      var _this13 = this;
       // Sắp xếp các labels theo thứ tự tăng dần
-      var startDate = this.dateRange.start; // Ngày bắt đầu
-      var endDate = this.dateRange.end; // Ngày kết thúc
 
-      var ctxService = this.$refs.myChartService.getContext("2d");
-
-      // Tạo một đối tượng Map để lưu trữ dữ liệu cho từng datasets dựa trên "source_name", "source_id", và "created_at" cùng 1 ngày
-      var datasetsMapService = new Map();
-      var resultArrayService = [];
-      var ServiceDataMap = {};
-      this.apiDataServices.forEach(function (Service) {
-        ServiceDataMap[Service.Name] = Service;
-      });
-      var currentDateService = new Date(startDate);
-      var _loop11 = function _loop11() {
-        var year = currentDateService.getFullYear();
-        var month = String(currentDateService.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateService.getDate()).padStart(2, "0");
-        var formattedDateService = "".concat(year, "-").concat(month, "-").concat(day);
-        Object.keys(ServiceDataMap).forEach(function (name) {
-          var Service = ServiceDataMap[name];
-          var keyService = "".concat(Service.id, "-").concat(year, "-").concat(month, "-").concat(day);
-          // Tạo một mảng tạm thời để tích hợp dữ liệu từ các mục có cùng ngày
-          var tempArray = [];
-          _this13.filteredDataChart.forEach(function (item) {
-            var createdAt = new Date(item.created_at);
-            var itemYear = createdAt.getFullYear();
-            var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-            var itemDay = String(createdAt.getDate()).padStart(2, "0");
-            var key = "".concat(item.services[0].id, "-").concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-            if (key === keyService) {
-              tempArray.push(item);
-            }
-          });
-
-          // Kiểm tra xem có dữ liệu trong mảng tạm thời không
-          if (tempArray.length > 0) {
-            // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayService
-            var mergedItem = tempArray.reduce(function (merged, item) {
-              merged.price.Total_price += parseInt(item.price.Total_price);
-              merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-              merged.price.servies_price += parseInt(item.price.servies_price);
-              merged.splot += 1;
-              return merged;
-            }, {
-              source_name: Service.Name,
-              source_id: Service.id,
-              created_at: formattedDateService,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            });
-            if (!resultArrayService[keyService]) {
-              resultArrayService[keyService] = mergedItem;
-            } else {
-              resultArrayService[keyService].price.Total_price += mergedItem.price.Total_price;
-              resultArrayService[keyService].price.Deposit_price += mergedItem.price.Deposit_price;
-              resultArrayService[keyService].price.servies_price += mergedItem.price.servies_price;
-              resultArrayService[keyService].splot += mergedItem.splot;
-            }
-          } else {
-            // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-            resultArrayService[keyService] = {
-              source_name: Service.Name,
-              source_id: Service.id,
-              created_at: formattedDateService,
-              price: {
-                Total_price: 0,
-                Deposit_price: 0,
-                servies_price: 0
-              },
-              splot: 0
-            };
-          }
-        });
-
-        // Tăng ngày hiện tại lên 1 ngày
-        currentDateService.setDate(currentDateService.getDate() + 1);
-      };
-      while (currentDateService <= endDate) {
-        _loop11();
-      }
-
-      ///
-
-      var currentDateServiceall = new Date(startDate);
-      var _loop12 = function _loop12() {
-        var year = currentDateServiceall.getFullYear();
-        var month = String(currentDateServiceall.getMonth() + 1).padStart(2, "0");
-        var day = String(currentDateServiceall.getDate()).padStart(2, "0");
-        var formattedDateService = "".concat(year, "-").concat(month, "-").concat(day);
-        var tempArrayAll = [];
-        Object.values(resultArrayService).forEach(function (item) {
-          var createdAt = new Date(item.created_at);
-          var itemYear = createdAt.getFullYear();
-          var itemMonth = String(createdAt.getMonth() + 1).padStart(2, "0");
-          var itemDay = String(createdAt.getDate()).padStart(2, "0");
-          var keyAll = "".concat(itemYear, "-").concat(itemMonth, "-").concat(itemDay);
-          if (keyAll === formattedDateService) {
-            tempArrayAll.push(item);
-          }
-        });
-        if (tempArrayAll.length > 0) {
-          // Nếu có dữ liệu, tích hợp chúng và thêm vào resultArrayService
-          var mergedItem = tempArrayAll.reduce(function (merged, item) {
-            merged.price.Total_price += parseInt(item.price.Total_price);
-            merged.price.Deposit_price += parseInt(item.price.Deposit_price);
-            merged.price.servies_price += parseInt(item.price.servies_price);
-            merged.splot += parseInt(item.splot);
-            return merged;
-          }, {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateService,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          });
-          if (!resultArrayService[formattedDateService]) {
-            resultArrayService[formattedDateService] = mergedItem;
-          } else {
-            // Cập nhật giá trị trong resultArrayService thay vì gán lại
-            resultArrayService[formattedDateService].price.Total_price = mergedItem.price.Total_price;
-            resultArrayService[formattedDateService].price.Deposit_price = mergedItem.price.Deposit_price;
-            resultArrayService[formattedDateService].price.servies_price = mergedItem.price.servies_price;
-            resultArrayService[formattedDateService].splot = mergedItem.splot;
-          }
-        } else {
-          // Nếu không có dữ liệu, tạo mục mới với giá trị mặc định
-          resultArrayService[formattedDateService] = {
-            source_name: "All",
-            avatar: "All",
-            source_id: "All",
-            created_at: formattedDateService,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0
-          };
-        }
-
-        // Tiến hành tới ngày tiếp theo
-        currentDateServiceall.setDate(currentDateServiceall.getDate() + 1);
-      };
-      while (currentDateServiceall <= new Date(endDate)) {
-        _loop12();
-      }
-
-      ///
-
-      var resultArray = Object.values(resultArrayService);
-      var groupedData = {};
-
-      // Lặp qua mảng dữ liệu và tổng hợp theo source_id và source_name
-      resultArray.forEach(function (item) {
-        var key = "".concat(item.source_id, "-").concat(item.source_name);
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            created_at: item.created_at,
-            source_id: item.source_id,
-            source_name: item.source_name,
-            price: {
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0
-            },
-            splot: 0 // Initialize splot to 0
-          };
-        }
-        // Tính tổng giá
-        for (var priceKey in item.price) {
-          groupedData[key].price[priceKey] += item.price[priceKey];
-        }
-        // Tính tổng splot
-        groupedData[key].splot += parseInt(item.splot);
-      });
-
-      // Chuyển kết quả từ object thành mảng
-      this.resultArrayFilteredService = Object.values(groupedData).sort(function (a, b) {
-        // Sắp xếp theo giá servies_price giảm dần
-        return b.price.servies_price - a.price.servies_price;
-      });
-
-      // Duyệt qua this.filteredData và tích hợp dữ liệu vào datasetsMapService
-      resultArray.forEach(function (dataPoint) {
-        // Assuming dataPoint.created_at is a date string in the format 'YYYY-MM-DD'
-        var dateComponent = dataPoint.created_at;
-
-        // Now you can use the "day" variable in your key generation
-        _this13.key = "".concat(dataPoint.source_name, "_").concat(dataPoint.source_id);
-        var price = dataPoint.price.servies_price;
-        if (!datasetsMapService.has(_this13.key)) {
-          // Tạo một màu ngẫu nhiên cho backgroundColor và borderColor
-          var backgroundColor = _this13.getRandomColor();
-          var borderColor = _this13.getRandomColor();
-          datasetsMapService.set(_this13.key, {
-            label: dataPoint.source_name,
-            data: [],
-            backgroundColor: backgroundColor,
-            borderColor: borderColor,
-            borderWidth: 1.2,
-            fill: true,
-            pointRadius: 0.3
-          });
-        }
-        var dataset = datasetsMapService.get(_this13.key);
-        // Cộng tổng giá trị tiền vào dataset cho ngày này
-        dataset.data.push(parseFloat(price));
-      });
-
-      // Chuyển đổi datasetsMapService thành một mảng các datasets và tính tổng giá trị tiền
-      var datasets = Array.from(datasetsMapService.values()).map(function (dataset) {
-        var totalValue = dataset.data.reduce(function (total, value) {
-          return total + value;
-        }, 0);
-        return _objectSpread(_objectSpread({}, dataset), {}, {
-          data: dataset.data,
-          // Giữ lại giá trị tiền
-          totalValue: totalValue // Tổng giá trị tiền
-        });
-      });
-
-      var sortedLabels = [];
-      var currentDate = new Date(startDate);
-      while (currentDate <= endDate) {
-        sortedLabels.push("".concat(currentDate.getFullYear(), "-").concat((currentDate.getMonth() + 1).toString().padStart(2, "0"), "-").concat(currentDate.getDate().toString().padStart(2, "0")));
-        currentDate.setDate(currentDate.getDate() + 1); // Tăng ngày lên 1
-      }
+      var ctx = this.$refs.myChartService.getContext("2d");
 
       // Check if a chart instance already exists and destroy it
       if (this.chartService) {
         this.chartService.destroy();
       }
+      this.chartService = this.createChart(ctx, this.fillerArrayService, "servies_price");
+      // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
 
-      // Khởi tạo biểu đồ với các datasets đã tạo và labels đã sắp xếp
-      this.chartService = new chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart(ctxService, {
-        type: "line",
-        data: {
-          labels: sortedLabels,
-          datasets: datasets
-        },
-        options: {
-          elements: {
-            line: {
-              tension: 0.4 // Điều chỉnh độ bo cong của đường
-            }
-          },
-
-          plugins: {
-            filler: {
-              propagate: true,
-              // Cho phép lớp phủ
-              use: ["start", "origin"] // Sử dụng lớp phủ từ "start" hoặc "origin"
-            }
-          }
-        }
+      var DataMap = {};
+      this.apiDataServices.forEach(function (Service) {
+        DataMap[Service.Name] = Service;
+      });
+      var sortedLabels = Object.keys(DataMap);
+      this.resultArrayFilteredService = this.resultArrayFiltered(this.fillerArrayService, sortedLabels).sort(function (a, b) {
+        return b[4] - a[4];
       });
     },
     getRandomColor: function getRandomColor() {
@@ -1958,6 +661,128 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var b = Math.floor(Math.random() * 256);
       var alpha = 0.5; // Độ trong suốt của màu
       return "rgba(".concat(r, ", ").concat(g, ", ").concat(b, ", ").concat(alpha, ")");
+    },
+    totalByName: function totalByName(data) {
+      // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
+      var totals = {};
+
+      // Lặp qua các ngày trong dữ liệu của bạn
+      for (var date in data) {
+        var fillerDatas = data[date];
+        for (var Id in fillerDatas) {
+          var fillerData = fillerDatas[Id];
+          var Name = fillerData.Name;
+          var id = fillerData.id;
+          var total_price = fillerData.Total_price;
+
+          // Nếu tên dịch vụ chưa tồn tại trong totals, thì khởi tạo nó với giá trị ban đầu
+          if (!totals[Name]) {
+            totals[Name] = {
+              id: id,
+              Name: Name,
+              Total_price: 0,
+              Deposit_price: 0,
+              servies_price: 0,
+              Revenue: 0,
+              Done_price: 0,
+              Cancel_price: 0,
+              Refund_price: 0,
+              Remaining_price: 0,
+              length: 0,
+              length_real: 0
+            };
+          }
+          // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
+          totals[Name].Total_price += total_price;
+          totals[Name].Deposit_price += fillerData.Deposit_price;
+          totals[Name].servies_price += fillerData.servies_price;
+          totals[Name].Revenue += fillerData.revenue;
+          totals[Name].Done_price += fillerData.Done_price;
+          totals[Name].Cancel_price += fillerData.Cancel_price;
+          totals[Name].Refund_price += fillerData.Refund_price;
+          totals[Name].Remaining_price += fillerData.Remaining_price;
+          totals[Name].length += fillerData.length;
+          totals[Name].length_real += fillerData.length_real;
+        }
+      }
+
+      // Chuyển đối tượng totals thành một mảng nếu cần
+      var totalsArray = Object.values(totals);
+      return totalsArray;
+    },
+    resultArrayFiltered: function resultArrayFiltered(fillerArray, sortedLabels) {
+      var _this14 = this;
+      var result = sortedLabels.map(function (label) {
+        var _this14$totalByName;
+        // Tìm dữ liệu hiện tại và quá khứ dựa trên label
+
+        var DataForLabel = Object.values(((_this14$totalByName = _this14.totalByName(fillerArray)) === null || _this14$totalByName === void 0 ? void 0 : _this14$totalByName.find(function (filler) {
+          return filler.Name === label;
+        })) || {});
+
+        // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
+        var Data = [];
+
+        // Kiểm tra nếu dữ liệu hiện tại và quá khứ tồn tại
+        if (DataForLabel) {
+          // Đảm bảo rằng có hai giá trị tương ứng với quá khứ và hiện tại
+          Data.push.apply(Data, DataForLabel);
+        }
+        return Data;
+      });
+      return result;
+    },
+    destroyChart: function destroyChart(chart) {
+      if (chart) {
+        chart.destroy();
+      }
+    },
+    toggleOption: function toggleOption(option) {
+      if (this.selectedOptions.includes(option)) {
+        // If the option is already selected, remove it
+        var index = this.selectedOptions.indexOf(option);
+        if (index !== -1) {
+          this.selectedOptions.splice(index, 1);
+        }
+      } else {
+        // If the option is not selected, add it
+        this.selectedOptions.push(option);
+      }
+      console.log(this.selectedOptions);
+      // Call different functions based on the selected options
+      this.handleSelectedOptions();
+    },
+    handleSelectedOptions: function handleSelectedOptions() {
+      // Handle different functions based on the selected options
+      // Xử lý các hàm khác nhau dựa trên các lựa chọn đã chọn
+      if (this.selectedOptions.includes("Revenue") && !this.chartRendered.Revenue) {
+        this.renderChartRevenue();
+        this.chartRendered.Revenue = true;
+      }
+      if (this.selectedOptions.includes("splot") && !this.chartRendered.splot) {
+        this.renderChartSplot();
+        this.chartRendered.splot = true;
+      }
+      if (this.selectedOptions.includes("Service") && !this.chartRendered.Service) {
+        this.renderChartService();
+        this.chartRendered.Service = true;
+      }
+      if (this.selectedOptions.includes("Channel") && !this.chartRendered.Channel) {
+        this.renderChartSource();
+        this.chartRendered.Channel = true;
+      }
+      if (this.selectedOptions.includes("Location") && !this.chartRendered.Location) {
+        this.renderChartLocation();
+        this.chartRendered.Location = true;
+      }
+      if (this.selectedOptions.includes("Artist") && !this.chartRendered.Artist) {
+        this.renderChartArtist();
+        this.chartRendered.Artist = true;
+      }
+      if (this.selectedOptions.includes("Saler") && !this.chartRendered.Saler) {
+        this.renderChart();
+        this.chartRendered.Saler = true;
+      }
     }
   }
 });
@@ -2007,14 +832,116 @@ var render = function render() {
     "class": {
       fade: _vm.isTransitioning
     }
-  }, [_c("li", [_c("i", {
-    staticClass: "fa-solid fa-money-bill-trend-up",
-    staticStyle: {
-      color: "#ff6666"
+  }, [_c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/total%20booking%20price.png",
+      alt: "",
+      srcset: ""
     }
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(parseFloat(this.Total_price)))]), _vm._v(" "), _c("p", [_vm._v("Total Booking Price")])]), _vm._v(" "), _c("li", [_c("i", {
-    staticClass: "ph-wallet-fill"
-  }), _vm._v(" "), _c("h5", [_vm._v("$" + _vm._s(this.RevenueTatol))]), _vm._v(" "), _c("p", [_vm._v("Revenue")])])])]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Total Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Revenue.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.RevenueTatol))])])])]), _vm._v(" "), _c("div", {
+    staticClass: "radio-section"
+  }, [_c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("Revenue")
+    },
+    attrs: {
+      disabled: this.fillerArrayEmployee.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("Revenue");
+      }
+    }
+  }, [_vm._v("\n      Revenue\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("splot")
+    },
+    attrs: {
+      disabled: this.fillerArrayEmployee.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("splot");
+      }
+    }
+  }, [_vm._v("\n      Sales by splot\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("Saler")
+    },
+    attrs: {
+      disabled: this.fillerArrayEmployee.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("Saler");
+      }
+    }
+  }, [_vm._v("\n      Saler\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("Location")
+    },
+    attrs: {
+      disabled: this.fillerArrayLocation.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("Location");
+      }
+    }
+  }, [_vm._v("\n      Location\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("Channel")
+    },
+    attrs: {
+      disabled: this.fillerArraySource.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("Channel");
+      }
+    }
+  }, [_vm._v("\n      Channel Source\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("Artist")
+    },
+    attrs: {
+      disabled: this.fillerArrayArtist.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("Artist");
+      }
+    }
+  }, [_vm._v("\n      Artist\n    ")]), _vm._v(" "), _c("button", {
+    staticClass: "btn custom-btn btn-16",
+    "class": {
+      active: _vm.selectedOptions.includes("Service")
+    },
+    attrs: {
+      disabled: this.fillerArrayService.length === 0
+    },
+    on: {
+      click: function click($event) {
+        return _vm.toggleOption("Service");
+      }
+    }
+  }, [_vm._v("\n      Service Booking\n    ")])]), _vm._v(" "), _c("div", {
     staticClass: "main__body__data"
   }, [_c("div", {
     staticClass: "members"
@@ -2025,21 +952,33 @@ var render = function render() {
       key: index
     }, [_c("div", {
       staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(item.source_name))]), _vm._v(" "), _c("p", [_vm._v("Revenue")])]), _vm._v(" "), item.splot === 0 ? _c("span", [_vm._v("\n            " + _vm._s(item.price.Revenue) + " $ / " + _vm._s(item.splot) + " Spot (AOV : 0 $)\n          ")]) : _c("span", [_vm._v("\n            " + _vm._s(item.price.Revenue) + " $ / " + _vm._s(item.splot) + " Spot\n          ")])]);
+    }, [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[5]) + " $ / " + _vm._s(item[10]) + " Spot")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[5]) + " $ / " + _vm._s(item[10]) + " Spot")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "mychartRevenue"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
     staticClass: "members"
   }, [_vm._m(1), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
-  }, _vm._l(_vm.resultArrayFilteredService, function (item, index) {
+  }, _vm._l(_vm.resultArrayFilteredSplot, function (item, index) {
     return _c("li", {
       key: index
     }, [_c("div", {
       staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(item.source_name))]), _vm._v(" "), _c("p", [_vm._v("Service")])]), _vm._v(" "), item.splot === 0 ? _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot (AOV : 0\n            $)\n          ")]) : _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot (AOV :\n            " + _vm._s((parseInt(item.price.servies_price) / parseInt(item.splot)).toFixed(2)) + "\n            $)\n          ")])]);
+    }, [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[11]) + " Spot (AOV : 0 $)\n            ")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[11]) + " Spot (AOV :\n              " + _vm._s((parseInt(item[4]) / parseInt(item[11])).toFixed(2)) + "\n              $)\n            ")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
-    ref: "myChartService"
+    ref: "mychartSplot"
   }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
     staticClass: "main__body__data"
   }, [_c("div", {
@@ -2051,7 +990,13 @@ var render = function render() {
       key: index
     }, [_c("div", {
       staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(item.source_name))]), _vm._v(" "), _c("p", [_vm._v("Sale")])]), _vm._v(" "), item.splot === 0 ? _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot (AOV : 0\n            $)\n          ")]) : _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + "\n          ")])]);
+    }, [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot (AOV : 0 $)\n            ")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot (AOV :\n              " + _vm._s((parseInt(item[4]) / parseInt(item[10])).toFixed(2)) + "\n              $)\n            ")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChart"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
@@ -2063,7 +1008,13 @@ var render = function render() {
       key: index
     }, [_c("div", {
       staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(item.source_name))]), _vm._v(" "), _c("p", [_vm._v("Location")])]), _vm._v(" "), item.splot === 0 ? _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot (AOV : 0\n            $)\n          ")]) : _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot (AOV :\n            " + _vm._s((parseInt(item.price.servies_price) / parseInt(item.splot)).toFixed(2)) + "\n            $)\n          ")])]);
+    }, [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot (AOV : 0 $)\n            ")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot(AOV :\n              " + _vm._s((parseInt(item[4]) / parseInt(item[10])).toFixed(2)) + "\n              $)\n            ")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChartLocation"
   }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
@@ -2077,7 +1028,13 @@ var render = function render() {
       key: index
     }, [_c("div", {
       staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(item.source_name))]), _vm._v(" "), _c("p", [_vm._v("Source")])]), _vm._v(" "), item.splot === 0 ? _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot (AOV : 0\n            $)\n          ")]) : _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot\n          ")])]);
+    }, [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChartSource"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
@@ -2089,9 +1046,35 @@ var render = function render() {
       key: index
     }, [_c("div", {
       staticClass: "profile"
-    }, [_c("h5", [_vm._v(_vm._s(item.source_name))]), _vm._v(" "), _c("p", [_vm._v("Artist")])]), _vm._v(" "), item.splot === 0 ? _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot (AOV : 0\n            $)\n          ")]) : _c("span", [_vm._v("\n            " + _vm._s(item.price.servies_price) + " $ / " + _vm._s(item.splot) + " Spot\n          ")])]);
+    }, [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChartArtist"
+  }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
+    staticClass: "main__body__data"
+  }, [_c("div", {
+    staticClass: "members"
+  }, [_vm._m(6), _vm._v(" "), _c("ul", {
+    staticClass: "members__user"
+  }, _vm._l(_vm.resultArrayFilteredService, function (item, index) {
+    return _c("li", {
+      key: index
+    }, [_c("div", {
+      staticClass: "profile"
+    }, [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot (AOV : 0 $)\n            ")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot (AOV :\n              " + _vm._s((parseInt(item[4]) / parseInt(item[10])).toFixed(2)) + "\n              $)\n            ")])])]);
+  }), 0), _vm._v(" "), _c("canvas", {
+    ref: "myChartService"
   }), _vm._v(" "), _c("div")])])]);
 };
 var staticRenderFns = [function () {
@@ -2119,7 +1102,7 @@ var staticRenderFns = [function () {
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Service Booking")]), _vm._v(" "), _c("div", {
+  }, [_c("h4", [_vm._v("Customers number")]), _vm._v(" "), _c("div", {
     staticClass: "members__menu"
   }, [_c("i", {
     staticClass: "ph-dots-three-outline-vertical-fill"
@@ -2200,6 +1183,26 @@ var staticRenderFns = [function () {
   return _c("div", {
     staticClass: "members__top"
   }, [_c("h4", [_vm._v("Artist")]), _vm._v(" "), _c("div", {
+    staticClass: "members__menu"
+  }, [_c("i", {
+    staticClass: "ph-dots-three-outline-vertical-fill"
+  }), _vm._v(" "), _c("ul", {
+    staticClass: "menu"
+  }, [_c("li", [_c("a", {
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
+    attrs: {
+      href: "#"
+    }
+  }, [_vm._v("Remove")])])])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "members__top"
+  }, [_c("h4", [_vm._v("Service Booking")]), _vm._v(" "), _c("div", {
     staticClass: "members__menu"
   }, [_c("i", {
     staticClass: "ph-dots-three-outline-vertical-fill"
@@ -4181,6 +3184,3714 @@ function isnan (val) {
 
 /***/ }),
 
+/***/ "./node_modules/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.esm.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/chartjs-plugin-zoom/dist/chartjs-plugin-zoom.esm.js ***!
+  \**************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ plugin),
+/* harmony export */   pan: () => (/* binding */ pan),
+/* harmony export */   resetZoom: () => (/* binding */ resetZoom),
+/* harmony export */   zoom: () => (/* binding */ zoom),
+/* harmony export */   zoomRect: () => (/* binding */ zoomRect),
+/* harmony export */   zoomScale: () => (/* binding */ zoomScale)
+/* harmony export */ });
+/* harmony import */ var hammerjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! hammerjs */ "./node_modules/hammerjs/hammer.js");
+/* harmony import */ var hammerjs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(hammerjs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chart.js/helpers */ "./node_modules/chart.js/helpers/helpers.js");
+/*!
+* chartjs-plugin-zoom v2.0.1
+* undefined
+ * (c) 2016-2023 chartjs-plugin-zoom Contributors
+ * Released under the MIT License
+ */
+
+
+
+const getModifierKey = opts => opts && opts.enabled && opts.modifierKey;
+const keyPressed = (key, event) => key && event[key + 'Key'];
+const keyNotPressed = (key, event) => key && !event[key + 'Key'];
+
+/**
+ * @param {string|function} mode can be 'x', 'y' or 'xy'
+ * @param {string} dir can be 'x' or 'y'
+ * @param {import('chart.js').Chart} chart instance of the chart in question
+ * @returns {boolean}
+ */
+function directionEnabled(mode, dir, chart) {
+  if (mode === undefined) {
+    return true;
+  } else if (typeof mode === 'string') {
+    return mode.indexOf(dir) !== -1;
+  } else if (typeof mode === 'function') {
+    return mode({chart}).indexOf(dir) !== -1;
+  }
+
+  return false;
+}
+
+function directionsEnabled(mode, chart) {
+  if (typeof mode === 'function') {
+    mode = mode({chart});
+  }
+  if (typeof mode === 'string') {
+    return {x: mode.indexOf('x') !== -1, y: mode.indexOf('y') !== -1};
+  }
+
+  return {x: false, y: false};
+}
+
+/**
+ * Debounces calling `fn` for `delay` ms
+ * @param {function} fn - Function to call. No arguments are passed.
+ * @param {number} delay - Delay in ms. 0 = immediate invocation.
+ * @returns {function}
+ */
+function debounce(fn, delay) {
+  let timeout;
+  return function() {
+    clearTimeout(timeout);
+    timeout = setTimeout(fn, delay);
+    return delay;
+  };
+}
+
+/**
+ * Checks which axis is under the mouse cursor.
+ * @param {{x: number, y: number}} point - the mouse location
+ * @param {import('chart.js').Chart} [chart] instance of the chart in question
+ * @return {import('chart.js').Scale}
+ */
+function getScaleUnderPoint({x, y}, chart) {
+  const scales = chart.scales;
+  const scaleIds = Object.keys(scales);
+  for (let i = 0; i < scaleIds.length; i++) {
+    const scale = scales[scaleIds[i]];
+    if (y >= scale.top && y <= scale.bottom && x >= scale.left && x <= scale.right) {
+      return scale;
+    }
+  }
+  return null;
+}
+
+/**
+ * Evaluate the chart's mode, scaleMode, and overScaleMode properties to
+ * determine which axes are eligible for scaling.
+ * options.overScaleMode can be a function if user want zoom only one scale of many for example.
+ * @param options - Zoom or pan options
+ * @param {{x: number, y: number}} point - the mouse location
+ * @param {import('chart.js').Chart} [chart] instance of the chart in question
+ * @return {import('chart.js').Scale[]}
+ */
+function getEnabledScalesByPoint(options, point, chart) {
+  const {mode = 'xy', scaleMode, overScaleMode} = options || {};
+  const scale = getScaleUnderPoint(point, chart);
+
+  const enabled = directionsEnabled(mode, chart);
+  const scaleEnabled = directionsEnabled(scaleMode, chart);
+
+  // Convert deprecated overScaleEnabled to new scaleEnabled.
+  if (overScaleMode) {
+    const overScaleEnabled = directionsEnabled(overScaleMode, chart);
+    for (const axis of ['x', 'y']) {
+      if (overScaleEnabled[axis]) {
+        scaleEnabled[axis] = enabled[axis];
+        enabled[axis] = false;
+      }
+    }
+  }
+
+  if (scale && scaleEnabled[scale.axis]) {
+    return [scale];
+  }
+
+  const enabledScales = [];
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(chart.scales, function(scaleItem) {
+    if (enabled[scaleItem.axis]) {
+      enabledScales.push(scaleItem);
+    }
+  });
+  return enabledScales;
+}
+
+const chartStates = new WeakMap();
+
+function getState(chart) {
+  let state = chartStates.get(chart);
+  if (!state) {
+    state = {
+      originalScaleLimits: {},
+      updatedScaleLimits: {},
+      handlers: {},
+      panDelta: {}
+    };
+    chartStates.set(chart, state);
+  }
+  return state;
+}
+
+function removeState(chart) {
+  chartStates.delete(chart);
+}
+
+function zoomDelta(scale, zoom, center) {
+  const range = scale.max - scale.min;
+  const newRange = range * (zoom - 1);
+
+  const centerPoint = scale.isHorizontal() ? center.x : center.y;
+  // `scale.getValueForPixel()` can return a value less than the `scale.min` or
+  // greater than `scale.max` when `centerPoint` is outside chartArea.
+  const minPercent = Math.max(0, Math.min(1,
+    (scale.getValueForPixel(centerPoint) - scale.min) / range || 0
+  ));
+
+  const maxPercent = 1 - minPercent;
+
+  return {
+    min: newRange * minPercent,
+    max: newRange * maxPercent
+  };
+}
+
+function getLimit(state, scale, scaleLimits, prop, fallback) {
+  let limit = scaleLimits[prop];
+  if (limit === 'original') {
+    const original = state.originalScaleLimits[scale.id][prop];
+    limit = (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.valueOrDefault)(original.options, original.scale);
+  }
+  return (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.valueOrDefault)(limit, fallback);
+}
+
+function getRange(scale, pixel0, pixel1) {
+  const v0 = scale.getValueForPixel(pixel0);
+  const v1 = scale.getValueForPixel(pixel1);
+  return {
+    min: Math.min(v0, v1),
+    max: Math.max(v0, v1)
+  };
+}
+
+function updateRange(scale, {min, max}, limits, zoom = false) {
+  const state = getState(scale.chart);
+  const {id, axis, options: scaleOpts} = scale;
+
+  const scaleLimits = limits && (limits[id] || limits[axis]) || {};
+  const {minRange = 0} = scaleLimits;
+  const minLimit = getLimit(state, scale, scaleLimits, 'min', -Infinity);
+  const maxLimit = getLimit(state, scale, scaleLimits, 'max', Infinity);
+
+  const range = zoom ? Math.max(max - min, minRange) : scale.max - scale.min;
+  const offset = (range - max + min) / 2;
+  min -= offset;
+  max += offset;
+
+  if (min < minLimit) {
+    min = minLimit;
+    max = Math.min(minLimit + range, maxLimit);
+  } else if (max > maxLimit) {
+    max = maxLimit;
+    min = Math.max(maxLimit - range, minLimit);
+  }
+  scaleOpts.min = min;
+  scaleOpts.max = max;
+
+  state.updatedScaleLimits[scale.id] = {min, max};
+
+  // return true if the scale range is changed
+  return scale.parse(min) !== scale.min || scale.parse(max) !== scale.max;
+}
+
+function zoomNumericalScale(scale, zoom, center, limits) {
+  const delta = zoomDelta(scale, zoom, center);
+  const newRange = {min: scale.min + delta.min, max: scale.max - delta.max};
+  return updateRange(scale, newRange, limits, true);
+}
+
+function zoomRectNumericalScale(scale, from, to, limits) {
+  updateRange(scale, getRange(scale, from, to), limits, true);
+}
+
+const integerChange = (v) => v === 0 || isNaN(v) ? 0 : v < 0 ? Math.min(Math.round(v), -1) : Math.max(Math.round(v), 1);
+
+function existCategoryFromMaxZoom(scale) {
+  const labels = scale.getLabels();
+  const maxIndex = labels.length - 1;
+
+  if (scale.min > 0) {
+    scale.min -= 1;
+  }
+  if (scale.max < maxIndex) {
+    scale.max += 1;
+  }
+}
+
+function zoomCategoryScale(scale, zoom, center, limits) {
+  const delta = zoomDelta(scale, zoom, center);
+  if (scale.min === scale.max && zoom < 1) {
+    existCategoryFromMaxZoom(scale);
+  }
+  const newRange = {min: scale.min + integerChange(delta.min), max: scale.max - integerChange(delta.max)};
+  return updateRange(scale, newRange, limits, true);
+}
+
+function scaleLength(scale) {
+  return scale.isHorizontal() ? scale.width : scale.height;
+}
+
+function panCategoryScale(scale, delta, limits) {
+  const labels = scale.getLabels();
+  const lastLabelIndex = labels.length - 1;
+  let {min, max} = scale;
+  // The visible range. Ticks can be skipped, and thus not reliable.
+  const range = Math.max(max - min, 1);
+  // How many pixels of delta is required before making a step. stepSize, but limited to max 1/10 of the scale length.
+  const stepDelta = Math.round(scaleLength(scale) / Math.max(range, 10));
+  const stepSize = Math.round(Math.abs(delta / stepDelta));
+  let applied;
+  if (delta < -stepDelta) {
+    max = Math.min(max + stepSize, lastLabelIndex);
+    min = range === 1 ? max : max - range;
+    applied = max === lastLabelIndex;
+  } else if (delta > stepDelta) {
+    min = Math.max(0, min - stepSize);
+    max = range === 1 ? min : min + range;
+    applied = min === 0;
+  }
+
+  return updateRange(scale, {min, max}, limits) || applied;
+}
+
+const OFFSETS = {
+  second: 500, // 500 ms
+  minute: 30 * 1000, // 30 s
+  hour: 30 * 60 * 1000, // 30 m
+  day: 12 * 60 * 60 * 1000, // 12 h
+  week: 3.5 * 24 * 60 * 60 * 1000, // 3.5 d
+  month: 15 * 24 * 60 * 60 * 1000, // 15 d
+  quarter: 60 * 24 * 60 * 60 * 1000, // 60 d
+  year: 182 * 24 * 60 * 60 * 1000 // 182 d
+};
+
+function panNumericalScale(scale, delta, limits, canZoom = false) {
+  const {min: prevStart, max: prevEnd, options} = scale;
+  const round = options.time && options.time.round;
+  const offset = OFFSETS[round] || 0;
+  const newMin = scale.getValueForPixel(scale.getPixelForValue(prevStart + offset) - delta);
+  const newMax = scale.getValueForPixel(scale.getPixelForValue(prevEnd + offset) - delta);
+  const {min: minLimit = -Infinity, max: maxLimit = Infinity} = canZoom && limits && limits[scale.axis] || {};
+  if (isNaN(newMin) || isNaN(newMax) || newMin < minLimit || newMax > maxLimit) {
+    // At limit: No change but return true to indicate no need to store the delta.
+    // NaN can happen for 0-dimension scales (either because they were configured
+    // with min === max or because the chart has 0 plottable area).
+    return true;
+  }
+  return updateRange(scale, {min: newMin, max: newMax}, limits, canZoom);
+}
+
+function panNonLinearScale(scale, delta, limits) {
+  return panNumericalScale(scale, delta, limits, true);
+}
+
+const zoomFunctions = {
+  category: zoomCategoryScale,
+  default: zoomNumericalScale,
+};
+
+const zoomRectFunctions = {
+  default: zoomRectNumericalScale,
+};
+
+const panFunctions = {
+  category: panCategoryScale,
+  default: panNumericalScale,
+  logarithmic: panNonLinearScale,
+  timeseries: panNonLinearScale,
+};
+
+function shouldUpdateScaleLimits(scale, originalScaleLimits, updatedScaleLimits) {
+  const {id, options: {min, max}} = scale;
+  if (!originalScaleLimits[id] || !updatedScaleLimits[id]) {
+    return true;
+  }
+  const previous = updatedScaleLimits[id];
+  return previous.min !== min || previous.max !== max;
+}
+
+function removeMissingScales(limits, scales) {
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(limits, (opt, key) => {
+    if (!scales[key]) {
+      delete limits[key];
+    }
+  });
+}
+
+function storeOriginalScaleLimits(chart, state) {
+  const {scales} = chart;
+  const {originalScaleLimits, updatedScaleLimits} = state;
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(scales, function(scale) {
+    if (shouldUpdateScaleLimits(scale, originalScaleLimits, updatedScaleLimits)) {
+      originalScaleLimits[scale.id] = {
+        min: {scale: scale.min, options: scale.options.min},
+        max: {scale: scale.max, options: scale.options.max},
+      };
+    }
+  });
+
+  removeMissingScales(originalScaleLimits, scales);
+  removeMissingScales(updatedScaleLimits, scales);
+  return originalScaleLimits;
+}
+
+function doZoom(scale, amount, center, limits) {
+  const fn = zoomFunctions[scale.type] || zoomFunctions.default;
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(fn, [scale, amount, center, limits]);
+}
+
+function doZoomRect(scale, amount, from, to, limits) {
+  const fn = zoomRectFunctions[scale.type] || zoomRectFunctions.default;
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(fn, [scale, amount, from, to, limits]);
+}
+
+function getCenter(chart) {
+  const ca = chart.chartArea;
+  return {
+    x: (ca.left + ca.right) / 2,
+    y: (ca.top + ca.bottom) / 2,
+  };
+}
+
+/**
+ * @param chart The chart instance
+ * @param {number | {x?: number, y?: number, focalPoint?: {x: number, y: number}}} amount The zoom percentage or percentages and focal point
+ * @param {string} [transition] Which transition mode to use. Defaults to 'none'
+ */
+function zoom(chart, amount, transition = 'none') {
+  const {x = 1, y = 1, focalPoint = getCenter(chart)} = typeof amount === 'number' ? {x: amount, y: amount} : amount;
+  const state = getState(chart);
+  const {options: {limits, zoom: zoomOptions}} = state;
+
+  storeOriginalScaleLimits(chart, state);
+
+  const xEnabled = x !== 1;
+  const yEnabled = y !== 1;
+  const enabledScales = getEnabledScalesByPoint(zoomOptions, focalPoint, chart);
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(enabledScales || chart.scales, function(scale) {
+    if (scale.isHorizontal() && xEnabled) {
+      doZoom(scale, x, focalPoint, limits);
+    } else if (!scale.isHorizontal() && yEnabled) {
+      doZoom(scale, y, focalPoint, limits);
+    }
+  });
+
+  chart.update(transition);
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(zoomOptions.onZoom, [{chart}]);
+}
+
+function zoomRect(chart, p0, p1, transition = 'none') {
+  const state = getState(chart);
+  const {options: {limits, zoom: zoomOptions}} = state;
+  const {mode = 'xy'} = zoomOptions;
+
+  storeOriginalScaleLimits(chart, state);
+  const xEnabled = directionEnabled(mode, 'x', chart);
+  const yEnabled = directionEnabled(mode, 'y', chart);
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(chart.scales, function(scale) {
+    if (scale.isHorizontal() && xEnabled) {
+      doZoomRect(scale, p0.x, p1.x, limits);
+    } else if (!scale.isHorizontal() && yEnabled) {
+      doZoomRect(scale, p0.y, p1.y, limits);
+    }
+  });
+
+  chart.update(transition);
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(zoomOptions.onZoom, [{chart}]);
+}
+
+function zoomScale(chart, scaleId, range, transition = 'none') {
+  storeOriginalScaleLimits(chart, getState(chart));
+  const scale = chart.scales[scaleId];
+  updateRange(scale, range, undefined, true);
+  chart.update(transition);
+}
+
+function resetZoom(chart, transition = 'default') {
+  const state = getState(chart);
+  const originalScaleLimits = storeOriginalScaleLimits(chart, state);
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(chart.scales, function(scale) {
+    const scaleOptions = scale.options;
+    if (originalScaleLimits[scale.id]) {
+      scaleOptions.min = originalScaleLimits[scale.id].min.options;
+      scaleOptions.max = originalScaleLimits[scale.id].max.options;
+    } else {
+      delete scaleOptions.min;
+      delete scaleOptions.max;
+    }
+  });
+  chart.update(transition);
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(state.options.zoom.onZoomComplete, [{chart}]);
+}
+
+function getOriginalRange(state, scaleId) {
+  const original = state.originalScaleLimits[scaleId];
+  if (!original) {
+    return;
+  }
+  const {min, max} = original;
+  return (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.valueOrDefault)(max.options, max.scale) - (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.valueOrDefault)(min.options, min.scale);
+}
+
+function getZoomLevel(chart) {
+  const state = getState(chart);
+  let min = 1;
+  let max = 1;
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(chart.scales, function(scale) {
+    const origRange = getOriginalRange(state, scale.id);
+    if (origRange) {
+      const level = Math.round(origRange / (scale.max - scale.min) * 100) / 100;
+      min = Math.min(min, level);
+      max = Math.max(max, level);
+    }
+  });
+  return min < 1 ? min : max;
+}
+
+function panScale(scale, delta, limits, state) {
+  const {panDelta} = state;
+  // Add possible cumulative delta from previous pan attempts where scale did not change
+  const storedDelta = panDelta[scale.id] || 0;
+  if ((0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.sign)(storedDelta) === (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.sign)(delta)) {
+    delta += storedDelta;
+  }
+  const fn = panFunctions[scale.type] || panFunctions.default;
+  if ((0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(fn, [scale, delta, limits])) {
+    // The scale changed, reset cumulative delta
+    panDelta[scale.id] = 0;
+  } else {
+    // The scale did not change, store cumulative delta
+    panDelta[scale.id] = delta;
+  }
+}
+
+function pan(chart, delta, enabledScales, transition = 'none') {
+  const {x = 0, y = 0} = typeof delta === 'number' ? {x: delta, y: delta} : delta;
+  const state = getState(chart);
+  const {options: {pan: panOptions, limits}} = state;
+  const {onPan} = panOptions || {};
+
+  storeOriginalScaleLimits(chart, state);
+
+  const xEnabled = x !== 0;
+  const yEnabled = y !== 0;
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.each)(enabledScales || chart.scales, function(scale) {
+    if (scale.isHorizontal() && xEnabled) {
+      panScale(scale, x, limits, state);
+    } else if (!scale.isHorizontal() && yEnabled) {
+      panScale(scale, y, limits, state);
+    }
+  });
+
+  chart.update(transition);
+
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(onPan, [{chart}]);
+}
+
+function getInitialScaleBounds(chart) {
+  const state = getState(chart);
+  storeOriginalScaleLimits(chart, state);
+  const scaleBounds = {};
+  for (const scaleId of Object.keys(chart.scales)) {
+    const {min, max} = state.originalScaleLimits[scaleId] || {min: {}, max: {}};
+    scaleBounds[scaleId] = {min: min.scale, max: max.scale};
+  }
+
+  return scaleBounds;
+}
+
+function isZoomedOrPanned(chart) {
+  const scaleBounds = getInitialScaleBounds(chart);
+  for (const scaleId of Object.keys(chart.scales)) {
+    const {min: originalMin, max: originalMax} = scaleBounds[scaleId];
+
+    if (originalMin !== undefined && chart.scales[scaleId].min !== originalMin) {
+      return true;
+    }
+
+    if (originalMax !== undefined && chart.scales[scaleId].max !== originalMax) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function removeHandler(chart, type) {
+  const {handlers} = getState(chart);
+  const handler = handlers[type];
+  if (handler && handler.target) {
+    handler.target.removeEventListener(type, handler);
+    delete handlers[type];
+  }
+}
+
+function addHandler(chart, target, type, handler) {
+  const {handlers, options} = getState(chart);
+  const oldHandler = handlers[type];
+  if (oldHandler && oldHandler.target === target) {
+    // already attached
+    return;
+  }
+  removeHandler(chart, type);
+  handlers[type] = (event) => handler(chart, event, options);
+  handlers[type].target = target;
+  target.addEventListener(type, handlers[type]);
+}
+
+function mouseMove(chart, event) {
+  const state = getState(chart);
+  if (state.dragStart) {
+    state.dragging = true;
+    state.dragEnd = event;
+    chart.update('none');
+  }
+}
+
+function keyDown(chart, event) {
+  const state = getState(chart);
+  if (!state.dragStart || event.key !== 'Escape') {
+    return;
+  }
+
+  removeHandler(chart, 'keydown');
+  state.dragging = false;
+  state.dragStart = state.dragEnd = null;
+  chart.update('none');
+}
+
+function zoomStart(chart, event, zoomOptions) {
+  const {onZoomStart, onZoomRejected} = zoomOptions;
+  if (onZoomStart) {
+    const point = (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.getRelativePosition)(event, chart);
+    if ((0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(onZoomStart, [{chart, event, point}]) === false) {
+      (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(onZoomRejected, [{chart, event}]);
+      return false;
+    }
+  }
+}
+
+function mouseDown(chart, event) {
+  const state = getState(chart);
+  const {pan: panOptions, zoom: zoomOptions = {}} = state.options;
+  if (
+    event.button !== 0 ||
+    keyPressed(getModifierKey(panOptions), event) ||
+    keyNotPressed(getModifierKey(zoomOptions.drag), event)
+  ) {
+    return (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(zoomOptions.onZoomRejected, [{chart, event}]);
+  }
+
+  if (zoomStart(chart, event, zoomOptions) === false) {
+    return;
+  }
+  state.dragStart = event;
+
+  addHandler(chart, chart.canvas, 'mousemove', mouseMove);
+  addHandler(chart, window.document, 'keydown', keyDown);
+}
+
+function computeDragRect(chart, mode, beginPointEvent, endPointEvent) {
+  const xEnabled = directionEnabled(mode, 'x', chart);
+  const yEnabled = directionEnabled(mode, 'y', chart);
+  let {top, left, right, bottom, width: chartWidth, height: chartHeight} = chart.chartArea;
+
+  const beginPoint = (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.getRelativePosition)(beginPointEvent, chart);
+  const endPoint = (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.getRelativePosition)(endPointEvent, chart);
+
+  if (xEnabled) {
+    left = Math.min(beginPoint.x, endPoint.x);
+    right = Math.max(beginPoint.x, endPoint.x);
+  }
+
+  if (yEnabled) {
+    top = Math.min(beginPoint.y, endPoint.y);
+    bottom = Math.max(beginPoint.y, endPoint.y);
+  }
+  const width = right - left;
+  const height = bottom - top;
+
+  return {
+    left,
+    top,
+    right,
+    bottom,
+    width,
+    height,
+    zoomX: xEnabled && width ? 1 + ((chartWidth - width) / chartWidth) : 1,
+    zoomY: yEnabled && height ? 1 + ((chartHeight - height) / chartHeight) : 1
+  };
+}
+
+function mouseUp(chart, event) {
+  const state = getState(chart);
+  if (!state.dragStart) {
+    return;
+  }
+
+  removeHandler(chart, 'mousemove');
+  const {mode, onZoomComplete, drag: {threshold = 0}} = state.options.zoom;
+  const rect = computeDragRect(chart, mode, state.dragStart, event);
+  const distanceX = directionEnabled(mode, 'x', chart) ? rect.width : 0;
+  const distanceY = directionEnabled(mode, 'y', chart) ? rect.height : 0;
+  const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+  // Remove drag start and end before chart update to stop drawing selected area
+  state.dragStart = state.dragEnd = null;
+
+  if (distance <= threshold) {
+    state.dragging = false;
+    chart.update('none');
+    return;
+  }
+
+  zoomRect(chart, {x: rect.left, y: rect.top}, {x: rect.right, y: rect.bottom}, 'zoom');
+
+  setTimeout(() => (state.dragging = false), 500);
+  (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(onZoomComplete, [{chart}]);
+}
+
+function wheelPreconditions(chart, event, zoomOptions) {
+  // Before preventDefault, check if the modifier key required and pressed
+  if (keyNotPressed(getModifierKey(zoomOptions.wheel), event)) {
+    (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(zoomOptions.onZoomRejected, [{chart, event}]);
+    return;
+  }
+
+  if (zoomStart(chart, event, zoomOptions) === false) {
+    return;
+  }
+
+  // Prevent the event from triggering the default behavior (e.g. content scrolling).
+  if (event.cancelable) {
+    event.preventDefault();
+  }
+
+  // Firefox always fires the wheel event twice:
+  // First without the delta and right after that once with the delta properties.
+  if (event.deltaY === undefined) {
+    return;
+  }
+  return true;
+}
+
+function wheel(chart, event) {
+  const {handlers: {onZoomComplete}, options: {zoom: zoomOptions}} = getState(chart);
+
+  if (!wheelPreconditions(chart, event, zoomOptions)) {
+    return;
+  }
+
+  const rect = event.target.getBoundingClientRect();
+  const speed = 1 + (event.deltaY >= 0 ? -zoomOptions.wheel.speed : zoomOptions.wheel.speed);
+  const amount = {
+    x: speed,
+    y: speed,
+    focalPoint: {
+      x: event.clientX - rect.left,
+      y: event.clientY - rect.top
+    }
+  };
+
+  zoom(chart, amount);
+
+  if (onZoomComplete) {
+    onZoomComplete();
+  }
+}
+
+function addDebouncedHandler(chart, name, handler, delay) {
+  if (handler) {
+    getState(chart).handlers[name] = debounce(() => (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(handler, [{chart}]), delay);
+  }
+}
+
+function addListeners(chart, options) {
+  const canvas = chart.canvas;
+  const {wheel: wheelOptions, drag: dragOptions, onZoomComplete} = options.zoom;
+
+  // Install listeners. Do this dynamically based on options so that we can turn zoom on and off
+  // We also want to make sure listeners aren't always on. E.g. if you're scrolling down a page
+  // and the mouse goes over a chart you don't want it intercepted unless the plugin is enabled
+  if (wheelOptions.enabled) {
+    addHandler(chart, canvas, 'wheel', wheel);
+    addDebouncedHandler(chart, 'onZoomComplete', onZoomComplete, 250);
+  } else {
+    removeHandler(chart, 'wheel');
+  }
+  if (dragOptions.enabled) {
+    addHandler(chart, canvas, 'mousedown', mouseDown);
+    addHandler(chart, canvas.ownerDocument, 'mouseup', mouseUp);
+  } else {
+    removeHandler(chart, 'mousedown');
+    removeHandler(chart, 'mousemove');
+    removeHandler(chart, 'mouseup');
+    removeHandler(chart, 'keydown');
+  }
+}
+
+function removeListeners(chart) {
+  removeHandler(chart, 'mousedown');
+  removeHandler(chart, 'mousemove');
+  removeHandler(chart, 'mouseup');
+  removeHandler(chart, 'wheel');
+  removeHandler(chart, 'click');
+  removeHandler(chart, 'keydown');
+}
+
+function createEnabler(chart, state) {
+  return function(recognizer, event) {
+    const {pan: panOptions, zoom: zoomOptions = {}} = state.options;
+    if (!panOptions || !panOptions.enabled) {
+      return false;
+    }
+    const srcEvent = event && event.srcEvent;
+    if (!srcEvent) { // Sometimes Hammer queries this with a null event.
+      return true;
+    }
+    if (!state.panning && event.pointerType === 'mouse' && (
+      keyNotPressed(getModifierKey(panOptions), srcEvent) || keyPressed(getModifierKey(zoomOptions.drag), srcEvent))
+    ) {
+      (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(panOptions.onPanRejected, [{chart, event}]);
+      return false;
+    }
+    return true;
+  };
+}
+
+function pinchAxes(p0, p1) {
+  // fingers position difference
+  const pinchX = Math.abs(p0.clientX - p1.clientX);
+  const pinchY = Math.abs(p0.clientY - p1.clientY);
+
+  // diagonal fingers will change both (xy) axes
+  const p = pinchX / pinchY;
+  let x, y;
+  if (p > 0.3 && p < 1.7) {
+    x = y = true;
+  } else if (pinchX > pinchY) {
+    x = true;
+  } else {
+    y = true;
+  }
+  return {x, y};
+}
+
+function handlePinch(chart, state, e) {
+  if (state.scale) {
+    const {center, pointers} = e;
+    // Hammer reports the total scaling. We need the incremental amount
+    const zoomPercent = 1 / state.scale * e.scale;
+    const rect = e.target.getBoundingClientRect();
+    const pinch = pinchAxes(pointers[0], pointers[1]);
+    const mode = state.options.zoom.mode;
+    const amount = {
+      x: pinch.x && directionEnabled(mode, 'x', chart) ? zoomPercent : 1,
+      y: pinch.y && directionEnabled(mode, 'y', chart) ? zoomPercent : 1,
+      focalPoint: {
+        x: center.x - rect.left,
+        y: center.y - rect.top
+      }
+    };
+
+    zoom(chart, amount);
+
+    // Keep track of overall scale
+    state.scale = e.scale;
+  }
+}
+
+function startPinch(chart, state) {
+  if (state.options.zoom.pinch.enabled) {
+    state.scale = 1;
+  }
+}
+
+function endPinch(chart, state, e) {
+  if (state.scale) {
+    handlePinch(chart, state, e);
+    state.scale = null; // reset
+    (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(state.options.zoom.onZoomComplete, [{chart}]);
+  }
+}
+
+function handlePan(chart, state, e) {
+  const delta = state.delta;
+  if (delta) {
+    state.panning = true;
+    pan(chart, {x: e.deltaX - delta.x, y: e.deltaY - delta.y}, state.panScales);
+    state.delta = {x: e.deltaX, y: e.deltaY};
+  }
+}
+
+function startPan(chart, state, event) {
+  const {enabled, onPanStart, onPanRejected} = state.options.pan;
+  if (!enabled) {
+    return;
+  }
+  const rect = event.target.getBoundingClientRect();
+  const point = {
+    x: event.center.x - rect.left,
+    y: event.center.y - rect.top
+  };
+
+  if ((0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(onPanStart, [{chart, event, point}]) === false) {
+    return (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(onPanRejected, [{chart, event}]);
+  }
+
+  state.panScales = getEnabledScalesByPoint(state.options.pan, point, chart);
+  state.delta = {x: 0, y: 0};
+  clearTimeout(state.panEndTimeout);
+  handlePan(chart, state, event);
+}
+
+function endPan(chart, state) {
+  state.delta = null;
+  if (state.panning) {
+    state.panEndTimeout = setTimeout(() => (state.panning = false), 500);
+    (0,chart_js_helpers__WEBPACK_IMPORTED_MODULE_1__.callback)(state.options.pan.onPanComplete, [{chart}]);
+  }
+}
+
+const hammers = new WeakMap();
+function startHammer(chart, options) {
+  const state = getState(chart);
+  const canvas = chart.canvas;
+  const {pan: panOptions, zoom: zoomOptions} = options;
+
+  const mc = new (hammerjs__WEBPACK_IMPORTED_MODULE_0___default().Manager)(canvas);
+  if (zoomOptions && zoomOptions.pinch.enabled) {
+    mc.add(new (hammerjs__WEBPACK_IMPORTED_MODULE_0___default().Pinch)());
+    mc.on('pinchstart', () => startPinch(chart, state));
+    mc.on('pinch', (e) => handlePinch(chart, state, e));
+    mc.on('pinchend', (e) => endPinch(chart, state, e));
+  }
+
+  if (panOptions && panOptions.enabled) {
+    mc.add(new (hammerjs__WEBPACK_IMPORTED_MODULE_0___default().Pan)({
+      threshold: panOptions.threshold,
+      enable: createEnabler(chart, state)
+    }));
+    mc.on('panstart', (e) => startPan(chart, state, e));
+    mc.on('panmove', (e) => handlePan(chart, state, e));
+    mc.on('panend', () => endPan(chart, state));
+  }
+
+  hammers.set(chart, mc);
+}
+
+function stopHammer(chart) {
+  const mc = hammers.get(chart);
+  if (mc) {
+    mc.remove('pinchstart');
+    mc.remove('pinch');
+    mc.remove('pinchend');
+    mc.remove('panstart');
+    mc.remove('pan');
+    mc.remove('panend');
+    mc.destroy();
+    hammers.delete(chart);
+  }
+}
+
+var version = "2.0.1";
+
+function draw(chart, caller, options) {
+  const dragOptions = options.zoom.drag;
+  const {dragStart, dragEnd} = getState(chart);
+
+  if (dragOptions.drawTime !== caller || !dragEnd) {
+    return;
+  }
+  const {left, top, width, height} = computeDragRect(chart, options.zoom.mode, dragStart, dragEnd);
+  const ctx = chart.ctx;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.fillStyle = dragOptions.backgroundColor || 'rgba(225,225,225,0.3)';
+  ctx.fillRect(left, top, width, height);
+
+  if (dragOptions.borderWidth > 0) {
+    ctx.lineWidth = dragOptions.borderWidth;
+    ctx.strokeStyle = dragOptions.borderColor || 'rgba(225,225,225)';
+    ctx.strokeRect(left, top, width, height);
+  }
+  ctx.restore();
+}
+
+var plugin = {
+  id: 'zoom',
+
+  version,
+
+  defaults: {
+    pan: {
+      enabled: false,
+      mode: 'xy',
+      threshold: 10,
+      modifierKey: null,
+    },
+    zoom: {
+      wheel: {
+        enabled: false,
+        speed: 0.1,
+        modifierKey: null
+      },
+      drag: {
+        enabled: false,
+        drawTime: 'beforeDatasetsDraw',
+        modifierKey: null
+      },
+      pinch: {
+        enabled: false
+      },
+      mode: 'xy',
+    }
+  },
+
+  start: function(chart, _args, options) {
+    const state = getState(chart);
+    state.options = options;
+
+    if (Object.prototype.hasOwnProperty.call(options.zoom, 'enabled')) {
+      console.warn('The option `zoom.enabled` is no longer supported. Please use `zoom.wheel.enabled`, `zoom.drag.enabled`, or `zoom.pinch.enabled`.');
+    }
+    if (Object.prototype.hasOwnProperty.call(options.zoom, 'overScaleMode')
+      || Object.prototype.hasOwnProperty.call(options.pan, 'overScaleMode')) {
+      console.warn('The option `overScaleMode` is deprecated. Please use `scaleMode` instead (and update `mode` as desired).');
+    }
+
+    if ((hammerjs__WEBPACK_IMPORTED_MODULE_0___default())) {
+      startHammer(chart, options);
+    }
+
+    chart.pan = (delta, panScales, transition) => pan(chart, delta, panScales, transition);
+    chart.zoom = (args, transition) => zoom(chart, args, transition);
+    chart.zoomRect = (p0, p1, transition) => zoomRect(chart, p0, p1, transition);
+    chart.zoomScale = (id, range, transition) => zoomScale(chart, id, range, transition);
+    chart.resetZoom = (transition) => resetZoom(chart, transition);
+    chart.getZoomLevel = () => getZoomLevel(chart);
+    chart.getInitialScaleBounds = () => getInitialScaleBounds(chart);
+    chart.isZoomedOrPanned = () => isZoomedOrPanned(chart);
+  },
+
+  beforeEvent(chart) {
+    const state = getState(chart);
+    if (state.panning || state.dragging) {
+      // cancel any event handling while panning or dragging
+      return false;
+    }
+  },
+
+  beforeUpdate: function(chart, args, options) {
+    const state = getState(chart);
+    state.options = options;
+    addListeners(chart, options);
+  },
+
+  beforeDatasetsDraw(chart, _args, options) {
+    draw(chart, 'beforeDatasetsDraw', options);
+  },
+
+  afterDatasetsDraw(chart, _args, options) {
+    draw(chart, 'afterDatasetsDraw', options);
+  },
+
+  beforeDraw(chart, _args, options) {
+    draw(chart, 'beforeDraw', options);
+  },
+
+  afterDraw(chart, _args, options) {
+    draw(chart, 'afterDraw', options);
+  },
+
+  stop: function(chart) {
+    removeListeners(chart);
+
+    if ((hammerjs__WEBPACK_IMPORTED_MODULE_0___default())) {
+      stopHammer(chart);
+    }
+    removeState(chart);
+  },
+
+  panFunctions,
+  zoomFunctions,
+  zoomRectFunctions,
+};
+
+
+
+
+/***/ }),
+
+/***/ "./node_modules/hammerjs/hammer.js":
+/*!*****************************************!*\
+  !*** ./node_modules/hammerjs/hammer.js ***!
+  \*****************************************/
+/***/ ((module, exports, __webpack_require__) => {
+
+var __WEBPACK_AMD_DEFINE_RESULT__;/*! Hammer.JS - v2.0.7 - 2016-04-22
+ * http://hammerjs.github.io/
+ *
+ * Copyright (c) 2016 Jorik Tangelder;
+ * Licensed under the MIT license */
+(function(window, document, exportName, undefined) {
+  'use strict';
+
+var VENDOR_PREFIXES = ['', 'webkit', 'Moz', 'MS', 'ms', 'o'];
+var TEST_ELEMENT = document.createElement('div');
+
+var TYPE_FUNCTION = 'function';
+
+var round = Math.round;
+var abs = Math.abs;
+var now = Date.now;
+
+/**
+ * set a timeout with a given scope
+ * @param {Function} fn
+ * @param {Number} timeout
+ * @param {Object} context
+ * @returns {number}
+ */
+function setTimeoutContext(fn, timeout, context) {
+    return setTimeout(bindFn(fn, context), timeout);
+}
+
+/**
+ * if the argument is an array, we want to execute the fn on each entry
+ * if it aint an array we don't want to do a thing.
+ * this is used by all the methods that accept a single and array argument.
+ * @param {*|Array} arg
+ * @param {String} fn
+ * @param {Object} [context]
+ * @returns {Boolean}
+ */
+function invokeArrayArg(arg, fn, context) {
+    if (Array.isArray(arg)) {
+        each(arg, context[fn], context);
+        return true;
+    }
+    return false;
+}
+
+/**
+ * walk objects and arrays
+ * @param {Object} obj
+ * @param {Function} iterator
+ * @param {Object} context
+ */
+function each(obj, iterator, context) {
+    var i;
+
+    if (!obj) {
+        return;
+    }
+
+    if (obj.forEach) {
+        obj.forEach(iterator, context);
+    } else if (obj.length !== undefined) {
+        i = 0;
+        while (i < obj.length) {
+            iterator.call(context, obj[i], i, obj);
+            i++;
+        }
+    } else {
+        for (i in obj) {
+            obj.hasOwnProperty(i) && iterator.call(context, obj[i], i, obj);
+        }
+    }
+}
+
+/**
+ * wrap a method with a deprecation warning and stack trace
+ * @param {Function} method
+ * @param {String} name
+ * @param {String} message
+ * @returns {Function} A new function wrapping the supplied method.
+ */
+function deprecate(method, name, message) {
+    var deprecationMessage = 'DEPRECATED METHOD: ' + name + '\n' + message + ' AT \n';
+    return function() {
+        var e = new Error('get-stack-trace');
+        var stack = e && e.stack ? e.stack.replace(/^[^\(]+?[\n$]/gm, '')
+            .replace(/^\s+at\s+/gm, '')
+            .replace(/^Object.<anonymous>\s*\(/gm, '{anonymous}()@') : 'Unknown Stack Trace';
+
+        var log = window.console && (window.console.warn || window.console.log);
+        if (log) {
+            log.call(window.console, deprecationMessage, stack);
+        }
+        return method.apply(this, arguments);
+    };
+}
+
+/**
+ * extend object.
+ * means that properties in dest will be overwritten by the ones in src.
+ * @param {Object} target
+ * @param {...Object} objects_to_assign
+ * @returns {Object} target
+ */
+var assign;
+if (typeof Object.assign !== 'function') {
+    assign = function assign(target) {
+        if (target === undefined || target === null) {
+            throw new TypeError('Cannot convert undefined or null to object');
+        }
+
+        var output = Object(target);
+        for (var index = 1; index < arguments.length; index++) {
+            var source = arguments[index];
+            if (source !== undefined && source !== null) {
+                for (var nextKey in source) {
+                    if (source.hasOwnProperty(nextKey)) {
+                        output[nextKey] = source[nextKey];
+                    }
+                }
+            }
+        }
+        return output;
+    };
+} else {
+    assign = Object.assign;
+}
+
+/**
+ * extend object.
+ * means that properties in dest will be overwritten by the ones in src.
+ * @param {Object} dest
+ * @param {Object} src
+ * @param {Boolean} [merge=false]
+ * @returns {Object} dest
+ */
+var extend = deprecate(function extend(dest, src, merge) {
+    var keys = Object.keys(src);
+    var i = 0;
+    while (i < keys.length) {
+        if (!merge || (merge && dest[keys[i]] === undefined)) {
+            dest[keys[i]] = src[keys[i]];
+        }
+        i++;
+    }
+    return dest;
+}, 'extend', 'Use `assign`.');
+
+/**
+ * merge the values from src in the dest.
+ * means that properties that exist in dest will not be overwritten by src
+ * @param {Object} dest
+ * @param {Object} src
+ * @returns {Object} dest
+ */
+var merge = deprecate(function merge(dest, src) {
+    return extend(dest, src, true);
+}, 'merge', 'Use `assign`.');
+
+/**
+ * simple class inheritance
+ * @param {Function} child
+ * @param {Function} base
+ * @param {Object} [properties]
+ */
+function inherit(child, base, properties) {
+    var baseP = base.prototype,
+        childP;
+
+    childP = child.prototype = Object.create(baseP);
+    childP.constructor = child;
+    childP._super = baseP;
+
+    if (properties) {
+        assign(childP, properties);
+    }
+}
+
+/**
+ * simple function bind
+ * @param {Function} fn
+ * @param {Object} context
+ * @returns {Function}
+ */
+function bindFn(fn, context) {
+    return function boundFn() {
+        return fn.apply(context, arguments);
+    };
+}
+
+/**
+ * let a boolean value also be a function that must return a boolean
+ * this first item in args will be used as the context
+ * @param {Boolean|Function} val
+ * @param {Array} [args]
+ * @returns {Boolean}
+ */
+function boolOrFn(val, args) {
+    if (typeof val == TYPE_FUNCTION) {
+        return val.apply(args ? args[0] || undefined : undefined, args);
+    }
+    return val;
+}
+
+/**
+ * use the val2 when val1 is undefined
+ * @param {*} val1
+ * @param {*} val2
+ * @returns {*}
+ */
+function ifUndefined(val1, val2) {
+    return (val1 === undefined) ? val2 : val1;
+}
+
+/**
+ * addEventListener with multiple events at once
+ * @param {EventTarget} target
+ * @param {String} types
+ * @param {Function} handler
+ */
+function addEventListeners(target, types, handler) {
+    each(splitStr(types), function(type) {
+        target.addEventListener(type, handler, false);
+    });
+}
+
+/**
+ * removeEventListener with multiple events at once
+ * @param {EventTarget} target
+ * @param {String} types
+ * @param {Function} handler
+ */
+function removeEventListeners(target, types, handler) {
+    each(splitStr(types), function(type) {
+        target.removeEventListener(type, handler, false);
+    });
+}
+
+/**
+ * find if a node is in the given parent
+ * @method hasParent
+ * @param {HTMLElement} node
+ * @param {HTMLElement} parent
+ * @return {Boolean} found
+ */
+function hasParent(node, parent) {
+    while (node) {
+        if (node == parent) {
+            return true;
+        }
+        node = node.parentNode;
+    }
+    return false;
+}
+
+/**
+ * small indexOf wrapper
+ * @param {String} str
+ * @param {String} find
+ * @returns {Boolean} found
+ */
+function inStr(str, find) {
+    return str.indexOf(find) > -1;
+}
+
+/**
+ * split string on whitespace
+ * @param {String} str
+ * @returns {Array} words
+ */
+function splitStr(str) {
+    return str.trim().split(/\s+/g);
+}
+
+/**
+ * find if a array contains the object using indexOf or a simple polyFill
+ * @param {Array} src
+ * @param {String} find
+ * @param {String} [findByKey]
+ * @return {Boolean|Number} false when not found, or the index
+ */
+function inArray(src, find, findByKey) {
+    if (src.indexOf && !findByKey) {
+        return src.indexOf(find);
+    } else {
+        var i = 0;
+        while (i < src.length) {
+            if ((findByKey && src[i][findByKey] == find) || (!findByKey && src[i] === find)) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
+    }
+}
+
+/**
+ * convert array-like objects to real arrays
+ * @param {Object} obj
+ * @returns {Array}
+ */
+function toArray(obj) {
+    return Array.prototype.slice.call(obj, 0);
+}
+
+/**
+ * unique array with objects based on a key (like 'id') or just by the array's value
+ * @param {Array} src [{id:1},{id:2},{id:1}]
+ * @param {String} [key]
+ * @param {Boolean} [sort=False]
+ * @returns {Array} [{id:1},{id:2}]
+ */
+function uniqueArray(src, key, sort) {
+    var results = [];
+    var values = [];
+    var i = 0;
+
+    while (i < src.length) {
+        var val = key ? src[i][key] : src[i];
+        if (inArray(values, val) < 0) {
+            results.push(src[i]);
+        }
+        values[i] = val;
+        i++;
+    }
+
+    if (sort) {
+        if (!key) {
+            results = results.sort();
+        } else {
+            results = results.sort(function sortUniqueArray(a, b) {
+                return a[key] > b[key];
+            });
+        }
+    }
+
+    return results;
+}
+
+/**
+ * get the prefixed property
+ * @param {Object} obj
+ * @param {String} property
+ * @returns {String|Undefined} prefixed
+ */
+function prefixed(obj, property) {
+    var prefix, prop;
+    var camelProp = property[0].toUpperCase() + property.slice(1);
+
+    var i = 0;
+    while (i < VENDOR_PREFIXES.length) {
+        prefix = VENDOR_PREFIXES[i];
+        prop = (prefix) ? prefix + camelProp : property;
+
+        if (prop in obj) {
+            return prop;
+        }
+        i++;
+    }
+    return undefined;
+}
+
+/**
+ * get a unique id
+ * @returns {number} uniqueId
+ */
+var _uniqueId = 1;
+function uniqueId() {
+    return _uniqueId++;
+}
+
+/**
+ * get the window object of an element
+ * @param {HTMLElement} element
+ * @returns {DocumentView|Window}
+ */
+function getWindowForElement(element) {
+    var doc = element.ownerDocument || element;
+    return (doc.defaultView || doc.parentWindow || window);
+}
+
+var MOBILE_REGEX = /mobile|tablet|ip(ad|hone|od)|android/i;
+
+var SUPPORT_TOUCH = ('ontouchstart' in window);
+var SUPPORT_POINTER_EVENTS = prefixed(window, 'PointerEvent') !== undefined;
+var SUPPORT_ONLY_TOUCH = SUPPORT_TOUCH && MOBILE_REGEX.test(navigator.userAgent);
+
+var INPUT_TYPE_TOUCH = 'touch';
+var INPUT_TYPE_PEN = 'pen';
+var INPUT_TYPE_MOUSE = 'mouse';
+var INPUT_TYPE_KINECT = 'kinect';
+
+var COMPUTE_INTERVAL = 25;
+
+var INPUT_START = 1;
+var INPUT_MOVE = 2;
+var INPUT_END = 4;
+var INPUT_CANCEL = 8;
+
+var DIRECTION_NONE = 1;
+var DIRECTION_LEFT = 2;
+var DIRECTION_RIGHT = 4;
+var DIRECTION_UP = 8;
+var DIRECTION_DOWN = 16;
+
+var DIRECTION_HORIZONTAL = DIRECTION_LEFT | DIRECTION_RIGHT;
+var DIRECTION_VERTICAL = DIRECTION_UP | DIRECTION_DOWN;
+var DIRECTION_ALL = DIRECTION_HORIZONTAL | DIRECTION_VERTICAL;
+
+var PROPS_XY = ['x', 'y'];
+var PROPS_CLIENT_XY = ['clientX', 'clientY'];
+
+/**
+ * create new input type manager
+ * @param {Manager} manager
+ * @param {Function} callback
+ * @returns {Input}
+ * @constructor
+ */
+function Input(manager, callback) {
+    var self = this;
+    this.manager = manager;
+    this.callback = callback;
+    this.element = manager.element;
+    this.target = manager.options.inputTarget;
+
+    // smaller wrapper around the handler, for the scope and the enabled state of the manager,
+    // so when disabled the input events are completely bypassed.
+    this.domHandler = function(ev) {
+        if (boolOrFn(manager.options.enable, [manager])) {
+            self.handler(ev);
+        }
+    };
+
+    this.init();
+
+}
+
+Input.prototype = {
+    /**
+     * should handle the inputEvent data and trigger the callback
+     * @virtual
+     */
+    handler: function() { },
+
+    /**
+     * bind the events
+     */
+    init: function() {
+        this.evEl && addEventListeners(this.element, this.evEl, this.domHandler);
+        this.evTarget && addEventListeners(this.target, this.evTarget, this.domHandler);
+        this.evWin && addEventListeners(getWindowForElement(this.element), this.evWin, this.domHandler);
+    },
+
+    /**
+     * unbind the events
+     */
+    destroy: function() {
+        this.evEl && removeEventListeners(this.element, this.evEl, this.domHandler);
+        this.evTarget && removeEventListeners(this.target, this.evTarget, this.domHandler);
+        this.evWin && removeEventListeners(getWindowForElement(this.element), this.evWin, this.domHandler);
+    }
+};
+
+/**
+ * create new input type manager
+ * called by the Manager constructor
+ * @param {Hammer} manager
+ * @returns {Input}
+ */
+function createInputInstance(manager) {
+    var Type;
+    var inputClass = manager.options.inputClass;
+
+    if (inputClass) {
+        Type = inputClass;
+    } else if (SUPPORT_POINTER_EVENTS) {
+        Type = PointerEventInput;
+    } else if (SUPPORT_ONLY_TOUCH) {
+        Type = TouchInput;
+    } else if (!SUPPORT_TOUCH) {
+        Type = MouseInput;
+    } else {
+        Type = TouchMouseInput;
+    }
+    return new (Type)(manager, inputHandler);
+}
+
+/**
+ * handle input events
+ * @param {Manager} manager
+ * @param {String} eventType
+ * @param {Object} input
+ */
+function inputHandler(manager, eventType, input) {
+    var pointersLen = input.pointers.length;
+    var changedPointersLen = input.changedPointers.length;
+    var isFirst = (eventType & INPUT_START && (pointersLen - changedPointersLen === 0));
+    var isFinal = (eventType & (INPUT_END | INPUT_CANCEL) && (pointersLen - changedPointersLen === 0));
+
+    input.isFirst = !!isFirst;
+    input.isFinal = !!isFinal;
+
+    if (isFirst) {
+        manager.session = {};
+    }
+
+    // source event is the normalized value of the domEvents
+    // like 'touchstart, mouseup, pointerdown'
+    input.eventType = eventType;
+
+    // compute scale, rotation etc
+    computeInputData(manager, input);
+
+    // emit secret event
+    manager.emit('hammer.input', input);
+
+    manager.recognize(input);
+    manager.session.prevInput = input;
+}
+
+/**
+ * extend the data with some usable properties like scale, rotate, velocity etc
+ * @param {Object} manager
+ * @param {Object} input
+ */
+function computeInputData(manager, input) {
+    var session = manager.session;
+    var pointers = input.pointers;
+    var pointersLength = pointers.length;
+
+    // store the first input to calculate the distance and direction
+    if (!session.firstInput) {
+        session.firstInput = simpleCloneInputData(input);
+    }
+
+    // to compute scale and rotation we need to store the multiple touches
+    if (pointersLength > 1 && !session.firstMultiple) {
+        session.firstMultiple = simpleCloneInputData(input);
+    } else if (pointersLength === 1) {
+        session.firstMultiple = false;
+    }
+
+    var firstInput = session.firstInput;
+    var firstMultiple = session.firstMultiple;
+    var offsetCenter = firstMultiple ? firstMultiple.center : firstInput.center;
+
+    var center = input.center = getCenter(pointers);
+    input.timeStamp = now();
+    input.deltaTime = input.timeStamp - firstInput.timeStamp;
+
+    input.angle = getAngle(offsetCenter, center);
+    input.distance = getDistance(offsetCenter, center);
+
+    computeDeltaXY(session, input);
+    input.offsetDirection = getDirection(input.deltaX, input.deltaY);
+
+    var overallVelocity = getVelocity(input.deltaTime, input.deltaX, input.deltaY);
+    input.overallVelocityX = overallVelocity.x;
+    input.overallVelocityY = overallVelocity.y;
+    input.overallVelocity = (abs(overallVelocity.x) > abs(overallVelocity.y)) ? overallVelocity.x : overallVelocity.y;
+
+    input.scale = firstMultiple ? getScale(firstMultiple.pointers, pointers) : 1;
+    input.rotation = firstMultiple ? getRotation(firstMultiple.pointers, pointers) : 0;
+
+    input.maxPointers = !session.prevInput ? input.pointers.length : ((input.pointers.length >
+        session.prevInput.maxPointers) ? input.pointers.length : session.prevInput.maxPointers);
+
+    computeIntervalInputData(session, input);
+
+    // find the correct target
+    var target = manager.element;
+    if (hasParent(input.srcEvent.target, target)) {
+        target = input.srcEvent.target;
+    }
+    input.target = target;
+}
+
+function computeDeltaXY(session, input) {
+    var center = input.center;
+    var offset = session.offsetDelta || {};
+    var prevDelta = session.prevDelta || {};
+    var prevInput = session.prevInput || {};
+
+    if (input.eventType === INPUT_START || prevInput.eventType === INPUT_END) {
+        prevDelta = session.prevDelta = {
+            x: prevInput.deltaX || 0,
+            y: prevInput.deltaY || 0
+        };
+
+        offset = session.offsetDelta = {
+            x: center.x,
+            y: center.y
+        };
+    }
+
+    input.deltaX = prevDelta.x + (center.x - offset.x);
+    input.deltaY = prevDelta.y + (center.y - offset.y);
+}
+
+/**
+ * velocity is calculated every x ms
+ * @param {Object} session
+ * @param {Object} input
+ */
+function computeIntervalInputData(session, input) {
+    var last = session.lastInterval || input,
+        deltaTime = input.timeStamp - last.timeStamp,
+        velocity, velocityX, velocityY, direction;
+
+    if (input.eventType != INPUT_CANCEL && (deltaTime > COMPUTE_INTERVAL || last.velocity === undefined)) {
+        var deltaX = input.deltaX - last.deltaX;
+        var deltaY = input.deltaY - last.deltaY;
+
+        var v = getVelocity(deltaTime, deltaX, deltaY);
+        velocityX = v.x;
+        velocityY = v.y;
+        velocity = (abs(v.x) > abs(v.y)) ? v.x : v.y;
+        direction = getDirection(deltaX, deltaY);
+
+        session.lastInterval = input;
+    } else {
+        // use latest velocity info if it doesn't overtake a minimum period
+        velocity = last.velocity;
+        velocityX = last.velocityX;
+        velocityY = last.velocityY;
+        direction = last.direction;
+    }
+
+    input.velocity = velocity;
+    input.velocityX = velocityX;
+    input.velocityY = velocityY;
+    input.direction = direction;
+}
+
+/**
+ * create a simple clone from the input used for storage of firstInput and firstMultiple
+ * @param {Object} input
+ * @returns {Object} clonedInputData
+ */
+function simpleCloneInputData(input) {
+    // make a simple copy of the pointers because we will get a reference if we don't
+    // we only need clientXY for the calculations
+    var pointers = [];
+    var i = 0;
+    while (i < input.pointers.length) {
+        pointers[i] = {
+            clientX: round(input.pointers[i].clientX),
+            clientY: round(input.pointers[i].clientY)
+        };
+        i++;
+    }
+
+    return {
+        timeStamp: now(),
+        pointers: pointers,
+        center: getCenter(pointers),
+        deltaX: input.deltaX,
+        deltaY: input.deltaY
+    };
+}
+
+/**
+ * get the center of all the pointers
+ * @param {Array} pointers
+ * @return {Object} center contains `x` and `y` properties
+ */
+function getCenter(pointers) {
+    var pointersLength = pointers.length;
+
+    // no need to loop when only one touch
+    if (pointersLength === 1) {
+        return {
+            x: round(pointers[0].clientX),
+            y: round(pointers[0].clientY)
+        };
+    }
+
+    var x = 0, y = 0, i = 0;
+    while (i < pointersLength) {
+        x += pointers[i].clientX;
+        y += pointers[i].clientY;
+        i++;
+    }
+
+    return {
+        x: round(x / pointersLength),
+        y: round(y / pointersLength)
+    };
+}
+
+/**
+ * calculate the velocity between two points. unit is in px per ms.
+ * @param {Number} deltaTime
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Object} velocity `x` and `y`
+ */
+function getVelocity(deltaTime, x, y) {
+    return {
+        x: x / deltaTime || 0,
+        y: y / deltaTime || 0
+    };
+}
+
+/**
+ * get the direction between two points
+ * @param {Number} x
+ * @param {Number} y
+ * @return {Number} direction
+ */
+function getDirection(x, y) {
+    if (x === y) {
+        return DIRECTION_NONE;
+    }
+
+    if (abs(x) >= abs(y)) {
+        return x < 0 ? DIRECTION_LEFT : DIRECTION_RIGHT;
+    }
+    return y < 0 ? DIRECTION_UP : DIRECTION_DOWN;
+}
+
+/**
+ * calculate the absolute distance between two points
+ * @param {Object} p1 {x, y}
+ * @param {Object} p2 {x, y}
+ * @param {Array} [props] containing x and y keys
+ * @return {Number} distance
+ */
+function getDistance(p1, p2, props) {
+    if (!props) {
+        props = PROPS_XY;
+    }
+    var x = p2[props[0]] - p1[props[0]],
+        y = p2[props[1]] - p1[props[1]];
+
+    return Math.sqrt((x * x) + (y * y));
+}
+
+/**
+ * calculate the angle between two coordinates
+ * @param {Object} p1
+ * @param {Object} p2
+ * @param {Array} [props] containing x and y keys
+ * @return {Number} angle
+ */
+function getAngle(p1, p2, props) {
+    if (!props) {
+        props = PROPS_XY;
+    }
+    var x = p2[props[0]] - p1[props[0]],
+        y = p2[props[1]] - p1[props[1]];
+    return Math.atan2(y, x) * 180 / Math.PI;
+}
+
+/**
+ * calculate the rotation degrees between two pointersets
+ * @param {Array} start array of pointers
+ * @param {Array} end array of pointers
+ * @return {Number} rotation
+ */
+function getRotation(start, end) {
+    return getAngle(end[1], end[0], PROPS_CLIENT_XY) + getAngle(start[1], start[0], PROPS_CLIENT_XY);
+}
+
+/**
+ * calculate the scale factor between two pointersets
+ * no scale is 1, and goes down to 0 when pinched together, and bigger when pinched out
+ * @param {Array} start array of pointers
+ * @param {Array} end array of pointers
+ * @return {Number} scale
+ */
+function getScale(start, end) {
+    return getDistance(end[0], end[1], PROPS_CLIENT_XY) / getDistance(start[0], start[1], PROPS_CLIENT_XY);
+}
+
+var MOUSE_INPUT_MAP = {
+    mousedown: INPUT_START,
+    mousemove: INPUT_MOVE,
+    mouseup: INPUT_END
+};
+
+var MOUSE_ELEMENT_EVENTS = 'mousedown';
+var MOUSE_WINDOW_EVENTS = 'mousemove mouseup';
+
+/**
+ * Mouse events input
+ * @constructor
+ * @extends Input
+ */
+function MouseInput() {
+    this.evEl = MOUSE_ELEMENT_EVENTS;
+    this.evWin = MOUSE_WINDOW_EVENTS;
+
+    this.pressed = false; // mousedown state
+
+    Input.apply(this, arguments);
+}
+
+inherit(MouseInput, Input, {
+    /**
+     * handle mouse events
+     * @param {Object} ev
+     */
+    handler: function MEhandler(ev) {
+        var eventType = MOUSE_INPUT_MAP[ev.type];
+
+        // on start we want to have the left mouse button down
+        if (eventType & INPUT_START && ev.button === 0) {
+            this.pressed = true;
+        }
+
+        if (eventType & INPUT_MOVE && ev.which !== 1) {
+            eventType = INPUT_END;
+        }
+
+        // mouse must be down
+        if (!this.pressed) {
+            return;
+        }
+
+        if (eventType & INPUT_END) {
+            this.pressed = false;
+        }
+
+        this.callback(this.manager, eventType, {
+            pointers: [ev],
+            changedPointers: [ev],
+            pointerType: INPUT_TYPE_MOUSE,
+            srcEvent: ev
+        });
+    }
+});
+
+var POINTER_INPUT_MAP = {
+    pointerdown: INPUT_START,
+    pointermove: INPUT_MOVE,
+    pointerup: INPUT_END,
+    pointercancel: INPUT_CANCEL,
+    pointerout: INPUT_CANCEL
+};
+
+// in IE10 the pointer types is defined as an enum
+var IE10_POINTER_TYPE_ENUM = {
+    2: INPUT_TYPE_TOUCH,
+    3: INPUT_TYPE_PEN,
+    4: INPUT_TYPE_MOUSE,
+    5: INPUT_TYPE_KINECT // see https://twitter.com/jacobrossi/status/480596438489890816
+};
+
+var POINTER_ELEMENT_EVENTS = 'pointerdown';
+var POINTER_WINDOW_EVENTS = 'pointermove pointerup pointercancel';
+
+// IE10 has prefixed support, and case-sensitive
+if (window.MSPointerEvent && !window.PointerEvent) {
+    POINTER_ELEMENT_EVENTS = 'MSPointerDown';
+    POINTER_WINDOW_EVENTS = 'MSPointerMove MSPointerUp MSPointerCancel';
+}
+
+/**
+ * Pointer events input
+ * @constructor
+ * @extends Input
+ */
+function PointerEventInput() {
+    this.evEl = POINTER_ELEMENT_EVENTS;
+    this.evWin = POINTER_WINDOW_EVENTS;
+
+    Input.apply(this, arguments);
+
+    this.store = (this.manager.session.pointerEvents = []);
+}
+
+inherit(PointerEventInput, Input, {
+    /**
+     * handle mouse events
+     * @param {Object} ev
+     */
+    handler: function PEhandler(ev) {
+        var store = this.store;
+        var removePointer = false;
+
+        var eventTypeNormalized = ev.type.toLowerCase().replace('ms', '');
+        var eventType = POINTER_INPUT_MAP[eventTypeNormalized];
+        var pointerType = IE10_POINTER_TYPE_ENUM[ev.pointerType] || ev.pointerType;
+
+        var isTouch = (pointerType == INPUT_TYPE_TOUCH);
+
+        // get index of the event in the store
+        var storeIndex = inArray(store, ev.pointerId, 'pointerId');
+
+        // start and mouse must be down
+        if (eventType & INPUT_START && (ev.button === 0 || isTouch)) {
+            if (storeIndex < 0) {
+                store.push(ev);
+                storeIndex = store.length - 1;
+            }
+        } else if (eventType & (INPUT_END | INPUT_CANCEL)) {
+            removePointer = true;
+        }
+
+        // it not found, so the pointer hasn't been down (so it's probably a hover)
+        if (storeIndex < 0) {
+            return;
+        }
+
+        // update the event in the store
+        store[storeIndex] = ev;
+
+        this.callback(this.manager, eventType, {
+            pointers: store,
+            changedPointers: [ev],
+            pointerType: pointerType,
+            srcEvent: ev
+        });
+
+        if (removePointer) {
+            // remove from the store
+            store.splice(storeIndex, 1);
+        }
+    }
+});
+
+var SINGLE_TOUCH_INPUT_MAP = {
+    touchstart: INPUT_START,
+    touchmove: INPUT_MOVE,
+    touchend: INPUT_END,
+    touchcancel: INPUT_CANCEL
+};
+
+var SINGLE_TOUCH_TARGET_EVENTS = 'touchstart';
+var SINGLE_TOUCH_WINDOW_EVENTS = 'touchstart touchmove touchend touchcancel';
+
+/**
+ * Touch events input
+ * @constructor
+ * @extends Input
+ */
+function SingleTouchInput() {
+    this.evTarget = SINGLE_TOUCH_TARGET_EVENTS;
+    this.evWin = SINGLE_TOUCH_WINDOW_EVENTS;
+    this.started = false;
+
+    Input.apply(this, arguments);
+}
+
+inherit(SingleTouchInput, Input, {
+    handler: function TEhandler(ev) {
+        var type = SINGLE_TOUCH_INPUT_MAP[ev.type];
+
+        // should we handle the touch events?
+        if (type === INPUT_START) {
+            this.started = true;
+        }
+
+        if (!this.started) {
+            return;
+        }
+
+        var touches = normalizeSingleTouches.call(this, ev, type);
+
+        // when done, reset the started state
+        if (type & (INPUT_END | INPUT_CANCEL) && touches[0].length - touches[1].length === 0) {
+            this.started = false;
+        }
+
+        this.callback(this.manager, type, {
+            pointers: touches[0],
+            changedPointers: touches[1],
+            pointerType: INPUT_TYPE_TOUCH,
+            srcEvent: ev
+        });
+    }
+});
+
+/**
+ * @this {TouchInput}
+ * @param {Object} ev
+ * @param {Number} type flag
+ * @returns {undefined|Array} [all, changed]
+ */
+function normalizeSingleTouches(ev, type) {
+    var all = toArray(ev.touches);
+    var changed = toArray(ev.changedTouches);
+
+    if (type & (INPUT_END | INPUT_CANCEL)) {
+        all = uniqueArray(all.concat(changed), 'identifier', true);
+    }
+
+    return [all, changed];
+}
+
+var TOUCH_INPUT_MAP = {
+    touchstart: INPUT_START,
+    touchmove: INPUT_MOVE,
+    touchend: INPUT_END,
+    touchcancel: INPUT_CANCEL
+};
+
+var TOUCH_TARGET_EVENTS = 'touchstart touchmove touchend touchcancel';
+
+/**
+ * Multi-user touch events input
+ * @constructor
+ * @extends Input
+ */
+function TouchInput() {
+    this.evTarget = TOUCH_TARGET_EVENTS;
+    this.targetIds = {};
+
+    Input.apply(this, arguments);
+}
+
+inherit(TouchInput, Input, {
+    handler: function MTEhandler(ev) {
+        var type = TOUCH_INPUT_MAP[ev.type];
+        var touches = getTouches.call(this, ev, type);
+        if (!touches) {
+            return;
+        }
+
+        this.callback(this.manager, type, {
+            pointers: touches[0],
+            changedPointers: touches[1],
+            pointerType: INPUT_TYPE_TOUCH,
+            srcEvent: ev
+        });
+    }
+});
+
+/**
+ * @this {TouchInput}
+ * @param {Object} ev
+ * @param {Number} type flag
+ * @returns {undefined|Array} [all, changed]
+ */
+function getTouches(ev, type) {
+    var allTouches = toArray(ev.touches);
+    var targetIds = this.targetIds;
+
+    // when there is only one touch, the process can be simplified
+    if (type & (INPUT_START | INPUT_MOVE) && allTouches.length === 1) {
+        targetIds[allTouches[0].identifier] = true;
+        return [allTouches, allTouches];
+    }
+
+    var i,
+        targetTouches,
+        changedTouches = toArray(ev.changedTouches),
+        changedTargetTouches = [],
+        target = this.target;
+
+    // get target touches from touches
+    targetTouches = allTouches.filter(function(touch) {
+        return hasParent(touch.target, target);
+    });
+
+    // collect touches
+    if (type === INPUT_START) {
+        i = 0;
+        while (i < targetTouches.length) {
+            targetIds[targetTouches[i].identifier] = true;
+            i++;
+        }
+    }
+
+    // filter changed touches to only contain touches that exist in the collected target ids
+    i = 0;
+    while (i < changedTouches.length) {
+        if (targetIds[changedTouches[i].identifier]) {
+            changedTargetTouches.push(changedTouches[i]);
+        }
+
+        // cleanup removed touches
+        if (type & (INPUT_END | INPUT_CANCEL)) {
+            delete targetIds[changedTouches[i].identifier];
+        }
+        i++;
+    }
+
+    if (!changedTargetTouches.length) {
+        return;
+    }
+
+    return [
+        // merge targetTouches with changedTargetTouches so it contains ALL touches, including 'end' and 'cancel'
+        uniqueArray(targetTouches.concat(changedTargetTouches), 'identifier', true),
+        changedTargetTouches
+    ];
+}
+
+/**
+ * Combined touch and mouse input
+ *
+ * Touch has a higher priority then mouse, and while touching no mouse events are allowed.
+ * This because touch devices also emit mouse events while doing a touch.
+ *
+ * @constructor
+ * @extends Input
+ */
+
+var DEDUP_TIMEOUT = 2500;
+var DEDUP_DISTANCE = 25;
+
+function TouchMouseInput() {
+    Input.apply(this, arguments);
+
+    var handler = bindFn(this.handler, this);
+    this.touch = new TouchInput(this.manager, handler);
+    this.mouse = new MouseInput(this.manager, handler);
+
+    this.primaryTouch = null;
+    this.lastTouches = [];
+}
+
+inherit(TouchMouseInput, Input, {
+    /**
+     * handle mouse and touch events
+     * @param {Hammer} manager
+     * @param {String} inputEvent
+     * @param {Object} inputData
+     */
+    handler: function TMEhandler(manager, inputEvent, inputData) {
+        var isTouch = (inputData.pointerType == INPUT_TYPE_TOUCH),
+            isMouse = (inputData.pointerType == INPUT_TYPE_MOUSE);
+
+        if (isMouse && inputData.sourceCapabilities && inputData.sourceCapabilities.firesTouchEvents) {
+            return;
+        }
+
+        // when we're in a touch event, record touches to  de-dupe synthetic mouse event
+        if (isTouch) {
+            recordTouches.call(this, inputEvent, inputData);
+        } else if (isMouse && isSyntheticEvent.call(this, inputData)) {
+            return;
+        }
+
+        this.callback(manager, inputEvent, inputData);
+    },
+
+    /**
+     * remove the event listeners
+     */
+    destroy: function destroy() {
+        this.touch.destroy();
+        this.mouse.destroy();
+    }
+});
+
+function recordTouches(eventType, eventData) {
+    if (eventType & INPUT_START) {
+        this.primaryTouch = eventData.changedPointers[0].identifier;
+        setLastTouch.call(this, eventData);
+    } else if (eventType & (INPUT_END | INPUT_CANCEL)) {
+        setLastTouch.call(this, eventData);
+    }
+}
+
+function setLastTouch(eventData) {
+    var touch = eventData.changedPointers[0];
+
+    if (touch.identifier === this.primaryTouch) {
+        var lastTouch = {x: touch.clientX, y: touch.clientY};
+        this.lastTouches.push(lastTouch);
+        var lts = this.lastTouches;
+        var removeLastTouch = function() {
+            var i = lts.indexOf(lastTouch);
+            if (i > -1) {
+                lts.splice(i, 1);
+            }
+        };
+        setTimeout(removeLastTouch, DEDUP_TIMEOUT);
+    }
+}
+
+function isSyntheticEvent(eventData) {
+    var x = eventData.srcEvent.clientX, y = eventData.srcEvent.clientY;
+    for (var i = 0; i < this.lastTouches.length; i++) {
+        var t = this.lastTouches[i];
+        var dx = Math.abs(x - t.x), dy = Math.abs(y - t.y);
+        if (dx <= DEDUP_DISTANCE && dy <= DEDUP_DISTANCE) {
+            return true;
+        }
+    }
+    return false;
+}
+
+var PREFIXED_TOUCH_ACTION = prefixed(TEST_ELEMENT.style, 'touchAction');
+var NATIVE_TOUCH_ACTION = PREFIXED_TOUCH_ACTION !== undefined;
+
+// magical touchAction value
+var TOUCH_ACTION_COMPUTE = 'compute';
+var TOUCH_ACTION_AUTO = 'auto';
+var TOUCH_ACTION_MANIPULATION = 'manipulation'; // not implemented
+var TOUCH_ACTION_NONE = 'none';
+var TOUCH_ACTION_PAN_X = 'pan-x';
+var TOUCH_ACTION_PAN_Y = 'pan-y';
+var TOUCH_ACTION_MAP = getTouchActionProps();
+
+/**
+ * Touch Action
+ * sets the touchAction property or uses the js alternative
+ * @param {Manager} manager
+ * @param {String} value
+ * @constructor
+ */
+function TouchAction(manager, value) {
+    this.manager = manager;
+    this.set(value);
+}
+
+TouchAction.prototype = {
+    /**
+     * set the touchAction value on the element or enable the polyfill
+     * @param {String} value
+     */
+    set: function(value) {
+        // find out the touch-action by the event handlers
+        if (value == TOUCH_ACTION_COMPUTE) {
+            value = this.compute();
+        }
+
+        if (NATIVE_TOUCH_ACTION && this.manager.element.style && TOUCH_ACTION_MAP[value]) {
+            this.manager.element.style[PREFIXED_TOUCH_ACTION] = value;
+        }
+        this.actions = value.toLowerCase().trim();
+    },
+
+    /**
+     * just re-set the touchAction value
+     */
+    update: function() {
+        this.set(this.manager.options.touchAction);
+    },
+
+    /**
+     * compute the value for the touchAction property based on the recognizer's settings
+     * @returns {String} value
+     */
+    compute: function() {
+        var actions = [];
+        each(this.manager.recognizers, function(recognizer) {
+            if (boolOrFn(recognizer.options.enable, [recognizer])) {
+                actions = actions.concat(recognizer.getTouchAction());
+            }
+        });
+        return cleanTouchActions(actions.join(' '));
+    },
+
+    /**
+     * this method is called on each input cycle and provides the preventing of the browser behavior
+     * @param {Object} input
+     */
+    preventDefaults: function(input) {
+        var srcEvent = input.srcEvent;
+        var direction = input.offsetDirection;
+
+        // if the touch action did prevented once this session
+        if (this.manager.session.prevented) {
+            srcEvent.preventDefault();
+            return;
+        }
+
+        var actions = this.actions;
+        var hasNone = inStr(actions, TOUCH_ACTION_NONE) && !TOUCH_ACTION_MAP[TOUCH_ACTION_NONE];
+        var hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y) && !TOUCH_ACTION_MAP[TOUCH_ACTION_PAN_Y];
+        var hasPanX = inStr(actions, TOUCH_ACTION_PAN_X) && !TOUCH_ACTION_MAP[TOUCH_ACTION_PAN_X];
+
+        if (hasNone) {
+            //do not prevent defaults if this is a tap gesture
+
+            var isTapPointer = input.pointers.length === 1;
+            var isTapMovement = input.distance < 2;
+            var isTapTouchTime = input.deltaTime < 250;
+
+            if (isTapPointer && isTapMovement && isTapTouchTime) {
+                return;
+            }
+        }
+
+        if (hasPanX && hasPanY) {
+            // `pan-x pan-y` means browser handles all scrolling/panning, do not prevent
+            return;
+        }
+
+        if (hasNone ||
+            (hasPanY && direction & DIRECTION_HORIZONTAL) ||
+            (hasPanX && direction & DIRECTION_VERTICAL)) {
+            return this.preventSrc(srcEvent);
+        }
+    },
+
+    /**
+     * call preventDefault to prevent the browser's default behavior (scrolling in most cases)
+     * @param {Object} srcEvent
+     */
+    preventSrc: function(srcEvent) {
+        this.manager.session.prevented = true;
+        srcEvent.preventDefault();
+    }
+};
+
+/**
+ * when the touchActions are collected they are not a valid value, so we need to clean things up. *
+ * @param {String} actions
+ * @returns {*}
+ */
+function cleanTouchActions(actions) {
+    // none
+    if (inStr(actions, TOUCH_ACTION_NONE)) {
+        return TOUCH_ACTION_NONE;
+    }
+
+    var hasPanX = inStr(actions, TOUCH_ACTION_PAN_X);
+    var hasPanY = inStr(actions, TOUCH_ACTION_PAN_Y);
+
+    // if both pan-x and pan-y are set (different recognizers
+    // for different directions, e.g. horizontal pan but vertical swipe?)
+    // we need none (as otherwise with pan-x pan-y combined none of these
+    // recognizers will work, since the browser would handle all panning
+    if (hasPanX && hasPanY) {
+        return TOUCH_ACTION_NONE;
+    }
+
+    // pan-x OR pan-y
+    if (hasPanX || hasPanY) {
+        return hasPanX ? TOUCH_ACTION_PAN_X : TOUCH_ACTION_PAN_Y;
+    }
+
+    // manipulation
+    if (inStr(actions, TOUCH_ACTION_MANIPULATION)) {
+        return TOUCH_ACTION_MANIPULATION;
+    }
+
+    return TOUCH_ACTION_AUTO;
+}
+
+function getTouchActionProps() {
+    if (!NATIVE_TOUCH_ACTION) {
+        return false;
+    }
+    var touchMap = {};
+    var cssSupports = window.CSS && window.CSS.supports;
+    ['auto', 'manipulation', 'pan-y', 'pan-x', 'pan-x pan-y', 'none'].forEach(function(val) {
+
+        // If css.supports is not supported but there is native touch-action assume it supports
+        // all values. This is the case for IE 10 and 11.
+        touchMap[val] = cssSupports ? window.CSS.supports('touch-action', val) : true;
+    });
+    return touchMap;
+}
+
+/**
+ * Recognizer flow explained; *
+ * All recognizers have the initial state of POSSIBLE when a input session starts.
+ * The definition of a input session is from the first input until the last input, with all it's movement in it. *
+ * Example session for mouse-input: mousedown -> mousemove -> mouseup
+ *
+ * On each recognizing cycle (see Manager.recognize) the .recognize() method is executed
+ * which determines with state it should be.
+ *
+ * If the recognizer has the state FAILED, CANCELLED or RECOGNIZED (equals ENDED), it is reset to
+ * POSSIBLE to give it another change on the next cycle.
+ *
+ *               Possible
+ *                  |
+ *            +-----+---------------+
+ *            |                     |
+ *      +-----+-----+               |
+ *      |           |               |
+ *   Failed      Cancelled          |
+ *                          +-------+------+
+ *                          |              |
+ *                      Recognized       Began
+ *                                         |
+ *                                      Changed
+ *                                         |
+ *                                  Ended/Recognized
+ */
+var STATE_POSSIBLE = 1;
+var STATE_BEGAN = 2;
+var STATE_CHANGED = 4;
+var STATE_ENDED = 8;
+var STATE_RECOGNIZED = STATE_ENDED;
+var STATE_CANCELLED = 16;
+var STATE_FAILED = 32;
+
+/**
+ * Recognizer
+ * Every recognizer needs to extend from this class.
+ * @constructor
+ * @param {Object} options
+ */
+function Recognizer(options) {
+    this.options = assign({}, this.defaults, options || {});
+
+    this.id = uniqueId();
+
+    this.manager = null;
+
+    // default is enable true
+    this.options.enable = ifUndefined(this.options.enable, true);
+
+    this.state = STATE_POSSIBLE;
+
+    this.simultaneous = {};
+    this.requireFail = [];
+}
+
+Recognizer.prototype = {
+    /**
+     * @virtual
+     * @type {Object}
+     */
+    defaults: {},
+
+    /**
+     * set options
+     * @param {Object} options
+     * @return {Recognizer}
+     */
+    set: function(options) {
+        assign(this.options, options);
+
+        // also update the touchAction, in case something changed about the directions/enabled state
+        this.manager && this.manager.touchAction.update();
+        return this;
+    },
+
+    /**
+     * recognize simultaneous with an other recognizer.
+     * @param {Recognizer} otherRecognizer
+     * @returns {Recognizer} this
+     */
+    recognizeWith: function(otherRecognizer) {
+        if (invokeArrayArg(otherRecognizer, 'recognizeWith', this)) {
+            return this;
+        }
+
+        var simultaneous = this.simultaneous;
+        otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+        if (!simultaneous[otherRecognizer.id]) {
+            simultaneous[otherRecognizer.id] = otherRecognizer;
+            otherRecognizer.recognizeWith(this);
+        }
+        return this;
+    },
+
+    /**
+     * drop the simultaneous link. it doesnt remove the link on the other recognizer.
+     * @param {Recognizer} otherRecognizer
+     * @returns {Recognizer} this
+     */
+    dropRecognizeWith: function(otherRecognizer) {
+        if (invokeArrayArg(otherRecognizer, 'dropRecognizeWith', this)) {
+            return this;
+        }
+
+        otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+        delete this.simultaneous[otherRecognizer.id];
+        return this;
+    },
+
+    /**
+     * recognizer can only run when an other is failing
+     * @param {Recognizer} otherRecognizer
+     * @returns {Recognizer} this
+     */
+    requireFailure: function(otherRecognizer) {
+        if (invokeArrayArg(otherRecognizer, 'requireFailure', this)) {
+            return this;
+        }
+
+        var requireFail = this.requireFail;
+        otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+        if (inArray(requireFail, otherRecognizer) === -1) {
+            requireFail.push(otherRecognizer);
+            otherRecognizer.requireFailure(this);
+        }
+        return this;
+    },
+
+    /**
+     * drop the requireFailure link. it does not remove the link on the other recognizer.
+     * @param {Recognizer} otherRecognizer
+     * @returns {Recognizer} this
+     */
+    dropRequireFailure: function(otherRecognizer) {
+        if (invokeArrayArg(otherRecognizer, 'dropRequireFailure', this)) {
+            return this;
+        }
+
+        otherRecognizer = getRecognizerByNameIfManager(otherRecognizer, this);
+        var index = inArray(this.requireFail, otherRecognizer);
+        if (index > -1) {
+            this.requireFail.splice(index, 1);
+        }
+        return this;
+    },
+
+    /**
+     * has require failures boolean
+     * @returns {boolean}
+     */
+    hasRequireFailures: function() {
+        return this.requireFail.length > 0;
+    },
+
+    /**
+     * if the recognizer can recognize simultaneous with an other recognizer
+     * @param {Recognizer} otherRecognizer
+     * @returns {Boolean}
+     */
+    canRecognizeWith: function(otherRecognizer) {
+        return !!this.simultaneous[otherRecognizer.id];
+    },
+
+    /**
+     * You should use `tryEmit` instead of `emit` directly to check
+     * that all the needed recognizers has failed before emitting.
+     * @param {Object} input
+     */
+    emit: function(input) {
+        var self = this;
+        var state = this.state;
+
+        function emit(event) {
+            self.manager.emit(event, input);
+        }
+
+        // 'panstart' and 'panmove'
+        if (state < STATE_ENDED) {
+            emit(self.options.event + stateStr(state));
+        }
+
+        emit(self.options.event); // simple 'eventName' events
+
+        if (input.additionalEvent) { // additional event(panleft, panright, pinchin, pinchout...)
+            emit(input.additionalEvent);
+        }
+
+        // panend and pancancel
+        if (state >= STATE_ENDED) {
+            emit(self.options.event + stateStr(state));
+        }
+    },
+
+    /**
+     * Check that all the require failure recognizers has failed,
+     * if true, it emits a gesture event,
+     * otherwise, setup the state to FAILED.
+     * @param {Object} input
+     */
+    tryEmit: function(input) {
+        if (this.canEmit()) {
+            return this.emit(input);
+        }
+        // it's failing anyway
+        this.state = STATE_FAILED;
+    },
+
+    /**
+     * can we emit?
+     * @returns {boolean}
+     */
+    canEmit: function() {
+        var i = 0;
+        while (i < this.requireFail.length) {
+            if (!(this.requireFail[i].state & (STATE_FAILED | STATE_POSSIBLE))) {
+                return false;
+            }
+            i++;
+        }
+        return true;
+    },
+
+    /**
+     * update the recognizer
+     * @param {Object} inputData
+     */
+    recognize: function(inputData) {
+        // make a new copy of the inputData
+        // so we can change the inputData without messing up the other recognizers
+        var inputDataClone = assign({}, inputData);
+
+        // is is enabled and allow recognizing?
+        if (!boolOrFn(this.options.enable, [this, inputDataClone])) {
+            this.reset();
+            this.state = STATE_FAILED;
+            return;
+        }
+
+        // reset when we've reached the end
+        if (this.state & (STATE_RECOGNIZED | STATE_CANCELLED | STATE_FAILED)) {
+            this.state = STATE_POSSIBLE;
+        }
+
+        this.state = this.process(inputDataClone);
+
+        // the recognizer has recognized a gesture
+        // so trigger an event
+        if (this.state & (STATE_BEGAN | STATE_CHANGED | STATE_ENDED | STATE_CANCELLED)) {
+            this.tryEmit(inputDataClone);
+        }
+    },
+
+    /**
+     * return the state of the recognizer
+     * the actual recognizing happens in this method
+     * @virtual
+     * @param {Object} inputData
+     * @returns {Const} STATE
+     */
+    process: function(inputData) { }, // jshint ignore:line
+
+    /**
+     * return the preferred touch-action
+     * @virtual
+     * @returns {Array}
+     */
+    getTouchAction: function() { },
+
+    /**
+     * called when the gesture isn't allowed to recognize
+     * like when another is being recognized or it is disabled
+     * @virtual
+     */
+    reset: function() { }
+};
+
+/**
+ * get a usable string, used as event postfix
+ * @param {Const} state
+ * @returns {String} state
+ */
+function stateStr(state) {
+    if (state & STATE_CANCELLED) {
+        return 'cancel';
+    } else if (state & STATE_ENDED) {
+        return 'end';
+    } else if (state & STATE_CHANGED) {
+        return 'move';
+    } else if (state & STATE_BEGAN) {
+        return 'start';
+    }
+    return '';
+}
+
+/**
+ * direction cons to string
+ * @param {Const} direction
+ * @returns {String}
+ */
+function directionStr(direction) {
+    if (direction == DIRECTION_DOWN) {
+        return 'down';
+    } else if (direction == DIRECTION_UP) {
+        return 'up';
+    } else if (direction == DIRECTION_LEFT) {
+        return 'left';
+    } else if (direction == DIRECTION_RIGHT) {
+        return 'right';
+    }
+    return '';
+}
+
+/**
+ * get a recognizer by name if it is bound to a manager
+ * @param {Recognizer|String} otherRecognizer
+ * @param {Recognizer} recognizer
+ * @returns {Recognizer}
+ */
+function getRecognizerByNameIfManager(otherRecognizer, recognizer) {
+    var manager = recognizer.manager;
+    if (manager) {
+        return manager.get(otherRecognizer);
+    }
+    return otherRecognizer;
+}
+
+/**
+ * This recognizer is just used as a base for the simple attribute recognizers.
+ * @constructor
+ * @extends Recognizer
+ */
+function AttrRecognizer() {
+    Recognizer.apply(this, arguments);
+}
+
+inherit(AttrRecognizer, Recognizer, {
+    /**
+     * @namespace
+     * @memberof AttrRecognizer
+     */
+    defaults: {
+        /**
+         * @type {Number}
+         * @default 1
+         */
+        pointers: 1
+    },
+
+    /**
+     * Used to check if it the recognizer receives valid input, like input.distance > 10.
+     * @memberof AttrRecognizer
+     * @param {Object} input
+     * @returns {Boolean} recognized
+     */
+    attrTest: function(input) {
+        var optionPointers = this.options.pointers;
+        return optionPointers === 0 || input.pointers.length === optionPointers;
+    },
+
+    /**
+     * Process the input and return the state for the recognizer
+     * @memberof AttrRecognizer
+     * @param {Object} input
+     * @returns {*} State
+     */
+    process: function(input) {
+        var state = this.state;
+        var eventType = input.eventType;
+
+        var isRecognized = state & (STATE_BEGAN | STATE_CHANGED);
+        var isValid = this.attrTest(input);
+
+        // on cancel input and we've recognized before, return STATE_CANCELLED
+        if (isRecognized && (eventType & INPUT_CANCEL || !isValid)) {
+            return state | STATE_CANCELLED;
+        } else if (isRecognized || isValid) {
+            if (eventType & INPUT_END) {
+                return state | STATE_ENDED;
+            } else if (!(state & STATE_BEGAN)) {
+                return STATE_BEGAN;
+            }
+            return state | STATE_CHANGED;
+        }
+        return STATE_FAILED;
+    }
+});
+
+/**
+ * Pan
+ * Recognized when the pointer is down and moved in the allowed direction.
+ * @constructor
+ * @extends AttrRecognizer
+ */
+function PanRecognizer() {
+    AttrRecognizer.apply(this, arguments);
+
+    this.pX = null;
+    this.pY = null;
+}
+
+inherit(PanRecognizer, AttrRecognizer, {
+    /**
+     * @namespace
+     * @memberof PanRecognizer
+     */
+    defaults: {
+        event: 'pan',
+        threshold: 10,
+        pointers: 1,
+        direction: DIRECTION_ALL
+    },
+
+    getTouchAction: function() {
+        var direction = this.options.direction;
+        var actions = [];
+        if (direction & DIRECTION_HORIZONTAL) {
+            actions.push(TOUCH_ACTION_PAN_Y);
+        }
+        if (direction & DIRECTION_VERTICAL) {
+            actions.push(TOUCH_ACTION_PAN_X);
+        }
+        return actions;
+    },
+
+    directionTest: function(input) {
+        var options = this.options;
+        var hasMoved = true;
+        var distance = input.distance;
+        var direction = input.direction;
+        var x = input.deltaX;
+        var y = input.deltaY;
+
+        // lock to axis?
+        if (!(direction & options.direction)) {
+            if (options.direction & DIRECTION_HORIZONTAL) {
+                direction = (x === 0) ? DIRECTION_NONE : (x < 0) ? DIRECTION_LEFT : DIRECTION_RIGHT;
+                hasMoved = x != this.pX;
+                distance = Math.abs(input.deltaX);
+            } else {
+                direction = (y === 0) ? DIRECTION_NONE : (y < 0) ? DIRECTION_UP : DIRECTION_DOWN;
+                hasMoved = y != this.pY;
+                distance = Math.abs(input.deltaY);
+            }
+        }
+        input.direction = direction;
+        return hasMoved && distance > options.threshold && direction & options.direction;
+    },
+
+    attrTest: function(input) {
+        return AttrRecognizer.prototype.attrTest.call(this, input) &&
+            (this.state & STATE_BEGAN || (!(this.state & STATE_BEGAN) && this.directionTest(input)));
+    },
+
+    emit: function(input) {
+
+        this.pX = input.deltaX;
+        this.pY = input.deltaY;
+
+        var direction = directionStr(input.direction);
+
+        if (direction) {
+            input.additionalEvent = this.options.event + direction;
+        }
+        this._super.emit.call(this, input);
+    }
+});
+
+/**
+ * Pinch
+ * Recognized when two or more pointers are moving toward (zoom-in) or away from each other (zoom-out).
+ * @constructor
+ * @extends AttrRecognizer
+ */
+function PinchRecognizer() {
+    AttrRecognizer.apply(this, arguments);
+}
+
+inherit(PinchRecognizer, AttrRecognizer, {
+    /**
+     * @namespace
+     * @memberof PinchRecognizer
+     */
+    defaults: {
+        event: 'pinch',
+        threshold: 0,
+        pointers: 2
+    },
+
+    getTouchAction: function() {
+        return [TOUCH_ACTION_NONE];
+    },
+
+    attrTest: function(input) {
+        return this._super.attrTest.call(this, input) &&
+            (Math.abs(input.scale - 1) > this.options.threshold || this.state & STATE_BEGAN);
+    },
+
+    emit: function(input) {
+        if (input.scale !== 1) {
+            var inOut = input.scale < 1 ? 'in' : 'out';
+            input.additionalEvent = this.options.event + inOut;
+        }
+        this._super.emit.call(this, input);
+    }
+});
+
+/**
+ * Press
+ * Recognized when the pointer is down for x ms without any movement.
+ * @constructor
+ * @extends Recognizer
+ */
+function PressRecognizer() {
+    Recognizer.apply(this, arguments);
+
+    this._timer = null;
+    this._input = null;
+}
+
+inherit(PressRecognizer, Recognizer, {
+    /**
+     * @namespace
+     * @memberof PressRecognizer
+     */
+    defaults: {
+        event: 'press',
+        pointers: 1,
+        time: 251, // minimal time of the pointer to be pressed
+        threshold: 9 // a minimal movement is ok, but keep it low
+    },
+
+    getTouchAction: function() {
+        return [TOUCH_ACTION_AUTO];
+    },
+
+    process: function(input) {
+        var options = this.options;
+        var validPointers = input.pointers.length === options.pointers;
+        var validMovement = input.distance < options.threshold;
+        var validTime = input.deltaTime > options.time;
+
+        this._input = input;
+
+        // we only allow little movement
+        // and we've reached an end event, so a tap is possible
+        if (!validMovement || !validPointers || (input.eventType & (INPUT_END | INPUT_CANCEL) && !validTime)) {
+            this.reset();
+        } else if (input.eventType & INPUT_START) {
+            this.reset();
+            this._timer = setTimeoutContext(function() {
+                this.state = STATE_RECOGNIZED;
+                this.tryEmit();
+            }, options.time, this);
+        } else if (input.eventType & INPUT_END) {
+            return STATE_RECOGNIZED;
+        }
+        return STATE_FAILED;
+    },
+
+    reset: function() {
+        clearTimeout(this._timer);
+    },
+
+    emit: function(input) {
+        if (this.state !== STATE_RECOGNIZED) {
+            return;
+        }
+
+        if (input && (input.eventType & INPUT_END)) {
+            this.manager.emit(this.options.event + 'up', input);
+        } else {
+            this._input.timeStamp = now();
+            this.manager.emit(this.options.event, this._input);
+        }
+    }
+});
+
+/**
+ * Rotate
+ * Recognized when two or more pointer are moving in a circular motion.
+ * @constructor
+ * @extends AttrRecognizer
+ */
+function RotateRecognizer() {
+    AttrRecognizer.apply(this, arguments);
+}
+
+inherit(RotateRecognizer, AttrRecognizer, {
+    /**
+     * @namespace
+     * @memberof RotateRecognizer
+     */
+    defaults: {
+        event: 'rotate',
+        threshold: 0,
+        pointers: 2
+    },
+
+    getTouchAction: function() {
+        return [TOUCH_ACTION_NONE];
+    },
+
+    attrTest: function(input) {
+        return this._super.attrTest.call(this, input) &&
+            (Math.abs(input.rotation) > this.options.threshold || this.state & STATE_BEGAN);
+    }
+});
+
+/**
+ * Swipe
+ * Recognized when the pointer is moving fast (velocity), with enough distance in the allowed direction.
+ * @constructor
+ * @extends AttrRecognizer
+ */
+function SwipeRecognizer() {
+    AttrRecognizer.apply(this, arguments);
+}
+
+inherit(SwipeRecognizer, AttrRecognizer, {
+    /**
+     * @namespace
+     * @memberof SwipeRecognizer
+     */
+    defaults: {
+        event: 'swipe',
+        threshold: 10,
+        velocity: 0.3,
+        direction: DIRECTION_HORIZONTAL | DIRECTION_VERTICAL,
+        pointers: 1
+    },
+
+    getTouchAction: function() {
+        return PanRecognizer.prototype.getTouchAction.call(this);
+    },
+
+    attrTest: function(input) {
+        var direction = this.options.direction;
+        var velocity;
+
+        if (direction & (DIRECTION_HORIZONTAL | DIRECTION_VERTICAL)) {
+            velocity = input.overallVelocity;
+        } else if (direction & DIRECTION_HORIZONTAL) {
+            velocity = input.overallVelocityX;
+        } else if (direction & DIRECTION_VERTICAL) {
+            velocity = input.overallVelocityY;
+        }
+
+        return this._super.attrTest.call(this, input) &&
+            direction & input.offsetDirection &&
+            input.distance > this.options.threshold &&
+            input.maxPointers == this.options.pointers &&
+            abs(velocity) > this.options.velocity && input.eventType & INPUT_END;
+    },
+
+    emit: function(input) {
+        var direction = directionStr(input.offsetDirection);
+        if (direction) {
+            this.manager.emit(this.options.event + direction, input);
+        }
+
+        this.manager.emit(this.options.event, input);
+    }
+});
+
+/**
+ * A tap is ecognized when the pointer is doing a small tap/click. Multiple taps are recognized if they occur
+ * between the given interval and position. The delay option can be used to recognize multi-taps without firing
+ * a single tap.
+ *
+ * The eventData from the emitted event contains the property `tapCount`, which contains the amount of
+ * multi-taps being recognized.
+ * @constructor
+ * @extends Recognizer
+ */
+function TapRecognizer() {
+    Recognizer.apply(this, arguments);
+
+    // previous time and center,
+    // used for tap counting
+    this.pTime = false;
+    this.pCenter = false;
+
+    this._timer = null;
+    this._input = null;
+    this.count = 0;
+}
+
+inherit(TapRecognizer, Recognizer, {
+    /**
+     * @namespace
+     * @memberof PinchRecognizer
+     */
+    defaults: {
+        event: 'tap',
+        pointers: 1,
+        taps: 1,
+        interval: 300, // max time between the multi-tap taps
+        time: 250, // max time of the pointer to be down (like finger on the screen)
+        threshold: 9, // a minimal movement is ok, but keep it low
+        posThreshold: 10 // a multi-tap can be a bit off the initial position
+    },
+
+    getTouchAction: function() {
+        return [TOUCH_ACTION_MANIPULATION];
+    },
+
+    process: function(input) {
+        var options = this.options;
+
+        var validPointers = input.pointers.length === options.pointers;
+        var validMovement = input.distance < options.threshold;
+        var validTouchTime = input.deltaTime < options.time;
+
+        this.reset();
+
+        if ((input.eventType & INPUT_START) && (this.count === 0)) {
+            return this.failTimeout();
+        }
+
+        // we only allow little movement
+        // and we've reached an end event, so a tap is possible
+        if (validMovement && validTouchTime && validPointers) {
+            if (input.eventType != INPUT_END) {
+                return this.failTimeout();
+            }
+
+            var validInterval = this.pTime ? (input.timeStamp - this.pTime < options.interval) : true;
+            var validMultiTap = !this.pCenter || getDistance(this.pCenter, input.center) < options.posThreshold;
+
+            this.pTime = input.timeStamp;
+            this.pCenter = input.center;
+
+            if (!validMultiTap || !validInterval) {
+                this.count = 1;
+            } else {
+                this.count += 1;
+            }
+
+            this._input = input;
+
+            // if tap count matches we have recognized it,
+            // else it has began recognizing...
+            var tapCount = this.count % options.taps;
+            if (tapCount === 0) {
+                // no failing requirements, immediately trigger the tap event
+                // or wait as long as the multitap interval to trigger
+                if (!this.hasRequireFailures()) {
+                    return STATE_RECOGNIZED;
+                } else {
+                    this._timer = setTimeoutContext(function() {
+                        this.state = STATE_RECOGNIZED;
+                        this.tryEmit();
+                    }, options.interval, this);
+                    return STATE_BEGAN;
+                }
+            }
+        }
+        return STATE_FAILED;
+    },
+
+    failTimeout: function() {
+        this._timer = setTimeoutContext(function() {
+            this.state = STATE_FAILED;
+        }, this.options.interval, this);
+        return STATE_FAILED;
+    },
+
+    reset: function() {
+        clearTimeout(this._timer);
+    },
+
+    emit: function() {
+        if (this.state == STATE_RECOGNIZED) {
+            this._input.tapCount = this.count;
+            this.manager.emit(this.options.event, this._input);
+        }
+    }
+});
+
+/**
+ * Simple way to create a manager with a default set of recognizers.
+ * @param {HTMLElement} element
+ * @param {Object} [options]
+ * @constructor
+ */
+function Hammer(element, options) {
+    options = options || {};
+    options.recognizers = ifUndefined(options.recognizers, Hammer.defaults.preset);
+    return new Manager(element, options);
+}
+
+/**
+ * @const {string}
+ */
+Hammer.VERSION = '2.0.7';
+
+/**
+ * default settings
+ * @namespace
+ */
+Hammer.defaults = {
+    /**
+     * set if DOM events are being triggered.
+     * But this is slower and unused by simple implementations, so disabled by default.
+     * @type {Boolean}
+     * @default false
+     */
+    domEvents: false,
+
+    /**
+     * The value for the touchAction property/fallback.
+     * When set to `compute` it will magically set the correct value based on the added recognizers.
+     * @type {String}
+     * @default compute
+     */
+    touchAction: TOUCH_ACTION_COMPUTE,
+
+    /**
+     * @type {Boolean}
+     * @default true
+     */
+    enable: true,
+
+    /**
+     * EXPERIMENTAL FEATURE -- can be removed/changed
+     * Change the parent input target element.
+     * If Null, then it is being set the to main element.
+     * @type {Null|EventTarget}
+     * @default null
+     */
+    inputTarget: null,
+
+    /**
+     * force an input class
+     * @type {Null|Function}
+     * @default null
+     */
+    inputClass: null,
+
+    /**
+     * Default recognizer setup when calling `Hammer()`
+     * When creating a new Manager these will be skipped.
+     * @type {Array}
+     */
+    preset: [
+        // RecognizerClass, options, [recognizeWith, ...], [requireFailure, ...]
+        [RotateRecognizer, {enable: false}],
+        [PinchRecognizer, {enable: false}, ['rotate']],
+        [SwipeRecognizer, {direction: DIRECTION_HORIZONTAL}],
+        [PanRecognizer, {direction: DIRECTION_HORIZONTAL}, ['swipe']],
+        [TapRecognizer],
+        [TapRecognizer, {event: 'doubletap', taps: 2}, ['tap']],
+        [PressRecognizer]
+    ],
+
+    /**
+     * Some CSS properties can be used to improve the working of Hammer.
+     * Add them to this method and they will be set when creating a new Manager.
+     * @namespace
+     */
+    cssProps: {
+        /**
+         * Disables text selection to improve the dragging gesture. Mainly for desktop browsers.
+         * @type {String}
+         * @default 'none'
+         */
+        userSelect: 'none',
+
+        /**
+         * Disable the Windows Phone grippers when pressing an element.
+         * @type {String}
+         * @default 'none'
+         */
+        touchSelect: 'none',
+
+        /**
+         * Disables the default callout shown when you touch and hold a touch target.
+         * On iOS, when you touch and hold a touch target such as a link, Safari displays
+         * a callout containing information about the link. This property allows you to disable that callout.
+         * @type {String}
+         * @default 'none'
+         */
+        touchCallout: 'none',
+
+        /**
+         * Specifies whether zooming is enabled. Used by IE10>
+         * @type {String}
+         * @default 'none'
+         */
+        contentZooming: 'none',
+
+        /**
+         * Specifies that an entire element should be draggable instead of its contents. Mainly for desktop browsers.
+         * @type {String}
+         * @default 'none'
+         */
+        userDrag: 'none',
+
+        /**
+         * Overrides the highlight color shown when the user taps a link or a JavaScript
+         * clickable element in iOS. This property obeys the alpha value, if specified.
+         * @type {String}
+         * @default 'rgba(0,0,0,0)'
+         */
+        tapHighlightColor: 'rgba(0,0,0,0)'
+    }
+};
+
+var STOP = 1;
+var FORCED_STOP = 2;
+
+/**
+ * Manager
+ * @param {HTMLElement} element
+ * @param {Object} [options]
+ * @constructor
+ */
+function Manager(element, options) {
+    this.options = assign({}, Hammer.defaults, options || {});
+
+    this.options.inputTarget = this.options.inputTarget || element;
+
+    this.handlers = {};
+    this.session = {};
+    this.recognizers = [];
+    this.oldCssProps = {};
+
+    this.element = element;
+    this.input = createInputInstance(this);
+    this.touchAction = new TouchAction(this, this.options.touchAction);
+
+    toggleCssProps(this, true);
+
+    each(this.options.recognizers, function(item) {
+        var recognizer = this.add(new (item[0])(item[1]));
+        item[2] && recognizer.recognizeWith(item[2]);
+        item[3] && recognizer.requireFailure(item[3]);
+    }, this);
+}
+
+Manager.prototype = {
+    /**
+     * set options
+     * @param {Object} options
+     * @returns {Manager}
+     */
+    set: function(options) {
+        assign(this.options, options);
+
+        // Options that need a little more setup
+        if (options.touchAction) {
+            this.touchAction.update();
+        }
+        if (options.inputTarget) {
+            // Clean up existing event listeners and reinitialize
+            this.input.destroy();
+            this.input.target = options.inputTarget;
+            this.input.init();
+        }
+        return this;
+    },
+
+    /**
+     * stop recognizing for this session.
+     * This session will be discarded, when a new [input]start event is fired.
+     * When forced, the recognizer cycle is stopped immediately.
+     * @param {Boolean} [force]
+     */
+    stop: function(force) {
+        this.session.stopped = force ? FORCED_STOP : STOP;
+    },
+
+    /**
+     * run the recognizers!
+     * called by the inputHandler function on every movement of the pointers (touches)
+     * it walks through all the recognizers and tries to detect the gesture that is being made
+     * @param {Object} inputData
+     */
+    recognize: function(inputData) {
+        var session = this.session;
+        if (session.stopped) {
+            return;
+        }
+
+        // run the touch-action polyfill
+        this.touchAction.preventDefaults(inputData);
+
+        var recognizer;
+        var recognizers = this.recognizers;
+
+        // this holds the recognizer that is being recognized.
+        // so the recognizer's state needs to be BEGAN, CHANGED, ENDED or RECOGNIZED
+        // if no recognizer is detecting a thing, it is set to `null`
+        var curRecognizer = session.curRecognizer;
+
+        // reset when the last recognizer is recognized
+        // or when we're in a new session
+        if (!curRecognizer || (curRecognizer && curRecognizer.state & STATE_RECOGNIZED)) {
+            curRecognizer = session.curRecognizer = null;
+        }
+
+        var i = 0;
+        while (i < recognizers.length) {
+            recognizer = recognizers[i];
+
+            // find out if we are allowed try to recognize the input for this one.
+            // 1.   allow if the session is NOT forced stopped (see the .stop() method)
+            // 2.   allow if we still haven't recognized a gesture in this session, or the this recognizer is the one
+            //      that is being recognized.
+            // 3.   allow if the recognizer is allowed to run simultaneous with the current recognized recognizer.
+            //      this can be setup with the `recognizeWith()` method on the recognizer.
+            if (session.stopped !== FORCED_STOP && ( // 1
+                    !curRecognizer || recognizer == curRecognizer || // 2
+                    recognizer.canRecognizeWith(curRecognizer))) { // 3
+                recognizer.recognize(inputData);
+            } else {
+                recognizer.reset();
+            }
+
+            // if the recognizer has been recognizing the input as a valid gesture, we want to store this one as the
+            // current active recognizer. but only if we don't already have an active recognizer
+            if (!curRecognizer && recognizer.state & (STATE_BEGAN | STATE_CHANGED | STATE_ENDED)) {
+                curRecognizer = session.curRecognizer = recognizer;
+            }
+            i++;
+        }
+    },
+
+    /**
+     * get a recognizer by its event name.
+     * @param {Recognizer|String} recognizer
+     * @returns {Recognizer|Null}
+     */
+    get: function(recognizer) {
+        if (recognizer instanceof Recognizer) {
+            return recognizer;
+        }
+
+        var recognizers = this.recognizers;
+        for (var i = 0; i < recognizers.length; i++) {
+            if (recognizers[i].options.event == recognizer) {
+                return recognizers[i];
+            }
+        }
+        return null;
+    },
+
+    /**
+     * add a recognizer to the manager
+     * existing recognizers with the same event name will be removed
+     * @param {Recognizer} recognizer
+     * @returns {Recognizer|Manager}
+     */
+    add: function(recognizer) {
+        if (invokeArrayArg(recognizer, 'add', this)) {
+            return this;
+        }
+
+        // remove existing
+        var existing = this.get(recognizer.options.event);
+        if (existing) {
+            this.remove(existing);
+        }
+
+        this.recognizers.push(recognizer);
+        recognizer.manager = this;
+
+        this.touchAction.update();
+        return recognizer;
+    },
+
+    /**
+     * remove a recognizer by name or instance
+     * @param {Recognizer|String} recognizer
+     * @returns {Manager}
+     */
+    remove: function(recognizer) {
+        if (invokeArrayArg(recognizer, 'remove', this)) {
+            return this;
+        }
+
+        recognizer = this.get(recognizer);
+
+        // let's make sure this recognizer exists
+        if (recognizer) {
+            var recognizers = this.recognizers;
+            var index = inArray(recognizers, recognizer);
+
+            if (index !== -1) {
+                recognizers.splice(index, 1);
+                this.touchAction.update();
+            }
+        }
+
+        return this;
+    },
+
+    /**
+     * bind event
+     * @param {String} events
+     * @param {Function} handler
+     * @returns {EventEmitter} this
+     */
+    on: function(events, handler) {
+        if (events === undefined) {
+            return;
+        }
+        if (handler === undefined) {
+            return;
+        }
+
+        var handlers = this.handlers;
+        each(splitStr(events), function(event) {
+            handlers[event] = handlers[event] || [];
+            handlers[event].push(handler);
+        });
+        return this;
+    },
+
+    /**
+     * unbind event, leave emit blank to remove all handlers
+     * @param {String} events
+     * @param {Function} [handler]
+     * @returns {EventEmitter} this
+     */
+    off: function(events, handler) {
+        if (events === undefined) {
+            return;
+        }
+
+        var handlers = this.handlers;
+        each(splitStr(events), function(event) {
+            if (!handler) {
+                delete handlers[event];
+            } else {
+                handlers[event] && handlers[event].splice(inArray(handlers[event], handler), 1);
+            }
+        });
+        return this;
+    },
+
+    /**
+     * emit event to the listeners
+     * @param {String} event
+     * @param {Object} data
+     */
+    emit: function(event, data) {
+        // we also want to trigger dom events
+        if (this.options.domEvents) {
+            triggerDomEvent(event, data);
+        }
+
+        // no handlers, so skip it all
+        var handlers = this.handlers[event] && this.handlers[event].slice();
+        if (!handlers || !handlers.length) {
+            return;
+        }
+
+        data.type = event;
+        data.preventDefault = function() {
+            data.srcEvent.preventDefault();
+        };
+
+        var i = 0;
+        while (i < handlers.length) {
+            handlers[i](data);
+            i++;
+        }
+    },
+
+    /**
+     * destroy the manager and unbinds all events
+     * it doesn't unbind dom events, that is the user own responsibility
+     */
+    destroy: function() {
+        this.element && toggleCssProps(this, false);
+
+        this.handlers = {};
+        this.session = {};
+        this.input.destroy();
+        this.element = null;
+    }
+};
+
+/**
+ * add/remove the css properties as defined in manager.options.cssProps
+ * @param {Manager} manager
+ * @param {Boolean} add
+ */
+function toggleCssProps(manager, add) {
+    var element = manager.element;
+    if (!element.style) {
+        return;
+    }
+    var prop;
+    each(manager.options.cssProps, function(value, name) {
+        prop = prefixed(element.style, name);
+        if (add) {
+            manager.oldCssProps[prop] = element.style[prop];
+            element.style[prop] = value;
+        } else {
+            element.style[prop] = manager.oldCssProps[prop] || '';
+        }
+    });
+    if (!add) {
+        manager.oldCssProps = {};
+    }
+}
+
+/**
+ * trigger dom event
+ * @param {String} event
+ * @param {Object} data
+ */
+function triggerDomEvent(event, data) {
+    var gestureEvent = document.createEvent('Event');
+    gestureEvent.initEvent(event, true, true);
+    gestureEvent.gesture = data;
+    data.target.dispatchEvent(gestureEvent);
+}
+
+assign(Hammer, {
+    INPUT_START: INPUT_START,
+    INPUT_MOVE: INPUT_MOVE,
+    INPUT_END: INPUT_END,
+    INPUT_CANCEL: INPUT_CANCEL,
+
+    STATE_POSSIBLE: STATE_POSSIBLE,
+    STATE_BEGAN: STATE_BEGAN,
+    STATE_CHANGED: STATE_CHANGED,
+    STATE_ENDED: STATE_ENDED,
+    STATE_RECOGNIZED: STATE_RECOGNIZED,
+    STATE_CANCELLED: STATE_CANCELLED,
+    STATE_FAILED: STATE_FAILED,
+
+    DIRECTION_NONE: DIRECTION_NONE,
+    DIRECTION_LEFT: DIRECTION_LEFT,
+    DIRECTION_RIGHT: DIRECTION_RIGHT,
+    DIRECTION_UP: DIRECTION_UP,
+    DIRECTION_DOWN: DIRECTION_DOWN,
+    DIRECTION_HORIZONTAL: DIRECTION_HORIZONTAL,
+    DIRECTION_VERTICAL: DIRECTION_VERTICAL,
+    DIRECTION_ALL: DIRECTION_ALL,
+
+    Manager: Manager,
+    Input: Input,
+    TouchAction: TouchAction,
+
+    TouchInput: TouchInput,
+    MouseInput: MouseInput,
+    PointerEventInput: PointerEventInput,
+    TouchMouseInput: TouchMouseInput,
+    SingleTouchInput: SingleTouchInput,
+
+    Recognizer: Recognizer,
+    AttrRecognizer: AttrRecognizer,
+    Tap: TapRecognizer,
+    Pan: PanRecognizer,
+    Swipe: SwipeRecognizer,
+    Pinch: PinchRecognizer,
+    Rotate: RotateRecognizer,
+    Press: PressRecognizer,
+
+    on: addEventListeners,
+    off: removeEventListeners,
+    each: each,
+    merge: merge,
+    extend: extend,
+    assign: assign,
+    inherit: inherit,
+    bindFn: bindFn,
+    prefixed: prefixed
+});
+
+// this prevents errors when Hammer is loaded in the presence of an AMD
+//  style loader but by script tag, not by the loader.
+var freeGlobal = (typeof window !== 'undefined' ? window : (typeof self !== 'undefined' ? self : {})); // jshint ignore:line
+freeGlobal.Hammer = Hammer;
+
+if (true) {
+    !(__WEBPACK_AMD_DEFINE_RESULT__ = (function() {
+        return Hammer;
+    }).call(exports, __webpack_require__, exports, module),
+		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+} else {}
+
+})(window, document, 'Hammer');
+
+
+/***/ }),
+
 /***/ "./node_modules/ieee754/index.js":
 /*!***************************************!*\
   !*** ./node_modules/ieee754/index.js ***!
@@ -4332,7 +7043,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: auto;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\nbutton.active {\n  background: #b5ddff !important;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -57504,6 +60215,288 @@ function styleChanged(style, prevStyle) {
 
 
 //# sourceMappingURL=helpers.segment.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/chart.js/dist/helpers.js":
+/*!***********************************************!*\
+  !*** ./node_modules/chart.js/dist/helpers.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   HALF_PI: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.H),
+/* harmony export */   INFINITY: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b2),
+/* harmony export */   PI: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.P),
+/* harmony export */   PITAU: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b1),
+/* harmony export */   QUARTER_PI: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b4),
+/* harmony export */   RAD_PER_DEG: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b3),
+/* harmony export */   TAU: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.T),
+/* harmony export */   TWO_THIRDS_PI: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b5),
+/* harmony export */   _addGrace: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.R),
+/* harmony export */   _alignPixel: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.X),
+/* harmony export */   _alignStartEnd: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a2),
+/* harmony export */   _angleBetween: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.p),
+/* harmony export */   _angleDiff: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b6),
+/* harmony export */   _arrayUnique: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__._),
+/* harmony export */   _attachContext: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a8),
+/* harmony export */   _bezierCurveTo: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.as),
+/* harmony export */   _bezierInterpolation: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ap),
+/* harmony export */   _boundSegment: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ax),
+/* harmony export */   _boundSegments: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.an),
+/* harmony export */   _capitalize: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a5),
+/* harmony export */   _computeSegments: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.am),
+/* harmony export */   _createResolver: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a9),
+/* harmony export */   _decimalPlaces: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aK),
+/* harmony export */   _deprecated: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aV),
+/* harmony export */   _descriptors: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aa),
+/* harmony export */   _elementsEqual: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ah),
+/* harmony export */   _factorize: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.N),
+/* harmony export */   _filterBetween: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aO),
+/* harmony export */   _getParentNode: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.I),
+/* harmony export */   _getStartAndCountOfVisiblePoints: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.q),
+/* harmony export */   _int16Range: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.W),
+/* harmony export */   _isBetween: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aj),
+/* harmony export */   _isClickEvent: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ai),
+/* harmony export */   _isDomSupported: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.M),
+/* harmony export */   _isPointInArea: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.C),
+/* harmony export */   _limitValue: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.S),
+/* harmony export */   _longestText: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aN),
+/* harmony export */   _lookup: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aP),
+/* harmony export */   _lookupByKey: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.B),
+/* harmony export */   _measureText: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.V),
+/* harmony export */   _merger: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aT),
+/* harmony export */   _mergerIf: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aU),
+/* harmony export */   _normalizeAngle: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ay),
+/* harmony export */   _parseObjectDataRadialScale: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.y),
+/* harmony export */   _pointInLine: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aq),
+/* harmony export */   _readValueToProps: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ak),
+/* harmony export */   _rlookupByKey: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.A),
+/* harmony export */   _scaleRangesChanged: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.w),
+/* harmony export */   _setMinAndMaxByKey: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aG),
+/* harmony export */   _splitKey: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aW),
+/* harmony export */   _steppedInterpolation: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ao),
+/* harmony export */   _steppedLineTo: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ar),
+/* harmony export */   _textX: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aB),
+/* harmony export */   _toLeftRightCenter: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a1),
+/* harmony export */   _updateBezierControlPoints: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.al),
+/* harmony export */   addRoundedRectPath: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.au),
+/* harmony export */   almostEquals: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aJ),
+/* harmony export */   almostWhole: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aI),
+/* harmony export */   callback: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Q),
+/* harmony export */   clearCanvas: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.af),
+/* harmony export */   clipArea: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Y),
+/* harmony export */   clone: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aS),
+/* harmony export */   color: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.c),
+/* harmony export */   createContext: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.j),
+/* harmony export */   debounce: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ad),
+/* harmony export */   defined: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.h),
+/* harmony export */   distanceBetweenPoints: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aE),
+/* harmony export */   drawPoint: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.at),
+/* harmony export */   drawPointLegend: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aD),
+/* harmony export */   each: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.F),
+/* harmony export */   easingEffects: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.e),
+/* harmony export */   finiteOrDefault: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.O),
+/* harmony export */   fontString: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a$),
+/* harmony export */   formatNumber: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.o),
+/* harmony export */   getAngleFromPoint: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.D),
+/* harmony export */   getHoverColor: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aR),
+/* harmony export */   getMaximumSize: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.G),
+/* harmony export */   getRelativePosition: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.z),
+/* harmony export */   getRtlAdapter: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.az),
+/* harmony export */   getStyle: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a_),
+/* harmony export */   isArray: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b),
+/* harmony export */   isFinite: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.g),
+/* harmony export */   isFunction: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a7),
+/* harmony export */   isNullOrUndef: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.k),
+/* harmony export */   isNumber: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.x),
+/* harmony export */   isObject: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.i),
+/* harmony export */   isPatternOrGradient: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aQ),
+/* harmony export */   listenArrayEvents: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.l),
+/* harmony export */   log10: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aM),
+/* harmony export */   merge: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a4),
+/* harmony export */   mergeIf: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ab),
+/* harmony export */   niceNum: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aH),
+/* harmony export */   noop: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aF),
+/* harmony export */   overrideTextDirection: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aA),
+/* harmony export */   readUsedSize: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.J),
+/* harmony export */   renderText: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.Z),
+/* harmony export */   requestAnimFrame: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.r),
+/* harmony export */   resolve: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a),
+/* harmony export */   resolveObjectKey: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.f),
+/* harmony export */   restoreTextDirection: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aC),
+/* harmony export */   retinaScale: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ae),
+/* harmony export */   setsEqual: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ag),
+/* harmony export */   sign: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.s),
+/* harmony export */   splineCurve: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aY),
+/* harmony export */   splineCurveMonotone: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aZ),
+/* harmony export */   supportsEventListenerOptions: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.K),
+/* harmony export */   throttled: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.L),
+/* harmony export */   toDegrees: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.U),
+/* harmony export */   toDimension: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.n),
+/* harmony export */   toFont: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.a0),
+/* harmony export */   toFontString: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aX),
+/* harmony export */   toLineHeight: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.b0),
+/* harmony export */   toPadding: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.E),
+/* harmony export */   toPercentage: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.m),
+/* harmony export */   toRadians: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.t),
+/* harmony export */   toTRBL: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.av),
+/* harmony export */   toTRBLCorners: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.aw),
+/* harmony export */   uid: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.ac),
+/* harmony export */   unclipArea: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.$),
+/* harmony export */   unlistenArrayEvents: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.u),
+/* harmony export */   valueOrDefault: () => (/* reexport safe */ _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__.v)
+/* harmony export */ });
+/* harmony import */ var _chunks_helpers_segment_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./chunks/helpers.segment.js */ "./node_modules/chart.js/dist/chunks/helpers.segment.js");
+/*!
+ * Chart.js v4.4.0
+ * https://www.chartjs.org
+ * (c) 2023 Chart.js Contributors
+ * Released under the MIT License
+ */
+
+
+//# sourceMappingURL=helpers.js.map
+
+
+/***/ }),
+
+/***/ "./node_modules/chart.js/helpers/helpers.js":
+/*!**************************************************!*\
+  !*** ./node_modules/chart.js/helpers/helpers.js ***!
+  \**************************************************/
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   HALF_PI: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.HALF_PI),
+/* harmony export */   INFINITY: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.INFINITY),
+/* harmony export */   PI: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.PI),
+/* harmony export */   PITAU: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.PITAU),
+/* harmony export */   QUARTER_PI: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.QUARTER_PI),
+/* harmony export */   RAD_PER_DEG: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.RAD_PER_DEG),
+/* harmony export */   TAU: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.TAU),
+/* harmony export */   TWO_THIRDS_PI: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.TWO_THIRDS_PI),
+/* harmony export */   _addGrace: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._addGrace),
+/* harmony export */   _alignPixel: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._alignPixel),
+/* harmony export */   _alignStartEnd: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._alignStartEnd),
+/* harmony export */   _angleBetween: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._angleBetween),
+/* harmony export */   _angleDiff: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._angleDiff),
+/* harmony export */   _arrayUnique: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._arrayUnique),
+/* harmony export */   _attachContext: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._attachContext),
+/* harmony export */   _bezierCurveTo: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._bezierCurveTo),
+/* harmony export */   _bezierInterpolation: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._bezierInterpolation),
+/* harmony export */   _boundSegment: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._boundSegment),
+/* harmony export */   _boundSegments: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._boundSegments),
+/* harmony export */   _capitalize: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._capitalize),
+/* harmony export */   _computeSegments: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._computeSegments),
+/* harmony export */   _createResolver: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._createResolver),
+/* harmony export */   _decimalPlaces: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._decimalPlaces),
+/* harmony export */   _deprecated: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._deprecated),
+/* harmony export */   _descriptors: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._descriptors),
+/* harmony export */   _elementsEqual: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._elementsEqual),
+/* harmony export */   _factorize: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._factorize),
+/* harmony export */   _filterBetween: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._filterBetween),
+/* harmony export */   _getParentNode: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._getParentNode),
+/* harmony export */   _getStartAndCountOfVisiblePoints: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._getStartAndCountOfVisiblePoints),
+/* harmony export */   _int16Range: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._int16Range),
+/* harmony export */   _isBetween: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._isBetween),
+/* harmony export */   _isClickEvent: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._isClickEvent),
+/* harmony export */   _isDomSupported: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._isDomSupported),
+/* harmony export */   _isPointInArea: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._isPointInArea),
+/* harmony export */   _limitValue: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._limitValue),
+/* harmony export */   _longestText: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._longestText),
+/* harmony export */   _lookup: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._lookup),
+/* harmony export */   _lookupByKey: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._lookupByKey),
+/* harmony export */   _measureText: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._measureText),
+/* harmony export */   _merger: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._merger),
+/* harmony export */   _mergerIf: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._mergerIf),
+/* harmony export */   _normalizeAngle: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._normalizeAngle),
+/* harmony export */   _parseObjectDataRadialScale: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._parseObjectDataRadialScale),
+/* harmony export */   _pointInLine: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._pointInLine),
+/* harmony export */   _readValueToProps: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._readValueToProps),
+/* harmony export */   _rlookupByKey: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._rlookupByKey),
+/* harmony export */   _scaleRangesChanged: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._scaleRangesChanged),
+/* harmony export */   _setMinAndMaxByKey: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._setMinAndMaxByKey),
+/* harmony export */   _splitKey: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._splitKey),
+/* harmony export */   _steppedInterpolation: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._steppedInterpolation),
+/* harmony export */   _steppedLineTo: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._steppedLineTo),
+/* harmony export */   _textX: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._textX),
+/* harmony export */   _toLeftRightCenter: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._toLeftRightCenter),
+/* harmony export */   _updateBezierControlPoints: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__._updateBezierControlPoints),
+/* harmony export */   addRoundedRectPath: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.addRoundedRectPath),
+/* harmony export */   almostEquals: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.almostEquals),
+/* harmony export */   almostWhole: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.almostWhole),
+/* harmony export */   callback: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.callback),
+/* harmony export */   clearCanvas: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.clearCanvas),
+/* harmony export */   clipArea: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.clipArea),
+/* harmony export */   clone: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.clone),
+/* harmony export */   color: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.color),
+/* harmony export */   createContext: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.createContext),
+/* harmony export */   debounce: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.debounce),
+/* harmony export */   defined: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.defined),
+/* harmony export */   distanceBetweenPoints: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.distanceBetweenPoints),
+/* harmony export */   drawPoint: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.drawPoint),
+/* harmony export */   drawPointLegend: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.drawPointLegend),
+/* harmony export */   each: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.each),
+/* harmony export */   easingEffects: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.easingEffects),
+/* harmony export */   finiteOrDefault: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.finiteOrDefault),
+/* harmony export */   fontString: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.fontString),
+/* harmony export */   formatNumber: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.formatNumber),
+/* harmony export */   getAngleFromPoint: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.getAngleFromPoint),
+/* harmony export */   getHoverColor: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.getHoverColor),
+/* harmony export */   getMaximumSize: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.getMaximumSize),
+/* harmony export */   getRelativePosition: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.getRelativePosition),
+/* harmony export */   getRtlAdapter: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.getRtlAdapter),
+/* harmony export */   getStyle: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.getStyle),
+/* harmony export */   isArray: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isArray),
+/* harmony export */   isFinite: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isFinite),
+/* harmony export */   isFunction: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isFunction),
+/* harmony export */   isNullOrUndef: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isNullOrUndef),
+/* harmony export */   isNumber: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isNumber),
+/* harmony export */   isObject: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isObject),
+/* harmony export */   isPatternOrGradient: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isPatternOrGradient),
+/* harmony export */   listenArrayEvents: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.listenArrayEvents),
+/* harmony export */   log10: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.log10),
+/* harmony export */   merge: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.merge),
+/* harmony export */   mergeIf: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.mergeIf),
+/* harmony export */   niceNum: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.niceNum),
+/* harmony export */   noop: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.noop),
+/* harmony export */   overrideTextDirection: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.overrideTextDirection),
+/* harmony export */   readUsedSize: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.readUsedSize),
+/* harmony export */   renderText: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.renderText),
+/* harmony export */   requestAnimFrame: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.requestAnimFrame),
+/* harmony export */   resolve: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.resolve),
+/* harmony export */   resolveObjectKey: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.resolveObjectKey),
+/* harmony export */   restoreTextDirection: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.restoreTextDirection),
+/* harmony export */   retinaScale: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.retinaScale),
+/* harmony export */   setsEqual: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.setsEqual),
+/* harmony export */   sign: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.sign),
+/* harmony export */   splineCurve: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.splineCurve),
+/* harmony export */   splineCurveMonotone: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.splineCurveMonotone),
+/* harmony export */   supportsEventListenerOptions: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.supportsEventListenerOptions),
+/* harmony export */   throttled: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.throttled),
+/* harmony export */   toDegrees: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toDegrees),
+/* harmony export */   toDimension: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toDimension),
+/* harmony export */   toFont: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toFont),
+/* harmony export */   toFontString: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toFontString),
+/* harmony export */   toLineHeight: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toLineHeight),
+/* harmony export */   toPadding: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toPadding),
+/* harmony export */   toPercentage: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toPercentage),
+/* harmony export */   toRadians: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toRadians),
+/* harmony export */   toTRBL: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toTRBL),
+/* harmony export */   toTRBLCorners: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.toTRBLCorners),
+/* harmony export */   uid: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.uid),
+/* harmony export */   unclipArea: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.unclipArea),
+/* harmony export */   unlistenArrayEvents: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.unlistenArrayEvents),
+/* harmony export */   valueOrDefault: () => (/* reexport safe */ _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__.valueOrDefault)
+/* harmony export */ });
+/* harmony import */ var _dist_helpers_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../dist/helpers.js */ "./node_modules/chart.js/dist/helpers.js");
+
 
 
 /***/ })

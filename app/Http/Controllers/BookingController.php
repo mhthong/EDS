@@ -228,8 +228,47 @@ class BookingController extends Controller
             'price',
             'payment'
         ])->where('id', '=', $id)->get();
-        return view('admin.book.edit', compact('bookingsData'));
+
+        $check = $this->CheckAuthBooking($bookingsData[0]);
+
+
+        if($check == true){
+            return view('admin.book.edit', compact('bookingsData'));
+        } else {
+            return redirect()->back()->with("failed", "You do not have access !");
+
+        }
+
+
     }
+
+
+
+    public function CheckAuthBooking($Data)
+    {
+
+        if (Auth::user() instanceof \App\Models\Artists) {
+
+            if($Data -> ArtistID == Auth::user()->id && $Data -> status == "Approved") {
+            
+                return true;
+            } else {
+                return false;
+            }
+           
+        } else if (Auth::user() instanceof \App\Models\Employee) {
+
+            if($Data -> source_name == Auth::user()->name && $Data -> source_id ==Auth::user()->id ) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } else{
+            return true;
+        }
+    }
+
 
 
     public function update(Booking $id, Request $request)

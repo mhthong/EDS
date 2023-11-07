@@ -15,6 +15,7 @@ new Vue({
         PriceBooking,
     },
 
+
 });
 
 

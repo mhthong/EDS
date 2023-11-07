@@ -1,5 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+
+.Price{
+	background-image: url('../../../public/assets/images/Group\ 2996.png')!important;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+	border-radius: 10px !important;
+	background-position: center !important;
+	background-color: #ffffff00 !important;
+	position: relative;
+
+	h6{
+		color: white;
+	}
+
+	h4{
+		color: white;
+	}
+
+	img{
+		position: absolute;
+		width: 40px;
+		right: 15px;
+		top: 15px;
+	}
+  }
+
+
+  
 * {
 	margin: 0;
 	padding: 0;
@@ -557,7 +585,7 @@ body {
 }
 
 #main .main__body .members__user {
-	max-height: 500px;
+	max-height: 200px;
 	overflow-y: auto;
 }
 #main .main__body .members__user li {
@@ -688,12 +716,6 @@ body {
     }
 
 
-
-
-
-
-
-
 	#sidebar {
 		left: -5rem;
 	}
@@ -703,8 +725,6 @@ body {
 	#sidebar.active + .sidebar-overlay {
 		display: block;
 	}
-
-
 
 
 	#main {
@@ -866,5 +886,4 @@ body {
 		margin-left: 1rem;
 	}
   }
-
 

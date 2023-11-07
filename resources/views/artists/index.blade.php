@@ -10,11 +10,11 @@
 
 @section('content')
 
-
+@include('admin.Notifications')
 
 	<!-- start: MAIN -->
 	<section id="main">
-		
+
 		<!-- start: MAIN TOP -->
 		<div class="main__top">
             @include('admin.main__top')
