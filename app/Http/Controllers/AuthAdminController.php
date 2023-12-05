@@ -71,8 +71,7 @@ class AuthAdminController extends Controller
 
         $data['password'] = Hash::make($request->input('password'));
 
-      
-
+    
         if( $data['role'] == "Administrator"){
             $data['manage_supers'] = 0;
             $data['super_user'] = "Administrator";
@@ -90,8 +89,6 @@ class AuthAdminController extends Controller
             $data['manage_supers'] = 4;
             $data['super_user'] = "Operation";
         }
-
-       dd( $data['super_user']);
 
 
         // Create a new admin

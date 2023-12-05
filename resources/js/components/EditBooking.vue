@@ -12,6 +12,20 @@
         </h4>
         <div class="col-12">
           <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
+            <select
+              class="form-control"
+              name="showroomID"
+              v-model="selectedShowroom"
+              @change="changeSelectedShowroom"
+            >
+              <option v-for="showroom in showrooms" :value="showroom.id">
+                {{ showroom.Name }}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12">
+          <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
             <div class="controls">
               <input
                 id="depart"
@@ -22,7 +36,6 @@
                 @change="filterActiveDays"
                 @input="checkSelectedDate"
                 @click="filterActiveDays"
-                @blur="filterActiveDays"
               />
               <label
                 for="selectedDate"
@@ -30,6 +43,12 @@
                 :class="{ active: isLabelActive }"
                 ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Treament Date</label
               >
+              <div
+                v-if="this.isActive === false && selectedDate"
+                class="error-message"
+              >
+                This day is inactive .
+              </div>
               <div v-if="showWarning" class="error-message">
                 Please select a date more today.
               </div>
@@ -137,7 +156,6 @@
             <div v-else="filteredDays.length > 0">
               <span class="radio-text ps-2">None spot exists .</span>
             </div>
-
           </div>
         </div>
 
@@ -204,26 +222,25 @@
           />
         </div>
 
-
         <div class="controls mb-4">
           <label :for="formData.source_data" class="label-date active"
             >Source Data:</label
           >
-  
+
           <select
-          :id="formData.source_data"
+            :id="formData.source_data"
             name="source_data"
             v-model="formData.source_data"
-              >
-              <option value="Facebook">Facebook</option>
-          <option value="Google">Google</option>
-          <option value="Website">Website</option>
-          <option value="Tiktok">Tiktok</option>
-          <option value="Order">Order</option>
-              </select>
+          >
+            <option value="Facebook">Facebook</option>
+            <option value="Instagram">Instagram</option>
+            <option value="WhatsApp">WhatsApp</option>
+            <option value="Google">Google</option>
+            <option value="Website">Website</option>
+            <option value="Tiktok">Tiktok</option>
+            <option value="Order">Order</option>
+          </select>
         </div>
-
- 
 
         <div class="controls mb-4">
           <label :for="formData.note" class="label-date active">Note:</label>
@@ -353,7 +370,7 @@
                 value="save"
                 class="btn btn-info"
                 @click="SubmitEvent"
-                :disabled="submitted"
+                :disabled="submitted || this.isActive === false"
               >
                 <i class="fa fa-save"></i> Save
               </button>
@@ -364,7 +381,7 @@
                 value="apply"
                 class="btn btn-success"
                 @click="SubmitEvent"
-                :disabled="submitted"
+                :disabled="submitted || this.isActive === false"
               >
                 <i class="fa fa-check-circle"></i> Save &amp; Exit
               </button>
@@ -391,7 +408,7 @@
           </div>
           <div class="widget-body p-3">
             <div class="ui-select-wrapper form-group">
-              <div v-if="StatusPresent === 'Waiting'">
+
                 <select
                   class="form-control pointer-events-p"
                   v-model="selectedStatus"
@@ -399,6 +416,8 @@
                 >
                   <option value="Waiting" selected>Waiting</option>
                   <option value="Done">Done</option>
+                  <option value="Partial Done">Partial Done</option>
+                  <option value="Reschedule">Reschedule</option>
                   <option value="Cancel">Cancel</option>
                   <option value="Refund">Refund</option>
                 </select>
@@ -429,78 +448,73 @@
                     required
                   />
                 </div>
-              </div>
 
-              <div v-if="StatusPresent === 'Done'">
-                <select
-                  class="form-control pointer-events-p"
-                  v-model="selectedStatus"
-                  name="status"
+                <div
+                  class="form-group"
+                  v-if="selectedStatus === 'Partial Done'"
                 >
-                  <option value="Done">Done</option>
-                </select>
-              </div>
-
-              <div v-if="StatusPresent === 'Cancel'">
-                <select
-                  class="form-control pointer-events-p"
-                  v-model="selectedStatus"
-                  name="status"
-                >
-                  <option value="Cancel">Cancel</option>
-                  <option value="Refund">Refund</option>
-                </select>
-
-                <div class="form-group" v-if="selectedStatus === 'Cancel'">
-                  <label for="">Reason cancel</label>
-
-                  <select
-                    class="form-control pointer-events-p"
-                    v-model="Cancel"
-                    name="Cancel"
-                  >
-                    <option value="Clients" selected>Clients</option>
-                    <option value="Operation">Operation</option>
-                  </select>
-                </div>
-
-                <div class="form-group" v-if="selectedStatus === 'Refund'">
-                  <label for="">Refund Price</label>
+                  <label for="">Price</label>
                   <!-- Input field for "Cancel" or "Refund" status -->
                   <input
                     type="number"
                     class="form-control"
-                    name="Refund"
-                    v-model="Refund"
+                    name="Partial_Done"
+                    v-model="Partial_Done"
                     min="0"
-                    :max="this.maxRefund"
+                    :max="this.maxPartial_Done"
                     required
                   />
                 </div>
-              </div>
-
-              <div v-if="StatusPresent === 'Refund'">
-                <select
-                  class="form-control pointer-events-p"
-                  v-model="selectedStatus"
-                  name="status"
+                <div
+                  class="form-group"
+                  v-if="
+                    selectedStatus === 'Done' ||
+                    selectedStatus === 'Partial Done'
+                  "
                 >
-                  <option value="Refund">Refund</option>
-                </select>
-
-                <div class="form-group" v-if="selectedStatus === 'Refund'">
-                  <label for="">Refund Price</label>
+                  <label for="">Upsell</label>
                   <!-- Input field for "Cancel" or "Refund" status -->
                   <input
                     type="number"
                     class="form-control"
-                    name="Refund"
-                    v-model="Refund"
+                    name="upsale"
+                    v-model="upsale"
                     min="0"
-                    :max="this.maxRefund"
                     required
                   />
                 </div>
+   
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-ad-form right-sidebar mt-3">
+        <div class="widget meta-boxes">
+          <div class="widget-title">
+            <h4>
+              <label
+                for="status"
+                class="m-0 control-label required"
+                aria-required="true"
+                >Payment Type</label
+              >
+            </h4>
+          </div>
+          <div class="widget-body p-3">
+            <div class="ui-select-wrapper form-group">
+              <div>
+                <select
+                  class="form-control"
+                  name="payment_type"
+                  v-model="selectedPaymentType"
+                  required
+                >
+                  <option value="Bank transfer">Bank transfer</option>
+                  <option value="After Pay">After Pay</option>
+                  <option value="Cash">Cash</option>
+                  <option value="Card">Card</option>
+                </select>
               </div>
             </div>
           </div>
@@ -515,7 +529,7 @@
                 for="status"
                 class="m-0 control-label required"
                 aria-required="true"
-                >PaymentType</label
+                >Payment Remaining Type</label
               >
             </h4>
           </div>
@@ -524,9 +538,10 @@
               <div>
                 <select
                   class="form-control"
-                  name="payment_type"
-                  v-model="selectedPaymentType"
+                  name="payment_remaining_type"
+                  v-model="selectedPaymentRemainingType"
                 >
+                  <option value="null">None</option>
                   <option value="Bank transfer">Bank transfer</option>
                   <option value="After Pay">After Pay</option>
                   <option value="Cash">Cash</option>
@@ -611,6 +626,7 @@ export default {
       showroomspath: "N/A",
       selectedShowroom: null,
       selectedArtist: 0,
+      isActive: false,
       groupServices: [],
       showroomSchedules: [],
       services: [],
@@ -659,6 +675,9 @@ export default {
       selectedStatus: "Waiting",
       selectedPaymentType: "N/A",
       Refund: 0,
+      Partial_Done: 0,
+      maxPartial_Done: 0,
+      upsale: 0,
       maxRefund: "",
       Cancel: "Clients",
       sendmail: "",
@@ -677,6 +696,7 @@ export default {
       selectedStartTime: "",
       selectedEndTime: "",
       StatusPresent: "",
+      selectedPaymentRemainingType: "",
       /*   selectedOption: "option1", */
     };
   },
@@ -786,9 +806,15 @@ export default {
           this.selectedServices = this.apiData_id[0].services[0].id;
           this.selectedServicesName = this.apiData_id[0].services[0].Name;
           this.content = this.apiData_id[0].content;
+          this.upsale = this.apiData_id[0].price.upsale;
           this.Refund =
             this.apiData_id[0].price.Deposit_price -
             this.apiData_id[0].price.Total_price;
+          this.maxPartial_Done = this.apiData_id[0].price.Remaining_price;
+          this.Partial_Done =
+            this.apiData_id[0].price.Total_price -
+            this.apiData_id[0].price.Deposit_price;
+
           this.Cancel = this.apiData_id[0].content;
           this.maxRefund = this.apiData_id[0].price.Deposit_price;
           this.selectedDepositPrice = this.apiData_id[0].price.Deposit_price;
@@ -801,6 +827,8 @@ export default {
           if (this.apiData_id[0] && this.apiData_id[0].payment) {
             // Set this.selectedPaymentType to the value of payment_type
             this.selectedPaymentType = this.apiData_id[0].payment.payment_type;
+            this.selectedPaymentRemainingType =
+              this.apiData_id[0].payment.payment_type_remainding;
           } else {
             // Handle the case where payment data is not available
             this.selectedPaymentType = "N/A";
@@ -852,11 +880,17 @@ export default {
           `/api/bookings/showroom/${this.selectedShowroom}`
         );
         this.apiData = response.data;
-      
       } catch (error) {
         console.error("Error fetching API data:", error);
       }
     },
+
+    changeSelectedShowroom() {
+      Promise.all([this.fetchApiData()]).then(() => {
+        this.filterActiveDays();
+      });
+    },
+
     fetchArtists() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios
@@ -874,7 +908,6 @@ export default {
         .get(`/api/showroomschedule/${this.selectedShowroom}`)
         .then((response) => {
           this.showroomSchedules = response.data;
-       
         })
         .catch((error) => {
           console.error("Error fetching showroomschedule:", error);
@@ -882,7 +915,21 @@ export default {
     },
 
     filterActiveDays() {
-      if (!this.selectedDate) return;
+      if (!this.selectedDate || !this.selectedShowroom) return;
+
+      // Gửi yêu cầu API để lấy dữ liệu
+      axios
+        .get(`/api/date-active/${this.selectedDate}/${this.selectedShowroom}`)
+        .then((response) => {
+          // Lấy giá trị active từ API
+          this.isActive = response.data.active;
+
+          // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+
       this.showfilteredDays = true;
       this.filteredDays = this.apiData.filter(
         (schedule) =>
@@ -890,8 +937,6 @@ export default {
           parseInt(schedule.ArtistID) === parseInt(this.selectedArtist) &&
           parseInt(schedule.id) !== parseInt(this.id)
       );
-
-     
     },
 
     formatTime(time) {
@@ -1239,14 +1284,163 @@ export default {
   },
 
   mounted() {
+    this.fetchApiData();
     this.fetchShowrooms();
     this.fetchServices();
     this.fetchArtistlevels();
     this.fetchShowroomSchedule();
-    this.fetchApiData();
     this.fetchArtists();
     this.fetchapiData_id();
     this.fetchGroupServices();
   },
 };
 </script>
+<style>
+.label {
+  width: 100%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border-radius: 10px;
+  padding: 18px 16px;
+  margin: 1rem 0px;
+  background-color: #fff;
+  transition: 0.1s;
+  position: relative;
+  text-align: left;
+  box-sizing: border-box;
+  display: flex;
+  gap: 1rem;
+}
+
+.label-schedule {
+  justify-content: center;
+  background-color: rgb(255 112 158 / 25%);
+}
+
+.label:hover {
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);
+}
+
+.label-checked {
+  border: 2px solid #36b666;
+  background-color: hsl(95, 60%, 90%) !important;
+}
+
+.radio-header {
+  font-weight: 600;
+}
+
+.radio-text {
+  color: #777;
+}
+
+.radio-check {
+  display: none;
+}
+
+.check-icon {
+  color: #36b666;
+  position: absolute;
+  top: 12px;
+  right: 8px;
+}
+
+.radio-body {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 8px;
+}
+
+.book_detail {
+  padding: 1rem;
+}
+
+.custom-btn {
+  width: 130px;
+  height: 40px;
+  color: #fff;
+  border-radius: 5px;
+  padding: 10px 25px;
+  margin-top: 1rem;
+  font-family: "Lato", sans-serif;
+  font-weight: 500;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-block;
+  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+  outline: none;
+}
+
+/* 16 */
+.btn-16 {
+  border: none;
+  color: #000;
+}
+.btn-16:after {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 100%;
+  top: 0;
+  left: 0;
+  direction: rtl;
+  z-index: -1;
+  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,
+    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;
+  transition: all 0.3s ease;
+}
+.btn-16:hover {
+  color: #000;
+}
+.btn-16:hover:after {
+  left: auto;
+  right: 0;
+  width: 100%;
+}
+.btn-16:active {
+  top: 2px;
+}
+
+.groupService {
+  flex-direction: column;
+}
+.groupService ul li {
+  margin: 1rem 0;
+}
+.flex-groupService {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.book-title {
+  font-size: 0.9em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-grow: 1;
+  transition: color 0.3s;
+}
+
+.deposit {
+  display: block;
+  width: 260px;
+  height: 30px;
+  padding-left: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  margin: 7px;
+  font-size: 17px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  transition: background 0.5s;
+}
+
+.error-message {
+  color: #ff6666;
+}
+</style>

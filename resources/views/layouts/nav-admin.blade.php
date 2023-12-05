@@ -139,6 +139,11 @@
                 <li>
                     <a href="{{ route('get.index') }}"><i class="fa-solid fa-address-book"></i></a>
                 </li>
+                @if (Auth::user()->manage_supers == 3 || Auth::user()->manage_supers == 0)
+                <li>
+                    <a href="{{ route('kpis.index') }}"><i class="fa-solid fa-signal"></i></a>
+                </li>
+            @endif
 
                 @if (Auth::user()->manage_supers == 0)
                     <li>
@@ -206,6 +211,8 @@
                             </li>
                         </ul>
                 @endif
+
+       
                 <li>
                     <a class="dropdown-item logout" href="{{ route('logout') }}"8
                         onclick="event.preventDefault();

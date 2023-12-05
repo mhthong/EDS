@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap">
       <label :for="dateRange">
         <date-range-picker
           v-model="dateRange"
@@ -11,6 +11,24 @@
           :value="dateRange"
           :timePicker="true"
         ></date-range-picker>
+      </label>
+      <label>
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedShowroom"
+          @change="selectedShowroomChart()"
+          style="padding: 5px; min-width: 300px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Select Showroom</option>
+          <option
+            v-for="showroom in apiDatalocation"
+            :key="showroom.id"
+            :value="showroom.id"
+          >
+            {{ showroom.Name }}
+          </option>
+        </select>
       </label>
     </div>
 
@@ -93,28 +111,32 @@
       </button>
     </div>
 
-    <div></div>
-
     <div class="main__body__data">
-      <div class="members">
+      <div
+        class="members"
+        :class="{ active: selectedOptions.includes('Revenue') }"
+      >
         <div class="members__top">
           <h4>Revenue</h4>
         </div>
         <canvas ref="mychartRevenue"></canvas>
         <div></div>
       </div>
-      <div class="members">
+      <div
+        class="members"
+        :class="{ active: selectedOptions.includes('splot') }"
+      >
         <div class="members__top">
           <h4>Customers number</h4>
         </div>
         <canvas ref="mychartSplot"></canvas>
         <div></div>
       </div>
-      
-    </div>
 
-    <div class="main__body__data">
-      <div class="members">
+      <div
+        class="members"
+        :class="{ active: selectedOptions.includes('Channel') }"
+      >
         <div class="members__top">
           <h4>Channel source</h4>
         </div>
@@ -122,19 +144,43 @@
         <div></div>
       </div>
 
-      <div class="members">
+      <div
+        class="members"
+        :class="{ active: selectedOptions.includes('Location') }"
+      >
         <div class="members__top">
           <h4>Location</h4>
         </div>
         <canvas ref="myChartLocation"></canvas>
         <div></div>
       </div>
-    </div>
 
-    <div class="main__body__data">      
-      <div class="members">
+      <div
+        class="members"
+        :class="{ active: selectedOptions.includes('Service') }"
+      >
         <div class="members__top">
           <h4>Service Booking</h4>
+
+          <div class="col-3">
+            <select
+              class="form-control"
+              id="showroomSelect"
+              v-model="selectedEmployee"
+              @change="selectedEmployeeChart()"
+              style="padding: 5px; min-width: 300px; margin-bottom: 1rem"
+            >
+              <option :value="null" selected>Select Employee</option>
+              <option
+                v-for="employee in apiDataEmployee"
+                :key="employee.id"
+                :value="employee.id"
+              >
+                {{ employee.name }}
+              </option>
+            </select>
+          </div>
+
         </div>
         <canvas ref="myChartService"></canvas>
         <div></div>
@@ -238,6 +284,9 @@ export default {
       resultArray: [],
       selectedOptions: [],
 
+      selectedShowroom:null,
+      selectedEmployee:null,
+
       chartRendered: {
         Revenue: false,
         Service: false,
@@ -262,43 +311,7 @@ export default {
 
       this.newStartDate = moment(newStartDate).format("YYYY-MM-DD");
       this.newEndDate = moment(newEndDate).format("YYYY-MM-DD");
-
-      this.chartRendered.Revenue = false;
-      this.chartRendered.Service = false;
-      this.chartRendered.Channel = false;
-      this.chartRendered.Location = false;
-      this.chartRendered.splot = false;
-
-      Promise.all([
-        (this.fillerArrayLocation = []),
-        (this.fillerArrayLocationOld = []),
-        this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end),
-        this.fetchapiShowroomsDataPast(this.newStartDate, this.newEndDate),
-
-        (this.apiData_id = []),
-        this.fetchapiData_id(this.dateRange.start, this.dateRange.end),
-
-
-        (this.fillerArraySource = []),
-        (this.fillerArraySourceOld = []),
-        this.fetchapiSourceData(this.dateRange.start, this.dateRange.end),
-        this.fetchapiSourceDataPast(this.newStartDate, this.newEndDate),
-
-        (this.fillerArrayService = []),
-        (this.fillerArrayServiceOld = []),
-        this.fetchapiServiceData(this.dateRange.start, this.dateRange.end),
-        this.fetchapiServiceDataPast(this.newStartDate, this.newEndDate),
-
-        (this.fillerArrayEmployee = []),
-        (this.fillerArrayEmployeeOld = []),
-        this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end),
-        this.fetchapiEmployeeDataPast(this.newStartDate, this.newEndDate),
-      ]).then(() => {
-        this.Price();
-        // Tất cả API đã kết thúc
-        this.toggleOption();
-        this.handleSelectedOptions();
-      });
+      this.selectedShowroomChart();
     },
     deep: true, // Theo dõi các sự thay đổi sâu trong object
   },
@@ -337,50 +350,48 @@ export default {
     this.fetchArtist();
     this.fetchServices();
 
-    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end , this.selectedShowroom);
 
-    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end);
-    this.fetchapiServiceDataPast(this.newStartDate, this.newEndDate);
+    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end , this.selectedShowroom , this.selectedEmployee);
+    this.fetchapiServiceDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom , this.selectedEmployee);
 
     this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end);
     this.fetchapiShowroomsDataPast(this.newStartDate, this.newEndDate);
 
-    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end);
-    this.fetchapiEmployeeDataPast(this.newStartDate, this.newEndDate);
+    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end , this.selectedShowroom);
+    this.fetchapiEmployeeDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom);
 
-    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end);
-    this.fetchapiSourceDataPast(this.newStartDate, this.newEndDate);
+    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end , this.selectedShowroom);
+    this.fetchapiSourceDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom);
 
     this.Price();
   },
 
   methods: {
-    fetchapiData_id(start, end) {
+    fetchapiData_id(start, end, showroom) {
       if (this.artistId !== null) {
         axios
-          .get(`/api/getDataArtist/ ${start}/${end}`)
+          .get(`/api/getDataArtistLocation/${start}/${end}/${selectedShowroom}`)
           .then((response) => {
-            // Lọc dữ liệu dựa trên ArtistID
-            this.apiData_id = Object.values(
-              this.totalByName(response.data)?.find(
-                (filler) => parseInt(filler.id) === parseInt(this.artistId)
-              ) || {}
-            );
+            this.apiData_id = response.data;
             this.Price();
           })
-
           .catch((error) => {
             console.error("Error fetching API data:", error);
           });
       } else if (this.employeeId !== null) {
         axios
-          .get(`/api/getDataEmployee/${start}/${end}`)
+          .get(
+            `/api/getDataEmployeeLocation/${start}/${end}/${selectedShowroom}`
+          )
           .then((response) => {
-            this.apiData_id = Object.values(
+            /*       this.apiData_id = Object.values(
               this.totalByName(response.data)?.find(
                 (filler) => parseInt(filler.id) === parseInt(this.employeeId)
               ) || {}
-            );
+            ); */
+            this.apiData_id = response.data;
+
             this.Price();
           })
           .catch((error) => {
@@ -388,9 +399,8 @@ export default {
           });
       } else {
         axios
-          .get(`/api/getDataShowroom/ ${start}/${end}`)
+          .get(`/api/getDataShowroom/${start}/${end}`)
           .then((response) => {
-            // Nhận dữ liệu từ phản hồi
             this.apiData_id = response.data;
             this.Price();
           })
@@ -423,10 +433,10 @@ export default {
         });
     },
 
-    async fetchapiSourceData(start, end) {
+    async fetchapiSourceData(start, end , showroom) {
       try {
         await axios
-          .get(`/api/getDataSource/ ${start}/${end}`)
+        .get(`/api/getDataSourceLocation/${start}/${end}/${showroom}`)
           .then((response) => {
             this.fillerArraySource = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -439,9 +449,9 @@ export default {
       }
     },
 
-    fetchapiSourceDataPast(start, end) {
+    fetchapiSourceDataPast(start, end , showroom) {
       axios
-        .get(`/api/getDataSource/${start}/${end}`)
+      .get(`/api/getDataSourceLocation/${start}/${end}/${showroom}`)
         .then((response) => {
           this.fillerArraySourceOld = response.data;
           // Tiếp tục xử lý dữ liệu và tính toán
@@ -451,10 +461,12 @@ export default {
         });
     },
 
-    async fetchapiServiceData(start, end) {
+    async fetchapiServiceData(start, end , showroom, employee) {
       try {
         await axios
-          .get(`/api/getDataService/ ${start}/${end}`)
+        .get(
+            `/api/getDataServiceLocation/${start}/${end}/${showroom}/${employee}`
+          )
           .then((response) => {
             this.fillerArrayService = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -467,10 +479,12 @@ export default {
       }
     },
 
-    async fetchapiServiceDataPast(start, end) {
+    async fetchapiServiceDataPast(start, end , showroom, employee) {
       try {
         await axios
-          .get(`/api/getDataService/${start}/${end}`)
+        .get(
+            `/api/getDataServiceLocation/${start}/${end}/${showroom}/${employee}`
+          )
           .then((response) => {
             this.fillerArrayServiceOld = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -483,10 +497,10 @@ export default {
       }
     },
 
-    async fetchapiEmployeeData(start, end) {
+    async fetchapiEmployeeData(start, end , showroom) {
       try {
         await axios
-          .get(`/api/getDataEmployee/ ${start}/${end}`)
+        .get(`/api/getDataEmployeeLocation/${start}/${end}/${showroom}`)
           .then((response) => {
             this.fillerArrayEmployee = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -499,10 +513,10 @@ export default {
       }
     },
 
-    async fetchapiEmployeeDataPast(start, end) {
+    async fetchapiEmployeeDataPast(start, end , showroom) {
       try {
         await axios
-          .get(`/api/getDataEmployee/${start}/${end}`)
+        .get(`/api/getDataEmployeeLocation/${start}/${end}/${showroom}`)
           .then((response) => {
             this.fillerArrayEmployeeOld = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -513,6 +527,44 @@ export default {
       } catch (error) {
         console.error("Error fetching API data:", error);
       }
+    },
+
+    selectedShowroomChart(){
+      this.chartRendered.Revenue = false;
+      this.chartRendered.Service = false;
+      this.chartRendered.Channel = false;
+      this.chartRendered.Location = false;
+      this.chartRendered.splot = false;
+
+      Promise.all([
+        (this.fillerArrayLocation = []),
+        (this.fillerArrayLocationOld = []),
+        this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end),
+        this.fetchapiShowroomsDataPast(this.newStartDate, this.newEndDate),
+
+        (this.apiData_id = []),
+        this.fetchapiData_id(this.dateRange.start, this.dateRange.end,this.selectedShowroom),
+
+        (this.fillerArraySource = []),
+        (this.fillerArraySourceOld = []),
+        this.fetchapiSourceData(this.dateRange.start, this.dateRange.end , this.selectedShowroom),
+        this.fetchapiSourceDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom),
+
+        (this.fillerArrayService = []),
+        (this.fillerArrayServiceOld = []),
+        this.fetchapiServiceData(this.dateRange.start, this.dateRange.end , this.selectedShowroom , this.selectedEmployee),
+        this.fetchapiServiceDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom ,  this.selectedEmployee),
+
+        (this.fillerArrayEmployee = []),
+        (this.fillerArrayEmployeeOld = []),
+        this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end , this.selectedShowroom),
+        this.fetchapiEmployeeDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom),
+      ]).then(() => {
+        this.Price();
+        // Tất cả API đã kết thúc
+        this.toggleOption();
+        this.handleSelectedOptions();
+      });
     },
 
     fetchShowrooms() {
@@ -619,13 +671,26 @@ export default {
         this.renderChartLocation();
         this.chartRendered.Location = true;
       }
-      if (
-        this.selectedOptions.includes("splot") &&
-        !this.chartRendered.splot
-      ) {
+      if (this.selectedOptions.includes("splot") && !this.chartRendered.splot) {
         this.renderChartSplot();
         this.chartRendered.splot = true;
       }
+    },
+
+    selectedEmployeeChart() {
+      this.chartRendered.Service = false;
+
+      Promise.all([
+      (this.fillerArrayEmployee = []),
+        (this.fillerArrayEmployeeOld = []),
+        this.fetchapiServiceData(this.dateRange.start, this.dateRange.end , this.selectedShowroom , this.selectedEmployee),
+        this.fetchapiServiceDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom ,  this.selectedEmployee),
+      ]).then(() => {
+        this.Price();
+        // Tất cả API đã kết thúc
+        this.toggleOption();
+        this.handleSelectedOptions();
+      });
     },
 
     Price() {
@@ -636,7 +701,18 @@ export default {
       this.numberOfBooks = 0;
 
       if (this.adminId !== null) {
-        const data = this.totalByName(this.apiData_id);
+        /*        const data = this.totalByName(this.apiData_id); */
+
+        if (this.selectedShowroom !== null) {
+          this.resuft = this.filterDataById(
+            this.apiData_id,
+            this.selectedShowroom
+          );
+        } else {
+          this.resuft = this.apiData_id;
+        }
+
+        const data = this.totalByName(this.resuft);
 
         data.forEach((item) => {
           this.Total_price += parseFloat(item.servies_price);
@@ -646,7 +722,21 @@ export default {
           this.numberOfBooks = item.length;
         });
       } else {
-        const data = this.apiData_id;
+        if (this.employeeId !== null) {
+          this.resuft = Object.values(
+            this.totalByName(this.apiData_id)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+            ) || {}
+          );
+        } else {
+          this.resuft = Object.values(
+            this.totalByName(this.apiData_id)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.artistId)
+            ) || {}
+          );
+        }
+
+        const data = this.resuft;
         this.Total_price += parseFloat(data[2]);
         this.Deposit_price += parseFloat(data[3]);
         this.servies_price += parseFloat(data[4]);
@@ -655,6 +745,26 @@ export default {
       }
 
       // Lặp qua danh sách dữ liệu và tính tổng
+    },
+
+    filterDataById(data, targetId) {
+      const filteredData = {};
+      Object.keys(data).forEach((date) => {
+        const dateData = data[date];
+        const filteredDateData = {};
+
+        Object.keys(dateData).forEach((id) => {
+          if (dateData[id].id === targetId) {
+            this.$set(filteredDateData, id, dateData[id]);
+          }
+        });
+
+        if (Object.keys(filteredDateData).length > 0) {
+          this.$set(filteredData, date, filteredDateData);
+        }
+      });
+
+      return filteredData;
     },
 
     renderChartRevenue() {
@@ -769,8 +879,6 @@ export default {
       });
     },
 
-
-
     renderChartSplot() {
       const ctx = this.$refs.mychartSplot.getContext("2d");
 
@@ -802,8 +910,6 @@ export default {
             (filler) => filler.Name === label
           ) || {}
         );
-
-        console.log(this.fillerArrayEmployee ,currentDataForLabel ,pastDataForLabel );
         // Khởi tạo mảng dữ liệu cho hiện tại và quá khứ
         const currentData = [];
         const pastData = [];
@@ -819,8 +925,6 @@ export default {
           pastData.push(0);
         }
 
-
-        console.log(currentData ,pastData );
 
         return {
           label: label,
@@ -886,7 +990,6 @@ export default {
         },
       });
     },
-
 
     renderChartService() {
       const ctxService = this.$refs.myChartService.getContext("2d");
@@ -1198,6 +1301,7 @@ export default {
       });
     },
 
+
     totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       const totals = {};
@@ -1226,6 +1330,7 @@ export default {
               Remaining_price: 0,
               length: 0,
               length_real: 0,
+              upsale: 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -1239,6 +1344,7 @@ export default {
           totals[Name].Remaining_price += fillerData.Remaining_price;
           totals[Name].length += fillerData.length;
           totals[Name].length_real += fillerData.length_real;
+          totals[Name].upsale += fillerData.upsale;
         }
       }
 
@@ -1474,5 +1580,28 @@ button.active {
     -webkit-transform: translate(-50%);
     transform: translate(-50%);
   }
+}
+
+#main .main__body__data > div {
+  flex: 1 0 49%;
+  background: var(--white);
+  padding: 1.25rem 1.5rem;
+  border-radius: 5px;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+#main .main__body__data > div {
+  display: none;
+}
+
+#main .main__body__data > .active {
+  display: block;
+
+  width: 49%;
+  flex: 1 0 49, 5%;
+  background: var(--white);
+  padding: 1.25rem 1.5rem;
+  border-radius: 5px;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
 }
 </style>

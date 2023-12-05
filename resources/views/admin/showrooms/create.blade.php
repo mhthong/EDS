@@ -147,66 +147,44 @@
                                             </div>
                                         </div>
 
-                                    </div>
-                                    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
-                                        <div class="bg-ad-form bg-ad-form-left containerInput  twothirds p-3">
-                                            <div class="bg-ad-form right-sidebar mt-3">
-                                                <div class="widget meta-boxes">
-                                                    <div class="widget-title">
-                                                        <h4><label for="status" class="m-0 control-label required"
-                                                                aria-required="true">Showroom schedule</label></h4>
-                                                    </div>
+                                        <div class="bg-ad-form right-sidebar mt-3">
+                                            <div class="widget meta-boxes">
+                                                <div class="widget-title">
+                                                    <h4><label for="status" class="m-0 control-label required"
+                                                            aria-required="true">Showroom schedule</label></h4>
+                                                </div>
 
-                                                    <div class="col-12"
-                                                        style="    display: flex;
-                                                justify-content: start;
-                                                flex-wrap: wrap;">
+                                                <div class="col-12">
 
-                                                        @foreach ($daysOfWeek as $day)
-                                                            <div class="col-12 col-sm-12 col-md-4 col-lg-4 col-xl-4 p-3">
-                                                                <div class="mt-3 mb-3">
-                                                                    <label for="active_{{ $day }}"
-                                                                        class="radio-header radio-text">{{ $day }}</label>
-                                                                    <input type="checkbox"
-                                                                        name="active_{{ $day }}"
-                                                                        id="active_{{ $day }}"
-                                                                        onchange="toggleWorkingFields(this)">
-                                                                </div>
-
-                                                                <div class=" working-value-group controls"
-                                                                    id="workingvalue_group_{{ $day }}">
-                                                                    <label for="workingvalue_{{ $day }}"
-                                                                        class="active">Number</label>
-                                                                    <input type="number"
-                                                                        name="workingvalue_{{ $day }}"
-                                                                        id="workingvalue_{{ $day }}"
-                                                                        min="0" max="4" value="1"
-                                                                        onchange="generateWorkingHours(this)">
-                                                                </div>
-
-                                                                <label for="{{ $day }}">Hours</label>
-                                                                <div class=" working-value-group controls">
-                                                                    <div class=" working-hours-group"
-                                                                        id="{{ $day }}">
-                                                                        <div class="working-hours working-hours-flex"
-                                                                            style="display: flex;flex-wrap: wrap;
-                                                    ">
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <input type="hidden" name="{{ $day }}[]"
-                                                                        id="{{ $day }}_hidden">
-                                                                </div>
-
+                                                    @foreach ($daysOfWeek as $day)
+                                                        <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 ">
+                                                            <div class="mt-12 mb-12 " style="
+                                                            display: flex;
+                                                            justify-content: flex-start;
+                                                            align-items: baseline;
+                                                            gap: 10px;
+                                                        ">
+                                                                <input type="checkbox"
+                                                                class="form-radio"
+                                                                name="active_{{ $day }}"
+                                                                id="active_{{ $day }}"
+                                                                onchange="toggleWorkingFields(this)">
+                                                                <label for="active_{{ $day }}"
+                                                                    class="radio-header radio-text">{{ $day }}</label>
+                                                   
                                                             </div>
-                                                        @endforeach
 
-                                                    </div>
+
+                                                        </div>
+                                                    @endforeach
 
                                                 </div>
+
                                             </div>
                                         </div>
+
                                     </div>
+                    
 
                                 </div>
                             </form>
@@ -273,6 +251,7 @@
 
         // Attach event listeners to the checkboxes
         const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        
         daysOfWeek.forEach(day => {
             const checkbox = document.getElementById(`active_${day}`);
             checkbox.addEventListener('change', () => toggleWorkingFields(checkbox));

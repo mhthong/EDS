@@ -9,7 +9,7 @@ class Price extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['Total_price', 'Deposit_price', 'Remaining_price', 'Level_price', 'Artist_levelID','servies_price','com'];
+    protected $fillable = ['Total_price', 'Deposit_price', 'Remaining_price', 'Level_price', 'Artist_levelID','servies_price','com','upsale'];
 
     public function artistLevel()
     {

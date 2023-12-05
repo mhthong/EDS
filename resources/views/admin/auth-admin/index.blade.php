@@ -33,7 +33,7 @@
                                 </button>
 
                                 <!-- Add table to display admins data -->
-                                <table class="table table-striped table-reponsive">
+                                <table id="table" class="table table-reponsive ">
                                     <thead>
                                         <tr>
                                             <th>No.</th>
@@ -58,7 +58,7 @@
                                                     <!-- Add button to trigger Edit popup modal -->
                                                     <button type="button" class="bg-none" data-bs-toggle="modal"
                                                         data-bs-target="#editModal{{ $admin->id }}">
-                                                        <i class="fa-sharp fa-solid fa-pen-to-square"></i>
+                                                        <i class="fa-solid fa-user-pen" style="color: #005eff;"></i>
                                                     </button>
 
                                                     <form method="POST"
@@ -67,8 +67,8 @@
                                                         style="display: inline;">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button class="bg-none" type="submit"><i
-                                                                class="fa-solid fa-trash"></i></button>
+                                                        <button class="bg-none" type="submit"><i class="fa-solid fa-trash"
+                                                            style="color: #ff0000;"></i>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -284,4 +284,14 @@
             }
         }
     </script>
+        <script>
+            $(document).ready(function() {
+                const table = $('#table').DataTable({
+                    scrollX: true,
+                    order: [
+                        [0, 'desc']
+                    ],
+                });
+            });
+        </script>
 @endsection

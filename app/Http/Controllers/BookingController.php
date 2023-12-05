@@ -218,6 +218,7 @@ class BookingController extends Controller
     {
 
 
+
         $bookingsData = Booking::with([
             'artist' => function ($query) {
                 $query->select('id', 'name', 'fullname');
@@ -267,13 +268,41 @@ class BookingController extends Controller
         } else{
             return true;
         }
+
     }
+
+    public function CheckAuthUpdate($Data , $status)
+    {
+
+        if (Auth::user() instanceof \App\Models\Artists) {
+
+            if($Data -> ArtistID == Auth::user()->id && $Data -> action == "Approved") {
+            
+                return true;
+            } else {
+                return false;
+            }
+           
+        } else if (Auth::user() instanceof \App\Models\Employee) {
+
+            if($Data -> source_name == Auth::user()->name && $Data -> source_id ==Auth::user()->id  && $Data -> status != $status) {
+                return true;
+            } else {
+                return false;
+            }
+        } else{
+            return true;
+        }
+        
+    }
+
 
 
 
     public function update(Booking $id, Request $request)
     {
 
+       
 
         if (Auth::check()) {
             if (Auth::user() instanceof \App\Models\Artists) {
@@ -371,9 +400,7 @@ class BookingController extends Controller
 
     public function updateEdit($book, $data)
     {
-
-
-
+        
         if ($data['artist'] == 0) {
             $artists = Artists::where('name', '=', 'N/A')->first();
             $ArtistID = $artists->id;
@@ -396,10 +423,12 @@ class BookingController extends Controller
         $Price = Price::where('id', $book->price_id)->first();
 
         $com = 0;
+        $upsale = 0;
 
         if ($data['status'] === "Done") {
             $Total_price = $Price->Deposit_price + $Price->Remaining_price;
             $Remaining_price = 0;
+            $upsale = $data['upsale'];
 
         } elseif ($data['status'] === "Cancel") {
 
@@ -421,11 +450,21 @@ class BookingController extends Controller
 
             $Total_price = $Price->Deposit_price -  $data['Refund'];
             $Remaining_price = 0;
-        } else {
+        }
+        elseif ($data['status'] === "Partial Done") {
+
+            $Total_price = $Price->Deposit_price +  $data['Partial_Done'];
+            $Remaining_price = $Price->Remaining_price - +  $data['Partial_Done'];
+            $upsale = $data['upsale'];
+        }
+        elseif ($data['status'] === "Waiting") {
 
             $Total_price = $Price->Deposit_price;
+            $Remaining_price = $Price->servies_price - $Price->Deposit_price;
+        } 
+        else {
+            $Total_price = $Price->Deposit_price;
             $Remaining_price = $Price->Remaining_price;
-           
         }
 
 
@@ -445,6 +484,7 @@ class BookingController extends Controller
 
             // Update the service record using the validated data
             $book->update([
+                'ShowroomID' =>  $data['showroomID'],
                 'ArtistID' => $ArtistID,
                 'time' => $start_time,
                 'time_end' => $end_time,
@@ -452,7 +492,7 @@ class BookingController extends Controller
                 'status' => $data['status'],
                 'content' => $content,
                 'source_data' =>  $data['source_data'],
-                'action' => 'pending',
+                'action' => $data['action'],
             ]);
 
             $get->update([
@@ -467,12 +507,14 @@ class BookingController extends Controller
 
             $payment->update([
                 'payment_type' => $data['payment_type'],
+                'payment_type_remainding' => $data['payment_remaining_type'],
             ]);
 
             $Price->update([
                 'Total_price' => $Total_price,
                 'Remaining_price' => $Remaining_price,
                 'com' => $com,
+                'upsale' => $upsale,
             ]);
 
             // Assign the group_service_id separately

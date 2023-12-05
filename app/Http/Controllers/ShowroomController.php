@@ -44,31 +44,21 @@ class ShowroomController extends Controller
         $Showroom = Showroom::create($validatedData);
 
 
+
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
         foreach ($daysOfWeek as $day) {
             $activeKey = "active_{$day}";
-            $workingValueKey = "workingvalue_{$day}";
             $workingHoursKey = $day;
+
     
             if ($request->has($activeKey)) {
                 $showroomSchedule = ShowroomSchedule::create([
                     'showroom_id' => $Showroom->id,
                     'day' => $day,
                     'active' => true,
-                    'workingvalue' => $request->input($workingValueKey)
                 ]);
     
-                $workingHoursData = $request->input($workingHoursKey);
-                foreach ($workingHoursData as $workingHourData) {
-                    if ($workingHourData !== null) {
-                        WorkingHour::create([
-                            'showroom_schedule_id' => $showroomSchedule->id,
-                            'start_time' => $workingHourData['start_time'],
-                            'end_time' => $workingHourData['end_time']
-                        ]);
-                    }
-                }
             } else {
                 ShowroomSchedule::create([
                     'showroom_id' => $Showroom->id,
@@ -126,13 +116,13 @@ class ShowroomController extends Controller
         $showroom->update($validatedData);
 
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    
+
         foreach ($daysOfWeek as $day) {
             $activeKey = "active_{$day}";
-            $workingValueKey = "workingvalue_{$day}";
             $workingHoursKey = $day;
     
             $showroomSchedule = $showroom->showroomSchedules->where('day', $day)->first();
+
 
             
     
@@ -141,29 +131,17 @@ class ShowroomController extends Controller
                     $showroomSchedule = new ShowroomSchedule([
                         'day' => $day,
                         'active' => true,
-                        'workingvalue' => $request->input($workingValueKey)
                     ]);
                     $showroom->showroomSchedules()->save($showroomSchedule);
                 } else {
                     $showroomSchedule->update([
                         'active' => true,
-                        'workingvalue' => $request->input($workingValueKey)
                     ]);
                     $showroomSchedule->workingHours()->delete();
                    
                 }
     
-                $workingHoursData = $request->input($workingHoursKey);
 
-    
-                foreach ($workingHoursData as $workingHourData) {
-                    if ($workingHourData !== null) {
-                        $showroomSchedule->workingHours()->create([
-                            'start_time' => $workingHourData['start_time'],
-                            'end_time' => $workingHourData['end_time']
-                        ]);
-                    }
-                }
             } else {
                 if ($showroomSchedule) {
                     $showroomSchedule->update([

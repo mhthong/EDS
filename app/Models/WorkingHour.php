@@ -11,10 +11,11 @@ class WorkingHour extends Model
 
     protected $table = 'working_hours';
 
-    protected $fillable = ['showroom_schedule_id','start_time', 'end_time'];
+    protected $fillable = ['showroom_schedule_id','date','active'];
 
     public function showroomSchedule()
     {
         return $this->belongsTo(ShowroomSchedule::class);
     }
+
 }

@@ -8,7 +8,7 @@
                     <div class="card">
                         <div class="container">
 
-
+{{-- 
                             <button type="button" class="bg-none" data-bs-toggle="modal" data-bs-target="#createModal">
                                 BOOK NOW
                             </button>
@@ -35,7 +35,16 @@
 
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
+
+
+                            <div id="app">
+                                <form @submit.prevent="submitForm">
+                                  <label for="name">Name:</label>
+                                  <input v-model="formData.name" type="text" id="name" required>
+                                  <button type="submit">Submit</button>
+                                </form>
+                              </div>
 
 
                         </div>
@@ -50,5 +59,35 @@
 @endsection
 
 @section('script')
-    <script src="/js/book.js" defer></script>
+<!-- index.html or your Vue component file -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<!-- index.html or your Vue component file -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      formData: {
+        name: '',
+      },
+    },
+    methods: {
+      submitForm() {
+        // Send data to the API using an HTTP library like axios
+        axios.post('api/bookings-store', this.formData)
+          .then(response => {
+            console.log('Data posted successfully:', response.data);
+            // Handle the response as needed
+          })
+          .catch(error => {
+            console.error('Error posting data:', error);
+            // Handle the error
+          });
+      },
+    },
+  });
+</script>
+
+
 @endsection

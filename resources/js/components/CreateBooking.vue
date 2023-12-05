@@ -223,6 +223,10 @@
               :id="selectedDate"
               ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Date</label
             >
+          
+            <div v-if="this.isActive === false && selectedDate" class="error-message">
+              This day is inactive .
+            </div>
             <div v-if="showWarning" class="error-message">
               Please select a date more today.
             </div>
@@ -375,7 +379,7 @@
         class="custom-btn btn-16"
         @click.prevent="nextStep"
         type="button"
-        :disabled="!startTime || !endTime || !selectedArtist || !selectedDate"
+        :disabled="!startTime || !endTime || !selectedArtist || !selectedDate || this.isActive === false"
       >
         Next
       </button>
@@ -441,6 +445,10 @@
 
         <select name="source_data" id="source_data"   v-model="formData.source_data">
           <option value="Facebook">Facebook</option>
+          <option value="Instagram">Instagram</option>
+          <option value="WhatsApp">WhatsApp</option>
+          <option value="Email">Email</option>
+          <option value="Phone">Phone</option>
           <option value="Google">Google</option>
           <option value="Website">Website</option>
           <option value="Tiktok">Tiktok</option>
@@ -494,6 +502,7 @@ export default {
       showrooms: [],
       showroomspath: "N/A",
       selectedShowroom: null,
+      isActive: false, // Kết quả active sẽ được lưu ở đây
       selectedArtist: 0,
       groupServices: [],
       showroomSchedules: [],
@@ -704,16 +713,27 @@ export default {
         console.log( this.filteredDays);
     }, */
     filterActiveDays() {
-      if (!this.selectedDate) return;
-     
+      if (!this.selectedDate || !this.selectedShowroom) return;
 
+
+      // Gửi yêu cầu API để lấy dữ liệu
+      axios.get(`/api/date-active/${this.selectedDate}/${this.selectedShowroom}`)
+        .then(response => {
+          // Lấy giá trị active từ API
+          this.isActive = response.data.active;
+
+          // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+        });
+    
       this.filteredDays = this.apiData.filter(
         (schedule) =>
           schedule.date === this.selectedDate &&
           parseInt(schedule.ArtistID) === parseInt(this.selectedArtist)
       );
 
-   
     },
 
     selectedDateToDay(dateString) {

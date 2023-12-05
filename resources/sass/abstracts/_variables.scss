@@ -838,8 +838,8 @@ thead[role="presentation"] > tr[role="row"]{
 }
 
 .fc-v-event{
-	background-color:#fff !important;
-	border:none !important;
+	background-color:rgba(255, 255, 255, 0) !important;
+	border:none ;
 }
 
 .fc-toolbar-title {
@@ -896,7 +896,48 @@ thead[role="presentation"] > tr[role="row"]{
 }
 
   
+.fc-timegrid-col-frame {
+  overflow: auto;
+}
+
+.fc-daygrid-day-frame {
+  &:has(.active_none) {
+    background-color: rgba(112, 111, 111, 0.4);
+
+    .active_none a{
+      display: none;
+    }
+    .active_none {
+      display: none;
+      background-color: rgba(112, 111, 111, 0) ;
+      padding :0;
+    }
+  }
+}
 
 
+.fc-timegrid-col-frame {
 
+  &:has(.active_none) {
+    background-color: rgba(112, 111, 111, 0.4);
 
+    .active_none a{
+      display: none;
+    }
+    .active_none {
+      display: none;
+      background-color: rgba(112, 111, 111, 0) ;
+      padding :0;
+    }
+  }
+
+}
+
+    .active_none a{
+      display: none;
+    }
+    .active_none {
+      display: none;
+      background-color: rgba(112, 111, 111, 0.4);
+      padding :0;
+    }

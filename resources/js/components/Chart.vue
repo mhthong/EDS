@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap">
       <label :for="dateRange">
         <date-range-picker
           v-model="dateRange"
@@ -12,17 +12,40 @@
           :timePicker="true"
         ></date-range-picker>
       </label>
+
+      <label>
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedShowroom"
+          @change="selectedShowroomChart()"
+          style="padding: 5px; min-width: 300px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Select Showroom</option>
+          <option
+            v-for="showroom in apiDatalocation"
+            :key="showroom.id"
+            :value="showroom.id"
+          >
+            {{ showroom.Name }}
+          </option>
+        </select>
+      </label>
     </div>
     <div>
       <!-- Hiển thị các thông tin và nút để xem các tháng -->
       <ul class="main__body__box-info" :class="{ fade: isTransitioning }">
         <li class="Price">
-          <img :src="'/assets/images/total%20booking%20price.png'" alt="" srcset="">
+          <img
+            :src="'/assets/images/total%20booking%20price.png'"
+            alt=""
+            srcset=""
+          />
           <h6>Total Booking Price</h6>
           <h4>${{ parseFloat(this.servies_price) }}</h4>
         </li>
         <li class="Price">
-          <img :src="'/assets/images/Revenue.png'" alt="" srcset="">
+          <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
           <h6>Revenue</h6>
           <h4>${{ this.RevenueTatol }}</h4>
         </li>
@@ -42,9 +65,7 @@
         class="btn custom-btn btn-16"
         :class="{ active: selectedOptions.includes('splot') }"
         @click="toggleOption('splot')"
-        :disabled="
-          this.fillerArrayEmployee.length === 0
-        "
+        :disabled="this.fillerArrayEmployee.length === 0"
       >
         Sales by splot
       </button>
@@ -93,20 +114,9 @@
     </div>
 
     <div class="main__body__data">
-        <div class="members">
+      <div class="members"  :class="{ active: selectedOptions.includes('Revenue') }">
         <div class="members__top">
           <h4>Revenue</h4>
-          <div class="members__menu">
-            <i class="ph-dots-three-outline-vertical-fill"></i>
-            <ul class="menu">
-              <li>
-                <a href="#">Edit</a>
-              </li>
-              <li>
-                <a href="#">Remove</a>
-              </li>
-            </ul>
-          </div>
         </div>
 
         <ul class="members__user">
@@ -126,20 +136,9 @@
         <div></div>
       </div>
 
-      <div class="members">
+      <div class="members" :class="{ active: selectedOptions.includes('splot') }" >
         <div class="members__top">
           <h4>Customers number</h4>
-          <div class="members__menu">
-            <i class="ph-dots-three-outline-vertical-fill"></i>
-            <ul class="menu">
-              <li>
-                <a href="#">Edit</a>
-              </li>
-              <li>
-                <a href="#">Remove</a>
-              </li>
-            </ul>
-          </div>
         </div>
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredSplot" :key="index">
@@ -165,27 +164,13 @@
           <!--  <canvas ref="lineChartShowroom"></canvas> -->
         </div>
       </div>
-    </div>
 
-    <div class="main__body__data">
-      <div class="members">
+      <div class="members" :class="{ active: selectedOptions.includes('Saler') }" >
         <div class="members__top">
           <h4>Saler</h4>
-          <div class="members__menu">
-            <i class="ph-dots-three-outline-vertical-fill"></i>
-            <ul class="menu">
-              <li>
-                <a href="#">Edit</a>
-              </li>
-              <li>
-                <a href="#">Remove</a>
-              </li>
-            </ul>
-          </div>
         </div>
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredEmployee" :key="index">
-
             <div class="profile">
               <p class="mb-0">{{ item[1] }}</p>
             </div>
@@ -209,35 +194,25 @@
         </div>
       </div>
 
-      <div class="members">
+
+      <div class="members" :class="{ active: selectedOptions.includes('Location') }" >
         <div class="members__top">
           <h4>Location</h4>
-          <div class="members__menu">
-            <i class="ph-dots-three-outline-vertical-fill"></i>
-            <ul class="menu">
-              <li>
-                <a href="#">Edit</a>
-              </li>
-              <li>
-                <a href="#">Remove</a>
-              </li>
-            </ul>
-          </div>
         </div>
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredLocation" :key="index">
             <div class="profile">
               <p class="mb-0">{{ item[1] }}</p>
             </div>
-            <span v-if="item[10] === 0">
+            <span v-if="item[11] === 0">
               <p class="mb-0">
-                {{ item[4] }} $ / {{ item[10] }} Spot (AOV : 0 $)
+                {{ item[4] }} $ / {{ item[11] }} Spot (AOV : 0 $)
               </p>
             </span>
             <span v-else>
               <p class="mb-0">
-                {{ item[4] }} $ / {{ item[10] }} Spot(AOV :
-                {{ (parseInt(item[4]) / parseInt(item[10])).toFixed(2) }}
+                {{ item[4] }} $ / {{ item[11] }} Spot(AOV :
+                {{ (parseInt(item[4]) / parseInt(item[11])).toFixed(2) }}
                 $)
               </p>
             </span>
@@ -248,23 +223,11 @@
           <!--  <canvas ref="lineChartShowroom"></canvas> -->
         </div>
       </div>
-    </div>
 
-    <div class="main__body__data">
-      <div class="members">
+      <div class="members" :class="{ active: selectedOptions.includes('Channel') }" >
+
         <div class="members__top">
           <h4>Channel source</h4>
-          <div class="members__menu">
-            <i class="ph-dots-three-outline-vertical-fill"></i>
-            <ul class="menu">
-              <li>
-                <a href="#">Edit</a>
-              </li>
-              <li>
-                <a href="#">Remove</a>
-              </li>
-            </ul>
-          </div>
         </div>
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredSource" :key="index">
@@ -285,31 +248,32 @@
         </div>
       </div>
 
-      <div class="members">
+      <div class="members" :class="{ active: selectedOptions.includes('Artist') }" >
+
         <div class="members__top">
           <h4>Artist</h4>
-          <div class="members__menu">
-            <i class="ph-dots-three-outline-vertical-fill"></i>
-            <ul class="menu">
-              <li>
-                <a href="#">Edit</a>
-              </li>
-              <li>
-                <a href="#">Remove</a>
-              </li>
-            </ul>
-          </div>
         </div>
         <ul class="members__user">
           <li v-for="(item, index) in resultArrayFilteredArtist" :key="index">
             <div class="profile">
               <p class="mb-0">{{ item[1] }}</p>
             </div>
+
+            <div class="profile">
+              <p class="mb-0">Revunue : {{ item[5] }} $</p>
+            </div>
+            <div class="profile">
+              <p class="mb-0">Upsell : {{ item[12] }} $</p>
+            </div>
             <span v-if="item[10] === 0">
-              <p class="mb-0">{{ item[4] }} $ / {{ item[10] }} Spot</p>
+              <p class="mb-0">
+                Service Price : {{ item[4] }} $ / {{ item[10] }} Spot
+              </p>
             </span>
             <span v-else>
-              <p class="mb-0">{{ item[4] }} $ / {{ item[10] }} Spot</p>
+              <p class="mb-0">
+                Service Price : {{ item[4] }} $ / {{ item[10] }} Spot
+              </p>
             </span>
           </li>
         </ul>
@@ -318,22 +282,28 @@
           <!--  <canvas ref="lineChartShowroom"></canvas> -->
         </div>
       </div>
-    </div>
 
-    <div class="main__body__data">
-      <div class="members">
+      <div class="members" :class="{ active: selectedOptions.includes('Service') }" >
+
         <div class="members__top">
           <h4>Service Booking</h4>
-          <div class="members__menu">
-            <i class="ph-dots-three-outline-vertical-fill"></i>
-            <ul class="menu">
-              <li>
-                <a href="#">Edit</a>
-              </li>
-              <li>
-                <a href="#">Remove</a>
-              </li>
-            </ul>
+          <div class="col-3">
+            <select
+              class="form-control"
+              id="showroomSelect"
+              v-model="selectedEmployee"
+              @change="selectedEmployeeChart()"
+              style="padding: 5px; margin-bottom: 1rem"
+            >
+              <option :value="null" selected>Select Employee</option>
+              <option
+                v-for="employee in apiDataEmployee"
+                :key="employee.id"
+                :value="employee.id"
+              >
+                {{ employee.name }}
+              </option>
+            </select>
           </div>
         </div>
         <ul class="members__user">
@@ -360,8 +330,9 @@
           <!--  <canvas ref="lineChartShowroom"></canvas> -->
         </div>
       </div>
-    </div>
 
+
+    </div>
   </div>
 </template>
 
@@ -399,6 +370,7 @@ export default {
       apiDatalocation: [],
       apiDataGet: [],
       apiDataService: [],
+      resuft: [],
       Total_price: "",
       Deposit_price: "",
       Remaining_price: "",
@@ -419,11 +391,16 @@ export default {
       filteredData: [],
       filteredDataEmployee: [],
       filteredDataChart: [],
-      resultArrayFilteredSplot:[],
+      resultArrayFilteredSplot: [],
       filteredDataWaiting: null,
       filteredDataCancel: null,
       filteredDataDone: null,
       filteredDataRefund: null,
+
+      showrooms: [],
+      selectedShowroom: null,
+
+      selectedEmployee: null,
 
       statusbooking: null,
       statusbookingall: null,
@@ -477,42 +454,7 @@ export default {
       this.dateRange.start = moment(newDateRange.startDate).format(
         "YYYY-MM-DD"
       );
-
-      this.chartRendered.Revenue = false;
-      this.chartRendered.Service = false;
-      this.chartRendered.Channel = false;
-      this.chartRendered.Location = false;
-      this.chartRendered.Saler = false;
-      this.chartRendered.Artist = false;
-      this.chartRendered.splot = false;
-
-      Promise.all([
-
-      (this.fillerArrayArtist = []),
-        this.fetchapiArtistData(this.dateRange.start, this.dateRange.end),
-
-        (this.apiData_id = []),
-        this.fetchapiData_id(this.dateRange.start, this.dateRange.end),
-
-        (this.fillerArrayLocation = []),
-        this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end),
-
-        (this.fillerArraySource = []),
-        this.fetchapiSourceData(this.dateRange.start, this.dateRange.end),
-
-        (this.fillerArrayService = []),
-        this.fetchapiServiceData(this.dateRange.start, this.dateRange.end),
-
-        (this.fillerArrayEmployee = []),
-        this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end),
-
- 
-        ]).then(() => {
-        this.Price();
-        // Tất cả API đã kết thúc
-        this.toggleOption();
-        this.handleSelectedOptions();
-      });
+      this.selectedShowroomChart();
     },
     deep: true, // Theo dõi các sự thay đổi sâu trong object
   },
@@ -543,24 +485,45 @@ export default {
     this.fetchArtist();
     this.fetchServices();
 
-    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+    this.fetchapiData_id(
+      this.dateRange.start,
+      this.dateRange.end,
+      this.selectedShowroom
+    );
 
-    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiServiceData(
+      this.dateRange.start,
+      this.dateRange.end,
+      this.selectedShowroom,
+      this.selectedEmployee
+    );
 
     this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end);
 
-    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiEmployeeData(
+      this.dateRange.start,
+      this.dateRange.end,
+      this.selectedShowroom
+    );
 
-    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiSourceData(
+      this.dateRange.start,
+      this.dateRange.end,
+      this.selectedShowroom
+    );
 
-    this.fetchapiArtistData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiArtistData(
+      this.dateRange.start,
+      this.dateRange.end,
+      this.selectedShowroom
+    );
 
     if (this.apiData_id.length !== 0) {
       this.Price();
     }
   },
   methods: {
-    fetchapiData_id(start, end) {
+    /*     fetchapiData_id(start, end) {
       if (this.artistId !== null) {
         axios
           .get(`/api/getDataArtist/${start}/${end}`)
@@ -571,6 +534,7 @@ export default {
                 (filler) => parseInt(filler.id) === parseInt(this.artistId)
               ) || {}
             );
+
             this.Price();
           })
 
@@ -593,11 +557,53 @@ export default {
           });
       } else {
         axios
-          .get(`/api/getDataShowroom/ ${start}/${end}`)
+          .get(`/api/getDataShowroom/${start}/${end}`)
           .then((response) => {
             // Nhận dữ liệu từ phản hồi
             this.apiData_id = response.data;
 
+            this.Price();
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      }
+    }, */
+
+    fetchapiData_id(start, end, showroom) {
+      if (this.artistId !== null) {
+        axios
+          .get(`/api/getDataArtistLocation/${start}/${end}/${selectedShowroom}`)
+          .then((response) => {
+            this.apiData_id = response.data;
+            this.Price();
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } else if (this.employeeId !== null) {
+        axios
+          .get(
+            `/api/getDataEmployeeLocation/${start}/${end}/${selectedShowroom}`
+          )
+          .then((response) => {
+            /*       this.apiData_id = Object.values(
+              this.totalByName(response.data)?.find(
+                (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+              ) || {}
+            ); */
+            this.apiData_id = response.data;
+
+            this.Price();
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } else {
+        axios
+          .get(`/api/getDataShowroom/${start}/${end}`)
+          .then((response) => {
+            this.apiData_id = response.data;
             this.Price();
           })
           .catch((error) => {
@@ -618,9 +624,9 @@ export default {
         });
     },
 
-    fetchapiArtistData(start, end) {
+    fetchapiArtistData(start, end, showroom) {
       axios
-        .get(`/api/getDataArtist/${start}/${end}`)
+        .get(`/api/getDataArtistLocation/${start}/${end}/${showroom}`)
         .then((response) => {
           this.fillerArrayArtist = response.data;
           // Tiếp tục xử lý dữ liệu và tính toán
@@ -630,10 +636,10 @@ export default {
         });
     },
 
-    async fetchapiSourceData(start, end) {
+    async fetchapiSourceData(start, end, showroom) {
       try {
         await axios
-          .get(`/api/getDataSource/${start}/${end}`)
+          .get(`/api/getDataSourceLocation/${start}/${end}/${showroom}`)
           .then((response) => {
             this.fillerArraySource = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -646,10 +652,12 @@ export default {
       }
     },
 
-    async fetchapiServiceData(start, end) {
+    async fetchapiServiceData(start, end, showroom, employee) {
       try {
         await axios
-          .get(`/api/getDataService/${start}/${end}`)
+          .get(
+            `/api/getDataServiceLocation/${start}/${end}/${showroom}/${employee}`
+          )
           .then((response) => {
             this.fillerArrayService = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -662,10 +670,10 @@ export default {
       }
     },
 
-    async fetchapiEmployeeData(start, end) {
+    async fetchapiEmployeeData(start, end, showroom) {
       try {
         await axios
-          .get(`/api/getDataEmployee/${start}/${end}`)
+          .get(`/api/getDataEmployeeLocation/${start}/${end}/${showroom}`)
           .then((response) => {
             this.fillerArrayEmployee = response.data;
             // Tiếp tục xử lý dữ liệu và tính toán
@@ -676,6 +684,81 @@ export default {
       } catch (error) {
         console.error("Error fetching API data:", error);
       }
+    },
+
+    selectedEmployeeChart() {
+      this.chartRendered.Service = false;
+
+      Promise.all([
+        (this.fillerArrayService = []),
+        this.fetchapiServiceData(
+          this.dateRange.start,
+          this.dateRange.end,
+          this.selectedShowroom,
+          this.selectedEmployee
+        ),
+      ]).then(() => {
+        this.Price();
+        // Tất cả API đã kết thúc
+        this.toggleOption();
+        this.handleSelectedOptions();
+      });
+    },
+
+    selectedShowroomChart() {
+      this.chartRendered.Revenue = false;
+      this.chartRendered.Service = false;
+      this.chartRendered.Channel = false;
+      this.chartRendered.Location = false;
+      this.chartRendered.Saler = false;
+      this.chartRendered.Artist = false;
+      this.chartRendered.splot = false;
+
+      Promise.all([
+        (this.fillerArrayLocation = []),
+        this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end),
+
+        (this.fillerArrayArtist = []),
+        this.fetchapiArtistData(
+          this.dateRange.start,
+          this.dateRange.end,
+          this.selectedShowroom
+        ),
+
+        (this.apiData_id = []),
+        this.fetchapiData_id(
+          this.dateRange.start,
+          this.dateRange.end,
+          this.selectedShowroom
+        ),
+
+        (this.fillerArraySource = []),
+        this.fetchapiSourceData(
+          this.dateRange.start,
+          this.dateRange.end,
+          this.selectedShowroom
+        ),
+
+        (this.fillerArrayService = []),
+        this.fetchapiServiceData(
+          this.dateRange.start,
+          this.dateRange.end,
+          this.selectedShowroom,
+          this.selectedEmployee
+        ),
+
+        (this.fillerArrayEmployee = []),
+        this.fetchapiEmployeeData(
+          this.dateRange.start,
+          this.dateRange.end,
+          this.selectedShowroom
+        ),
+      ]).then(() => {
+        this.Price();
+        // Tất cả API đã kết thúc
+        this.toggleOption();
+        this.handleSelectedOptions();
+      });
     },
 
     fetchShowrooms() {
@@ -741,7 +824,18 @@ export default {
       this.numberOfBooks = 0;
 
       if (this.adminId !== null) {
-        const data = this.totalByName(this.apiData_id);
+        /*        const data = this.totalByName(this.apiData_id); */
+
+        if (this.selectedShowroom !== null) {
+          this.resuft = this.filterDataById(
+            this.apiData_id,
+            this.selectedShowroom
+          );
+        } else {
+          this.resuft = this.apiData_id;
+        }
+
+        const data = this.totalByName(this.resuft);
 
         data.forEach((item) => {
           this.Total_price += parseFloat(item.servies_price);
@@ -751,7 +845,21 @@ export default {
           this.numberOfBooks = item.length;
         });
       } else {
-        const data = this.apiData_id;
+        if (this.employeeId !== null) {
+          this.resuft = Object.values(
+            this.totalByName(this.apiData_id)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+            ) || {}
+          );
+        } else {
+          this.resuft = Object.values(
+            this.totalByName(this.apiData_id)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.artistId)
+            ) || {}
+          );
+        }
+
+        const data = this.resuft;
         this.Total_price += parseFloat(data[2]);
         this.Deposit_price += parseFloat(data[3]);
         this.servies_price += parseFloat(data[4]);
@@ -805,7 +913,7 @@ export default {
             0
           )
         );
-      } else  if (arrayFine == "servies_price"){
+      } else if (arrayFine == "servies_price") {
         // Tạo dòng biểu đồ cho mỗi tên
         datasets = names.map((name) => ({
           label: name,
@@ -837,8 +945,8 @@ export default {
           )
         );
       } else {
-               // Tạo dòng biểu đồ cho mỗi tên
-          datasets = names.map((name) => ({
+        // Tạo dòng biểu đồ cho mỗi tên
+        datasets = names.map((name) => ({
           label: name,
           data: dates.map(
             (date) =>
@@ -899,16 +1007,16 @@ export default {
             },
 
             zoom: {
-      wheel: {
-        enabled: true, // Cho phép zoom bằng cách sử dụng bánh xe chuột
-      },
-      drag: {
-        enabled: true, // Cho phép kéo để zoom
-      },
-      pinch: {
-        enabled: true, // Cho phép zoom bằng cách pinch (ngón tay cự đại)
-      },
-    },
+              wheel: {
+                enabled: true, // Cho phép zoom bằng cách sử dụng bánh xe chuột
+              },
+              drag: {
+                enabled: true, // Cho phép kéo để zoom
+              },
+              pinch: {
+                enabled: true, // Cho phép zoom bằng cách pinch (ngón tay cự đại)
+              },
+            },
           },
         },
       });
@@ -973,7 +1081,6 @@ export default {
       ).sort((a, b) => b[5] - a[5]);
       // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
     },
-
 
     renderChartSplot() {
       // Sắp xếp các labels theo thứ tự tăng dần
@@ -1073,7 +1180,6 @@ export default {
       if (this.chartArtist) {
         this.chartArtist.destroy();
       }
-        console.log(this.fillerArrayArtist);
 
       this.chartArtist = this.createChart(
         ctx,
@@ -1164,6 +1270,7 @@ export default {
               Remaining_price: 0,
               length: 0,
               length_real: 0,
+              upsale: 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -1177,6 +1284,7 @@ export default {
           totals[Name].Remaining_price += fillerData.Remaining_price;
           totals[Name].length += fillerData.length;
           totals[Name].length_real += fillerData.length_real;
+          totals[Name].upsale += fillerData.upsale;
         }
       }
 
@@ -1184,6 +1292,26 @@ export default {
       const totalsArray = Object.values(totals);
 
       return totalsArray;
+    },
+
+    filterDataById(data, targetId) {
+      const filteredData = {};
+      Object.keys(data).forEach((date) => {
+        const dateData = data[date];
+        const filteredDateData = {};
+
+        Object.keys(dateData).forEach((id) => {
+          if (dateData[id].id === targetId) {
+            this.$set(filteredDateData, id, dateData[id]);
+          }
+        });
+
+        if (Object.keys(filteredDateData).length > 0) {
+          this.$set(filteredData, date, filteredDateData);
+        }
+      });
+
+      return filteredData;
     },
 
     resultArrayFiltered(fillerArray, sortedLabels) {
@@ -1229,12 +1357,9 @@ export default {
         this.selectedOptions.push(option);
       }
 
-      console.log( this.selectedOptions);
       // Call different functions based on the selected options
       this.handleSelectedOptions();
     },
-
-    
 
     handleSelectedOptions() {
       // Handle different functions based on the selected options
@@ -1246,10 +1371,7 @@ export default {
         this.renderChartRevenue();
         this.chartRendered.Revenue = true;
       }
-      if (
-        this.selectedOptions.includes("splot") &&
-        !this.chartRendered.splot
-      ) {
+      if (this.selectedOptions.includes("splot") && !this.chartRendered.splot) {
         this.renderChartSplot();
         this.chartRendered.splot = true;
       }
@@ -1462,4 +1584,28 @@ button.active {
     transform: translate(-50%);
   }
 }
+
+#main .main__body__data > div {
+    flex: 1 0 49%;
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+#main .main__body__data > div {
+  display: none;
+}
+
+#main .main__body__data > .active {
+  display: block;
+
+  width: 49%;
+  flex: 1 0 49,5%;
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}
+
 </style>

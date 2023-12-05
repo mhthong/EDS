@@ -3,55 +3,58 @@
 @section('header')
     @include('layouts.headerad')
     <style>
-
-.custom-btn {
-  width: 130px;
-  height: 40px;
-  color: #fff;
-  border-radius: 5px;
-  padding: 10px 25px;
-  margin-top: 1rem;
-  font-family: "Lato", sans-serif;
-  font-weight: 500;
-  background: transparent;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  display: inline-block;
-  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
-    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
-  outline: none;
-}
+        .custom-btn {
+            width: 130px;
+            height: 40px;
+            color: #fff;
+            border-radius: 5px;
+            padding: 10px 25px;
+            margin-top: 1rem;
+            font-family: "Lato", sans-serif;
+            font-weight: 500;
+            background: transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: inline-block;
+            box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),
+                7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
 
         /* 16 */
-.btn-16 {
-  border: none;
-  color: #000;
-}
-.btn-16:after {
-  position: absolute;
-  content: "";
-  width: 0;
-  height: 100%;
-  top: 0;
-  left: 0;
-  direction: rtl;
-  z-index: -1;
-  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,
-    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;
-  transition: all 0.3s ease;
-}
-.btn-16:hover {
-  color: #000;
-}
-.btn-16:hover:after {
-  left: auto;
-  right: 0;
-  width: 100%;
-}
-.btn-16:active {
-  top: 2px;
-}
+        .btn-16 {
+            border: none;
+            color: #000;
+        }
+
+        .btn-16:after {
+            position: absolute;
+            content: "";
+            width: 0;
+            height: 100%;
+            top: 0;
+            left: 0;
+            direction: rtl;
+            z-index: -1;
+            box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,
+                7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;
+            transition: all 0.3s ease;
+        }
+
+        .btn-16:hover {
+            color: #000;
+        }
+
+        .btn-16:hover:after {
+            left: auto;
+            right: 0;
+            width: 100%;
+        }
+
+        .btn-16:active {
+            top: 2px;
+        }
     </style>
 @endsection
 @section('content')
@@ -81,16 +84,13 @@
                             <div class="pb-3" style="    display: flex;
                             width: 100%;">
                                 <a class="a" href="{{ route('artist.create') }}">
-                                    <button
-                                    class="custom-btn btn-16"
-                                    type="button"
-                                  >
-                                 Add new
-                                  </button>
+                                    <button class="custom-btn btn-16" type="button">
+                                        Add new
+                                    </button>
                                 </a>
                             </div>
-            
-                            <table id="table" class="table-reponsive ">
+
+                            <table id="table" class="table table-reponsive ">
                                 <thead>
                                     <tr>
                                         <th>No.</th>
@@ -131,7 +131,7 @@
 
                                                 <td style="text-align: center">
 
-                                      {{--              
+                                                    {{--              
                                                     <button class="bg-none">
                                                         <a href="{{ route('artist.show', $row->id) }}"><i class="fa-solid fa-binoculars"></i></a>
                                                     </button>
@@ -146,7 +146,8 @@
                                                         style="display: inline;">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button class="bg-none" type="submit"><i class="fa-solid fa-trash" style="color: #ff0000;"></i></button>
+                                                        <button class="bg-none" type="submit"><i class="fa-solid fa-trash"
+                                                                style="color: #ff0000;"></i></button>
                                                     </form>
                                                 </td>
                                             </tr>
@@ -177,14 +178,14 @@
 @endsection
 
 @section('script')
-<script>
-    
-    $(document).ready(function() {
-        const table = $('#table').DataTable({
-            scrollX: true,
-            order: [[0, 'desc']],
-        
+    <script>
+        $(document).ready(function() {
+            const table = $('#table').DataTable({
+                scrollX: true,
+                order: [
+                    [0, 'desc']
+                ],
+            });
         });
-    });
-</script>
+    </script>
 @endsection

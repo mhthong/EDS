@@ -44,9 +44,15 @@ mix.js('resources/js/book.js', 'public/js');
 
 mix.js('resources/js/bookcreate.js', 'public/js');
 
+
+mix.js('resources/js/BookingEdit.js', 'public/js');
+
 mix.js('resources/js/dashboardsvue.js', 'public/js');
 
 mix.js('resources/js/chart.js', 'public/js');
+
 mix.js('resources/js/analytics.js', 'public/js');
+
+mix.js('resources/js/Kpis.js', 'public/js');
 
 mix.js('resources/js/FullCalendarAdmin.js', 'public/js');

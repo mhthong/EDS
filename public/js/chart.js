@@ -63,6 +63,7 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
       apiDatalocation: [],
       apiDataGet: [],
       apiDataService: [],
+      resuft: [],
       Total_price: "",
       Deposit_price: "",
       Remaining_price: "",
@@ -88,6 +89,9 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
       filteredDataCancel: null,
       filteredDataDone: null,
       filteredDataRefund: null,
+      showrooms: [],
+      selectedShowroom: null,
+      selectedEmployee: null,
       statusbooking: null,
       statusbookingall: null,
       chart: null,
@@ -126,23 +130,10 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
   },
   watch: {
     dateRange: function dateRange(newDateRange, oldDateRange) {
-      var _this = this;
       // Log khi dateRange thay đổi
       this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_4___default()(newDateRange.endDate).format("YYYY-MM-DD");
       this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_4___default()(newDateRange.startDate).format("YYYY-MM-DD");
-      this.chartRendered.Revenue = false;
-      this.chartRendered.Service = false;
-      this.chartRendered.Channel = false;
-      this.chartRendered.Location = false;
-      this.chartRendered.Saler = false;
-      this.chartRendered.Artist = false;
-      this.chartRendered.splot = false;
-      Promise.all([this.fillerArrayArtist = [], this.fetchapiArtistData(this.dateRange.start, this.dateRange.end), this.apiData_id = [], this.fetchapiData_id(this.dateRange.start, this.dateRange.end), this.fillerArrayLocation = [], this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end), this.fillerArraySource = [], this.fetchapiSourceData(this.dateRange.start, this.dateRange.end), this.fillerArrayService = [], this.fetchapiServiceData(this.dateRange.start, this.dateRange.end), this.fillerArrayEmployee = [], this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end)]).then(function () {
-        _this.Price();
-        // Tất cả API đã kết thúc
-        _this.toggleOption();
-        _this.handleSelectedOptions();
-      });
+      this.selectedShowroomChart();
     },
     deep: true // Theo dõi các sự thay đổi sâu trong object
   },
@@ -165,78 +156,118 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
     this.fetchGet();
     this.fetchArtist();
     this.fetchServices();
-    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
-    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom);
+    this.fetchapiServiceData(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee);
     this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end);
-    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end);
-    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end);
-    this.fetchapiArtistData(this.dateRange.start, this.dateRange.end);
+    this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end, this.selectedShowroom);
+    this.fetchapiSourceData(this.dateRange.start, this.dateRange.end, this.selectedShowroom);
+    this.fetchapiArtistData(this.dateRange.start, this.dateRange.end, this.selectedShowroom);
     if (this.apiData_id.length !== 0) {
       this.Price();
     }
   },
   methods: {
-    fetchapiData_id: function fetchapiData_id(start, end) {
-      var _this2 = this;
+    /*     fetchapiData_id(start, end) {
       if (this.artistId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataArtist/".concat(start, "/").concat(end)).then(function (response) {
-          var _this2$totalByName;
-          // Lọc dữ liệu dựa trên ArtistID
-          _this2.apiData_id = Object.values(((_this2$totalByName = _this2.totalByName(response.data)) === null || _this2$totalByName === void 0 ? void 0 : _this2$totalByName.find(function (filler) {
-            return parseInt(filler.id) === parseInt(_this2.artistId);
-          })) || {});
-          _this2.Price();
+        axios
+          .get(`/api/getDataArtist/${start}/${end}`)
+          .then((response) => {
+            // Lọc dữ liệu dựa trên ArtistID
+            this.apiData_id = Object.values(
+              this.totalByName(response.data)?.find(
+                (filler) => parseInt(filler.id) === parseInt(this.artistId)
+              ) || {}
+            );
+             this.Price();
+          })
+           .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } else if (this.employeeId !== null) {
+        axios
+          .get(`/api/getDataEmployee/${start}/${end}`)
+          .then((response) => {
+            this.apiData_id = Object.values(
+              this.totalByName(response.data)?.find(
+                (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+              ) || {}
+            );
+            this.Price();
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      } else {
+        axios
+          .get(`/api/getDataShowroom/${start}/${end}`)
+          .then((response) => {
+            // Nhận dữ liệu từ phản hồi
+            this.apiData_id = response.data;
+             this.Price();
+          })
+          .catch((error) => {
+            console.error("Error fetching API data:", error);
+          });
+      }
+    }, */
+    fetchapiData_id: function fetchapiData_id(start, end, showroom) {
+      var _this = this;
+      if (this.artistId !== null) {
+        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataArtistLocation/".concat(start, "/").concat(end, "/").concat(selectedShowroom)).then(function (response) {
+          _this.apiData_id = response.data;
+          _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else if (this.employeeId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
-          var _this2$totalByName2;
-          _this2.apiData_id = Object.values(((_this2$totalByName2 = _this2.totalByName(response.data)) === null || _this2$totalByName2 === void 0 ? void 0 : _this2$totalByName2.find(function (filler) {
-            return parseInt(filler.id) === parseInt(_this2.employeeId);
-          })) || {});
-          _this2.Price();
+        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataEmployeeLocation/".concat(start, "/").concat(end, "/").concat(selectedShowroom)).then(function (response) {
+          /*       this.apiData_id = Object.values(
+            this.totalByName(response.data)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+            ) || {}
+          ); */
+          _this.apiData_id = response.data;
+          _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else {
-        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataShowroom/ ".concat(start, "/").concat(end)).then(function (response) {
-          // Nhận dữ liệu từ phản hồi
-          _this2.apiData_id = response.data;
-          _this2.Price();
+        axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataShowroom/".concat(start, "/").concat(end)).then(function (response) {
+          _this.apiData_id = response.data;
+          _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       }
     },
     fetchapiShowroomsData: function fetchapiShowroomsData(start, end) {
-      var _this3 = this;
+      var _this2 = this;
       axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataShowroom/".concat(start, "/").concat(end)).then(function (response) {
-        _this3.fillerArrayLocation = response.data;
+        _this2.fillerArrayLocation = response.data;
         // Tiếp tục xử lý dữ liệu và tính toán
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
-    fetchapiArtistData: function fetchapiArtistData(start, end) {
+    fetchapiArtistData: function fetchapiArtistData(start, end, showroom) {
+      var _this3 = this;
+      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataArtistLocation/".concat(start, "/").concat(end, "/").concat(showroom)).then(function (response) {
+        _this3.fillerArrayArtist = response.data;
+        // Tiếp tục xử lý dữ liệu và tính toán
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchapiSourceData: function fetchapiSourceData(start, end, showroom) {
       var _this4 = this;
-      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataArtist/".concat(start, "/").concat(end)).then(function (response) {
-        _this4.fillerArrayArtist = response.data;
-        // Tiếp tục xử lý dữ liệu và tính toán
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
-    },
-    fetchapiSourceData: function fetchapiSourceData(start, end) {
-      var _this5 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
               _context.prev = 0;
               _context.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataSource/".concat(start, "/").concat(end)).then(function (response) {
-                _this5.fillerArraySource = response.data;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataSourceLocation/".concat(start, "/").concat(end, "/").concat(showroom)).then(function (response) {
+                _this4.fillerArraySource = response.data;
                 // Tiếp tục xử lý dữ liệu và tính toán
               })["catch"](function (error) {
                 console.error("Error fetching API data:", error);
@@ -255,16 +286,16 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
         }, _callee, null, [[0, 5]]);
       }))();
     },
-    fetchapiServiceData: function fetchapiServiceData(start, end) {
-      var _this6 = this;
+    fetchapiServiceData: function fetchapiServiceData(start, end, showroom, employee) {
+      var _this5 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
               _context2.prev = 0;
               _context2.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataService/".concat(start, "/").concat(end)).then(function (response) {
-                _this6.fillerArrayService = response.data;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataServiceLocation/".concat(start, "/").concat(end, "/").concat(showroom, "/").concat(employee)).then(function (response) {
+                _this5.fillerArrayService = response.data;
                 // Tiếp tục xử lý dữ liệu và tính toán
               })["catch"](function (error) {
                 console.error("Error fetching API data:", error);
@@ -283,16 +314,16 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
         }, _callee2, null, [[0, 5]]);
       }))();
     },
-    fetchapiEmployeeData: function fetchapiEmployeeData(start, end) {
-      var _this7 = this;
+    fetchapiEmployeeData: function fetchapiEmployeeData(start, end, showroom) {
+      var _this6 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
           while (1) switch (_context3.prev = _context3.next) {
             case 0:
               _context3.prev = 0;
               _context3.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
-                _this7.fillerArrayEmployee = response.data;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/getDataEmployeeLocation/".concat(start, "/").concat(end, "/").concat(showroom)).then(function (response) {
+                _this6.fillerArrayEmployee = response.data;
                 // Tiếp tục xử lý dữ liệu và tính toán
               })["catch"](function (error) {
                 console.error("Error fetching API data:", error);
@@ -311,64 +342,108 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
         }, _callee3, null, [[0, 5]]);
       }))();
     },
-    fetchShowrooms: function fetchShowrooms() {
+    selectedEmployeeChart: function selectedEmployeeChart() {
+      var _this7 = this;
+      this.chartRendered.Service = false;
+      Promise.all([this.fillerArrayService = [], this.fetchapiServiceData(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee)]).then(function () {
+        _this7.Price();
+        // Tất cả API đã kết thúc
+        _this7.toggleOption();
+        _this7.handleSelectedOptions();
+      });
+    },
+    selectedShowroomChart: function selectedShowroomChart() {
       var _this8 = this;
+      this.chartRendered.Revenue = false;
+      this.chartRendered.Service = false;
+      this.chartRendered.Channel = false;
+      this.chartRendered.Location = false;
+      this.chartRendered.Saler = false;
+      this.chartRendered.Artist = false;
+      this.chartRendered.splot = false;
+      Promise.all([this.fillerArrayLocation = [], this.fetchapiShowroomsData(this.dateRange.start, this.dateRange.end), this.fillerArrayArtist = [], this.fetchapiArtistData(this.dateRange.start, this.dateRange.end, this.selectedShowroom), this.apiData_id = [], this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom), this.fillerArraySource = [], this.fetchapiSourceData(this.dateRange.start, this.dateRange.end, this.selectedShowroom), this.fillerArrayService = [], this.fetchapiServiceData(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee), this.fillerArrayEmployee = [], this.fetchapiEmployeeData(this.dateRange.start, this.dateRange.end, this.selectedShowroom)]).then(function () {
+        _this8.Price();
+        // Tất cả API đã kết thúc
+        _this8.toggleOption();
+        _this8.handleSelectedOptions();
+      });
+    },
+    fetchShowrooms: function fetchShowrooms() {
+      var _this9 = this;
       axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/showrooms").then(function (response) {
-        _this8.apiDatalocation = response.data;
+        _this9.apiDatalocation = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
     fetchGet: function fetchGet() {
-      var _this9 = this;
+      var _this10 = this;
       axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/get").then(function (response) {
-        _this9.apiDataGet = response.data;
+        _this10.apiDataGet = response.data;
       })["catch"](function (error) {
         console.error("Error fetching Get::", error);
       });
     },
     fetchArtist: function fetchArtist() {
-      var _this10 = this;
+      var _this11 = this;
       axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/artist").then(function (response) {
-        _this10.apiDataAritst = response.data;
+        _this11.apiDataAritst = response.data;
       })["catch"](function (error) {
         console.error("Error fetching artist::", error);
       });
     },
     fetchServices: function fetchServices() {
-      var _this11 = this;
+      var _this12 = this;
       axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/services").then(function (response) {
-        _this11.apiDataServices = response.data;
+        _this12.apiDataServices = response.data;
       })["catch"](function (error) {
         console.error("Error fetching Services::", error);
       });
     },
     fetchapiDataEmployee: function fetchapiDataEmployee() {
-      var _this12 = this;
+      var _this13 = this;
       axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/employee").then(function (response) {
-        _this12.apiDataEmployee = response.data;
+        _this13.apiDataEmployee = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
     Price: function Price() {
-      var _this13 = this;
+      var _this14 = this;
       this.Total_price = 0;
       this.Deposit_price = 0;
       this.servies_price = 0;
       this.RevenueTatol = 0;
       this.numberOfBooks = 0;
       if (this.adminId !== null) {
-        var data = this.totalByName(this.apiData_id);
+        /*        const data = this.totalByName(this.apiData_id); */
+
+        if (this.selectedShowroom !== null) {
+          this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
+        } else {
+          this.resuft = this.apiData_id;
+        }
+        var data = this.totalByName(this.resuft);
         data.forEach(function (item) {
-          _this13.Total_price += parseFloat(item.servies_price);
-          _this13.Deposit_price += parseFloat(item.Deposit_price);
-          _this13.servies_price += parseFloat(item.servies_price);
-          _this13.RevenueTatol += parseFloat(item.Revenue);
-          _this13.numberOfBooks = item.length;
+          _this14.Total_price += parseFloat(item.servies_price);
+          _this14.Deposit_price += parseFloat(item.Deposit_price);
+          _this14.servies_price += parseFloat(item.servies_price);
+          _this14.RevenueTatol += parseFloat(item.Revenue);
+          _this14.numberOfBooks = item.length;
         });
       } else {
-        var _data = this.apiData_id;
+        if (this.employeeId !== null) {
+          var _this$totalByName;
+          this.resuft = Object.values(((_this$totalByName = this.totalByName(this.apiData_id)) === null || _this$totalByName === void 0 ? void 0 : _this$totalByName.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this14.employeeId);
+          })) || {});
+        } else {
+          var _this$totalByName2;
+          this.resuft = Object.values(((_this$totalByName2 = this.totalByName(this.apiData_id)) === null || _this$totalByName2 === void 0 ? void 0 : _this$totalByName2.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this14.artistId);
+          })) || {});
+        }
+        var _data = this.resuft;
         this.Total_price += parseFloat(_data[2]);
         this.Deposit_price += parseFloat(_data[3]);
         this.servies_price += parseFloat(_data[4]);
@@ -620,7 +695,6 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
       if (this.chartArtist) {
         this.chartArtist.destroy();
       }
-      console.log(this.fillerArrayArtist);
       this.chartArtist = this.createChart(ctx, this.fillerArrayArtist, "servies_price");
       // Bắt sự kiện nhấp vào một nhãn (label) trong biểu đồ
 
@@ -689,7 +763,8 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
               Refund_price: 0,
               Remaining_price: 0,
               length: 0,
-              length_real: 0
+              length_real: 0,
+              upsale: 0
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -703,6 +778,7 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
           totals[Name].Remaining_price += fillerData.Remaining_price;
           totals[Name].length += fillerData.length;
           totals[Name].length_real += fillerData.length_real;
+          totals[Name].upsale += fillerData.upsale;
         }
       }
 
@@ -710,13 +786,30 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
       var totalsArray = Object.values(totals);
       return totalsArray;
     },
+    filterDataById: function filterDataById(data, targetId) {
+      var _this15 = this;
+      var filteredData = {};
+      Object.keys(data).forEach(function (date) {
+        var dateData = data[date];
+        var filteredDateData = {};
+        Object.keys(dateData).forEach(function (id) {
+          if (dateData[id].id === targetId) {
+            _this15.$set(filteredDateData, id, dateData[id]);
+          }
+        });
+        if (Object.keys(filteredDateData).length > 0) {
+          _this15.$set(filteredData, date, filteredDateData);
+        }
+      });
+      return filteredData;
+    },
     resultArrayFiltered: function resultArrayFiltered(fillerArray, sortedLabels) {
-      var _this14 = this;
+      var _this16 = this;
       var result = sortedLabels.map(function (label) {
-        var _this14$totalByName;
+        var _this16$totalByName;
         // Tìm dữ liệu hiện tại và quá khứ dựa trên label
 
-        var DataForLabel = Object.values(((_this14$totalByName = _this14.totalByName(fillerArray)) === null || _this14$totalByName === void 0 ? void 0 : _this14$totalByName.find(function (filler) {
+        var DataForLabel = Object.values(((_this16$totalByName = _this16.totalByName(fillerArray)) === null || _this16$totalByName === void 0 ? void 0 : _this16$totalByName.find(function (filler) {
           return filler.Name === label;
         })) || {});
 
@@ -748,7 +841,7 @@ chart_js_auto__WEBPACK_IMPORTED_MODULE_0__.Chart.register(chartjs_plugin_zoom__W
         // If the option is not selected, add it
         this.selectedOptions.push(option);
       }
-      console.log(this.selectedOptions);
+
       // Call different functions based on the selected options
       this.handleSelectedOptions();
     },
@@ -804,7 +897,13 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", [_c("div", [_c("label", {
+  return _c("div", [_c("div", {
+    staticStyle: {
+      display: "flex",
+      gap: "1rem",
+      "flex-wrap": "wrap"
+    }
+  }, [_c("label", {
     attrs: {
       "for": _vm.dateRange
     }
@@ -827,7 +926,50 @@ var render = function render() {
       },
       expression: "dateRange"
     }
-  })], 1)]), _vm._v(" "), _c("div", [_c("ul", {
+  })], 1), _vm._v(" "), _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedShowroom,
+      expression: "selectedShowroom"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "300px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedShowroom = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedShowroomChart();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Select Showroom")]), _vm._v(" "), _vm._l(_vm.apiDatalocation, function (showroom) {
+    return _c("option", {
+      key: showroom.id,
+      domProps: {
+        value: showroom.id
+      }
+    }, [_vm._v("\n          " + _vm._s(showroom.Name) + "\n        ")]);
+  })], 2)])]), _vm._v(" "), _c("div", [_c("ul", {
     staticClass: "main__body__box-info",
     "class": {
       fade: _vm.isTransitioning
@@ -944,7 +1086,10 @@ var render = function render() {
   }, [_vm._v("\n      Service Booking\n    ")])]), _vm._v(" "), _c("div", {
     staticClass: "main__body__data"
   }, [_c("div", {
-    staticClass: "members"
+    staticClass: "members",
+    "class": {
+      active: _vm.selectedOptions.includes("Revenue")
+    }
   }, [_vm._m(0), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
   }, _vm._l(_vm.resultArrayFilteredRevenue, function (item, index) {
@@ -962,7 +1107,10 @@ var render = function render() {
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "mychartRevenue"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
-    staticClass: "members"
+    staticClass: "members",
+    "class": {
+      active: _vm.selectedOptions.includes("splot")
+    }
   }, [_vm._m(1), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
   }, _vm._l(_vm.resultArrayFilteredSplot, function (item, index) {
@@ -979,10 +1127,11 @@ var render = function render() {
     }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[11]) + " Spot (AOV :\n              " + _vm._s((parseInt(item[4]) / parseInt(item[11])).toFixed(2)) + "\n              $)\n            ")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "mychartSplot"
-  }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
-    staticClass: "main__body__data"
-  }, [_c("div", {
-    staticClass: "members"
+  }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
+    staticClass: "members",
+    "class": {
+      active: _vm.selectedOptions.includes("Saler")
+    }
   }, [_vm._m(2), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
   }, _vm._l(_vm.resultArrayFilteredEmployee, function (item, index) {
@@ -1000,7 +1149,10 @@ var render = function render() {
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChart"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
-    staticClass: "members"
+    staticClass: "members",
+    "class": {
+      active: _vm.selectedOptions.includes("Location")
+    }
   }, [_vm._m(3), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
   }, _vm._l(_vm.resultArrayFilteredLocation, function (item, index) {
@@ -1010,17 +1162,18 @@ var render = function render() {
       staticClass: "profile"
     }, [_c("p", {
       staticClass: "mb-0"
-    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[11] === 0 ? _c("span", [_c("p", {
       staticClass: "mb-0"
-    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot (AOV : 0 $)\n            ")])]) : _c("span", [_c("p", {
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[11]) + " Spot (AOV : 0 $)\n            ")])]) : _c("span", [_c("p", {
       staticClass: "mb-0"
-    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot(AOV :\n              " + _vm._s((parseInt(item[4]) / parseInt(item[10])).toFixed(2)) + "\n              $)\n            ")])])]);
+    }, [_vm._v("\n              " + _vm._s(item[4]) + " $ / " + _vm._s(item[11]) + " Spot(AOV :\n              " + _vm._s((parseInt(item[4]) / parseInt(item[11])).toFixed(2)) + "\n              $)\n            ")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChartLocation"
-  }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
-    staticClass: "main__body__data"
-  }, [_c("div", {
-    staticClass: "members"
+  }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
+    staticClass: "members",
+    "class": {
+      active: _vm.selectedOptions.includes("Channel")
+    }
   }, [_vm._m(4), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
   }, _vm._l(_vm.resultArrayFilteredSource, function (item, index) {
@@ -1038,7 +1191,10 @@ var render = function render() {
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChartSource"
   }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
-    staticClass: "members"
+    staticClass: "members",
+    "class": {
+      active: _vm.selectedOptions.includes("Artist")
+    }
   }, [_vm._m(5), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
   }, _vm._l(_vm.resultArrayFilteredArtist, function (item, index) {
@@ -1048,18 +1204,73 @@ var render = function render() {
       staticClass: "profile"
     }, [_c("p", {
       staticClass: "mb-0"
-    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+    }, [_vm._v(_vm._s(item[1]))])]), _vm._v(" "), _c("div", {
+      staticClass: "profile"
+    }, [_c("p", {
       staticClass: "mb-0"
-    }, [_vm._v(_vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot")])]) : _c("span", [_c("p", {
+    }, [_vm._v("Revunue : " + _vm._s(item[5]) + " $")])]), _vm._v(" "), _c("div", {
+      staticClass: "profile"
+    }, [_c("p", {
       staticClass: "mb-0"
-    }, [_vm._v(_vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot")])])]);
+    }, [_vm._v("Upsell : " + _vm._s(item[12]) + " $")])]), _vm._v(" "), item[10] === 0 ? _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              Service Price : " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot\n            ")])]) : _c("span", [_c("p", {
+      staticClass: "mb-0"
+    }, [_vm._v("\n              Service Price : " + _vm._s(item[4]) + " $ / " + _vm._s(item[10]) + " Spot\n            ")])])]);
   }), 0), _vm._v(" "), _c("canvas", {
     ref: "myChartArtist"
-  }), _vm._v(" "), _c("div")])]), _vm._v(" "), _c("div", {
-    staticClass: "main__body__data"
+  }), _vm._v(" "), _c("div")]), _vm._v(" "), _c("div", {
+    staticClass: "members",
+    "class": {
+      active: _vm.selectedOptions.includes("Service")
+    }
   }, [_c("div", {
-    staticClass: "members"
-  }, [_vm._m(6), _vm._v(" "), _c("ul", {
+    staticClass: "members__top"
+  }, [_c("h4", [_vm._v("Service Booking")]), _vm._v(" "), _c("div", {
+    staticClass: "col-3"
+  }, [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedEmployee,
+      expression: "selectedEmployee"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedEmployee = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedEmployeeChart();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Select Employee")]), _vm._v(" "), _vm._l(_vm.apiDataEmployee, function (employee) {
+    return _c("option", {
+      key: employee.id,
+      domProps: {
+        value: employee.id
+      }
+    }, [_vm._v("\n              " + _vm._s(employee.name) + "\n            ")]);
+  })], 2)])]), _vm._v(" "), _c("ul", {
     staticClass: "members__user"
   }, _vm._l(_vm.resultArrayFilteredService, function (item, index) {
     return _c("li", {
@@ -1082,141 +1293,37 @@ var staticRenderFns = [function () {
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Revenue")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("i", {
-    staticClass: "ph-dots-three-outline-vertical-fill"
-  }), _vm._v(" "), _c("ul", {
-    staticClass: "menu"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Remove")])])])])]);
+  }, [_c("h4", [_vm._v("Revenue")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Customers number")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("i", {
-    staticClass: "ph-dots-three-outline-vertical-fill"
-  }), _vm._v(" "), _c("ul", {
-    staticClass: "menu"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Remove")])])])])]);
+  }, [_c("h4", [_vm._v("Customers number")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Saler")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("i", {
-    staticClass: "ph-dots-three-outline-vertical-fill"
-  }), _vm._v(" "), _c("ul", {
-    staticClass: "menu"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Remove")])])])])]);
+  }, [_c("h4", [_vm._v("Saler")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Location")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("i", {
-    staticClass: "ph-dots-three-outline-vertical-fill"
-  }), _vm._v(" "), _c("ul", {
-    staticClass: "menu"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Remove")])])])])]);
+  }, [_c("h4", [_vm._v("Location")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Channel source")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("i", {
-    staticClass: "ph-dots-three-outline-vertical-fill"
-  }), _vm._v(" "), _c("ul", {
-    staticClass: "menu"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Remove")])])])])]);
+  }, [_c("h4", [_vm._v("Channel source")])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
     staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Artist")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("i", {
-    staticClass: "ph-dots-three-outline-vertical-fill"
-  }), _vm._v(" "), _c("ul", {
-    staticClass: "menu"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Remove")])])])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "members__top"
-  }, [_c("h4", [_vm._v("Service Booking")]), _vm._v(" "), _c("div", {
-    staticClass: "members__menu"
-  }, [_c("i", {
-    staticClass: "ph-dots-three-outline-vertical-fill"
-  }), _vm._v(" "), _c("ul", {
-    staticClass: "menu"
-  }, [_c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Edit")])]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
-      href: "#"
-    }
-  }, [_vm._v("Remove")])])])])]);
+  }, [_c("h4", [_vm._v("Artist")])]);
 }];
 render._withStripped = true;
 
@@ -7043,7 +7150,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: auto;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\nbutton.active {\n  background: #b5ddff !important;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: auto;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\nbutton.active {\n  background: #b5ddff !important;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n#main .main__body__data > div {\n    flex: 1 0 49%;\n    background: var(--white);\n    padding: 1.25rem 1.5rem;\n    border-radius: 5px;\n    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n#main .main__body__data > div {\n  display: none;\n}\n#main .main__body__data > .active {\n  display: block;\n\n  width: 49%;\n  flex: 1 0 49,5%;\n    background: var(--white);\n    padding: 1.25rem 1.5rem;\n    border-radius: 5px;\n    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

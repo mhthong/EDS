@@ -53,6 +53,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeAuthController;
 use Unisharp\Laravelfilemanager\controllers\LfmController;
 use Unisharp\Laravelfilemanager\controllers\UploadController;
+use App\Http\Controllers\KpiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -178,14 +179,14 @@ Route::middleware('auth:artists')->prefix('artists')->group(
         Route::post('/update-avatar', [ArtistAuthController::class, 'updateAvatar'])->name('artists.updateAvatar');
         Route::post('/update-infomation', [ArtistAuthController::class, 'updateInfomation'])->name('artists.updateInfomation');
 
-   /*      Route::get('/sales', function () {
+        /*      Route::get('/sales', function () {
             return view('layouts.sale'); // Tên của view bạn muốn hiển thị
         })->name('sale-artists');
 
         Route::get('/analytics', function () {
             return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
         })->name('analytics-artists'); */
-        
+
 
         Route::prefix('books')->group(
             function () {
@@ -198,21 +199,19 @@ Route::middleware('auth:artists')->prefix('artists')->group(
                 // Edit page - Show the form for editing an existing service
                 Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('artists.bookings.edit');
                 // routes/web.php or routes/api.php
-        
+
                 // Update - Update the specified service in the database
                 Route::post('/{id}', [BookingController::class, 'update'])->name('artists.bookings.update');
                 // Destroy - Remove the specified service from the database
                 /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
 
                 // routes/web.php
-        
+
 
 
 
             }
         );
-
-
     }
 
 );
@@ -235,14 +234,14 @@ Route::middleware('auth:employee')->prefix('employee')->group(function () {
     Route::post('/update-avatar', [EmployeeAuthController::class, 'updateAvatar'])->name('employee.updateAvatar');
     Route::post('/update-infomation', [EmployeeAuthController::class, 'updateInfomation'])->name('employee.updateInfomation');
 
-/*     Route::get('/sales', function () {
+    /*     Route::get('/sales', function () {
         return view('layouts.sale'); // Tên của view bạn muốn hiển thị
     })->name('sale-employee');
 
     Route::get('/analytics', function () {
         return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
     })->name('analytics-employee'); */
-    
+
 
     Route::prefix('books')->group(
         function () {
@@ -255,16 +254,13 @@ Route::middleware('auth:employee')->prefix('employee')->group(function () {
             // Edit page - Show the form for editing an existing service
             Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('employee.bookings.edit');
             // routes/web.php or routes/api.php
-    
+
             // Update - Update the specified service in the database
             Route::post('/{id}', [BookingController::class, 'update'])->name('employee.bookings.update');
             // Destroy - Remove the specified service from the database
             /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
-
         }
     );
-
-
 });
 
 
@@ -281,12 +277,12 @@ Route::middleware('auth:admin')->prefix('admin')->group(
         Route::get('/sales', function () {
             return view('layouts.sale'); // Tên của view bạn muốn hiển thị
         })->name('sale-admin');
-        
 
 
-    Route::get('/analytics', function () {
-        return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
-    })->name('analytics-admin');
+
+        Route::get('/analytics', function () {
+            return view('layouts.analytics'); // Tên của view bạn muốn hiển thị
+        })->name('analytics-admin');
 
         Route::group(['prefix' => '/laravel-filemanager'], function () {
             \UniSharp\LaravelFilemanager\Lfm::routes();
@@ -302,11 +298,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::put('/{auth_admin}', [AuthAdminController::class, 'update'])->name('auth-admin.update');
 
                 Route::DELETE('/{auth_admin}', [AuthAdminController::class, 'destroy'])->name('auth-admin.destroy');
-
             }
         );
-
-
 
         Route::get('/', [AdminController::class, 'test'])->name('auth-admin.index');
         Route::get('/', [AdminController::class, 'index'])->name('admin.index');
@@ -335,13 +328,18 @@ Route::middleware('auth:admin')->prefix('admin')->group(
         //caregory
         Route::prefix('category')->group(
             function () {
-            Route::get('/', [MenuController::class, 'index'])->name('category');
-            Route::post('category-post', [MenuController::class, 'store'])->name('category-up');
-            Route::DELETE('delete/{id}', [MenuController::class, 'destroy'])->name('category.delete');
-            Route::post('update-menu/{id}', [MenuController::class, 'update'])->name('update-menu');
-        }
+                Route::get('/', [MenuController::class, 'index'])->name('category');
+                Route::post('category-post', [MenuController::class, 'store'])->name('category-up');
+                Route::DELETE('delete/{id}', [MenuController::class, 'destroy'])->name('category.delete');
+                Route::post('update-menu/{id}', [MenuController::class, 'update'])->name('update-menu');
+            }
         );
 
+        Route::prefix('kpis')->group(
+            function () {
+                Route::get('/', [KpiController::class, 'view'])->name('kpis.index');
+            }
+        );
 
 
         Route::prefix('books')->group(
@@ -355,14 +353,13 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 // Edit page - Show the form for editing an existing service
                 Route::get('/{id}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
                 // routes/web.php or routes/api.php
-        
+
                 // Update - Update the specified service in the database
                 Route::post('/{id}', [BookingController::class, 'update'])->name('bookings.update');
                 // Destroy - Remove the specified service from the database
                 /*   Route::delete('/{books}', [ServiceController::class, 'destroy'])->name('services.destroy'); */
 
                 Route::delete('/bookings/{id}', [BookingController::class, 'delete'])->name('bookings.delete');
-
             }
         );
 
@@ -387,7 +384,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::post('/store', [ArtistLevelController::class, 'store'])->name('artist-levels.store');
                 Route::put('/{artist_level}', [ArtistLevelController::class, 'update'])->name('artist-levels.update');
                 Route::DELETE('/{artist_level}', [ArtistLevelController::class, 'destroy'])->name('artist-levels.destroy');
-
             }
         );
 
@@ -412,7 +408,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
                 // Destroy - Remove the specified service from the database
                 Route::delete('/{get}', [GetController::class, 'destroy'])->name('get.destroy');
-
             }
         );
 
@@ -422,7 +417,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::post('/store', [GroupServiceController::class, 'store'])->name('groups.store');
                 Route::put('/{group}', [GroupServiceController::class, 'update'])->name('groups.update');
                 Route::DELETE('/{group}', [GroupServiceController::class, 'destroy'])->name('groups.destroy');
-
             }
         );
 
@@ -446,7 +440,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
                 // Destroy - Remove the specified service from the database
                 Route::delete('/{service}', [ServiceController::class, 'destroy'])->name('services.destroy');
-
             }
         );
 
@@ -471,7 +464,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
                 // Destroy - Remove the specified service from the database
                 Route::delete('/{showroom}', [ShowroomController::class, 'destroy'])->name('showrooms.destroy');
-
             }
         );
 
@@ -488,8 +480,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{artist}', [ArtistController::class, 'destroy'])->name('artist.destroy');
                 Route::get('create', [ArtistController::class, 'create'])->name('artist.create', true);
                 Route::post('store', [ArtistController::class, 'store'])->name('artist.store', true);
-
-
             }
         );
 
@@ -502,7 +492,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{employee}', [EmployeeController::class, 'destroy'])->name('employee.destroy');
                 Route::get('create', [EmployeeController::class, 'create'])->name('employee.create', true);
                 Route::post('store', [EmployeeController::class, 'store'])->name('employee.store', true);
-
             }
         );
 
@@ -517,7 +506,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{id}', [BlockController::class, 'destroy'])->name('blocks.delete');
                 Route::get('edit/{id}', [BlockController::class, 'edit'])->name('blocks.edit');
                 Route::post('update-block/{id}', [BlockController::class, 'update'])->name('blocks.update');
-
             }
         );
 
@@ -530,7 +518,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{id}', [StaticPostsController::class, 'destroy'])->name('statics.delete');
                 Route::get('edit/{id}', [StaticPostsController::class, 'edit'])->name('statics.edit');
                 Route::post('update-static/{id}', [StaticPostsController::class, 'update'])->name('statics.update');
-
             }
         );
 
@@ -543,7 +530,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::DELETE('delete/{id}', [PostController::class, 'destroy'])->name('posts.delete');
                 Route::get('edit/{id}', [PostController::class, 'edit'])->name('edit-posts');
                 Route::post('update-posts/{id}', [PostController::class, 'update'])->name('update-posts');
-
             }
         );
 
@@ -569,7 +555,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             function () {
                 Route::get('option', [SettingController::class, 'SettingValue'])->name('setting');
                 Route::post('option-post', [SettingController::class, 'Setting'])->name('setting-up');
-
             }
         );
 
@@ -584,9 +569,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(
                 Route::post('compose-email', [EmailConfigurationController::class, 'sendEmail_ad'])->name('compose-email-form');
             }
         );
-
-
-
     }
 
 );

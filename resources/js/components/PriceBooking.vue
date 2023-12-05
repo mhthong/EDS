@@ -2,21 +2,6 @@
   <div>
     <ul class="main__body__box-info">
       <li class="Price">
-        <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
-        <h6>Total Price</h6>
-        <h4>${{ this.Total_price }}</h4>
-      </li>
-      <li class="Price">
-        <img :src="'/assets/images/Remaining.png'" alt="" srcset="" />
-        <h6>Remaining</h6>
-        <h4>${{ this.Remaining_price }}</h4>
-      </li>
-      <li class="Price">
-        <img :src="'/assets/images/Deposit.png'" alt="" srcset="" />
-        <h6>Deposit</h6>
-        <h4>${{ this.Deposit_price }}</h4>
-      </li>
-      <li class="Price">
         <img
           :src="'/assets/images/total%20booking%20price.png'"
           alt=""
@@ -24,6 +9,33 @@
         />
         <h6>Booking Price</h6>
         <h4>${{ this.servies_price }}</h4>
+      </li>
+
+      <li class="Price">
+        <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
+        <h6>Total Price</h6>
+        <h4>${{ this.Total_price }}</h4>
+      </li>
+      <li class="Price">
+        <img :src="'/assets/images/Deposit.png'" alt="" srcset="" />
+        <h6>Deposit</h6>
+        <h4>${{ this.Deposit_price }}</h4>
+      </li>
+
+      <li class="Price">
+        <img :src="'/assets/images/Remaining.png'" alt="" srcset="" />
+        <h6>Remaining</h6>
+        <h4>${{ this.Remaining_price }}</h4>
+      </li>
+
+      <li class="Price">
+        <img
+          :src="'/assets/images/total%20booking%20price.png'"
+          alt=""
+          srcset=""
+        />
+        <h6>Upsell</h6>
+        <h4>${{ this.upsale }}</h4>
       </li>
     </ul>
   </div>
@@ -42,6 +54,7 @@ export default {
       Deposit_price: "",
       Remaining_price: "",
       servies_price: "",
+      upsale:"",
       /*   selectedOption: "option1", */
     };
   },
@@ -74,6 +87,7 @@ export default {
           this.Deposit_price = this.apiData_id[0].price.Deposit_price;
           this.Remaining_price = this.apiData_id[0].price.Remaining_price;
           this.servies_price = this.apiData_id[0].price.servies_price;
+          this.upsale = this.apiData_id[0].price.upsale;
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);

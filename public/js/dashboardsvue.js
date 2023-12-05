@@ -18,6 +18,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
  // Import the CSS
 
@@ -27,9 +31,10 @@ __webpack_require__.r(__webpack_exports__);
     DateRangePicker: (vue2_daterange_picker__WEBPACK_IMPORTED_MODULE_0___default())
   },
   data: function data() {
+    var _ref;
     // Lấy ngày hiện tại
     var currentDate = new Date();
-    return {
+    return _ref = {
       dateRange: {
         type: Object,
         required: true // Nếu cần
@@ -41,6 +46,8 @@ __webpack_require__.r(__webpack_exports__);
         end: null // Ngày kết thúc
       },
 
+      showrooms: [],
+      selectedShowroom: null,
       id: "",
       currentURL: "",
       apiData: [],
@@ -56,6 +63,9 @@ __webpack_require__.r(__webpack_exports__);
       Done_price: "",
       Cancel_price: "",
       Refund_price: "",
+      Done_price_revenue: "",
+      kpi: "",
+      upsale: "",
       adminId: null,
       employeeId: null,
       artistId: null,
@@ -66,8 +76,13 @@ __webpack_require__.r(__webpack_exports__);
       filteredDataWaiting: null,
       filteredDataCancel: null,
       filteredDataDone: null,
-      filteredDataRefund: null
-    };
+      filteredDataRefund: null,
+      selectedEmployee: null,
+      title: null,
+      apiDataAritst: null,
+      apiDataEmployee: null,
+      apiDatakpi: []
+    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _ref;
   },
   watch: {
     dateRange: {
@@ -75,7 +90,7 @@ __webpack_require__.r(__webpack_exports__);
         // Log khi dateRange thay đổi
         this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_2___default()(newDateRange.endDate).format("YYYY-MM-DD");
         this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_2___default()(newDateRange.startDate).format("YYYY-MM-DD");
-        this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+        this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
       },
       deep: true // Theo dõi các sự thay đổi sâu trong object
     }
@@ -88,37 +103,91 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    fetchapiData_id: function fetchapiData_id(start, end) {
+    fetchapiData_id: function fetchapiData_id(start, end, selectedShowroom, employee, title) {
       var _this = this;
       if (this.artistId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataArtist/ ".concat(start, "/").concat(end)).then(function (response) {
-          var _this$totalByName;
-          // Lọc dữ liệu dựa trên ArtistID
-          _this.apiData_id = Object.values(((_this$totalByName = _this.totalByName(response.data)) === null || _this$totalByName === void 0 ? void 0 : _this$totalByName.find(function (filler) {
-            return parseInt(filler.id) === parseInt(_this.artistId);
-          })) || {});
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataArtistLocation/".concat(start, "/").concat(end, "/").concat(selectedShowroom)).then(function (response) {
+          _this.apiData_id = response.data;
+          _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else if (this.employeeId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataEmployee/".concat(start, "/").concat(end)).then(function (response) {
-          var _this$totalByName2;
-          _this.apiData_id = Object.values(((_this$totalByName2 = _this.totalByName(response.data)) === null || _this$totalByName2 === void 0 ? void 0 : _this$totalByName2.find(function (filler) {
-            return parseInt(filler.id) === parseInt(_this.employeeId);
-          })) || {});
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataEmployeeLocation/".concat(start, "/").concat(end, "/").concat(selectedShowroom)).then(function (response) {
+          /*       this.apiData_id = Object.values(
+            this.totalByName(response.data)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+            ) || {}
+          ); */
+          _this.apiData_id = response.data;
+          _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
       } else {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataShowroom/ ".concat(start, "/").concat(end)).then(function (response) {
-          // Nhận dữ liệu từ phản hồi
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataShowroomEmployee/".concat(start, "/").concat(end, "/").concat(employee, "/").concat(title)).then(function (response) {
           _this.apiData_id = response.data;
+          _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
+      }
+    },
+    fetchArtist: function fetchArtist() {
+      var _this2 = this;
+      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/artist").then(function (response) {
+        _this2.apiDataAritst = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching artist::", error);
+      });
+    },
+    fetchapiDataEmployee: function fetchapiDataEmployee() {
+      var _this3 = this;
+      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/employee").then(function (response) {
+        _this3.apiDataEmployee = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
+    fetchShowrooms: function fetchShowrooms() {
+      var _this4 = this;
+      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/showrooms").then(function (response) {
+        _this4.showrooms = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching showrooms:", error);
+      });
+    },
+    fetchKpis: function fetchKpis(showroom, employee, date) {
+      var _this5 = this;
+      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/kpis-data/".concat(showroom, "/").concat(employee, "/").concat(date)).then(function (response) {
+        _this5.apiDatakpi = response.data;
+        _this5.kpi = _this5.apiDatakpi.number_of_kpi;
+        if (_this5.kpi == undefined) {
+          _this5.kpi = 0;
+        }
+      })["catch"](function (error) {
+        console.error("Error fetching showrooms:", error);
+      });
+    },
+    calculatePercentage: function calculatePercentage() {
+      var revenueTotal = parseFloat(this.RevenueTatol);
+      var kpiValue = parseFloat(this.kpi);
+
+      // Check if both values are valid numbers and kpiValue is not zero
+      if (!isNaN(revenueTotal) && !isNaN(kpiValue) && kpiValue !== 0) {
+        var percentage = revenueTotal / kpiValue * 100;
+        return percentage.toFixed(2); // Adjust the number of decimal places as needed
+      } else if (isNaN(revenueTotal) || isNaN(kpiValue)) {
+        // Handle the case where one or both values are not valid numbers
+        console.error("Invalid numeric values for calculation");
+        return "N/A";
+      } else {
+        // Handle the case where kpiValue is zero
+        console.error("Cannot divide by zero");
+        return "Infinity";
       }
     },
     totalByName: function totalByName(data) {
@@ -147,7 +216,9 @@ __webpack_require__.r(__webpack_exports__);
               Cancel_price: 0,
               Refund_price: 0,
               Remaining_price: 0,
-              length: 0
+              length: 0,
+              Done_price_revenue: 0,
+              upsale: 0
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -160,6 +231,8 @@ __webpack_require__.r(__webpack_exports__);
           totals[Name].Refund_price += fillerData.Refund_price;
           totals[Name].Remaining_price += fillerData.Remaining_price;
           totals[Name].length += fillerData.length;
+          totals[Name].Done_price_revenue += fillerData.Done_price_revenue;
+          totals[Name].upsale += fillerData.upsale;
         }
       }
 
@@ -167,8 +240,29 @@ __webpack_require__.r(__webpack_exports__);
       var totalsArray = Object.values(totals);
       return totalsArray;
     },
+    filterDataById: function filterDataById(data, targetId) {
+      var _this6 = this;
+      var filteredData = {};
+      Object.keys(data).forEach(function (date) {
+        var dateData = data[date];
+        var filteredDateData = {};
+        Object.keys(dateData).forEach(function (id) {
+          if (dateData[id].id === targetId) {
+            _this6.$set(filteredDateData, id, dateData[id]);
+          }
+        });
+        if (Object.keys(filteredDateData).length > 0) {
+          _this6.$set(filteredData, date, filteredDateData);
+        }
+      });
+      return filteredData;
+    },
+    selectedShowroomPrice: function selectedShowroomPrice() {
+      // Gọi hàm fetchapiData_id để cập nhật dữ liệu từ API
+      this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
+    },
     Price: function Price() {
-      var _this2 = this;
+      var _this7 = this;
       this.Total_price = 0;
       this.Deposit_price = 0;
       this.servies_price = 0;
@@ -178,21 +272,41 @@ __webpack_require__.r(__webpack_exports__);
       this.Done_price = 0;
       this.Remaining_price = 0;
       this.numberOfBooks = 0;
+      this.Done_price_revenue = 0;
+      this.upsale = 0;
       if (this.adminId !== null) {
-        var data = this.totalByName(this.apiData_id);
+        if (this.selectedShowroom !== null) {
+          this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
+        } else {
+          this.resuft = this.apiData_id;
+        }
+        var data = this.totalByName(this.resuft);
         data.forEach(function (item) {
-          _this2.Total_price += parseFloat(item.servies_price);
-          _this2.Deposit_price += parseFloat(item.Deposit_price);
-          _this2.servies_price += parseFloat(item.servies_price);
-          _this2.RevenueTatol += parseFloat(item.Revenue);
-          _this2.Cancel_price += parseFloat(item.Cancel_price);
-          _this2.Refund_price += parseFloat(item.Refund_price);
-          _this2.Done_price += parseFloat(item.Done_price);
-          _this2.Remaining_price += parseFloat(item.Remaining_price);
-          _this2.numberOfBooks = item.length;
+          _this7.Total_price += parseFloat(item.servies_price);
+          _this7.Deposit_price += parseFloat(item.Deposit_price);
+          _this7.servies_price += parseFloat(item.servies_price);
+          _this7.RevenueTatol += parseFloat(item.Revenue);
+          _this7.Cancel_price += parseFloat(item.Cancel_price);
+          _this7.Refund_price += parseFloat(item.Refund_price);
+          _this7.Done_price += parseFloat(item.Done_price);
+          _this7.Remaining_price += parseFloat(item.Remaining_price);
+          _this7.numberOfBooks = item.length;
+          _this7.Done_price_revenue += parseFloat(item.Done_price_revenue);
+          _this7.upsale += parseFloat(item.upsale);
         });
       } else {
-        var _data = this.apiData_id;
+        if (this.employeeId !== null) {
+          var _this$totalByName;
+          this.resuft = Object.values(((_this$totalByName = this.totalByName(this.apiData_id)) === null || _this$totalByName === void 0 ? void 0 : _this$totalByName.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this7.employeeId);
+          })) || {});
+        } else {
+          var _this$totalByName2;
+          this.resuft = Object.values(((_this$totalByName2 = this.totalByName(this.apiData_id)) === null || _this$totalByName2 === void 0 ? void 0 : _this$totalByName2.find(function (filler) {
+            return parseInt(filler.id) === parseInt(_this7.artistId);
+          })) || {});
+        }
+        var _data = this.resuft;
         this.Total_price += parseFloat(_data[2]);
         this.Deposit_price += parseFloat(_data[3]);
         this.servies_price += parseFloat(_data[4]);
@@ -202,15 +316,23 @@ __webpack_require__.r(__webpack_exports__);
         this.Done_price += parseFloat(_data[6]);
         this.Remaining_price += parseFloat(_data[9]);
         this.numberOfBooks = _data[10];
+        this.Done_price_revenue = _data[11];
+        this.upsale = _data[12];
       }
 
       // Lặp qua danh sách dữ liệu và tính tổng
+    },
+    selectedEmployeeAPi: function selectedEmployeeAPi() {
+      this.selectedEmployee = null;
     }
   },
   mounted: function mounted() {
     this.adminId = this.$root.adminId;
     this.artistId = this.$root.artistId;
     this.employeeId = this.$root.employeeId;
+    if (this.employeeId !== null) {
+      this.selectedEmployee = this.employeeId;
+    }
     var currentDate = new Date();
     this.currentMonth = currentDate.getMonth() + 1;
     this.currentYear = currentDate.getFullYear();
@@ -221,7 +343,11 @@ __webpack_require__.r(__webpack_exports__);
       this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_2___default()(new Date(_currentDate.getFullYear(), _currentDate.getMonth(), 1)).format("YYYY-MM-DD");
       this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_2___default()(_currentDate).format("YYYY-MM-DD");
     }
-    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+    this.fetchShowrooms();
+    this.fetchapiDataEmployee();
+    this.fetchArtist();
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
+    this.fetchKpis(this.selectedShowroom, this.selectedEmployee, this.dateRange.start);
   }
 });
 
@@ -242,7 +368,13 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", [_c("div", [_c("label", {
+  return _c("div", [_c("div", {
+    staticStyle: {
+      display: "flex",
+      gap: "1rem",
+      "flex-wrap": "wrap"
+    }
+  }, [_c("label", {
     attrs: {
       "for": _vm.dateRange
     }
@@ -265,7 +397,184 @@ var render = function render() {
       },
       expression: "dateRange"
     }
-  })], 1)]), _vm._v(" "), _c("div", [_c("ul", {
+  })], 1), _vm._v(" "), _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedShowroom,
+      expression: "selectedShowroom"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedShowroom = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedShowroomPrice();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Showroom")]), _vm._v(" "), _vm._l(_vm.showrooms, function (showroom) {
+    return _c("option", {
+      key: showroom.id,
+      domProps: {
+        value: showroom.id
+      }
+    }, [_vm._v("\n          " + _vm._s(showroom.Name) + "\n        ")]);
+  })], 2)]), _vm._v(" "), this.artistId === null && this.employeeId === null ? _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.title,
+      expression: "title"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.title = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedEmployeeAPi();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Position")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Saler",
+      selected: ""
+    }
+  }, [_vm._v("Saler")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Artist",
+      selected: ""
+    }
+  }, [_vm._v("Artist")])])]) : _vm._e(), _vm._v(" "), this.title === "Saler" && this.employeeId === null ? _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedEmployee,
+      expression: "selectedEmployee"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect",
+      disabled: this.title == null
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedEmployee = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedShowroomPrice();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataEmployee, function (employee) {
+    return _c("option", {
+      key: employee.id,
+      domProps: {
+        value: employee.id
+      }
+    }, [_vm._v("\n          " + _vm._s(employee.name) + "\n        ")]);
+  })], 2)]) : _vm._e(), _vm._v(" "), this.title === "Artist" && this.artistId === null ? _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedEmployee,
+      expression: "selectedEmployee"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect",
+      disabled: this.title == null
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedEmployee = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedShowroomPrice();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataAritst, function (Aritst) {
+    return _c("option", {
+      key: Aritst.id,
+      domProps: {
+        value: Aritst.id
+      }
+    }, [_vm._v("\n          " + _vm._s(Aritst.name) + "\n        ")]);
+  })], 2)]) : _vm._e()]), _vm._v(" "), _c("div", [_c("ul", {
     staticClass: "main__body__box-info admin_dashboard",
     "class": {
       fade: _vm.isTransitioning
@@ -294,7 +603,20 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Done")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Done_price)))])]), _vm._v(" "), _c("li", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Done Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Done_price_revenue)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Done_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Done.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Done")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Done_price)))])])]), _vm._v(" "), _c("ul", {
+    staticClass: "main__body__box-info",
+    "class": {
+      fade: _vm.isTransitioning
+    }
+  }, [_c("li", {
     staticClass: "Price Remaining_price"
   }, [_c("img", {
     attrs: {
@@ -302,12 +624,7 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Remaining")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Remaining_price)))])])]), _vm._v(" "), _c("ul", {
-    staticClass: "main__body__box-info",
-    "class": {
-      fade: _vm.isTransitioning
-    }
-  }, [_c("li", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Remaining")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Remaining_price)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Deposit_price"
   }, [_c("img", {
     attrs: {
@@ -331,7 +648,23 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Refund")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_price)))])])])])]);
+  }), _vm._v(" "), _c("h6", [_vm._v("Refund")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Refund_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/total%20booking%20price.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Upsell")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.upsale)))])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null ? _c("li", {
+    staticClass: "Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/total%20booking%20price.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("KPI")]), _vm._v(" "), _c("h4", [_vm._v("\n          $" + _vm._s(this.RevenueTatol) + " / $" + _vm._s(parseFloat(this.kpi)) + " POC\n          " + _vm._s(_vm.calculatePercentage()) + " %\n        ")])]) : _vm._e()])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2451,7 +2784,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 300px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 250px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

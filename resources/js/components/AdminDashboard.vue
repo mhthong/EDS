@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap">
       <label :for="dateRange">
         <date-range-picker
           v-model="dateRange"
@@ -12,56 +12,163 @@
           :timePicker="true"
         ></date-range-picker>
       </label>
+      <label>
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedShowroom"
+          @change="selectedShowroomPrice()"
+          style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Showroom</option>
+          <option
+            v-for="showroom in showrooms"
+            :key="showroom.id"
+            :value="showroom.id"
+          >
+            {{ showroom.Name }}
+          </option>
+        </select>
+      </label>
+
+      <label v-if="this.artistId === null && this.employeeId === null">
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="title"
+          @change="selectedEmployeeAPi()"
+          style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Position</option>
+          <option value="Saler" selected>Saler</option>
+          <option value="Artist" selected>Artist</option>
+        </select>
+      </label>
+
+      <label v-if="this.title === 'Saler' && this.employeeId === null">
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedEmployee"
+          @change="selectedShowroomPrice()"
+          :disabled="this.title == null"
+          style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Name</option>
+
+          <option
+            v-for="employee in apiDataEmployee"
+            :key="employee.id"
+            :value="employee.id"
+          >
+            {{ employee.name }}
+          </option>
+        </select>
+      </label>
+
+      <label v-if="this.title === 'Artist' && this.artistId === null">
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedEmployee"
+          @change="selectedShowroomPrice()"
+          :disabled="this.title == null"
+          style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Name</option>
+
+          <option
+            v-for="Aritst in apiDataAritst"
+            :key="Aritst.id"
+            :value="Aritst.id"
+          >
+            {{ Aritst.name }}
+          </option>
+        </select>
+      </label>
     </div>
+
     <div>
       <!-- Hiển thị các thông tin và nút để xem các tháng -->
 
-      <ul class="main__body__box-info admin_dashboard" :class="{ fade: isTransitioning }">
+      <ul
+        class="main__body__box-info admin_dashboard"
+        :class="{ fade: isTransitioning }"
+      >
         <li class="Price Total_Booking_Price">
-          <img :src="'/assets/images/total%20booking%20price.png'" alt="" srcset="">
+          <img
+            :src="'/assets/images/total%20booking%20price.png'"
+            alt=""
+            srcset=""
+          />
           <h6>Total Booking Price</h6>
           <h4>${{ parseFloat(this.servies_price) }}</h4>
         </li>
         <li class="Price Revenue_price">
-          <img :src="'/assets/images/Revenue.png'" alt="" srcset="">
+          <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
           <h6>Revenue</h6>
           <h4>${{ this.RevenueTatol }}</h4>
-         
         </li>
 
-        <li class=" Price Done_price">
-          <img :src="'/assets/images/Done.png'" alt="" srcset="">
+        <li class="Price Done_price">
+          <img :src="'/assets/images/Done.png'" alt="" srcset="" />
+          <h6>Done Revenue</h6>
+          <h4>${{ parseFloat(this.Done_price_revenue) }}</h4>
+        </li>
+
+        <li class="Price Done_price">
+          <img :src="'/assets/images/Done.png'" alt="" srcset="" />
           <h6>Done</h6>
           <h4>${{ parseFloat(this.Done_price) }}</h4>
         </li>
-
-        <li class="Price Remaining_price">
-          <img :src="'/assets/images/Remaining.png'" alt="" srcset="">
-          <h6>Remaining</h6>
-          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
-        </li>
-    
       </ul>
 
       <ul class="main__body__box-info" :class="{ fade: isTransitioning }">
+        <li class="Price Remaining_price">
+          <img :src="'/assets/images/Remaining.png'" alt="" srcset="" />
+          <h6>Remaining</h6>
+          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
+        </li>
+
         <li class="Price Deposit_price">
-          <img :src="'/assets/images/Deposit.png'" alt="" srcset="">
+          <img :src="'/assets/images/Deposit.png'" alt="" srcset="" />
           <h6>Deposit</h6>
           <h4>${{ parseFloat(this.Deposit_price) }}</h4>
         </li>
 
         <li class="Price Cancel_price">
-          <img :src="'/assets/images/Cancel.png'" alt="" srcset="">
+          <img :src="'/assets/images/Cancel.png'" alt="" srcset="" />
           <h6>Cancel</h6>
           <h4>${{ parseFloat(this.Cancel_price) }}</h4>
         </li>
 
         <li class="Price Refund_price">
-          <img :src="'/assets/images/Refund.png'" alt="" srcset="">
+          <img :src="'/assets/images/Refund.png'" alt="" srcset="" />
           <h6>Refund</h6>
           <h4>${{ parseFloat(this.Refund_price) }}</h4>
         </li>
+        <li class="Price Refund_price">
+          <img
+            :src="'/assets/images/total%20booking%20price.png'"
+            alt=""
+            srcset=""
+          />
+          <h6>Upsell</h6>
+          <h4>${{ parseFloat(this.upsale) }}</h4>
+        </li>
 
+        <li class="Price" v-if="this.title !== 'Artist' && this.employeeId === null">
+          <img
+            :src="'/assets/images/total%20booking%20price.png'"
+            alt=""
+            srcset=""
+          />
+          <h6>KPI</h6>
+          <h4>
+            ${{ this.RevenueTatol }} / ${{ parseFloat(this.kpi) }} POC
+            {{ calculatePercentage() }} %
+          </h4>
+        </li>
       </ul>
     </div>
   </div>
@@ -91,7 +198,8 @@ export default {
         start: null, // Ngày bắt đầu
         end: null, // Ngày kết thúc
       },
-
+      showrooms: [],
+      selectedShowroom: null,
       id: "",
       currentURL: "",
       apiData: [],
@@ -107,6 +215,9 @@ export default {
       Done_price: "",
       Cancel_price: "",
       Refund_price: "",
+      Done_price_revenue: "",
+      kpi: "",
+      upsale: "",
       adminId: null,
       employeeId: null,
       artistId: null,
@@ -118,24 +229,35 @@ export default {
       filteredDataCancel: null,
       filteredDataDone: null,
       filteredDataRefund: null,
+      selectedEmployee: null,
+      title: null,
+      apiDataAritst: null,
+      apiDataEmployee: null,
+      apiDatakpi: [],
+      kpi: 0,
+      resuft: [],
     };
   },
 
   watch: {
     dateRange: {
       handler(newDateRange, oldDateRange) {
-
         // Log khi dateRange thay đổi
         this.dateRange.end = moment(newDateRange.endDate).format("YYYY-MM-DD");
-      this.dateRange.start = moment(newDateRange.startDate).format(
-        "YYYY-MM-DD"
-      );
+        this.dateRange.start = moment(newDateRange.startDate).format(
+          "YYYY-MM-DD"
+        );
 
-         this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+        this.fetchapiData_id(
+          this.dateRange.start,
+          this.dateRange.end,
+          this.selectedShowroom,
+          this.selectedEmployee,
+          this.title
+        );
       },
       deep: true, // Theo dõi các sự thay đổi sâu trong object
     },
- 
   },
 
   computed: {
@@ -146,31 +268,38 @@ export default {
   },
 
   methods: {
-    fetchapiData_id(start, end) {
+    fetchapiData_id(start, end, selectedShowroom, employee, title) {
       if (this.artistId !== null) {
         axios
-          .get(`/api/getDataArtist/ ${start}/${end}`)
+          .get(`/api/getDataArtistLocation/${start}/${end}/${selectedShowroom}`)
           .then((response) => {
-            // Lọc dữ liệu dựa trên ArtistID
-            this.apiData_id = Object.values(
-              this.totalByName(response.data)?.find(
-                (filler) => parseInt(filler.id) === parseInt(this.artistId)
-              ) || {}
+            this.apiData_id = response.data;
+            this.fetchKpis(
+              this.selectedShowroom,
+              this.selectedEmployee,
+              this.dateRange.start
             );
             this.Price();
           })
-
           .catch((error) => {
             console.error("Error fetching API data:", error);
           });
       } else if (this.employeeId !== null) {
         axios
-          .get(`/api/getDataEmployee/${start}/${end}`)
+          .get(
+            `/api/getDataEmployeeLocation/${start}/${end}/${selectedShowroom}`
+          )
           .then((response) => {
-            this.apiData_id = Object.values(
+            /*       this.apiData_id = Object.values(
               this.totalByName(response.data)?.find(
                 (filler) => parseInt(filler.id) === parseInt(this.employeeId)
               ) || {}
+            ); */
+            this.apiData_id = response.data;
+            this.fetchKpis(
+              this.selectedShowroom,
+              this.selectedEmployee,
+              this.dateRange.start
             );
             this.Price();
           })
@@ -179,16 +308,89 @@ export default {
           });
       } else {
         axios
-          .get(`/api/getDataShowroom/ ${start}/${end}`)
+          .get(
+            `/api/getDataShowroomEmployee/${start}/${end}/${employee}/${title}`
+          )
           .then((response) => {
-            // Nhận dữ liệu từ phản hồi
             this.apiData_id = response.data;
-
+            this.fetchKpis(
+              this.selectedShowroom,
+              this.selectedEmployee,
+              this.dateRange.start
+            );
             this.Price();
           })
           .catch((error) => {
             console.error("Error fetching API data:", error);
           });
+      }
+    },
+
+    fetchArtist() {
+      axios
+        .get("/api/artist")
+        .then((response) => {
+          this.apiDataAritst = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching artist::", error);
+        });
+    },
+
+    fetchapiDataEmployee() {
+      axios
+        .get(`/api/employee`)
+        .then((response) => {
+          this.apiDataEmployee = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
+    fetchShowrooms() {
+      axios
+        .get("/api/showrooms")
+        .then((response) => {
+          this.showrooms = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching showrooms:", error);
+        });
+    },
+
+    fetchKpis(showroom, employee, date) {
+      axios
+        .get(`/api/kpis-data/${showroom}/${employee}/${date}`)
+        .then((response) => {
+          this.apiDatakpi = response.data;
+          this.kpi = this.apiDatakpi.number_of_kpi;
+
+          if (this.kpi == undefined) {
+            this.kpi = 0;
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching showrooms:", error);
+        });
+    },
+
+    calculatePercentage() {
+      const revenueTotal = parseFloat(this.RevenueTatol);
+      const kpiValue = parseFloat(this.kpi);
+
+      // Check if both values are valid numbers and kpiValue is not zero
+      if (!isNaN(revenueTotal) && !isNaN(kpiValue) && kpiValue !== 0) {
+        const percentage = (revenueTotal / kpiValue) * 100;
+        return percentage.toFixed(2); // Adjust the number of decimal places as needed
+      } else if (isNaN(revenueTotal) || isNaN(kpiValue)) {
+        // Handle the case where one or both values are not valid numbers
+        console.error("Invalid numeric values for calculation");
+        return "N/A";
+      } else {
+        // Handle the case where kpiValue is zero
+        console.error("Cannot divide by zero");
+        return "Infinity";
       }
     },
 
@@ -219,6 +421,8 @@ export default {
               Refund_price: 0,
               Remaining_price: 0,
               length: 0,
+              Done_price_revenue: 0,
+              upsale: 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -231,6 +435,8 @@ export default {
           totals[Name].Refund_price += fillerData.Refund_price;
           totals[Name].Remaining_price += fillerData.Remaining_price;
           totals[Name].length += fillerData.length;
+          totals[Name].Done_price_revenue += fillerData.Done_price_revenue;
+          totals[Name].upsale += fillerData.upsale;
         }
       }
 
@@ -240,9 +446,38 @@ export default {
       return totalsArray;
     },
 
+    filterDataById(data, targetId) {
+      const filteredData = {};
+      Object.keys(data).forEach((date) => {
+        const dateData = data[date];
+        const filteredDateData = {};
+
+        Object.keys(dateData).forEach((id) => {
+          if (dateData[id].id === targetId) {
+            this.$set(filteredDateData, id, dateData[id]);
+          }
+        });
+
+        if (Object.keys(filteredDateData).length > 0) {
+          this.$set(filteredData, date, filteredDateData);
+        }
+      });
+
+      return filteredData;
+    },
+
+    selectedShowroomPrice() {
+      // Gọi hàm fetchapiData_id để cập nhật dữ liệu từ API
+      this.fetchapiData_id(
+        this.dateRange.start,
+        this.dateRange.end,
+        this.selectedShowroom,
+        this.selectedEmployee,
+        this.title
+      );
+    },
+
     Price() {
-
-
       this.Total_price = 0;
       this.Deposit_price = 0;
       this.servies_price = 0;
@@ -252,9 +487,20 @@ export default {
       this.Done_price = 0;
       this.Remaining_price = 0;
       this.numberOfBooks = 0;
+      this.Done_price_revenue = 0;
+      this.upsale = 0;
 
       if (this.adminId !== null) {
-        const data = this.totalByName(this.apiData_id);
+        if (this.selectedShowroom !== null) {
+          this.resuft = this.filterDataById(
+            this.apiData_id,
+            this.selectedShowroom
+          );
+        } else {
+          this.resuft = this.apiData_id;
+        }
+
+        const data = this.totalByName(this.resuft);
 
         data.forEach((item) => {
           this.Total_price += parseFloat(item.servies_price);
@@ -266,9 +512,25 @@ export default {
           this.Done_price += parseFloat(item.Done_price);
           this.Remaining_price += parseFloat(item.Remaining_price);
           this.numberOfBooks = item.length;
+          this.Done_price_revenue += parseFloat(item.Done_price_revenue);
+          this.upsale += parseFloat(item.upsale);
         });
       } else {
-        const data = this.apiData_id;
+        if (this.employeeId !== null) {
+          this.resuft = Object.values(
+            this.totalByName(this.apiData_id)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.employeeId)
+            ) || {}
+          );
+        } else {
+          this.resuft = Object.values(
+            this.totalByName(this.apiData_id)?.find(
+              (filler) => parseInt(filler.id) === parseInt(this.artistId)
+            ) || {}
+          );
+        }
+
+        const data = this.resuft;
         this.Total_price += parseFloat(data[2]);
         this.Deposit_price += parseFloat(data[3]);
         this.servies_price += parseFloat(data[4]);
@@ -279,9 +541,15 @@ export default {
         this.Remaining_price += parseFloat(data[9]);
 
         this.numberOfBooks = data[10];
+        this.Done_price_revenue = data[11];
+        this.upsale = data[12];
       }
 
       // Lặp qua danh sách dữ liệu và tính tổng
+    },
+
+    selectedEmployeeAPi() {
+      this.selectedEmployee = null;
     },
   },
 
@@ -291,6 +559,10 @@ export default {
     this.artistId = this.$root.artistId;
 
     this.employeeId = this.$root.employeeId;
+
+    if (this.employeeId !== null) {
+      this.selectedEmployee = this.employeeId;
+    }
 
     const currentDate = new Date();
     this.currentMonth = currentDate.getMonth() + 1;
@@ -305,7 +577,21 @@ export default {
       this.dateRange.end = moment(currentDate).format("YYYY-MM-DD");
     }
 
-    this.fetchapiData_id(this.dateRange.start, this.dateRange.end);
+    this.fetchShowrooms();
+    this.fetchapiDataEmployee();
+    this.fetchArtist();
+    this.fetchapiData_id(
+      this.dateRange.start,
+      this.dateRange.end,
+      this.selectedShowroom,
+      this.selectedEmployee,
+      this.title
+    );
+    this.fetchKpis(
+      this.selectedShowroom,
+      this.selectedEmployee,
+      this.dateRange.start
+    );
   },
 };
 </script>
@@ -464,7 +750,7 @@ export default {
 }
 
 .vue-daterange-picker[data-v-1ebd09d2] {
-  min-width: 300px;
+  min-width: 250px;
 }
 
 @media (max-width: 768px) {

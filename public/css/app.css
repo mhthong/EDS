@@ -17685,8 +17685,8 @@ thead[role=presentation] > tr[role=row] {
 }
 
 .fc-v-event {
-  background-color: #fff !important;
-  border: none !important;
+  background-color: rgba(255, 255, 255, 0) !important;
+  border: none;
 }
 
 .fc-toolbar-title {
@@ -17735,6 +17735,44 @@ thead[role=presentation] > tr[role=row] {
   height: 100%;
   background-color: rgba(255, 255, 255, 0.5); /* Màu nền với độ trong suốt */
   z-index: 2; /* Số thứ tự hiển thị cao hơn so với gốc */
+}
+
+.fc-timegrid-col-frame {
+  overflow: auto;
+}
+
+.fc-daygrid-day-frame:has(.active_none) {
+  background-color: rgba(112, 111, 111, 0.4);
+}
+.fc-daygrid-day-frame:has(.active_none) .active_none a {
+  display: none;
+}
+.fc-daygrid-day-frame:has(.active_none) .active_none {
+  display: none;
+  background-color: rgba(112, 111, 111, 0);
+  padding: 0;
+}
+
+.fc-timegrid-col-frame:has(.active_none) {
+  background-color: rgba(112, 111, 111, 0.4);
+}
+.fc-timegrid-col-frame:has(.active_none) .active_none a {
+  display: none;
+}
+.fc-timegrid-col-frame:has(.active_none) .active_none {
+  display: none;
+  background-color: rgba(112, 111, 111, 0);
+  padding: 0;
+}
+
+.active_none a {
+  display: none;
+}
+
+.active_none {
+  display: none;
+  background-color: rgba(112, 111, 111, 0.4);
+  padding: 0;
 }
 
 /* tao dau X */

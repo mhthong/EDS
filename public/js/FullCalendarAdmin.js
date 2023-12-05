@@ -17,6 +17,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @fullcalendar/daygrid */ "./node_modules/@fullcalendar/daygrid/index.js");
 /* harmony import */ var _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @fullcalendar/timegrid */ "./node_modules/@fullcalendar/timegrid/index.js");
 /* harmony import */ var _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @fullcalendar/interaction */ "./node_modules/@fullcalendar/interaction/index.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return { value: void 0, done: !0 }; } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable || "" === iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } throw new TypeError(_typeof(iterable) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 
 
@@ -28,13 +37,18 @@ __webpack_require__.r(__webpack_exports__);
     FullCalendar: _fullcalendar_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   data: function data() {
+    var _this = this;
     return {
       artists: [],
+      adminId: null,
       artistId: null,
+      employeeId: null,
+      manage_supers: null,
       selectedArtist: 0,
+      showroomschedule: [],
       showrooms: [],
-      // Thêm showrooms và selectedShowroom vào phần data chính
       selectedShowroom: 0,
+      selectedActive: "none",
       step: "none",
       selectedStatus: "None",
       data: [],
@@ -54,11 +68,40 @@ __webpack_require__.r(__webpack_exports__);
           center: "title",
           right: "dayGridMonth,timeGridWeek,timeGridDay"
         },
-        selectable: true,
-        select: this.handleDateSelect,
-        eventClick: this.handleEventClick,
+        displayEventTime: false,
+        // Optionally hide event times
+        dateClick: function dateClick(info) {
+          // Kiểm tra nếu adminId là null
+          if (_this.adminId !== null && (_this.manage_supers == 0 || _this.manage_supers == 1 || _this.manage_supers == 4)) {
+            _this.popupInputData = info.dateStr;
+            _this.openPopup();
+          } else {
+            // Nếu adminId là null, có thể hiển thị một thông báo hoặc không làm gì cả
+            console.log("AdminId is null. DateClick action is disabled.");
+          }
+        },
+        datesSet: function datesSet(info) {
+          var newViewStart = moment(info.view.currentStart).subtract(10, "days").format("YYYY-MM-DD");
+          var newViewEnd = moment(info.view.currentEnd).add(10, "days").format("YYYY-MM-DD");
+
+          // Kiểm tra xem thời gian đã thay đổi đủ nhiều hay không
+          if (newViewStart !== _this.currentViewStart || newViewEnd !== _this.currentViewEnd) {
+            _this.currentViewStart = newViewStart;
+            _this.currentViewEnd = newViewEnd;
+
+            // Gọi API chỉ khi thời gian thay đổi đáng kể
+            _this.runFullcalendar();
+          }
+        },
         eventContent: this.customEventContent
       },
+      selectedDate: null,
+      inputData: "",
+      popupVisible: false,
+      popupInputData: "",
+      currentViewStart: null,
+      currentViewEnd: null,
+      activeDays: [],
       calendarOptionsNone: {
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_timegrid__WEBPACK_IMPORTED_MODULE_2__["default"], _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_3__["default"]],
         initialView: "dayGridMonth",
@@ -78,41 +121,147 @@ __webpack_require__.r(__webpack_exports__);
         selectable: true,
         select: this.handleDateSelect,
         eventClick: this.handleEventClick,
-        eventContent: this.customEventContent
+        eventContent: this.customEventContent,
+        dayRender: this.handleDayRender
       }
     };
   },
   methods: {
+    openPopup: function openPopup() {
+      this.popupVisible = true;
+    },
+    closePopup: function closePopup() {
+      this.popupVisible = false;
+    },
+    handleViewRender: function handleViewRender(view) {
+      var start = view.start.format(); // Ngày bắt đầu
+      var end = view.end.format(); // Ngày kết thúc
+
+      // Đoạn mã xử lý khi view được render
+    },
+    handleDatesSet: function handleDatesSet(info) {
+      var currentMonth = info.view.currentStart.getMonth() + 1; // Tháng bắt đầu từ 0
+      var currentYear = info.view.currentStart.getFullYear();
+    },
+    saveData: function saveData() {
+      var _this2 = this;
+      // Tạo một đối tượng dữ liệu để gửi lên server
+      var postData = {
+        showroomId: this.selectedShowroom,
+        activeStatus: this.selectedActive,
+        inputData: this.popupInputData
+      };
+
+      // Gửi yêu cầu POST đến API để lưu dữ liệu
+      axios__WEBPACK_IMPORTED_MODULE_4__["default"].post('/api/save-data', postData).then(function (response) {
+        // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+        console.log(postData);
+        _this2.selectedActive = "none";
+        _this2.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
+        _this2.closePopup(); // Đóng popup sau khi lưu thành công
+      })["catch"](function (error) {
+        console.log(postData);
+        console.error('Error saving data:', error);
+        // Xử lý lỗi nếu có
+      });
+    },
+    fetchData: function fetchData() {
+      var _this3 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var response;
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              _context.next = 3;
+              return axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/fullcalendar/".concat(_this3.currentViewStart, "/").concat(_this3.currentViewEnd, "/").concat(_this3.selectedShowroom));
+            case 3:
+              response = _context.sent;
+              _this3.data = response.data;
+              _context.next = 10;
+              break;
+            case 7:
+              _context.prev = 7;
+              _context.t0 = _context["catch"](0);
+              console.error("Error fetching API data:", _context.t0);
+            case 10:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee, null, [[0, 7]]);
+      }))();
+    },
+    runFullcalendar: function runFullcalendar() {
+      var _this4 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              if (!(_this4.selectedArtist == 0 && _this4.selectedShowroom == 0 && _this4.selectedStatus == "None")) {
+                _context2.next = 5;
+                break;
+              }
+              _this4.step = "none";
+              return _context2.abrupt("return");
+            case 5:
+              _this4.step = "FullCalendar";
+            case 6:
+              if (!(_this4.currentViewStart && _this4.currentViewEnd)) {
+                _context2.next = 13;
+                break;
+              }
+              _context2.t0 = Promise;
+              _context2.next = 10;
+              return _this4.fetchData();
+            case 10:
+              _context2.t1 = _context2.sent;
+              _context2.t2 = [_context2.t1];
+              _context2.t0.all.call(_context2.t0, _context2.t2).then(function () {
+                _this4.loadEvents();
+              });
+            case 13:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }))();
+    },
     fetchShowrooms: function fetchShowrooms() {
-      var _this = this;
+      var _this5 = this;
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/showrooms").then(function (response) {
-        _this.showrooms = response.data;
+        _this5.showrooms = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
     fetchArtists: function fetchArtists() {
-      var _this2 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
+      var _this6 = this;
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/artist").then(function (response) {
-        _this2.artists = response.data;
+        _this6.artists = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
-    fetchData: function fetchData() {
-      var _this3 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/all-data").then(function (response) {
-        _this3.data = response.data;
+    fetchShowroomschedule: function fetchShowroomschedule() {
+      var _this7 = this;
+      axios__WEBPACK_IMPORTED_MODULE_4__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
+        _this7.showroomschedule = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
+      });
+    },
+    handleDateSelect: function handleDateSelect(info) {
+      this.selectedDate = info.start;
+    },
+    getActiveDays: function getActiveDays() {
+      return this.showroomschedule.filter(function (item) {
+        return item.active === 1;
+      }).map(function (item) {
+        return item.day.toLowerCase();
       });
     },
     loadEvents: function loadEvents() {
-      var _this4 = this;
-      var filteredEvents = []; // Đặt biến ở đầu hàm
-
+      var _this8 = this;
       if (this.artistId !== null) {
         this.selectedArtist = this.$root.artistId;
       }
@@ -122,23 +271,47 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         this.step = "FullCalendar";
       }
-      filteredEvents = this.data.filter(function (event) {
-        // Kiểm tra nếu selectedShowroom và selectedArtist là 0 (tức là không có lựa chọn cụ thể) hoặc trùng với giá trị của sự kiện
-        var showroomMatch = _this4.selectedShowroom === 0 || parseInt(event.ShowroomID) === _this4.selectedShowroom;
-        var artistMatch = _this4.selectedArtist === 0 || parseInt(event.ArtistID) === _this4.selectedArtist;
-        var StatusMatch = _this4.selectedStatus === "None" || event.status === _this4.selectedStatus;
-        var ActionMatch = true;
+      if (this.selectedShowroom !== 0) {
+        this.fetchShowroomschedule();
+      }
 
-        // Kiểm tra ActionMatch chỉ khi artistId khác null
-        if (_this4.artistId !== null) {
-          ActionMatch = event.action === "approved";
-        }
-
-        // Sự kiện sẽ được bao gồm nếu cả showroomMatch, artistMatch, StatusMatch và ActionMatch đều là true
-        return showroomMatch && artistMatch && StatusMatch && ActionMatch;
+      // Flatten the nested structure into a flat array of events
+      var flatEvents = Object.keys(this.data).flatMap(function (date) {
+        return Object.keys(_this8.data[date]).flatMap(function (showroomId) {
+          return _this8.data[date][showroomId].bookingData.map(function (booking) {
+            return _objectSpread(_objectSpread({}, booking), {}, {
+              date: date,
+              // Add the date property to each booking
+              showroomId: showroomId // Add the showroomId property to each booking
+            });
+          });
+        });
       });
-      console.log(this.data, filteredEvents);
-      this.calendarOptions.events = filteredEvents.map(function (event) {
+
+      var flatEventsActive = Object.keys(this.data).flatMap(function (date) {
+        return Object.keys(_this8.data[date]).flatMap(function (showroomId) {
+          var dailyData = _this8.data[date][showroomId].dailyData;
+
+          // Check if dailyData i
+          return [_objectSpread(_objectSpread({}, dailyData), {}, {
+            date: date // Add the date property to each boo
+          })];
+        });
+      });
+
+      // Filter the flattened events
+      var filteredEvents = flatEvents.filter(function (event) {
+        var artistMatch = _this8.selectedArtist === 0 || parseInt(event.ArtistID) === _this8.selectedArtist;
+        var statusMatch = _this8.selectedStatus === "None" || event.status === _this8.selectedStatus;
+        var actionMatch = true;
+        if (_this8.artistId !== null) {
+          actionMatch = event.action === "approved";
+        }
+        return artistMatch && statusMatch && actionMatch;
+      });
+
+      // Map the filtered events to FullCalendar format
+      var filteredEventsRef = filteredEvents.map(function (event) {
         var startTime = new Date(event.date + "T" + event.time);
         var endTime = new Date(event.date + "T" + event.time_end);
         var serviceNames = event.services.map(function (service) {
@@ -150,25 +323,56 @@ __webpack_require__.r(__webpack_exports__);
           start: startTime,
           end: endTime,
           extendedProps: {
-            // Thêm thông tin mở rộng
+            title: event.status,
             artist: event.artist.name,
-            // Tên nghệ sĩ
             source: event.source_name,
-            // Tên nghệ sĩ
-            get: event.get.Name,
-            // Tên nghệ sĩ
+            get: event.get.name,
             showroom: event.showroom.Name,
-            // Tên showroom
-            services: event.services.map(function (service) {
-              return service.Name;
-            }).join(", "),
-            // Dịch vụ
-            price: event.price.Total_price,
-            // Giá
-            paymentType: event.payment.payment_type // Loại thanh toán
+            services: serviceNames,
+            startTime: moment(startTime).format("hh:mm A"),
+            endTime: moment(endTime).format("hh:mm A")
           }
         };
       });
+
+      /*       this.calendarOptions.events */
+      // Map the background events to FullCalendar format
+      // Assuming this.data is your data structure
+      var backgroundEvents = Object.keys(this.data).flatMap(function (date) {
+        var dailyData = _this8.data[date];
+        var isDayActive = Object.values(dailyData).some(function (showroomData) {
+          return parseInt(showroomData.dailyData.active) === 0;
+        });
+        if (!isDayActive) {
+          return []; // No background event for this day
+        }
+
+        var startTime = new Date(date + "T00:01:00");
+        var endTime = new Date(date + "T23:59:00");
+        return [{
+          id: "background_" + date,
+          title: "active_none",
+          start: startTime,
+          end: endTime,
+          extendedProps: {
+            title: "active_none",
+            artist: "none",
+            source: "none",
+            get: "none",
+            showroom: "none",
+            services: "none",
+            startTime: "none",
+            endTime: "none"
+          }
+        }];
+      });
+
+      // Combine background events with other events
+      /* this.calendarOptions.events = backgroundEvents; */
+      this.calendarOptions.events = filteredEventsRef.concat(backgroundEvents);
+      console.log(this.calendarOptions.events);
+
+      // ... rest of your code
     },
     customEventContent: function customEventContent(arg) {
       var startTime = arg.event.start.toLocaleTimeString([], {
@@ -185,15 +389,19 @@ __webpack_require__.r(__webpack_exports__);
       };
     }
   },
+  created: function created() {
+    this.activeDays = this.getActiveDays();
+  },
   mounted: function mounted() {
-    var _this5 = this;
+    this.adminId = this.$root.adminId;
     this.artistId = this.$root.artistId;
+    this.employeeId = this.$root.employeeId;
+    this.manage_supers = this.$root.manage_supers;
     if (this.artistId !== null) {
       this.selectedArtist = this.artistId;
     }
-    Promise.all([this.fetchData(), this.fetchShowrooms(), this.fetchArtists()]).then(function () {
-      _this5.loadEvents();
-    });
+    this.fetchShowrooms();
+    this.fetchArtists();
   }
 });
 
@@ -229,8 +437,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      id: "showroomSelect",
-      disabled: this.data.length === 0
+      id: "showroomSelect"
     },
     on: {
       change: [function ($event) {
@@ -241,7 +448,7 @@ var render = function render() {
           return val;
         });
         _vm.selectedShowroom = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.loadEvents]
+      }, _vm.runFullcalendar]
     }
   }, [_c("option", {
     attrs: {
@@ -269,7 +476,7 @@ var render = function render() {
     staticClass: "form-control",
     attrs: {
       id: "showroomSelect",
-      disabled: _vm.artistId !== null || this.data.length === 0
+      disabled: _vm.artistId !== null || this.selectedShowroom === 0
     },
     on: {
       change: [function ($event) {
@@ -280,7 +487,7 @@ var render = function render() {
           return val;
         });
         _vm.selectedArtist = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.loadEvents]
+      }, _vm.runFullcalendar]
     }
   }, [_c("option", {
     attrs: {
@@ -307,7 +514,7 @@ var render = function render() {
     }],
     staticClass: "form-control",
     attrs: {
-      disabled: this.data.length === 0
+      disabled: this.selectedShowroom === 0
     },
     on: {
       change: [function ($event) {
@@ -318,7 +525,7 @@ var render = function render() {
           return val;
         });
         _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.loadEvents]
+      }, _vm.runFullcalendar]
     }
   }, [_c("option", {
     attrs: {
@@ -329,6 +536,10 @@ var render = function render() {
       value: "Waiting"
     }
   }, [_vm._v("Waiting")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Partial Done"
+    }
+  }, [_vm._v("Partial Done")]), _vm._v(" "), _c("option", {
     attrs: {
       value: "Done"
     }
@@ -345,10 +556,116 @@ var render = function render() {
   }, [_c("FullCalendar", {
     attrs: {
       options: _vm.calendarOptions
+    },
+    on: {
+      viewRender: _vm.handleViewRender,
+      datesSet: _vm.handleDatesSet
     }
-  })], 1) : _vm._e(), _vm._v(" "), _vm.step === "none" ? _c("div", {
+  }), _vm._v(" "), _vm.popupVisible ? _c("div", {
+    staticClass: "popup"
+  }, [_c("div", {
+    staticClass: "popup-content col-8 col-md-6"
+  }, [_vm._m(0), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedShowroom,
+      expression: "selectedShowroom"
+    }],
+    staticClass: "form-control mb-3",
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedShowroom = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, _vm.runFullcalendar]
+    }
+  }, _vm._l(_vm.showrooms, function (showroom) {
+    return _c("option", {
+      key: showroom.id,
+      domProps: {
+        value: showroom.id
+      }
+    }, [_vm._v("\n            " + _vm._s(showroom.Name) + "\n          ")]);
+  }), 0), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedActive,
+      expression: "selectedActive"
+    }],
+    staticClass: "form-control mb-3",
+    attrs: {
+      id: "activeSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedActive = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "none"
+    }
+  }, [_vm._v("Select active status")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "1"
+    }
+  }, [_vm._v("Active")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "0"
+    }
+  }, [_vm._v("None Active")])]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.popupInputData,
+      expression: "popupInputData"
+    }],
+    staticClass: "form-control mb-3",
+    attrs: {
+      type: "date",
+      placeholder: "Enter data"
+    },
+    domProps: {
+      value: _vm.popupInputData
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.popupInputData = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn bnt-16",
+    attrs: {
+      type: "submit",
+      disabled: this.selectedActive == "none" || this.selectedShowroom == 0 || this.adminId === null
+    },
+    on: {
+      click: _vm.saveData
+    }
+  }, [_vm._v("\n          Save\n        ")]), _vm._v(" "), _c("button", {
+    staticClass: "custom-btn bnt-16",
+    on: {
+      click: _vm.closePopup
+    }
+  }, [_vm._v("Cancel")])])]) : _vm._e()], 1) : _vm._e(), _vm._v(" "), _vm.step === "none" ? _c("div", {
     staticClass: "col-12"
-  }, [_vm._m(0), _vm._v(" "), _c("div", {
+  }, [_vm._m(1), _vm._v(" "), _c("div", {
     staticClass: "FullCalendarNone"
   }, [_c("FullCalendar", {
     attrs: {
@@ -357,6 +674,12 @@ var render = function render() {
   })], 1)]) : _vm._e()]);
 };
 var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "header text-center pb-4"
+  }, [_c("h5", [_vm._v("Customize daily activity status")])]);
+}, function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("div", {
@@ -2456,7 +2779,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.event-info[data-v-4faee8a7] {\n  position: absolute;\n  background-color: white;\n  border: 1px solid #ccc;\n  padding: 10px;\n  z-index: 999;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.event-info[data-v-4faee8a7] {\n  position: absolute;\n  background-color: white;\n  border: 1px solid #ccc;\n  padding: 10px;\n  z-index: 999;\n}\n.popup[data-v-4faee8a7] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 1;\n}\n.popup-content[data-v-4faee8a7] {\n  background: white;\n  padding: 20px;\n  border-radius: 8px;\n}\n.custom-btn[data-v-4faee8a7] {\n  width: 130px;\n  height: 40px;\n  color: #000000;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16[data-v-4faee8a7] {\n  border: none;\n  color: #000;\n}\n.btn-16[data-v-4faee8a7]:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16[data-v-4faee8a7]:hover {\n  color: #000;\n}\n.btn-16[data-v-4faee8a7]:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16[data-v-4faee8a7]:active {\n  top: 2px;\n}\n\n\n\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -33893,7 +34216,10 @@ new vue__WEBPACK_IMPORTED_MODULE_1__["default"]({
     FullcalendarAdmin: _components_FullcalendarAdmin_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   data: {
-    artistId: document.getElementById('doashboard').getAttribute('data-artist-id')
+    adminId: document.getElementById('doashboard').getAttribute('data-admin-id'),
+    artistId: document.getElementById('doashboard').getAttribute('data-artist-id'),
+    employeeId: document.getElementById('doashboard').getAttribute('data-employee-id'),
+    manage_supers: document.getElementById('doashboard').getAttribute('manage_supers')
   }
 });
 })();
