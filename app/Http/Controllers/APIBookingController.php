@@ -385,6 +385,9 @@ class APIBookingController extends Controller
             'length_real' => 0,
             'Done_price_revenue' => 0,
             'upsale' => 0,
+            'PartialDone' => 0,
+            'Initial_revenue' => 0,
+            'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -393,6 +396,7 @@ class APIBookingController extends Controller
             $summarizedData['Deposit_price'] += $booking->price->Deposit_price;
             $summarizedData['servies_price'] += $booking->price->servies_price;
             $summarizedData['revenue'] += $booking->price->Deposit_price;
+                 $summarizedData['Initial_revenue'] += $booking->price->Deposit_price;
             $summarizedData['length'] += 1;
             $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
 
@@ -415,6 +419,7 @@ class APIBookingController extends Controller
             $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
             $summarizedData['revenue'] += $newRevenue;
             $summarizedData['upsale'] += $bookingupdate->price->upsale;
+            $summarizedData['Initial_revenue'] += $bookingupdate->price->servies_price - $bookingupdate->price->Deposit_price;
 
             if ($bookingupdate->status == "Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->servies_price;
@@ -422,10 +427,14 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Cancel") {
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
-                $summarizedData['Refund_price'] += $bookingupdate->price->servies_price;
+                $summarizedData['Refund_price'] += $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+               
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
+                $summarizedData['PartialDone'] += $bookingupdate->price->Remaining_price;
+                
             }
         }
 
@@ -1001,6 +1010,7 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
+                
             }
         }
 
@@ -1087,6 +1097,9 @@ class APIBookingController extends Controller
             'length_real' => 0,
             'Done_price_revenue' => 0,
             'upsale' => 0,
+                 'PartialDone' => 0,
+            'Initial_revenue' => 0,
+            'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1096,6 +1109,7 @@ class APIBookingController extends Controller
             $summarizedData['Deposit_price'] += $booking->price->Deposit_price;
             $summarizedData['servies_price'] += $booking->price->servies_price;
             $summarizedData['revenue'] += $booking->price->Deposit_price;
+            $summarizedData['Initial_revenue'] += $booking->price->Deposit_price;
             $summarizedData['length'] += 1;
             $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
 
@@ -1127,16 +1141,22 @@ class APIBookingController extends Controller
             $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
             $summarizedData['revenue'] += $newRevenue;
             $summarizedData['upsale'] += $bookingupdate->price->upsale;
+            $summarizedData['Initial_revenue'] += $bookingupdate->price->servies_price - $bookingupdate->price->Deposit_price;
+
+
             if ($bookingupdate->status == "Done") {
                 $summarizedData['Done_price_revenue'] += $newRevenue;
                 $summarizedData['Done_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Cancel") {
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
-                $summarizedData['Refund_price'] += $bookingupdate->price->servies_price;
+                $summarizedData['Refund_price'] += $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+               
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
+                $summarizedData['PartialDone'] += $bookingupdate->price->Remaining_price;
             }
         }
 
@@ -1251,7 +1271,7 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Cancel") {
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
-                $summarizedData['Refund_price'] += $bookingupdate->price->servies_price;
+                $summarizedData['Refund_price'] +=  $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
@@ -1345,6 +1365,9 @@ class APIBookingController extends Controller
             'length_real' => 0,
             'Done_price_revenue' => 0,
             'upsale' => 0,
+                 'PartialDone' => 0,
+            'Initial_revenue' => 0,
+            'Refund_booking'  => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1354,6 +1377,7 @@ class APIBookingController extends Controller
             $summarizedData['Deposit_price'] += $booking->price->Deposit_price;
             $summarizedData['servies_price'] += $booking->price->servies_price;
             $summarizedData['revenue'] += $booking->price->Deposit_price;
+            $summarizedData['Initial_revenue'] += $booking->price->Deposit_price;
             $summarizedData['length'] += 1;
             $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
 
@@ -1385,6 +1409,8 @@ class APIBookingController extends Controller
             $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
             $summarizedData['revenue'] += $newRevenue + $bookingupdate->price->upsale;
             $summarizedData['upsale'] += $bookingupdate->price->upsale;
+            $summarizedData['Initial_revenue'] += $bookingupdate->price->servies_price - $bookingupdate->price->Deposit_price;
+
 
             if ($bookingupdate->status == "Done") {
                 $summarizedData['Done_price_revenue'] += $newRevenue;
@@ -1392,7 +1418,9 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Cancel") {
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
-                $summarizedData['Refund_price'] += $bookingupdate->price->servies_price;
+                $summarizedData['Refund_price'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+               
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
@@ -1483,6 +1511,10 @@ class APIBookingController extends Controller
             'length_real' => 0,
             'Done_price_revenue' => 0,
             'upsale' => 0,
+            'PartialDone' => 0,
+            'Initial_revenue' => 0,
+            'Refund_booking' => 0,
+      
         ];
 
         foreach ($bookings as $booking) {
@@ -1491,6 +1523,7 @@ class APIBookingController extends Controller
             $summarizedData['Deposit_price'] += $booking->price->Deposit_price;
             $summarizedData['servies_price'] += $booking->price->servies_price;
             $summarizedData['revenue'] += $booking->price->Deposit_price;
+            $summarizedData['Initial_revenue'] += $booking->price->Deposit_price;
             $summarizedData['length'] += 1;
             $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
 
@@ -1525,6 +1558,7 @@ class APIBookingController extends Controller
             $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
             $summarizedData['revenue'] += $newRevenue;
             $summarizedData['upsale'] += $bookingupdate->price->upsale;
+            $summarizedData['Initial_revenue'] += $bookingupdate->price->servies_price - $bookingupdate->price->Deposit_price;
 
             if ($bookingupdate->status == "Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->servies_price;
@@ -1532,10 +1566,14 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Cancel") {
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
-                $summarizedData['Refund_price'] += $bookingupdate->price->servies_price;
+                $summarizedData['Refund_price'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+               
+
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
+                $summarizedData['PartialDone'] += $bookingupdate->price->Remaining_price;
             }
         }
 

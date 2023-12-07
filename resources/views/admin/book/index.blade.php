@@ -179,7 +179,7 @@
                                         <th data-field="Actiontate">Approved
                                         </th>
                                         <th data-field="Remaining">Remaining</th>
-                                        <th data-field="TotalRevenue">Total Revenue</th>
+                                        <th data-field="TotalRevenue">Total Price</th>
                                         <th data-field="Staff">Staff</th>
                                         <th data-field="Action">Action</th>
                                     </tr>

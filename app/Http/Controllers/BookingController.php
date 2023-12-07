@@ -543,6 +543,7 @@ class BookingController extends Controller
     public function updateImage($book, $data)
     {
 
+  
 
 
         $get = Get::where('id', $book->GetID)->first();

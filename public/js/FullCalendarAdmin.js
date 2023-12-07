@@ -77,7 +77,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             _this.openPopup();
           } else {
             // Nếu adminId là null, có thể hiển thị một thông báo hoặc không làm gì cả
-            console.log("AdminId is null. DateClick action is disabled.");
           }
         },
         datesSet: function datesSet(info) {
@@ -155,12 +154,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios__WEBPACK_IMPORTED_MODULE_4__["default"].post('/api/save-data', postData).then(function (response) {
         // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
-        console.log(postData);
+
         _this2.selectedActive = "none";
         _this2.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
         _this2.closePopup(); // Đóng popup sau khi lưu thành công
       })["catch"](function (error) {
-        console.log(postData);
         console.error('Error saving data:', error);
         // Xử lý lỗi nếu có
       });
@@ -370,7 +368,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // Combine background events with other events
       /* this.calendarOptions.events = backgroundEvents; */
       this.calendarOptions.events = filteredEventsRef.concat(backgroundEvents);
-      console.log(this.calendarOptions.events);
 
       // ... rest of your code
     },
@@ -385,7 +382,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
       var currentUrl = window.location.href;
       return {
-        html: "\n      \n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            <a href=\"").concat(currentUrl, "/books/").concat(arg.event.id, "/edit\" style=\"color: white\">\n            <div class=\"fc-content-main\">\n            <span class=\"fc-status\">Booking person : ").concat(arg.event.extendedProps.source, " </span><br>\n            <span class=\"fc-status\">Client : ").concat(arg.event.extendedProps.get, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n            </a>\n          </div>\n  \n   \n        ")
+        html: "\n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            <a href=\"").concat(currentUrl, "/books/").concat(arg.event.id, "/edit\" style=\"color: white\">\n            <div class=\"fc-content-main\">\n            <span class=\"fc-status\">Booking person : ").concat(arg.event.extendedProps.source, " </span><br>\n            <span class=\"fc-status\">Client : ").concat(arg.event.extendedProps.get, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n            </a>\n          </div>\n        ")
       };
     }
   },

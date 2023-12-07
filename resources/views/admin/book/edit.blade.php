@@ -155,10 +155,24 @@
 
                                 <div class="form-group mt-4 ">
                                     <div class="holder image-category" id="image-category" value="">
-                                        <img src="{{ asset($row->payment->payment_deposit) }}" alt="">
+
                                     </div>
                                     <div class="-space-y-px mb-4">
                                         <div class="containerInput input-group">
+                                            <div class="main__body__box-info">
+                                            @foreach (explode(',', $row->payment->payment_deposit) as $imagePath)
+                                                @if ($imagePath)
+                                                    <div
+                                                        style="    flex: 1 0 130px;
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}">
+                                                        <img src="{{ $imagePath }}" alt="Ảnh"></div>
+                                                @endif
+                                            @endforeach
+                                            </div>
                                             <span class="input-group-btn ">
                                                 <a class="radio-header radio-text" id="image_manager" data-input="Deposit"
                                                     data-preview="image-category">
@@ -179,10 +193,25 @@
 
                                 <div class="form-group mt-4 ">
                                     <div class="holder image-category" id="PaymentRemainingImage" value="">
-                                        <img src="{{ asset($row->payment->payment_remainding) }}" alt="">
+
                                     </div>
+
                                     <div class="-space-y-px mb-4">
-                                        <div class="containerInput input-group">
+                                        <div class="containerInput input-group ">
+                                            <div class="main__body__box-info">
+                                            @foreach (explode(',', $row->payment->payment_remainding) as $imagePath)
+                                                @if ($imagePath)
+                                                    <div
+                                                        style="    flex: 1 0 130px;
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}">
+                                                        <img src="{{ $imagePath }}" alt="Ảnh"></div>
+                                                @endif
+                                            @endforeach
+                                        </div>
                                             <span class="input-group-btn ">
                                                 <a class="radio-header radio-text" id="image_PaymentRemainingImage"
                                                     data-input="Remaining" data-preview="PaymentRemainingImage">
@@ -204,16 +233,31 @@
 
                                 <div class="form-group mt-4 ">
                                     <div class="holder image-category" id="BeforeImage" value="">
-                                        <img src="{{ asset($row->get->Before_img) }}" alt="">
                                     </div>
                                     <div class="-space-y-px mb-4">
-                                        <div class="containerInput input-group">
+                                        <div class="containerInput input-group ">
+                                            <div class="main__body__box-info">
+                                            @foreach (explode(',', $row->get->Before_img) as $imagePath)
+                                                @if ($imagePath)
+                                                    <div
+                                                        style="    flex: 1 0 130px;
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}">
+                                                        <img src="{{ $imagePath }}" alt="Ảnh"></div>
+                                                @endif
+                                            @endforeach
+                                            </div>
                                             <span class="input-group-btn ">
                                                 <a class="radio-header radio-text" id="image_BeforeImage" data-input="Before"
                                                     data-preview="BeforeImage">
                                                     Select Image
                                                 </a>
                                             </span>
+                                            {{-- Trong blade view --}}
+
 
                                             <input class="form-control" id="Before" value="{{ $row->get->Before_img }}"
                                                 style="display: none" type="text" name="Before">
@@ -228,10 +272,24 @@
 
                                 <div class="form-group mt-4 ">
                                     <div class="holder image-category" id="AfterImage" value="">
-                                        <img src="{{ asset($row->get->After_img) }}" alt="">
+
                                     </div>
                                     <div class="-space-y-px mb-4">
                                         <div class="containerInput input-group">
+                                            <div class="main__body__box-info">
+                                            @foreach (explode(',', $row->payment->After_img) as $imagePath)
+                                                @if ($imagePath)
+                                                    <div
+                                                        style="    flex: 1 0 130px;
+    background: var(--white);
+    padding: 1.25rem 1.5rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}">
+                                                        <img src="{{ $imagePath }}" alt="Ảnh"></div>
+                                                @endif
+                                            @endforeach
+                                            </div>
                                             <span class="input-group-btn ">
                                                 <a class="radio-header radio-text" id="image_AfterImage" data-input="After"
                                                     data-preview="AfterImage">

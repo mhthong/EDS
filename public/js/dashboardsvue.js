@@ -64,6 +64,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       Cancel_price: "",
       Refund_price: "",
       Done_price_revenue: "",
+      PartialDone: 0,
+      Initial_revenue: 0,
+      Refund_booking: 0,
       kpi: "",
       upsale: "",
       adminId: null,
@@ -182,11 +185,11 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         return percentage.toFixed(2); // Adjust the number of decimal places as needed
       } else if (isNaN(revenueTotal) || isNaN(kpiValue)) {
         // Handle the case where one or both values are not valid numbers
-        console.error("Invalid numeric values for calculation");
+
         return "N/A";
       } else {
         // Handle the case where kpiValue is zero
-        console.error("Cannot divide by zero");
+
         return "Infinity";
       }
     },
@@ -218,7 +221,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               Remaining_price: 0,
               length: 0,
               Done_price_revenue: 0,
-              upsale: 0
+              upsale: 0,
+              PartialDone: 0,
+              Initial_revenue: 0,
+              Refund_booking: 0
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -233,6 +239,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           totals[Name].length += fillerData.length;
           totals[Name].Done_price_revenue += fillerData.Done_price_revenue;
           totals[Name].upsale += fillerData.upsale;
+          totals[Name].PartialDone += fillerData.PartialDone;
+          totals[Name].Initial_revenue += fillerData.Initial_revenue;
+          totals[Name].Refund_booking += fillerData.Refund_booking;
         }
       }
 
@@ -274,6 +283,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.numberOfBooks = 0;
       this.Done_price_revenue = 0;
       this.upsale = 0;
+      this.PartialDone = 0;
+      this.Initial_revenue = 0;
+      this.Refund_booking = 0;
       if (this.adminId !== null) {
         if (this.selectedShowroom !== null) {
           this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
@@ -293,6 +305,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           _this7.numberOfBooks = item.length;
           _this7.Done_price_revenue += parseFloat(item.Done_price_revenue);
           _this7.upsale += parseFloat(item.upsale);
+          _this7.PartialDone += parseFloat(item.PartialDone);
+          _this7.Initial_revenue += parseFloat(item.Initial_revenue);
+          _this7.Refund_booking += parseFloat(item.Refund_booking);
         });
       } else {
         if (this.employeeId !== null) {
@@ -318,6 +333,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         this.numberOfBooks = _data[10];
         this.Done_price_revenue = _data[11];
         this.upsale = _data[12];
+        this.PartialDone = _data[13];
+        this.Initial_revenue = _data[14];
+        this.Refund_booking = _data[15];
       }
 
       // Lặp qua danh sách dữ liệu và tính tổng
@@ -439,7 +457,7 @@ var render = function render() {
       domProps: {
         value: showroom.id
       }
-    }, [_vm._v("\n          " + _vm._s(showroom.Name) + "\n        ")]);
+    }, [_vm._v("\n            " + _vm._s(showroom.Name) + "\n          ")]);
   })], 2)]), _vm._v(" "), this.artistId === null && this.employeeId === null ? _c("label", [_c("select", {
     directives: [{
       name: "model",
@@ -529,7 +547,7 @@ var render = function render() {
       domProps: {
         value: employee.id
       }
-    }, [_vm._v("\n          " + _vm._s(employee.name) + "\n        ")]);
+    }, [_vm._v("\n            " + _vm._s(employee.name) + "\n          ")]);
   })], 2)]) : _vm._e(), _vm._v(" "), this.title === "Artist" && this.artistId === null ? _c("label", [_c("select", {
     directives: [{
       name: "model",
@@ -573,7 +591,7 @@ var render = function render() {
       domProps: {
         value: Aritst.id
       }
-    }, [_vm._v("\n          " + _vm._s(Aritst.name) + "\n        ")]);
+    }, [_vm._v("\n            " + _vm._s(Aritst.name) + "\n          ")]);
   })], 2)]) : _vm._e()]), _vm._v(" "), _c("div", [_c("ul", {
     staticClass: "main__body__box-info admin_dashboard",
     "class": {
@@ -587,7 +605,15 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Total Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price)))])]), _vm._v(" "), _c("li", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Initial Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Total_Booking_Price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/total%20booking%20price.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Actual Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price - this.PartialDone)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Revenue_price"
   }, [_c("img", {
     attrs: {
@@ -595,52 +621,15 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.RevenueTatol))])]), _vm._v(" "), _c("li", {
-    staticClass: "Price Done_price"
+  }), _vm._v(" "), _c("h6", [_vm._v("Initial Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Initial_revenue))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Revenue_price"
   }, [_c("img", {
     attrs: {
-      src: "/assets/images/Done.png",
+      src: "/assets/images/Revenue.png",
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Done Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Done_price_revenue)))])]), _vm._v(" "), _c("li", {
-    staticClass: "Price Done_price"
-  }, [_c("img", {
-    attrs: {
-      src: "/assets/images/Done.png",
-      alt: "",
-      srcset: ""
-    }
-  }), _vm._v(" "), _c("h6", [_vm._v("Done")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Done_price)))])])]), _vm._v(" "), _c("ul", {
-    staticClass: "main__body__box-info",
-    "class": {
-      fade: _vm.isTransitioning
-    }
-  }, [_c("li", {
-    staticClass: "Price Remaining_price"
-  }, [_c("img", {
-    attrs: {
-      src: "/assets/images/Remaining.png",
-      alt: "",
-      srcset: ""
-    }
-  }), _vm._v(" "), _c("h6", [_vm._v("Remaining")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Remaining_price)))])]), _vm._v(" "), _c("li", {
-    staticClass: "Price Deposit_price"
-  }, [_c("img", {
-    attrs: {
-      src: "/assets/images/Deposit.png",
-      alt: "",
-      srcset: ""
-    }
-  }), _vm._v(" "), _c("h6", [_vm._v("Deposit")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Deposit_price)))])]), _vm._v(" "), _c("li", {
-    staticClass: "Price Cancel_price"
-  }, [_c("img", {
-    attrs: {
-      src: "/assets/images/Cancel.png",
-      alt: "",
-      srcset: ""
-    }
-  }), _vm._v(" "), _c("h6", [_vm._v("Cancel")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Cancel_price)))])]), _vm._v(" "), _c("li", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Actual Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.RevenueTatol) + " ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price Refund_price"
   }, [_c("img", {
     attrs: {
@@ -648,7 +637,23 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Refund")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_price)))])]), _vm._v(" "), _c("li", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Refund Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Deposit_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Deposit.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Deposit Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Deposit_price)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Remaining_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Remaining.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Remaining Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Remaining_price)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Refund_price"
   }, [_c("img", {
     attrs: {
@@ -656,7 +661,23 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("Upsell")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.upsale)))])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null ? _c("li", {
+  }), _vm._v(" "), _c("h6", [_vm._v("Upsell ( Artist )")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.upsale)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Refund_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Refund.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Refund Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_booking)))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Cancel_price"
+  }, [_c("img", {
+    attrs: {
+      src: "/assets/images/Cancel.png",
+      alt: "",
+      srcset: ""
+    }
+  }), _vm._v(" "), _c("h6", [_vm._v("Cancel Booking Price")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Cancel_price)))])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null && this.kpi != undefined ? _c("li", {
     staticClass: "Price"
   }, [_c("img", {
     attrs: {
@@ -664,7 +685,7 @@ var render = function render() {
       alt: "",
       srcset: ""
     }
-  }), _vm._v(" "), _c("h6", [_vm._v("KPI")]), _vm._v(" "), _c("h4", [_vm._v("\n          $" + _vm._s(this.RevenueTatol) + " / $" + _vm._s(parseFloat(this.kpi)) + " POC\n          " + _vm._s(_vm.calculatePercentage()) + " %\n        ")])]) : _vm._e()])])]);
+  }), _vm._v(" "), _c("h6", [_vm._v("KPI")]), _vm._v(" "), _c("h4", [_vm._v("\n            $" + _vm._s(this.RevenueTatol) + " / $" + _vm._s(parseFloat(this.kpi)) + " POC\n            " + _vm._s(_vm.calculatePercentage()) + " %\n          ")])]) : _vm._e()])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;

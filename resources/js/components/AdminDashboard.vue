@@ -101,16 +101,30 @@
             alt=""
             srcset=""
           />
-          <h6>Total Booking Price</h6>
+          <h6>Initial Booking Price</h6>
           <h4>${{ parseFloat(this.servies_price) }}</h4>
+        </li>
+        <li class="Price Total_Booking_Price">
+          <img
+            :src="'/assets/images/total%20booking%20price.png'"
+            alt=""
+            srcset=""
+          />
+          <h6>Actual Booking Price</h6>
+          <h4>${{ parseFloat(this.servies_price - this.PartialDone) }}</h4>
         </li>
         <li class="Price Revenue_price">
           <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
-          <h6>Revenue</h6>
-          <h4>${{ this.RevenueTatol }}</h4>
+          <h6>Initial Revenue</h6>
+          <h4>${{ this.Initial_revenue }}</h4>
+        </li>
+        <li class="Price Revenue_price">
+          <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
+          <h6>Actual Revenue</h6>
+          <h4>${{ this.RevenueTatol }} </h4>
         </li>
 
-        <li class="Price Done_price">
+<!--         <li class="Price Done_price">
           <img :src="'/assets/images/Done.png'" alt="" srcset="" />
           <h6>Done Revenue</h6>
           <h4>${{ parseFloat(this.Done_price_revenue) }}</h4>
@@ -118,34 +132,26 @@
 
         <li class="Price Done_price">
           <img :src="'/assets/images/Done.png'" alt="" srcset="" />
-          <h6>Done</h6>
+          <h6>Done Booking Price </h6>
           <h4>${{ parseFloat(this.Done_price) }}</h4>
         </li>
-      </ul>
-
-      <ul class="main__body__box-info" :class="{ fade: isTransitioning }">
-        <li class="Price Remaining_price">
-          <img :src="'/assets/images/Remaining.png'" alt="" srcset="" />
-          <h6>Remaining</h6>
-          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
+ -->
+    
+         <li class="Price Refund_price">
+          <img :src="'/assets/images/Refund.png'" alt="" srcset="" />
+          <h6>Refund Price</h6>
+          <h4>${{ parseFloat(this.Refund_price) }}</h4>
         </li>
 
         <li class="Price Deposit_price">
           <img :src="'/assets/images/Deposit.png'" alt="" srcset="" />
-          <h6>Deposit</h6>
+          <h6>Deposit Price</h6>
           <h4>${{ parseFloat(this.Deposit_price) }}</h4>
         </li>
-
-        <li class="Price Cancel_price">
-          <img :src="'/assets/images/Cancel.png'" alt="" srcset="" />
-          <h6>Cancel</h6>
-          <h4>${{ parseFloat(this.Cancel_price) }}</h4>
-        </li>
-
-        <li class="Price Refund_price">
-          <img :src="'/assets/images/Refund.png'" alt="" srcset="" />
-          <h6>Refund</h6>
-          <h4>${{ parseFloat(this.Refund_price) }}</h4>
+        <li class="Price Remaining_price">
+          <img :src="'/assets/images/Remaining.png'" alt="" srcset="" />
+          <h6>Remaining Price</h6>
+          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
         </li>
         <li class="Price Refund_price">
           <img
@@ -153,11 +159,24 @@
             alt=""
             srcset=""
           />
-          <h6>Upsell</h6>
+          <h6>Upsell ( Artist )</h6>
           <h4>${{ parseFloat(this.upsale) }}</h4>
         </li>
+        <li class="Price Refund_price">
+          <img :src="'/assets/images/Refund.png'" alt="" srcset="" />
+          <h6>Refund Booking Price</h6>
+          <h4>${{ parseFloat(this.Refund_booking) }}</h4>
+        </li>
 
-        <li class="Price" v-if="this.title !== 'Artist' && this.employeeId === null">
+        <li class="Price Cancel_price">
+          <img :src="'/assets/images/Cancel.png'" alt="" srcset="" />
+          <h6>Cancel Booking Price</h6>
+          <h4>${{ parseFloat(this.Cancel_price) }}</h4>
+        </li>
+
+   
+    
+        <li class="Price" v-if="this.title !== 'Artist' && this.employeeId === null && this.kpi != undefined">
           <img
             :src="'/assets/images/total%20booking%20price.png'"
             alt=""
@@ -216,6 +235,9 @@ export default {
       Cancel_price: "",
       Refund_price: "",
       Done_price_revenue: "",
+      PartialDone: 0,
+      Initial_revenue: 0,
+      Refund_booking:0,
       kpi: "",
       upsale: "",
       adminId: null,
@@ -365,10 +387,11 @@ export default {
         .then((response) => {
           this.apiDatakpi = response.data;
           this.kpi = this.apiDatakpi.number_of_kpi;
-
+       
           if (this.kpi == undefined) {
             this.kpi = 0;
           }
+
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
@@ -385,11 +408,11 @@ export default {
         return percentage.toFixed(2); // Adjust the number of decimal places as needed
       } else if (isNaN(revenueTotal) || isNaN(kpiValue)) {
         // Handle the case where one or both values are not valid numbers
-        console.error("Invalid numeric values for calculation");
+   
         return "N/A";
       } else {
         // Handle the case where kpiValue is zero
-        console.error("Cannot divide by zero");
+  
         return "Infinity";
       }
     },
@@ -423,6 +446,9 @@ export default {
               length: 0,
               Done_price_revenue: 0,
               upsale: 0,
+              PartialDone: 0,
+              Initial_revenue:0,
+              Refund_booking:0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -437,6 +463,9 @@ export default {
           totals[Name].length += fillerData.length;
           totals[Name].Done_price_revenue += fillerData.Done_price_revenue;
           totals[Name].upsale += fillerData.upsale;
+          totals[Name].PartialDone += fillerData.PartialDone;
+          totals[Name].Initial_revenue += fillerData.Initial_revenue;
+          totals[Name].Refund_booking += fillerData.Refund_booking;
         }
       }
 
@@ -489,6 +518,10 @@ export default {
       this.numberOfBooks = 0;
       this.Done_price_revenue = 0;
       this.upsale = 0;
+      this.PartialDone =0;
+      this.Initial_revenue = 0;
+      this.Refund_booking = 0;
+
 
       if (this.adminId !== null) {
         if (this.selectedShowroom !== null) {
@@ -501,7 +534,6 @@ export default {
         }
 
         const data = this.totalByName(this.resuft);
-
         data.forEach((item) => {
           this.Total_price += parseFloat(item.servies_price);
           this.Deposit_price += parseFloat(item.Deposit_price);
@@ -514,6 +546,9 @@ export default {
           this.numberOfBooks = item.length;
           this.Done_price_revenue += parseFloat(item.Done_price_revenue);
           this.upsale += parseFloat(item.upsale);
+          this.PartialDone += parseFloat(item.PartialDone);
+          this.Initial_revenue += parseFloat(item.Initial_revenue);
+          this.Refund_booking += parseFloat(item.Refund_booking);
         });
       } else {
         if (this.employeeId !== null) {
@@ -543,6 +578,10 @@ export default {
         this.numberOfBooks = data[10];
         this.Done_price_revenue = data[11];
         this.upsale = data[12];
+        this.PartialDone = data[13];
+        this.Initial_revenue = data[14];
+        this.Refund_booking = data[15];
+
       }
 
       // Lặp qua danh sách dữ liệu và tính tổng
