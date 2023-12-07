@@ -20,6 +20,7 @@
         "laravelium/sitemap": "^8.0",
         "phpoffice/phpexcel": "^1.8",
         "roumen/sitemap": "^8.0",
+        "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-analytics": "^3.11",
         "tightenco/ziggy": "^1.6",
         "unisharp/laravel-filemanager": "^2.6"

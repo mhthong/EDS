@@ -223,7 +223,7 @@ class APIBookingController extends Controller
 
 
 
-    public function getAllfullcalendar($startDate, $endDate, $showroom)
+    public function getAllfullcalendarNew($startDate, $endDate, $showroom)
     {
         // Chuyển định dạng ngày về Y-m-d nếu chưa được chuyển đổi
         $startDate = date('Y-m-d', strtotime($startDate));
@@ -387,7 +387,7 @@ class APIBookingController extends Controller
             'upsale' => 0,
             'PartialDone' => 0,
             'Initial_revenue' => 0,
-            'Refund_booking' => 0,
+                  'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -428,7 +428,7 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] += $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
                
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
@@ -440,9 +440,6 @@ class APIBookingController extends Controller
 
         return $summarizedData;
     }
-
-
-      /*     getDataShowroom Employee */ 
 
 
 
@@ -530,7 +527,9 @@ class APIBookingController extends Controller
         $bookingupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-             ->whereDate('bookings.date', $date)
+            ->whereHas('price', function ($query) use ($date) {
+                $query->whereDate('prices.updated_at', $date);
+            })
             ->where('bookings.source_data', '=', $GetID)
             ->orderBy('bookings.created_at', 'desc')
             ->get();
@@ -638,7 +637,9 @@ class APIBookingController extends Controller
         $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-             ->whereDate('bookings.date', $date)
+            ->whereHas('price', function ($query) use ($date) {
+                $query->whereDate('prices.updated_at', $date);
+            })
             ->where('bookings.source_data', '=', $GetID)
             ->orderBy('bookings.created_at', 'desc');
 
@@ -750,7 +751,9 @@ class APIBookingController extends Controller
         $bookingupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-             ->whereDate('bookings.date', $date)
+            ->whereHas('price', function ($query) use ($date) {
+                $query->whereDate('prices.updated_at', $date);
+            })
             ->whereHas('services', function ($query) use ($serviceId) {
                 $query->where('services.id', $serviceId); // Thay $serviceId bằng giá trị bạn muốn kiểm tra
             })
@@ -767,7 +770,6 @@ class APIBookingController extends Controller
 
 
         /*     getDataService Location*/
-
         public function getDataServiceLocation($startDate, $endDate,$showroom,$employee)
         {
             // Lấy danh sách các ShowroomID (giả sử ShowroomID là một trường trong bảng Booking)
@@ -989,7 +991,9 @@ class APIBookingController extends Controller
         $bookingupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-             ->whereDate('bookings.date', $date)
+            ->whereHas('price', function ($query) use ($date) {
+                $query->whereDate('prices.updated_at', $date);
+            })
             ->where('source_id', '=', $EmployeeID)
             ->where('source_type', '=', "App\Models\Employee")
             ->orderBy('bookings.created_at', 'desc')
@@ -1010,7 +1014,6 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
-                
             }
         }
 
@@ -1059,7 +1062,8 @@ class APIBookingController extends Controller
         return $summarizedData;
     }
 
-    public function getDataForDateAndEmployeeLocation($date, $EmployeeID, $showroom)
+
+        public function getDataForDateAndEmployeeLocation($date, $EmployeeID, $showroom)
     {
 
         $cacheKey = 'data_' . $date . '_' . $EmployeeID;
@@ -1099,7 +1103,7 @@ class APIBookingController extends Controller
             'upsale' => 0,
                  'PartialDone' => 0,
             'Initial_revenue' => 0,
-            'Refund_booking' => 0,
+                  'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1151,7 +1155,7 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] += $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
                
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
@@ -1255,7 +1259,9 @@ class APIBookingController extends Controller
         $bookingupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-             ->whereDate('bookings.date', $date)
+            ->whereHas('price', function ($query) use ($date) {
+                $query->whereDate('prices.updated_at', $date);
+            })
             ->where('ArtistID', '=', $ArtistID)
             ->where('action', '=', 'approved')
             ->orderBy('bookings.created_at', 'desc')
@@ -1271,7 +1277,7 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Cancel") {
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
-                $summarizedData['Refund_price'] +=  $bookingupdate->price->servies_price;
+                $summarizedData['Refund_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
@@ -1326,7 +1332,10 @@ class APIBookingController extends Controller
         return $summarizedData;
     }
 
-    public function getDataForDateAndArtistLocation($date, $ArtistID, $showroom)
+
+    
+    
+        public function getDataForDateAndArtistLocation($date, $ArtistID, $showroom)
     {
 
 
@@ -1367,7 +1376,7 @@ class APIBookingController extends Controller
             'upsale' => 0,
                  'PartialDone' => 0,
             'Initial_revenue' => 0,
-            'Refund_booking'  => 0,
+                  'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1419,7 +1428,7 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
                
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
@@ -1430,10 +1439,9 @@ class APIBookingController extends Controller
         return $summarizedData;
     }
 
-
-
-
-    public function getDataShowroomEmployee($startDate, $endDate ,$employee,$title)
+    
+    
+        public function getDataShowroomEmployee($startDate, $endDate ,$employee,$title)
     {
         // Lấy danh sách các ShowroomID (giả sử ShowroomID là một trường trong bảng Booking)
         $showroomIDs = Showroom::where('status', 'published')->get();
@@ -1553,6 +1561,8 @@ class APIBookingController extends Controller
 
           $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
           ->get();
+          
+          
 
         foreach ($bookingupdates as $bookingupdate) {
             $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
@@ -1567,7 +1577,7 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
+                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
                
 
             } else if ($bookingupdate->status == "Partial Done") {
@@ -1579,8 +1589,5 @@ class APIBookingController extends Controller
 
         return $summarizedData;
     }
-
-    
-    
-
 }
+/* neww code */

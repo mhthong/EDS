@@ -363,7 +363,6 @@ export default {
 
     this.fetchapiSourceData(this.dateRange.start, this.dateRange.end , this.selectedShowroom);
     this.fetchapiSourceDataPast(this.newStartDate, this.newEndDate , this.selectedShowroom);
-
     this.Price();
   },
 
@@ -1108,16 +1107,18 @@ export default {
       const ctxSource = this.$refs.myChartSource.getContext("2d");
 
       const SourceDataMap = {};
-
+      console.log(SourceDataMap);
       this.apiDataGet.forEach((Source) => {
         SourceDataMap[Source.source_data] = Source;
-      });
+      }); 
+
+    
 
       const Name_Chart = this.dateRange.start + "  " + this.dateRange.end;
 
       const Name_Chart_New = this.newStartDate + "  " + this.newEndDate;
 
-      const sortedLabels = Object.keys(SourceDataMap);
+      const sortedLabels = Object.keys(SourceDataMap);      
 
       // 2. Sử dụng map để tạo datasets
       const datasets = sortedLabels.map((label) => {
