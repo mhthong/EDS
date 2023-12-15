@@ -55,4 +55,6 @@ mix.js('resources/js/analytics.js', 'public/js');
 
 mix.js('resources/js/Kpis.js', 'public/js');
 
+mix.js('resources/js/Source.js', 'public/js');
+
 mix.js('resources/js/FullCalendarAdmin.js', 'public/js');

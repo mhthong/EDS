@@ -96,31 +96,21 @@
         :class="{ fade: isTransitioning }"
       >
         <li class="Price Total_Booking_Price">
-          <img
-            :src="'/assets/images/total%20booking%20price.png'"
-            alt=""
-            srcset=""
-          />
-          <h6>Initial Booking Price</h6>
+          <h6>Initial Booking Value</h6>
           <h4>${{ parseFloat(this.servies_price) }}</h4>
         </li>
         <li class="Price Total_Booking_Price">
-          <img
-            :src="'/assets/images/total%20booking%20price.png'"
-            alt=""
-            srcset=""
-          />
-          <h6>Actual Booking Price</h6>
-          <h4>${{ parseFloat(this.servies_price - this.PartialDone) }}</h4>
+    
+          <h6>Actual Booking Value</h6>
+          <h4>${{ parseFloat(this.servies_price - this.PartialDone -this.Cancel_price - this.Refund_booking) }}</h4>
         </li>
         <li class="Price Revenue_price">
-          <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
+   
           <h6>Initial Revenue</h6>
           <h4>${{ this.Initial_revenue }}</h4>
         </li>
         <li class="Price Revenue_price">
-          <img :src="'/assets/images/Revenue.png'" alt="" srcset="" />
-          <h6>Actual Revenue</h6>
+          <h6>Actual Revenue </h6>
           <h4>${{ this.RevenueTatol }} </h4>
         </li>
 
@@ -138,54 +128,76 @@
  -->
     
          <li class="Price Refund_price">
-          <img :src="'/assets/images/Refund.png'" alt="" srcset="" />
-          <h6>Refund Price</h6>
+
+          <h6>Refund</h6>
           <h4>${{ parseFloat(this.Refund_price) }}</h4>
         </li>
 
-        <li class="Price Deposit_price">
-          <img :src="'/assets/images/Deposit.png'" alt="" srcset="" />
-          <h6>Deposit Price</h6>
-          <h4>${{ parseFloat(this.Deposit_price) }}</h4>
-        </li>
-        <li class="Price Remaining_price">
-          <img :src="'/assets/images/Remaining.png'" alt="" srcset="" />
-          <h6>Remaining Price</h6>
-          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
-        </li>
         <li class="Price Refund_price">
-          <img
-            :src="'/assets/images/total%20booking%20price.png'"
-            alt=""
-            srcset=""
-          />
-          <h6>Upsell ( Artist )</h6>
-          <h4>${{ parseFloat(this.upsale) }}</h4>
-        </li>
-        <li class="Price Refund_price">
-          <img :src="'/assets/images/Refund.png'" alt="" srcset="" />
-          <h6>Refund Booking Price</h6>
+          <h6>Booking Refund Value</h6>
           <h4>${{ parseFloat(this.Refund_booking) }}</h4>
         </li>
 
+
+        <li class="Price Deposit_price">
+          <h6>Deposit</h6>
+          <h4>${{ parseFloat(this.Deposit_price) }}</h4>
+        </li>
+        <li class="Price Remaining_price">
+          <h6>Remaining</h6>
+          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
+        </li>
+        <li class="Price Refund_price">
+          <h6>Upsell ( Artist )</h6>
+          <h4>${{ parseFloat(this.upsale) }}</h4>
+        </li>
+  
+
         <li class="Price Cancel_price">
-          <img :src="'/assets/images/Cancel.png'" alt="" srcset="" />
-          <h6>Cancel Booking Price</h6>
+          <h6>Cancel Booking Value</h6>
           <h4>${{ parseFloat(this.Cancel_price) }}</h4>
         </li>
 
-   
-    
+        <li class="Price Cancel_price">
+          <h6>Total Booking</h6>
+          <h4>{{ parseFloat(this.numberOfBooks) }}</h4>
+        </li>
+        </ul>
+
+        <ul
+        class="main__body__box-info admin_dashboard"
+        :class="{ fade: isTransitioning }"
+      >
+
+        <li class="Price">
+          <h6>%Done</h6>
+            <h4>
+            {{ calculatePercentage(this.Done ,this.numberOfBooks ) }} % 
+          </h4>
+        </li>
+        <li class="Price">
+          <h6> %Waiting </h6>
+            <h4>
+            {{ calculatePercentage(this.Waiting ,this.numberOfBooks ) }} %
+          </h4>
+        </li>
+        <li class="Price">
+          <h6> %Cancel</h6>
+            <h4>
+          {{ calculatePercentage(this.Cancel ,this.numberOfBooks ) }} % 
+          </h4>
+        </li>
+        <li class="Price">
+          <h6> %Refund</h6>
+            <h4>
+          {{ calculatePercentage(this.Refund ,this.numberOfBooks ) }} %
+          </h4>
+        </li>
         <li class="Price" v-if="this.title !== 'Artist' && this.employeeId === null && this.kpi != undefined">
-          <img
-            :src="'/assets/images/total%20booking%20price.png'"
-            alt=""
-            srcset=""
-          />
-          <h6>KPI</h6>
+          <h6>Total KPI | % Completed</h6>
           <h4>
-            ${{ this.RevenueTatol }} / ${{ parseFloat(this.kpi) }} POC
-            {{ calculatePercentage() }} %
+            ${{ this.servies_price }} / ${{parseFloat(this.kpi)}} Completed
+            {{ calculatePercentage(this.servies_price , parseFloat(this.kpi) ) }} %
           </h4>
         </li>
       </ul>
@@ -258,6 +270,10 @@ export default {
       apiDatakpi: [],
       kpi: 0,
       resuft: [],
+      Done: 0,
+       Waiting: 0,
+       Cancel : 0,
+       Refund : 0,
     };
   },
 
@@ -398,10 +414,7 @@ export default {
         });
     },
 
-    calculatePercentage() {
-      const revenueTotal = parseFloat(this.RevenueTatol);
-      const kpiValue = parseFloat(this.kpi);
-
+    calculatePercentage(revenueTotal , kpiValue) {
       // Check if both values are valid numbers and kpiValue is not zero
       if (!isNaN(revenueTotal) && !isNaN(kpiValue) && kpiValue !== 0) {
         const percentage = (revenueTotal / kpiValue) * 100;
@@ -420,7 +433,7 @@ export default {
     totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       const totals = {};
-
+console.log(data);
       // Lặp qua các ngày trong dữ liệu của bạn
       for (const date in data) {
         const fillerDatas = data[date];
@@ -443,12 +456,16 @@ export default {
               Cancel_price: 0,
               Refund_price: 0,
               Remaining_price: 0,
-              length: 0,
+              length_real: 0,
               Done_price_revenue: 0,
               upsale: 0,
               PartialDone: 0,
               Initial_revenue:0,
               Refund_booking:0,
+              Done: 0,
+              Waiting: 0,
+              Cancel : 0,
+              Refund : 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -460,12 +477,16 @@ export default {
           totals[Name].Cancel_price += fillerData.Cancel_price;
           totals[Name].Refund_price += fillerData.Refund_price;
           totals[Name].Remaining_price += fillerData.Remaining_price;
-          totals[Name].length += fillerData.length;
+          totals[Name].length_real += fillerData.length_real;
           totals[Name].Done_price_revenue += fillerData.Done_price_revenue;
           totals[Name].upsale += fillerData.upsale;
           totals[Name].PartialDone += fillerData.PartialDone;
           totals[Name].Initial_revenue += fillerData.Initial_revenue;
           totals[Name].Refund_booking += fillerData.Refund_booking;
+          totals[Name].Done +=fillerData.Done;
+          totals[Name].Waiting +=fillerData.Waiting;
+          totals[Name].Cancel  +=fillerData.Cancel;
+          totals[Name].Refund  +=fillerData.Refund;
         }
       }
 
@@ -521,6 +542,10 @@ export default {
       this.PartialDone =0;
       this.Initial_revenue = 0;
       this.Refund_booking = 0;
+      this.Done = 0 ;
+      this.Waiting = 0;
+      this.Cancel = 0;
+      this.Refund = 0;
 
 
       if (this.adminId !== null) {
@@ -543,12 +568,16 @@ export default {
           this.Refund_price += parseFloat(item.Refund_price);
           this.Done_price += parseFloat(item.Done_price);
           this.Remaining_price += parseFloat(item.Remaining_price);
-          this.numberOfBooks = item.length;
+          this.numberOfBooks += parseFloat(item.length_real);
           this.Done_price_revenue += parseFloat(item.Done_price_revenue);
           this.upsale += parseFloat(item.upsale);
           this.PartialDone += parseFloat(item.PartialDone);
           this.Initial_revenue += parseFloat(item.Initial_revenue);
           this.Refund_booking += parseFloat(item.Refund_booking);
+          this.Done += parseFloat(item.Done);
+      this.Waiting += parseFloat(item.Waiting);
+      this.Cancel += parseFloat(item.Cancel);
+      this.Refund += parseFloat(item.Refund);
         });
       } else {
         if (this.employeeId !== null) {
@@ -574,14 +603,16 @@ export default {
         this.Refund_price += parseFloat(data[8]);
         this.Done_price += parseFloat(data[6]);
         this.Remaining_price += parseFloat(data[9]);
-
         this.numberOfBooks = data[10];
         this.Done_price_revenue = data[11];
         this.upsale = data[12];
         this.PartialDone = data[13];
         this.Initial_revenue = data[14];
         this.Refund_booking = data[15];
-
+        this.Done += data[16];
+        this.Waiting += data[17];
+        this.Cancel += data[18];
+        this.Refund += data[19];
       }
 
       // Lặp qua danh sách dữ liệu và tính tổng
@@ -814,5 +845,29 @@ export default {
     -webkit-transform: translate(-50%);
     transform: translate(-50%);
   }
+}
+
+#main .main__body .main__body__box-info li {
+    flex: 1 0 160px;
+    background: var(--white);
+    padding: 0.75rem 0.75rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+#main .main__body .main__body__box-info li h6,h4{
+  font-size: 14px;
+}
+.persen{
+    flex: 1 0 25%;
+    padding: 0.75rem 0.75rem;
+    border-radius: 5px;
+    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}
+.Persen{
+  flex: 1 0 260px;
+    display: flex;
+    grid-gap: 1.25rem;
+    flex-wrap: wrap;
 }
 </style>

@@ -135,8 +135,8 @@
                                 <div class="controls col-12 col-md-4 col-lg-3 m-2">
                                     <label class="label-date active" for="date-columns">Date Columns: </label>
                                     <select class="p-2" name="datecolumns" id="datecolumns" style="border-radius: 10px;">
-                                        <option value="3">Booking Date Create</option>
-                                        <option value="4">Treatment Date</option>
+                                        <option value="5">Booking Date Create</option>
+                                        <option value="6">Treatment Date</option>
                                     </select>
                                 </div>
 
@@ -160,52 +160,54 @@
                                 <thead>
                                     <tr class="table-danger">
                                         <th>No.</th>
+                                        <th data-field="Staff">Staff</th>
                                         <th data-field="Location">Location</th>
                                         <th data-field="Artist">Artist</th>
+                                        <th data-field="ClientName">Client Name</th>
                                         <th data-field="BookingDateCreate">Booking Date Create</th>
                                         <th data-field="TreatmentDate">Treatment Date</th>
                                         <th data-field="TreatmentTime">Treatment Time</th>
-                                        <th data-field="ClientName">Client Name</th>
-                                        <th data-field="ClientInfo">Client Info</th>
-                                        <th data-field="Note">Note</th>
+                                        <th data-field="Statustate">Status</th>
                                         <th data-field="Services">Services</th>
                                         <th data-field="Source">Source</th>
-                                        <th data-field="Source Data">Source Data</th>
                                         <th data-field="Price">Price</th>
                                         <th data-field="Deposit">Deposit</th>
-                                        <th data-field="PaymentType">Payment Type</th>
-                                        <th data-field="Statustate">Status</th>
+                                        <th data-field="PaymentType">First Payment</th>
+                                        <th data-field="Remaining">Remaining</th>
+                                        <th data-field="PaymentTypeSecond">Second Payment</th>
+                                        <th data-field="TotalRevenue">Total Revenue</th>
+                                        <th data-field="ClientInfo">Client Info</th>
+                                        <th data-field="Note">Note</th>
+                                        <th data-field="Source Data">Source Data</th>
                                         <th data-field="Content">Note Status</th>
                                         <th data-field="Actiontate">Approved
                                         </th>
-                                        <th data-field="Remaining">Remaining</th>
-                                        <th data-field="TotalRevenue">Total Price</th>
-                                        <th data-field="Staff">Staff</th>
                                         <th data-field="Action">Action</th>
                                     </tr>
                                     <tr class="tr_footer table-danger">
                                         <th></th>
+                                        <th data-field="Staff">Staff</th>
                                         <th data-field="Location">Location</th>
                                         <th data-field="Artist">Artist</th>
+                                        <th data-field="ClientName"></th>
                                         <th data-field="BookingDateCreate"></th>
                                         <th data-field="TreatmentDate"></th>
                                         <th data-field="TreatmentTime"></th>
-                                        <th data-field="ClientName"></th>
-                                        <th data-field="ClientInfo"></th>
-                                        <th data-field="Note"></th>
+                                        <th data-field="Statustate">Status</th>
                                         <th data-field="Services"></th>
-                                        <th data-field="Source"></th>
-                                        <th data-field="Source Data"></th>
+                                        <th data-field="Source">Source</th>
                                         <th data-field="Price"></th>
                                         <th data-field="Deposit"></th>
-                                        <th data-field="PaymentType">Payment Type</th>
-                                        <th data-field="Statustate">Status</th>
+                                        <th data-field="PaymentType">First Payment</th>
+                                        <th data-field="Remaining"></th>
+                                        <th data-field="PaymentTypeSecond">Second Payment</th>
+                                        <th data-field="TotalRevenue"></th>
+                                        <th data-field="ClientInfo"></th>
+                                        <th data-field="Note"></th>
+                                        <th data-field="Source Data"></th>
                                         <th data-field="Content"></th>
                                         <th data-field="Actiontate">Approved
                                         </th>
-                                        <th data-field="Remaining"></th>
-                                        <th data-field="TotalRevenue"></th>
-                                        <th data-field="Staff">Staff</th>
                                         <th data-field="Action"></th>
                                     </tr>
                                 </thead>
@@ -226,37 +228,41 @@
                                 <tbody>
                                     @foreach ($bookings as $booking)
                                         <tr>
-                                            <td>{{ $booking->id }}</td>
+                                            <td><a class="a" href="{{ route($route, ['id' => $booking->id]) }}">
+                                                {{ $booking->id }}
+                                            </a></td>
+                                            <td>{{ $booking->source_name }}</td>
                                             <td>{{ $booking->showroom->Name }}</td>
                                             <td>{{ $booking->artist->name }}</td>
+                                            <td>{{ $booking->get->Name }}</td>
                                             <td>{{ $booking->created_at->format('Y-m-d') }}</td>
                                             <td>{{ $booking->date }}</td>
                                             <td>
-                                                <span>Start time: {{ $booking->time }}</span>
-                                                <span>End time: {{ $booking->time_end }}</span>
+                                                <span>ST: {{ $booking->time }}</span>
+                                                <span>ET: {{ $booking->time_end }}</span>
                                             </td>
-                                            <td>{{ $booking->get->Name }}</td>
-                                            <td><span>
-                                                    Email: {{ $booking->get->Email }} , Address:
-                                                    {{ $booking->get->Address }} , Phone: {{ $booking->get->Phone }}
-                                                </span>
-                                            </td>
-                                            <td><span> {{ $booking->get->Note }} </span></td>
-
+                                            <td>{{ $booking->status }}</td>
                                             <td>{{ $booking->services->pluck('Name')->join(', ') }}</td>
                                             <td><span>{{ $booking->get->source_data }}</span></td>
+                                            <td>{{ $booking->price ? intval($booking->price->servies_price) : 'N/A' }}</td>
+                                            <td>{{ $booking->price ? intval($booking->price->Deposit_price) : 'N/A' }}</td>
+                                            <td>{{ $booking->payment ? $booking->payment->payment_type : 'N/A' }}</td>
+                                            <td>{{ $booking->price ? intval($booking->price->Remaining_price) : 'N/A' }}</td>
+                                            <td>{{ $booking->payment ? $booking->payment->payment_type_remainding : 'N/A' }}</td>
+                                            <td>{{ $booking->price ? intval($booking->price->Total_price) : 'N/A' }}</td>
+                                            <td><span>
+                                                Email: {{ $booking->get->Email }} , Address:
+                                                {{ $booking->get->Address }} , Phone: {{ $booking->get->Phone }}
+                                            </span>
+                                            </td>
+                                            <td><span> {{ $booking->get->Note }} </span></td>
                                             <td><span>
                                                     <textarea name="" id="" cols="30" rows="2">{{ $booking->get->Source }}</textarea>
                                                 </span></td>
-                                            <td>{{ $booking->price ? $booking->price->servies_price : 'N/A' }}</td>
-                                            <td>{{ $booking->price ? $booking->price->Deposit_price : 'N/A' }}</td>
-                                            <td>{{ $booking->payment ? $booking->payment->payment_type : 'N/A' }}</td>
-                                            <td>{{ $booking->status }}</td>
+                    
                                             <td>{{ $booking->content }}</td>
                                             <td>{{ $booking->action }}</td>
-                                            <td>{{ $booking->price ? $booking->price->Remaining_price : 'N/A' }}</td>
-                                            <td>{{ $booking->price ? $booking->price->Total_price : 'N/A' }}</td>
-                                            <td>{{ $booking->source_name }}</td>
+                                
 
                                             <td
                                                 style="display: flex;
@@ -381,6 +387,9 @@
                     {
                         width: '100px'
                     },
+                    {
+                        width: '100px'
+                    },
                 ],
 
 
@@ -388,7 +397,7 @@
 
 
 
-            table.columns([1, 2, 15, 20, 14, 17, 10]).every(function() {
+            table.columns([1, 2,3 ,8,10,13,15,21]).every(function() {
                 const column = this;
                 const select = $('<select><option value=""></option></select>')
                     .appendTo($(column.header()).empty())
@@ -497,35 +506,35 @@
                        'Remaining', 'Total Revenue', 'Staff'
                    ]); */
                 excelData.push([
-                    'No', 'Location', 'Artist', 'Booking Date Create', 'Treatment Date',
-                    'Treatment Time', 'Client Name', 'Client Info', 'Note', 'Services',
-                    'Source', 'Source_Data', 'Price', 'Deposit', 'Payment Type','Status',
-                    'Status Note','Approved', 'Remaining', 'Total Revenue', 'Staff'
+                    'No', 'Staff', 'Location', 'Artist', 'Client Name', 'Booking Date Create', 'Treatment Date',
+                    'Treatment Time','Status', 'Services','Source',  'Price', 'Deposit','First Payment', 'Remaining','Second Payment', 'Total Revenue','Client Info', 'Note',
+                     'Source_Data',  'Status Note','Approved'
                 ]);
                 data.forEach(row => {
                     // Extract values for specific columns
                     const rowData = [
-                        row[0], // Location
-                        row[1], // Location
-                        row[2], // Artist
-                        row[3], // Artist
-                        row[4], // Location
+                        stripHtmlTags(row[0]), // Client Info
+                        stripHtmlTags(row[1]), // Client Info
+                        stripHtmlTags(row[2]), // Client Info
+                        stripHtmlTags(row[3]), // Client Info
+                        stripHtmlTags(row[4]), // Client Info
                         stripHtmlTags(row[5]), // Client Info
-                        row[6], // Client Name
+                        stripHtmlTags(row[6]), // Client Info
                         stripHtmlTags(row[7]), // Client Info
                         stripHtmlTags(row[8]), // Client Info
-                        row[9], // Note
+                        stripHtmlTags(row[9]), // Client Info
                         stripHtmlTags(row[10]), // Client Info
                         stripHtmlTags(row[11]), // Client Info
-                        row[12], // Payment Type
-                        row[13], // Price
-                        row[14], // Deposit
-                        row[15], // Payment Type
-                        row[16], // Status
-                        row[17], // Status
-                        row[18], // Remaining
-                        row[19], // Total Revenue
-                        row[20], // Staff
+                        stripHtmlTags(row[12]), // Client Info
+                        stripHtmlTags(row[13]), // Client Info
+                        stripHtmlTags(row[14]), // Client Info
+                        stripHtmlTags(row[15]), // Client Info
+                        stripHtmlTags(row[16]), // Client Info
+                        stripHtmlTags(row[17]), // Client Info
+                        stripHtmlTags(row[18]), // Client Info
+                        stripHtmlTags(row[19]), // Client Info
+                        stripHtmlTags(row[20]), // Client Info
+                        stripHtmlTags(row[21]), // Client Info
                     ];
 
                     // Push rowData into excelData

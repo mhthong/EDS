@@ -54,6 +54,7 @@ use App\Http\Controllers\EmployeeAuthController;
 use Unisharp\Laravelfilemanager\controllers\LfmController;
 use Unisharp\Laravelfilemanager\controllers\UploadController;
 use App\Http\Controllers\KpiController;
+use App\Http\Controllers\SourceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -341,6 +342,12 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             }
         );
 
+
+        Route::prefix('source')->group(
+            function () {
+                Route::get('/', [SourceController::class, 'view'])->name('kpis.index');
+            }
+        );
 
         Route::prefix('books')->group(
             function () {

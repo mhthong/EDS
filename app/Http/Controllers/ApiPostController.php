@@ -16,6 +16,7 @@ use App\Models\Get;
 use App\Models\Admin;
 use App\Models\WorkingHour;
 use App\Models\Kpi;
+use App\Models\Source;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -152,6 +153,51 @@ class ApiPostController extends Controller
     }
 
 
+    public function saveDataSource(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|unique:table_source',
+        ]);
+
+        $check = $this->CheckAuth();
+        if ($check == true) {
+            // Kiểm tra xem có dữ liệu nào tương ứng với showroomId và inputData khôn
+            $Source = Source::updateOrCreate(
+                [
+                    'name' => $request->input('name'),
+                ]
+            );
+
+            return response()->json(['message' => 'Data created successfully']);
+        } else {
+            return redirect()->back()->with("failed", "You do not have access !");
+        }
+    }
+
+
+    public function updateDataSource(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|numeric',
+            'name' => 'required|unique:sources',
+        ]);
+
+        $check = $this->CheckAuth();
+
+            if ($check) {
+                $affectedRows = Kpi::where([
+                    'id' => $request->input('id'),
+                ])->update([
+                    'name' => $request->input('name'),      
+                ]);
+
+                return response()->json(['message' => "Data updated for $affectedRows records"]);
+            } else{
+                return response()->json(['message' => 'Data not updated successfully']);
+            }
+      
+    }
+
     public function CheckAuth()
     {
         $userData = Auth::user();
@@ -206,6 +252,31 @@ class ApiPostController extends Controller
             }
 
             $kpi->delete();
+
+            return response()->json(['message' => 'Data deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting data', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
+
+    public function deleteSource($id)
+    {
+        $check = $this->CheckAuth();
+
+        if (!$check) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        try {
+            $Source = Source::find($id);
+
+            if (!$Source) {
+                return response()->json(['message' => 'KPI not found'], 404);
+            }
+
+            $Source->delete();
 
             return response()->json(['message' => 'Data deleted successfully']);
         } catch (\Exception $e) {

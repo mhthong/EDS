@@ -6,6 +6,7 @@ use App\Http\Controllers\APIBookingController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ApiPostController;
 use App\Http\Controllers\KpiController;
+use App\Http\Controllers\SourceController;
 
 
 
@@ -106,3 +107,17 @@ Route::delete('/kpis/{id}', [ApiPostController::class, 'deleteKpi']);
 Route::get('/kpis', [KpiController::class, 'getKpis']);
 
 Route::get('/kpis-data/{showroom}/{employee}/{date}', [KpiController::class, 'getKpisData']);
+
+
+
+
+Route::post('/source-store', [ApiPostController::class, 'saveDataSource']);
+
+Route::put('/source-update', [ApiPostController::class, 'updateDataSource']);
+
+
+Route::delete('/Source/{id}', [ApiPostController::class, 'deleteSource']);
+
+
+
+Route::get('/Sources', [SourceController::class, 'getSource']);

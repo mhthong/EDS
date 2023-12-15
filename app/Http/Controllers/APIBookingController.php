@@ -290,6 +290,74 @@ class APIBookingController extends Controller
         return response()->json($result);
     }
 
+    public function getAllfullcalendar($startDate, $endDate, $showroom)
+    {
+        // Chuyển định dạng ngày về Y-m-d nếu chưa được chuyển đổi
+        $startDate = date('Y-m-d', strtotime($startDate));
+        $endDate = date('Y-m-d', strtotime($endDate));
+
+        // Lấy danh sách showroom
+        $showrooms = Showroom::all();
+
+        // Khởi tạo mảng để chứa dữ liệu
+        $result = [];
+
+        // Tạo vòng lặp qua mỗi ngày trong khoảng thời gian
+        $currentDate = $startDate;
+
+        while ($currentDate <= $endDate) {
+            // Tạo mảng chứa dữ liệu cho mỗi showroom
+            $showroomData = [];
+
+            // Lặp qua từng 
+            // Lấy dữ liệu cho ngày hiện tại và showroom hiện tại
+            $dailyData = ShowroomSchedule::where('showroom_id', $showroom)
+                ->where('day', date('l', strtotime($currentDate)))
+                ->first();
+
+            // Kiểm tra xem có dữ liệu không
+            if ($dailyData) {
+                // Lấy dữ liệu cho ngày hiện tại
+                $bookingData = Booking::select('id', 'ArtistID', 'GetID', 'ShowroomID', 'status', 'action', 'time', 'time_end', 'date', 'source_name')
+                    ->with([
+                        'artist:id',
+                        'showroom:id,Name',
+                        'services:id,Name',
+                        'get:id,name',
+                    ])
+                    ->where('date', $currentDate)
+                    ->where('ShowroomID',  $showroom)
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+                // Kiểm tra và cập nhật trường 'active' trong dailyData
+                $workingHour = WorkingHour::where('showroom_schedule_id', $dailyData->showroom_id)
+                    ->where('date', $currentDate)
+                    ->first();
+
+                if ($workingHour) {
+                    $dailyData->active = $workingHour->active;
+                }
+
+                // Thêm trường dayOfWeek cho mỗi mục
+                // Thêm dữ liệu vào mảng showroomData
+                $showroomData[$showroom] = [
+                    'dailyData' => $dailyData,
+                    'bookingData' => $bookingData,
+                ];
+            }
+
+            // Thêm dữ liệu vào mảng kết quả
+            $result[$currentDate] = $showroomData;
+
+            // Di chuyển tới ngày tiếp theo
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+        }
+
+        return response()->json($result);
+    }
+
+
     public function DateActive($Date, $showroom)
     {
         $dayOfWeekActive = ShowroomSchedule::where('showroom_id', $showroom)
@@ -1522,7 +1590,10 @@ class APIBookingController extends Controller
             'PartialDone' => 0,
             'Initial_revenue' => 0,
             'Refund_booking' => 0,
-      
+            'Done' => 0,
+            'Waiting' => 0,
+            'Cancel' => 0,
+            'Refund' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1535,6 +1606,17 @@ class APIBookingController extends Controller
             $summarizedData['length'] += 1;
             $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
 
+            if ($booking->status == "Done") {
+                $summarizedData['Done'] += 1;
+            } else if ($booking->status == "Cancel") {
+                $summarizedData['Cancel'] += 1;
+            } else if ($booking->status == "Refund") {
+                $summarizedData['Refund'] += 1;
+            } else if ($booking->status == "Partial Done") {
+                $summarizedData['Done'] += 1;
+            }  else if ($booking->status == "Waiting") {
+                $summarizedData['Waiting'] += 1;
+            } 
             if ($booking->price->servies_price != 0) {
                 $summarizedData['length_real'] += 1;
             }
@@ -1577,8 +1659,7 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
-               
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
 
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
@@ -1589,5 +1670,7 @@ class APIBookingController extends Controller
 
         return $summarizedData;
     }
+
+
 }
 /* neww code */
