@@ -55,6 +55,7 @@ use Unisharp\Laravelfilemanager\controllers\LfmController;
 use Unisharp\Laravelfilemanager\controllers\UploadController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\SourceController;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -279,7 +280,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
             return view('layouts.sale'); // Tên của view bạn muốn hiển thị
         })->name('sale-admin');
 
-
+        Route::post('/update-payment-status/{payment}', [PaymentController::class, 'updatePaymentStatus']);
 
         Route::get('/analytics', function () {
             return view('layouts.analytics'); // Tên của view bạn muốn hiển thị

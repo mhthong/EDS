@@ -42,6 +42,8 @@ Route::get('/get', [APIBookingController::class, 'Get']);
 
 Route::get('all-data', [APIBookingController::class, 'getAllData']);
 
+
+
 Route::get('fullcalendar/{start}/{end}/{showroom}', [APIBookingController::class, 'getAllfullcalendar']);
 
 Route::get('getDataSourceLocation/{start}/{end}/{showroom}', [APIBookingController::class, 'getDataSourceLocation']);
@@ -90,6 +92,7 @@ Route::middleware(['userid'])->group(function () {
 
 Route::get('getDataShowroomEmployee/{start}/{end}/{employee}/{title}', [APIBookingController::class, 'getDataShowroomEmployee']);
 
+Route::get('Dashboard/{start}/{end}/{employee}/{title}', [APIBookingController::class, 'Dashboard']);
 
 
 Route::post('/save-data', [ApiPostController::class, 'saveDataActiveDate']);

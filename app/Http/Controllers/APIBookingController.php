@@ -455,7 +455,7 @@ class APIBookingController extends Controller
             'upsale' => 0,
             'PartialDone' => 0,
             'Initial_revenue' => 0,
-                  'Refund_booking' => 0,
+            'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -464,7 +464,7 @@ class APIBookingController extends Controller
             $summarizedData['Deposit_price'] += $booking->price->Deposit_price;
             $summarizedData['servies_price'] += $booking->price->servies_price;
             $summarizedData['revenue'] += $booking->price->Deposit_price;
-                 $summarizedData['Initial_revenue'] += $booking->price->Deposit_price;
+            $summarizedData['Initial_revenue'] += $booking->price->Deposit_price;
             $summarizedData['length'] += 1;
             $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
 
@@ -496,13 +496,11 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] += $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
-               
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
                 $summarizedData['PartialDone'] += $bookingupdate->price->Remaining_price;
-                
             }
         }
 
@@ -632,7 +630,7 @@ class APIBookingController extends Controller
 
             foreach ($GetIDs as $GetID) {
                 // Lấy dữ liệu cho ngày hiện tại và cho từng GetID
-                $dataForDateAndGet = $this->getDataForDateAndGetLocation($currentDateStr, $GetID , $showroom);
+                $dataForDateAndGet = $this->getDataForDateAndGetLocation($currentDateStr, $GetID, $showroom);
 
                 // Tổng hợp dữ liệu cho ngày hiện tại và GetID vào mảng tổng hợp
                 if (!isset($summarizedData[$currentDateStr])) {
@@ -651,7 +649,7 @@ class APIBookingController extends Controller
         return $summarizedData;
     }
 
-    public function getDataForDateAndGetLocation($date, $GetID,$showroom)
+    public function getDataForDateAndGetLocation($date, $GetID, $showroom)
     {
         $cacheKey = 'data_' . $date . '_' . $GetID;
         $yourCacheDuration = 0;
@@ -663,15 +661,15 @@ class APIBookingController extends Controller
             ->orderBy('created_at', 'desc');
 
 
-            if ($showroom !== "null") {
-                $bookingsQuery->where('ShowroomID', $showroom);
-            }
-    
-    
-            $bookings = $bookingsQuery->orderBy('created_at', 'desc')
-                ->get();
+        if ($showroom !== "null") {
+            $bookingsQuery->where('ShowroomID', $showroom);
+        }
 
-                
+
+        $bookings = $bookingsQuery->orderBy('created_at', 'desc')
+            ->get();
+
+
 
         // Tạo một mảng để tổng hợp dữ liệu cho ngày cụ thể và GetID
         $summarizedData = [
@@ -712,13 +710,13 @@ class APIBookingController extends Controller
             ->orderBy('bookings.created_at', 'desc');
 
 
-            if ($showroom !== "null") {
-                $bookingsQueryupdates->where('ShowroomID', $showroom);
-            }
-    
-    
-            $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
-                ->get();
+        if ($showroom !== "null") {
+            $bookingsQueryupdates->where('ShowroomID', $showroom);
+        }
+
+
+        $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
+            ->get();
 
 
         foreach ($bookingupdates as $bookingupdate) {
@@ -837,133 +835,133 @@ class APIBookingController extends Controller
     }
 
 
-        /*     getDataService Location*/
-        public function getDataServiceLocation($startDate, $endDate,$showroom,$employee)
-        {
-            // Lấy danh sách các ShowroomID (giả sử ShowroomID là một trường trong bảng Booking)
-            $ServiceIDs =  Service::all();
-    
-    
-    
-            // Tạo mảng để lưu trữ dữ liệu tổng hợp
-            $summarizedData = [];
-    
-            // Chuyển $startDate và $endDate thành các đối tượng ngày
-            $currentDate = new \DateTime($startDate);
-            $endDate = new \DateTime($endDate);
-    
-            while ($currentDate <= $endDate) {
-                // Lấy ngày hiện tại dưới dạng chuỗi "Y-m-d"
-                $currentDateStr = $currentDate->format('Y-m-d');
-    
-                foreach ($ServiceIDs as $ServiceID) {
-                    // Lấy dữ liệu cho ngày hiện tại và cho từng GetID
-                    $dataForDateAndService = $this->getDataForDateAndServiceLocation($currentDateStr, $ServiceID->id,$showroom,$employee);
-    
-                    // Tổng hợp dữ liệu cho ngày hiện tại và GetID vào mảng tổng hợp
-                    if (!isset($summarizedData[$currentDateStr])) {
-                        $summarizedData[$currentDateStr] = [];
-                    }
-    
-                    $summarizedData[$currentDateStr][$ServiceID->id] = $dataForDateAndService;
-                    $summarizedData[$currentDateStr][$ServiceID->id]["Name"] = $ServiceID->Name;
-                    $summarizedData[$currentDateStr][$ServiceID->id]["id"] = $ServiceID->id;
+    /*     getDataService Location*/
+    public function getDataServiceLocation($startDate, $endDate, $showroom, $employee)
+    {
+        // Lấy danh sách các ShowroomID (giả sử ShowroomID là một trường trong bảng Booking)
+        $ServiceIDs =  Service::all();
+
+
+
+        // Tạo mảng để lưu trữ dữ liệu tổng hợp
+        $summarizedData = [];
+
+        // Chuyển $startDate và $endDate thành các đối tượng ngày
+        $currentDate = new \DateTime($startDate);
+        $endDate = new \DateTime($endDate);
+
+        while ($currentDate <= $endDate) {
+            // Lấy ngày hiện tại dưới dạng chuỗi "Y-m-d"
+            $currentDateStr = $currentDate->format('Y-m-d');
+
+            foreach ($ServiceIDs as $ServiceID) {
+                // Lấy dữ liệu cho ngày hiện tại và cho từng GetID
+                $dataForDateAndService = $this->getDataForDateAndServiceLocation($currentDateStr, $ServiceID->id, $showroom, $employee);
+
+                // Tổng hợp dữ liệu cho ngày hiện tại và GetID vào mảng tổng hợp
+                if (!isset($summarizedData[$currentDateStr])) {
+                    $summarizedData[$currentDateStr] = [];
                 }
-    
-                // Tăng ngày hiện tại lên 1 ngày
-                $currentDate->modify('+1 day');
+
+                $summarizedData[$currentDateStr][$ServiceID->id] = $dataForDateAndService;
+                $summarizedData[$currentDateStr][$ServiceID->id]["Name"] = $ServiceID->Name;
+                $summarizedData[$currentDateStr][$ServiceID->id]["id"] = $ServiceID->id;
             }
-    
-    
-            return $summarizedData;
-        }
-    
-        public function getDataForDateAndServiceLocation($date, $serviceId,$showroom,$employee)
-        {
-    
-            $cacheKey = 'data_' . $date . '_' . $serviceId;
-            $yourCacheDuration = 0;
-    
-    
-            $bookingsQuery = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.GetID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
-                ->with(['price', 'services:id', 'Get'])
-                ->whereDate('bookings.created_at', $date)
-                ->whereHas('services', function ($query) use ($serviceId) {
-                    $query->where('services.id', $serviceId); // Thay $serviceId bằng giá trị bạn muốn kiểm tra
-                })
-                ->orderBy('created_at', 'desc');
 
-
-                if ($showroom !== "null") {
-                    $bookingsQuery->where('ShowroomID', $showroom);
-                }
-        
-
-                if ($employee !== "null") {
-                    $bookingsQuery->where('source_id', $employee)->where('source_type', "App\Models\Employee");
-                }
-        
-                $bookings = $bookingsQuery->orderBy('created_at', 'desc')
-                    ->get();
-    
-            // Tạo một mảng để tổng hợp dữ liệu cho ngày cụ thể và GetID
-            $summarizedData = [
-                'id' => "",
-                'Name' => "",
-                'Total_price' => 0,
-                'Deposit_price' => 0,
-                'servies_price' => 0,
-                'revenue' => 0,
-                'Remaining_price' => 0,
-                'length' => 0,
-                'length_real' => 0,
-            ];
-    
-            foreach ($bookings as $booking) {
-    
-                // Tính tổng các trường trong price
-                $summarizedData['Total_price'] += $booking->price->Total_price;
-                $summarizedData['Deposit_price'] += $booking->price->Deposit_price;
-                $summarizedData['servies_price'] += $booking->price->servies_price;
-                $summarizedData['revenue'] += $booking->price->Deposit_price;
-                $summarizedData['length'] += 1;
-                $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
-    
-                if ($booking->price->servies_price != 0) {
-                    $summarizedData['length_real'] += 1;
-                }
-            }
-    
-            $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
-                ->with(['price', 'services:id,Name'])
-                ->join('prices', 'bookings.price_id', '=', 'prices.id')
-                ->whereHas('price', function ($query) use ($date) {
-                    $query->whereDate('prices.updated_at', $date);
-                })
-                ->whereHas('services', function ($query) use ($serviceId) {
-                    $query->where('services.id', $serviceId); // Thay $serviceId bằng giá trị bạn muốn kiểm tra
-                })
-                ->orderBy('bookings.created_at', 'desc');
-
-
-
-                if ($showroom !== "null") {
-                    $bookingsQueryupdates->where('ShowroomID', $showroom);
-                }
-        
-        
-                $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
-                    ->get();
-    
-            foreach ($bookingupdates as $bookingupdate) {
-                $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
-                $summarizedData['revenue'] += $newRevenue;
-            }
-    
-            return $summarizedData;
+            // Tăng ngày hiện tại lên 1 ngày
+            $currentDate->modify('+1 day');
         }
 
-        
+
+        return $summarizedData;
+    }
+
+    public function getDataForDateAndServiceLocation($date, $serviceId, $showroom, $employee)
+    {
+
+        $cacheKey = 'data_' . $date . '_' . $serviceId;
+        $yourCacheDuration = 0;
+
+
+        $bookingsQuery = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.GetID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
+            ->with(['price', 'services:id', 'Get'])
+            ->whereDate('bookings.created_at', $date)
+            ->whereHas('services', function ($query) use ($serviceId) {
+                $query->where('services.id', $serviceId); // Thay $serviceId bằng giá trị bạn muốn kiểm tra
+            })
+            ->orderBy('created_at', 'desc');
+
+
+        if ($showroom !== "null") {
+            $bookingsQuery->where('ShowroomID', $showroom);
+        }
+
+
+        if ($employee !== "null") {
+            $bookingsQuery->where('source_id', $employee)->where('source_type', "App\Models\Employee");
+        }
+
+        $bookings = $bookingsQuery->orderBy('created_at', 'desc')
+            ->get();
+
+        // Tạo một mảng để tổng hợp dữ liệu cho ngày cụ thể và GetID
+        $summarizedData = [
+            'id' => "",
+            'Name' => "",
+            'Total_price' => 0,
+            'Deposit_price' => 0,
+            'servies_price' => 0,
+            'revenue' => 0,
+            'Remaining_price' => 0,
+            'length' => 0,
+            'length_real' => 0,
+        ];
+
+        foreach ($bookings as $booking) {
+
+            // Tính tổng các trường trong price
+            $summarizedData['Total_price'] += $booking->price->Total_price;
+            $summarizedData['Deposit_price'] += $booking->price->Deposit_price;
+            $summarizedData['servies_price'] += $booking->price->servies_price;
+            $summarizedData['revenue'] += $booking->price->Deposit_price;
+            $summarizedData['length'] += 1;
+            $summarizedData['Remaining_price'] += $booking->price->Remaining_price;
+
+            if ($booking->price->servies_price != 0) {
+                $summarizedData['length_real'] += 1;
+            }
+        }
+
+        $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
+            ->with(['price', 'services:id,Name'])
+            ->join('prices', 'bookings.price_id', '=', 'prices.id')
+            ->whereHas('price', function ($query) use ($date) {
+                $query->whereDate('prices.updated_at', $date);
+            })
+            ->whereHas('services', function ($query) use ($serviceId) {
+                $query->where('services.id', $serviceId); // Thay $serviceId bằng giá trị bạn muốn kiểm tra
+            })
+            ->orderBy('bookings.created_at', 'desc');
+
+
+
+        if ($showroom !== "null") {
+            $bookingsQueryupdates->where('ShowroomID', $showroom);
+        }
+
+
+        $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
+            ->get();
+
+        foreach ($bookingupdates as $bookingupdate) {
+            $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
+            $summarizedData['revenue'] += $newRevenue;
+        }
+
+        return $summarizedData;
+    }
+
+
 
     /*     getDataEmployee */
 
@@ -1131,7 +1129,7 @@ class APIBookingController extends Controller
     }
 
 
-        public function getDataForDateAndEmployeeLocation($date, $EmployeeID, $showroom)
+    public function getDataForDateAndEmployeeLocation($date, $EmployeeID, $showroom)
     {
 
         $cacheKey = 'data_' . $date . '_' . $EmployeeID;
@@ -1169,9 +1167,9 @@ class APIBookingController extends Controller
             'length_real' => 0,
             'Done_price_revenue' => 0,
             'upsale' => 0,
-                 'PartialDone' => 0,
+            'PartialDone' => 0,
             'Initial_revenue' => 0,
-                  'Refund_booking' => 0,
+            'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1193,7 +1191,7 @@ class APIBookingController extends Controller
         $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-             ->whereDate('bookings.date', $date)
+            ->whereDate('bookings.date', $date)
             ->where('source_id', '=', $EmployeeID)
             ->where('source_type', '=', "App\Models\Employee")
             ->orderBy('bookings.created_at', 'desc');
@@ -1223,8 +1221,7 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] += $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
-               
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
@@ -1401,9 +1398,9 @@ class APIBookingController extends Controller
     }
 
 
-    
-    
-        public function getDataForDateAndArtistLocation($date, $ArtistID, $showroom)
+
+
+    public function getDataForDateAndArtistLocation($date, $ArtistID, $showroom)
     {
 
 
@@ -1442,9 +1439,9 @@ class APIBookingController extends Controller
             'length_real' => 0,
             'Done_price_revenue' => 0,
             'upsale' => 0,
-                 'PartialDone' => 0,
+            'PartialDone' => 0,
             'Initial_revenue' => 0,
-                  'Refund_booking' => 0,
+            'Refund_booking' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1467,7 +1464,7 @@ class APIBookingController extends Controller
         $bookingsQueryUpdate = Booking::select('bookings.id', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-             ->whereDate('bookings.date', $date)
+            ->whereDate('bookings.date', $date)
             ->where('ArtistID', '=', $ArtistID)
             ->orderBy('bookings.created_at', 'desc');
 
@@ -1496,8 +1493,7 @@ class APIBookingController extends Controller
                 $summarizedData['Cancel_price'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
-                  $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
-               
+                $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
@@ -1507,9 +1503,9 @@ class APIBookingController extends Controller
         return $summarizedData;
     }
 
-    
-    
-        public function getDataShowroomEmployee($startDate, $endDate ,$employee,$title)
+
+
+    public function getDataShowroomEmployee($startDate, $endDate, $employee, $title)
     {
         // Lấy danh sách các ShowroomID (giả sử ShowroomID là một trường trong bảng Booking)
         $showroomIDs = Showroom::where('status', 'published')->get();
@@ -1527,7 +1523,7 @@ class APIBookingController extends Controller
 
             foreach ($showroomIDs as $showroomID) {
                 // Lấy dữ liệu cho ngày hiện tại và cho từng ShowroomID
-                $dataForDateAndShowroom = $this->getDataForDateAndShowroomEmployee($currentDateStr, $showroomID->id , $employee ,$title);
+                $dataForDateAndShowroom = $this->getDataForDateAndShowroomEmployee($currentDateStr, $showroomID->id, $employee, $title);
 
                 // Tổng hợp dữ liệu cho ngày hiện tại và ShowroomID vào mảng tổng hợp
                 if (!isset($summarizedData[$currentDateStr])) {
@@ -1547,7 +1543,7 @@ class APIBookingController extends Controller
         return $summarizedData;
     }
 
-    public function getDataForDateAndShowroomEmployee($date, $showroomID ,$employee , $title)
+    public function getDataForDateAndShowroomEmployee($date, $showroomID, $employee, $title)
     {
 
         $bookingsQuery = Booking::select('id', 'ArtistID', 'ShowroomID', 'status', 'action', 'source_data', 'source_name', 'source_id', 'source_type', 'created_at', 'updated_at', 'price_id')
@@ -1557,17 +1553,17 @@ class APIBookingController extends Controller
             ->orderBy('created_at', 'desc');
 
 
-          if ($employee !== "null" && $title ==="Saler") {
-              $bookingsQuery->where('source_id', $employee)->where('source_type', "App\Models\Employee");
-          }
-  
-          if ($employee !== "null" && $title ==="Artist") {
-              $bookingsQuery->where('ArtistID', $employee);
-          }
+        if ($employee !== "null" && $title === "Saler") {
+            $bookingsQuery->where('source_id', $employee)->where('source_type', "App\Models\Employee");
+        }
 
-  
-          $bookings = $bookingsQuery->orderBy('created_at', 'desc')
-              ->get();
+        if ($employee !== "null" && $title === "Artist") {
+            $bookingsQuery->where('ArtistID', $employee);
+        }
+
+
+        $bookings = $bookingsQuery->orderBy('created_at', 'desc')
+            ->get();
 
 
 
@@ -1614,9 +1610,9 @@ class APIBookingController extends Controller
                 $summarizedData['Refund'] += 1;
             } else if ($booking->status == "Partial Done") {
                 $summarizedData['Done'] += 1;
-            }  else if ($booking->status == "Waiting") {
+            } else if ($booking->status == "Waiting") {
                 $summarizedData['Waiting'] += 1;
-            } 
+            }
             if ($booking->price->servies_price != 0) {
                 $summarizedData['length_real'] += 1;
             }
@@ -1632,19 +1628,19 @@ class APIBookingController extends Controller
 
 
 
-          if ($employee !== "null" && $title ==="Saler") {
-              $bookingsQueryupdates->where('source_id', $employee)->where('source_type', "App\Models\Employee");
-          }
-  
-          if ($employee !== "null" && $title ==="Artist") {
-              $bookingsQueryupdates->where('ArtistID', $employee);
-          }
+        if ($employee !== "null" && $title === "Saler") {
+            $bookingsQueryupdates->where('source_id', $employee)->where('source_type', "App\Models\Employee");
+        }
+
+        if ($employee !== "null" && $title === "Artist") {
+            $bookingsQueryupdates->where('ArtistID', $employee);
+        }
 
 
-          $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
-          ->get();
-          
-          
+        $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
+            ->get();
+
+
 
         foreach ($bookingupdates as $bookingupdate) {
             $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
@@ -1660,7 +1656,6 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Refund") {
                 $summarizedData['Refund_price'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
                 $summarizedData['Refund_booking'] += $bookingupdate->price->servies_price;
-
             } else if ($bookingupdate->status == "Partial Done") {
                 $summarizedData['Done_price'] += $bookingupdate->price->Total_price;
                 $summarizedData['Done_price_revenue'] += $newRevenue;
@@ -1672,5 +1667,169 @@ class APIBookingController extends Controller
     }
 
 
+/*     Dashboard administration */
+
+    public function Dashboard($startDate, $endDate, $employee, $title)
+    {
+        // Lấy danh sách các ShowroomID (giả sử ShowroomID là một trường trong bảng Booking)
+        $showroomIDs = Showroom::where('status', 'published')->get();
+
+        // Tạo mảng để lưu trữ dữ liệu tổng hợp
+        $summarizedData = [];
+
+        // Chuyển $startDate và $endDate thành các đối tượng ngày
+        $currentDate = new \DateTime($startDate);
+        $endDate = new \DateTime($endDate);
+
+        while ($currentDate <= $endDate) {
+            // Lấy ngày hiện tại dưới dạng chuỗi "Y-m-d"
+            $currentDateStr = $currentDate->format('Y-m-d');
+
+            foreach ($showroomIDs as $showroomID) {
+                // Lấy dữ liệu cho ngày hiện tại và cho từng ShowroomID
+                $dataForDateAndShowroom = $this->getDashboardDataForDate($currentDateStr, $showroomID->id, $employee, $title, $startDate, $endDate);
+
+                // Tổng hợp dữ liệu cho ngày hiện tại và ShowroomID vào mảng tổng hợp
+                if (!isset($summarizedData[$currentDateStr])) {
+                    $summarizedData[$currentDateStr] = [];
+                }
+
+                $summarizedData[$currentDateStr][$showroomID->id] = $dataForDateAndShowroom;
+                $summarizedData[$currentDateStr][$showroomID->id]["Name"] = $showroomID->Name;
+                $summarizedData[$currentDateStr][$showroomID->id]["id"] = $showroomID->id;
+            }
+
+            // Tăng ngày hiện tại lên 1 ngày
+            $currentDate->modify('+1 day');
+        }
+
+
+        return $summarizedData;
+    }
+
+
+    public function getDashboardDataForDate($date, $showroomID, $employee, $title, $startDate, $endDate)
+    {
+
+        $bookingsQuery = Booking::select('id', 'ArtistID', 'ShowroomID', 'status', 'action', 'source_data', 'source_name', 'source_id', 'source_type', 'created_at', 'updated_at', 'price_id', 'date')
+            ->with(['price', 'services:id,Name', 'showroom'])
+            ->whereDate('created_at', $date)
+            ->where('ShowroomID', $showroomID)
+            ->orderBy('created_at', 'desc');
+
+
+        if ($employee !== "null" && $title === "Saler") {
+            $bookingsQuery->where('source_id', $employee)->where('source_type', "App\Models\Employee");
+        }
+
+        if ($employee !== "null" && $title === "Artist") {
+            $bookingsQuery->where('ArtistID', $employee);
+        }
+
+
+        $bookings = $bookingsQuery->orderBy('created_at', 'desc')
+            ->get();
+
+
+
+        // Tạo một mảng để tổng hợp dữ liệu cho ngày cụ thể và ShowroomID
+        $summarizedData = [
+            'id' => "",
+            'Name' => "",
+            'Booking_Value' => 0,
+            'Actual_B_Value' => 0,
+            'Initial_P_Revenue' => 0,
+            'Initial_Revenue' => 0,
+            'Refund' => 0,
+            'B_Refund_Value' => 0,
+            'Deposit' => 0,
+            'Remaining' => 0,
+            'Upsell' => 0,
+            'Cancel_Booking_Value' => 0,
+            'Total_Booking' => 0,
+            'percent_done' => 0,
+            'percent_waiting' => 0,
+            'percent_refund' => 0,
+            'percent_cancel' => 0,
+            'length_real' => 0,
+        ];
+
+        foreach ($bookings as $booking) {
+
+
+            // Tính tổng các trường trong price
+            $summarizedData['Booking_Value'] += $booking->price->servies_price;
+            $summarizedData['Initial_Revenue'] += $booking->price->Deposit_price;
+            $summarizedData['Deposit'] += $booking->price->Deposit_price;
+            $summarizedData['Remaining'] += $booking->price->Remaining_price;
+            $summarizedData['Actual_B_Value'] += $booking->price->servies_price ;
+            $summarizedData['Total_Booking'] += 1;
+
+            if ($booking->status == "Done") {
+                $summarizedData['percent_done'] += 1;
+            } else if ($booking->status == "Cancel") {
+                $summarizedData['percent_cancel'] += 1;
+                $summarizedData['Actual_B_Value'] -= $booking->price->servies_price ;
+            } else if ($booking->status == "Refund") {
+                $summarizedData['percent_refund'] += 1;
+                $summarizedData['Actual_B_Value'] -= $booking->price->servies_price ;
+            } else if ($booking->status == "Partial Done") {
+                $summarizedData['percent_done'] += 1;
+                $summarizedData['Actual_B_Value'] -= $booking->price->Remaining_price ;
+            } else if ($booking->status == "Waiting") {
+                $summarizedData['percent_waiting'] += 1;
+            }
+            if ($booking->price->servies_price != 0) {
+                $summarizedData['length_real'] += 1;
+            }
+        }
+
+
+        $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.date', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
+            ->with(['price', 'services:id,Name'])
+            ->join('prices', 'bookings.price_id', '=', 'prices.id')
+            ->whereHas('price', function ($query) use ($date) {
+                $query->whereDate('prices.updated_at', $date);
+            })
+            ->where('bookings.ShowroomID', '=', $showroomID)
+            ->orderBy('bookings.created_at', 'desc');
+
+        if ($employee !== "null" && $title === "Saler") {
+            $bookingsQueryupdates->where('source_id', $employee)->where('source_type', "App\Models\Employee");
+        }
+
+        if ($employee !== "null" && $title === "Artist") {
+            $bookingsQueryupdates->where('ArtistID', $employee);
+        }
+
+
+        $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
+            ->get();
+            
+        foreach ($bookingupdates as $bookingupdate) {
+
+            $summarizedData['Upsell'] += $bookingupdate->price->upsale;
+
+            $summarizedData['Initial_Revenue'] += $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
+            
+            if ($bookingupdate->created_at <= $startDate && $bookingupdate->status == "Waiting") {
+                $summarizedData['Initial_P_Revenue'] += $bookingupdate->price->Remaining_price;
+            }
+
+            if ($bookingupdate->status == "Done") {
+            } else if ($bookingupdate->status == "Cancel") {
+                $summarizedData['Cancel_Booking_Value'] += $bookingupdate->price->servies_price;
+           
+            
+            } else if ($bookingupdate->status == "Refund") {
+                $summarizedData['Refund'] +=  $bookingupdate->price->Deposit_price - $bookingupdate->price->Total_price;
+                $summarizedData['B_Refund_Value'] += $bookingupdate->price->servies_price;
+            } else if ($bookingupdate->status == "Partial Done") {
+            }
+        } 
+
+
+        return $summarizedData;
+    }
 }
 /* neww code */

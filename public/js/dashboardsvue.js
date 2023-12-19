@@ -52,23 +52,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       currentURL: "",
       apiData: [],
       apiData_id: [],
-      Total_price: "",
-      Deposit_price: "",
-      Remaining_price: "",
-      servies_price: "",
-      Revenue: "",
-      RevenueDone: "",
-      RevenueRefund: "",
-      RevenueTatol: "",
-      Done_price: "",
-      Cancel_price: "",
-      Refund_price: "",
-      Done_price_revenue: "",
-      PartialDone: 0,
-      Initial_revenue: 0,
-      Refund_booking: 0,
       kpi: "",
-      upsale: "",
+      /*       upsale: "", */
       adminId: null,
       employeeId: null,
       artistId: null,
@@ -85,7 +70,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       apiDataAritst: null,
       apiDataEmployee: null,
       apiDatakpi: []
-    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Done", 0), _defineProperty(_ref, "Waiting", 0), _defineProperty(_ref, "Cancel", 0), _defineProperty(_ref, "Refund", 0), _ref;
+    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _ref;
   },
   watch: {
     dateRange: {
@@ -109,7 +94,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     fetchapiData_id: function fetchapiData_id(start, end, selectedShowroom, employee, title) {
       var _this = this;
       if (this.artistId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataArtistLocation/".concat(start, "/").concat(end, "/").concat(selectedShowroom)).then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(this.artistId, "/").concat(this.title)).then(function (response) {
           _this.apiData_id = response.data;
           _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
@@ -117,12 +102,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           console.error("Error fetching API data:", error);
         });
       } else if (this.employeeId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataEmployeeLocation/".concat(start, "/").concat(end, "/").concat(selectedShowroom)).then(function (response) {
-          /*       this.apiData_id = Object.values(
-            this.totalByName(response.data)?.find(
-              (filler) => parseInt(filler.id) === parseInt(this.employeeId)
-            ) || {}
-          ); */
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(this.employeeId, "/").concat(this.title)).then(function (response) {
           _this.apiData_id = response.data;
           _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
@@ -130,7 +110,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           console.error("Error fetching API data:", error);
         });
       } else {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/getDataShowroomEmployee/".concat(start, "/").concat(end, "/").concat(employee, "/").concat(title)).then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(employee, "/").concat(title)).then(function (response) {
           _this.apiData_id = response.data;
           _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
@@ -193,60 +173,52 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     totalByName: function totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       var totals = {};
-      console.log(data);
+      console.log('Data in totalByName:', data);
+
+      // Your existing code...
+
       // Lặp qua các ngày trong dữ liệu của bạn
       for (var date in data) {
         var fillerDatas = data[date];
         for (var Id in fillerDatas) {
           var fillerData = fillerDatas[Id];
           var Name = fillerData.Name;
-          var id = fillerData.id;
-          var total_price = fillerData.Total_price;
-
           // Nếu tên dịch vụ chưa tồn tại trong totals, thì khởi tạo nó với giá trị ban đầu
           if (!totals[Name]) {
             totals[Name] = {
-              id: id,
-              Name: Name,
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0,
-              Done_price: 0,
-              Cancel_price: 0,
-              Refund_price: 0,
-              Remaining_price: 0,
-              length_real: 0,
-              Done_price_revenue: 0,
-              upsale: 0,
-              PartialDone: 0,
-              Initial_revenue: 0,
-              Refund_booking: 0,
-              Done: 0,
-              Waiting: 0,
-              Cancel: 0,
-              Refund: 0
+              Booking_Value: 0,
+              Actual_B_Value: 0,
+              Initial_P_Revenue: 0,
+              Initial_Revenue: 0,
+              Refund: 0,
+              B_Refund_Value: 0,
+              Deposit: 0,
+              Remaining: 0,
+              Upsell: 0,
+              Cancel_Booking_Value: 0,
+              Total_Booking: 0,
+              percent_done: 0,
+              percent_waiting: 0,
+              percent_refund: 0,
+              percent_cancel: 0
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
-          totals[Name].Total_price += total_price;
-          totals[Name].Deposit_price += fillerData.Deposit_price;
-          totals[Name].servies_price += fillerData.servies_price;
-          totals[Name].Revenue += fillerData.revenue;
-          totals[Name].Done_price += fillerData.Done_price;
-          totals[Name].Cancel_price += fillerData.Cancel_price;
-          totals[Name].Refund_price += fillerData.Refund_price;
-          totals[Name].Remaining_price += fillerData.Remaining_price;
-          totals[Name].length_real += fillerData.length_real;
-          totals[Name].Done_price_revenue += fillerData.Done_price_revenue;
-          totals[Name].upsale += fillerData.upsale;
-          totals[Name].PartialDone += fillerData.PartialDone;
-          totals[Name].Initial_revenue += fillerData.Initial_revenue;
-          totals[Name].Refund_booking += fillerData.Refund_booking;
-          totals[Name].Done += fillerData.Done;
-          totals[Name].Waiting += fillerData.Waiting;
-          totals[Name].Cancel += fillerData.Cancel;
+          totals[Name].Booking_Value += fillerData.Booking_Value;
+          totals[Name].Actual_B_Value += fillerData.Actual_B_Value;
+          totals[Name].Initial_P_Revenue += fillerData.Initial_P_Revenue;
+          totals[Name].Initial_Revenue += fillerData.Initial_Revenue;
           totals[Name].Refund += fillerData.Refund;
+          totals[Name].B_Refund_Value += fillerData.B_Refund_Value;
+          totals[Name].Deposit += fillerData.Deposit;
+          totals[Name].Remaining += fillerData.Remaining;
+          totals[Name].Upsell += fillerData.Upsell;
+          totals[Name].Cancel_Booking_Value += fillerData.Cancel_Booking_Value;
+          totals[Name].Total_Booking += fillerData.Total_Booking;
+          totals[Name].percent_done += fillerData.percent_done;
+          totals[Name].percent_waiting += fillerData.percent_waiting;
+          totals[Name].percent_refund += fillerData.percent_refund;
+          totals[Name].percent_cancel += fillerData.percent_cancel;
         }
       }
 
@@ -277,83 +249,44 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     },
     Price: function Price() {
       var _this7 = this;
-      this.Total_price = 0;
-      this.Deposit_price = 0;
-      this.servies_price = 0;
-      this.RevenueTatol = 0;
-      this.Cancel_price = 0;
-      this.Refund_price = 0;
-      this.Done_price = 0;
-      this.Remaining_price = 0;
-      this.numberOfBooks = 0;
-      this.Done_price_revenue = 0;
-      this.upsale = 0;
-      this.PartialDone = 0;
-      this.Initial_revenue = 0;
-      this.Refund_booking = 0;
-      this.Done = 0;
-      this.Waiting = 0;
-      this.Cancel = 0;
+      this.Booking_Value = 0;
+      this.Actual_B_Value = 0;
+      this.Initial_P_Revenue = 0;
+      this.Initial_Revenue = 0;
       this.Refund = 0;
-      if (this.adminId !== null) {
-        if (this.selectedShowroom !== null) {
-          this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
-        } else {
-          this.resuft = this.apiData_id;
-        }
-        var data = this.totalByName(this.resuft);
-        data.forEach(function (item) {
-          _this7.Total_price += parseFloat(item.servies_price);
-          _this7.Deposit_price += parseFloat(item.Deposit_price);
-          _this7.servies_price += parseFloat(item.servies_price);
-          _this7.RevenueTatol += parseFloat(item.Revenue);
-          _this7.Cancel_price += parseFloat(item.Cancel_price);
-          _this7.Refund_price += parseFloat(item.Refund_price);
-          _this7.Done_price += parseFloat(item.Done_price);
-          _this7.Remaining_price += parseFloat(item.Remaining_price);
-          _this7.numberOfBooks += parseFloat(item.length_real);
-          _this7.Done_price_revenue += parseFloat(item.Done_price_revenue);
-          _this7.upsale += parseFloat(item.upsale);
-          _this7.PartialDone += parseFloat(item.PartialDone);
-          _this7.Initial_revenue += parseFloat(item.Initial_revenue);
-          _this7.Refund_booking += parseFloat(item.Refund_booking);
-          _this7.Done += parseFloat(item.Done);
-          _this7.Waiting += parseFloat(item.Waiting);
-          _this7.Cancel += parseFloat(item.Cancel);
-          _this7.Refund += parseFloat(item.Refund);
-        });
+      this.B_Refund_Value = 0;
+      this.Deposit = 0;
+      this.Remaining = 0;
+      this.Upsell = 0;
+      this.Cancel_Booking_Value = 0;
+      this.Total_Booking = 0;
+      this.percent_done = 0;
+      this.percent_waiting = 0;
+      this.percent_refund = 0;
+      this.percent_cancel = 0;
+      if (this.selectedShowroom !== null) {
+        this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
       } else {
-        if (this.employeeId !== null) {
-          var _this$totalByName;
-          this.resuft = Object.values(((_this$totalByName = this.totalByName(this.apiData_id)) === null || _this$totalByName === void 0 ? void 0 : _this$totalByName.find(function (filler) {
-            return parseInt(filler.id) === parseInt(_this7.employeeId);
-          })) || {});
-        } else {
-          var _this$totalByName2;
-          this.resuft = Object.values(((_this$totalByName2 = this.totalByName(this.apiData_id)) === null || _this$totalByName2 === void 0 ? void 0 : _this$totalByName2.find(function (filler) {
-            return parseInt(filler.id) === parseInt(_this7.artistId);
-          })) || {});
-        }
-        var _data = this.resuft;
-        this.Total_price += parseFloat(_data[2]);
-        this.Deposit_price += parseFloat(_data[3]);
-        this.servies_price += parseFloat(_data[4]);
-        this.RevenueTatol += parseFloat(_data[5]);
-        this.Cancel_price += parseFloat(_data[7]);
-        this.Refund_price += parseFloat(_data[8]);
-        this.Done_price += parseFloat(_data[6]);
-        this.Remaining_price += parseFloat(_data[9]);
-        this.numberOfBooks = _data[10];
-        this.Done_price_revenue = _data[11];
-        this.upsale = _data[12];
-        this.PartialDone = _data[13];
-        this.Initial_revenue = _data[14];
-        this.Refund_booking = _data[15];
-        this.Done += _data[16];
-        this.Waiting += _data[17];
-        this.Cancel += _data[18];
-        this.Refund += _data[19];
+        this.resuft = this.apiData_id;
       }
+      var data = this.totalByName(this.resuft);
+      data.forEach(function (item) {
+        _this7.Booking_Value += parseFloat(item.Booking_Value);
+        _this7.Actual_B_Value += parseFloat(item.Actual_B_Value);
+        _this7.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
+        _this7.Initial_Revenue += parseFloat(item.Initial_Revenue);
+        _this7.Refund += parseFloat(item.Refund);
+        _this7.B_Refund_Value += parseFloat(item.B_Refund_Value);
+        _this7.Deposit += parseFloat(item.Deposit);
+        _this7.Remaining += parseFloat(item.Remaining);
+        _this7.Upsell += parseFloat(item.Upsell);
+        _this7.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
+        _this7.Total_Booking += parseFloat(item.Total_Booking);
+        _this7.percent_done += parseFloat(item.percent_done);
+        _this7.percent_waiting += parseFloat(item.percent_waiting);
+        _this7.percent_refund += parseFloat(item.percent_refund);
+        _this7.percent_cancel += parseFloat(item.percent_cancel);
+      });
 
       // Lặp qua danh sách dữ liệu và tính tổng
     },
@@ -367,6 +300,11 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.employeeId = this.$root.employeeId;
     if (this.employeeId !== null) {
       this.selectedEmployee = this.employeeId;
+      this.title = "Saler";
+    }
+    if (this.artistId !== null) {
+      this.selectedEmployee = this.artistId;
+      this.title = "Artist";
     }
     var currentDate = new Date();
     this.currentMonth = currentDate.getMonth() + 1;
@@ -474,7 +412,7 @@ var render = function render() {
       domProps: {
         value: showroom.id
       }
-    }, [_vm._v("\n            " + _vm._s(showroom.Name) + "\n          ")]);
+    }, [_vm._v("\n          " + _vm._s(showroom.Name) + "\n        ")]);
   })], 2)]), _vm._v(" "), this.artistId === null && this.employeeId === null ? _c("label", [_c("select", {
     directives: [{
       name: "model",
@@ -564,7 +502,7 @@ var render = function render() {
       domProps: {
         value: employee.id
       }
-    }, [_vm._v("\n            " + _vm._s(employee.name) + "\n          ")]);
+    }, [_vm._v("\n          " + _vm._s(employee.name) + "\n        ")]);
   })], 2)]) : _vm._e(), _vm._v(" "), this.title === "Artist" && this.artistId === null ? _c("label", [_c("select", {
     directives: [{
       name: "model",
@@ -608,7 +546,7 @@ var render = function render() {
       domProps: {
         value: Aritst.id
       }
-    }, [_vm._v("\n            " + _vm._s(Aritst.name) + "\n          ")]);
+    }, [_vm._v("\n          " + _vm._s(Aritst.name) + "\n        ")]);
   })], 2)]) : _vm._e()]), _vm._v(" "), _c("div", [_c("ul", {
     staticClass: "main__body__box-info admin_dashboard",
     "class": {
@@ -616,42 +554,44 @@ var render = function render() {
     }
   }, [_c("li", {
     staticClass: "Price Total_Booking_Price"
-  }, [_c("h6", [_vm._v("Initial Booking Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Booking Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Booking_Value)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Total_Booking_Price"
-  }, [_c("h6", [_vm._v("Actual Booking Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.servies_price - this.PartialDone - this.Cancel_price - this.Refund_booking)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Actual B.Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Actual_B_Value)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Revenue_price"
-  }, [_c("h6", [_vm._v("Initial Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Initial_revenue))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Total Revenue(est)")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Initial_P_Revenue + this.Initial_Revenue))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Revenue_price"
-  }, [_c("h6", [_vm._v("Actual Revenue ")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.RevenueTatol) + " ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Initial P. Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Initial_P_Revenue))])]), _vm._v(" "), _c("li", {
+    staticClass: "Price Revenue_price"
+  }, [_c("h6", [_vm._v("Initial Revenue")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(this.Initial_Revenue))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Refund_price"
-  }, [_c("h6", [_vm._v("Refund")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_price)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Refund")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Refund_price"
-  }, [_c("h6", [_vm._v("Booking Refund Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Refund_booking)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Booking Refund Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.B_Refund_Value)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Deposit_price"
-  }, [_c("h6", [_vm._v("Deposit")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Deposit_price)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Deposit")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Deposit)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Remaining_price"
-  }, [_c("h6", [_vm._v("Remaining")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Remaining_price)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Remaining")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Remaining)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Refund_price"
-  }, [_c("h6", [_vm._v("Upsell ( Artist )")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.upsale)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Upsell ( Artist )")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Upsell)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Cancel_price"
-  }, [_c("h6", [_vm._v("Cancel Booking Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Cancel_price)))])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("Cancel Booking Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Cancel_Booking_Value)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Cancel_price"
-  }, [_c("h6", [_vm._v("Total Booking")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(parseFloat(this.numberOfBooks)))])])]), _vm._v(" "), _c("ul", {
+  }, [_c("h6", [_vm._v("Total Booking")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(parseFloat(this.Total_Booking)))])])]), _vm._v(" "), _c("ul", {
     staticClass: "main__body__box-info admin_dashboard",
     "class": {
       fade: _vm.isTransitioning
     }
   }, [_c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Done")]), _vm._v(" "), _c("h4", [_vm._v("\n            " + _vm._s(_vm.calculatePercentage(this.Done, this.numberOfBooks)) + " % \n          ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Done")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_done, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v(" %Waiting ")]), _vm._v(" "), _c("h4", [_vm._v("\n            " + _vm._s(_vm.calculatePercentage(this.Waiting, this.numberOfBooks)) + " %\n          ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Waiting")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_waiting, this.Total_Booking)) + "\n          %\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v(" %Cancel")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.Cancel, this.numberOfBooks)) + " % \n          ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Cancel")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_cancel, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v(" %Refund")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.Refund, this.numberOfBooks)) + " %\n          ")])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null && this.kpi != undefined ? _c("li", {
+  }, [_c("h6", [_vm._v("%Refund")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_refund, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null && this.kpi != undefined ? _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("Total KPI | % Completed")]), _vm._v(" "), _c("h4", [_vm._v("\n            $" + _vm._s(this.servies_price) + " / $" + _vm._s(parseFloat(this.kpi)) + " Completed\n            " + _vm._s(_vm.calculatePercentage(this.servies_price, parseFloat(this.kpi))) + " %\n          ")])]) : _vm._e()])])]);
+  }, [_c("h6", [_vm._v("Total KPI | % Completed")]), _vm._v(" "), _c("h4", [_vm._v("\n          $" + _vm._s(this.Booking_Value) + " / $" + _vm._s(parseFloat(this.kpi)) + " Completed\n          " + _vm._s(_vm.calculatePercentage(this.Booking_Value, parseFloat(this.kpi))) + "\n          %\n        ")])]) : _vm._e()])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -2771,7 +2711,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 250px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n#main .main__body .main__body__box-info li {\n    flex: 1 0 160px;\n    background: var(--white);\n    padding: 0.75rem 0.75rem;\n    border-radius: 5px;\n    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n#main .main__body .main__body__box-info li h6,h4{\n  font-size: 14px;\n}\n.persen{\n    flex: 1 0 25%;\n    padding: 0.75rem 0.75rem;\n    border-radius: 5px;\n    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.Persen{\n  flex: 1 0 260px;\n    display: flex;\n    grid-gap: 1.25rem;\n    flex-wrap: wrap;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 250px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n#main .main__body .main__body__box-info li {\n  flex: 1 0 160px;\n  background: var(--white);\n  padding: 0.75rem 0.75rem;\n  border-radius: 5px;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n#main .main__body .main__body__box-info li h6,\nh4 {\n  font-size: 14px;\n}\n.persen {\n  flex: 1 0 25%;\n  padding: 0.75rem 0.75rem;\n  border-radius: 5px;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.Persen {\n  flex: 1 0 260px;\n  display: flex;\n  grid-gap: 1.25rem;\n  flex-wrap: wrap;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

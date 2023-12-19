@@ -96,108 +96,106 @@
         :class="{ fade: isTransitioning }"
       >
         <li class="Price Total_Booking_Price">
-          <h6>Initial Booking Value</h6>
-          <h4>${{ parseFloat(this.servies_price) }}</h4>
+          <h6>Booking Value</h6>
+          <h4>${{ parseFloat(this.Booking_Value) }}</h4>
         </li>
         <li class="Price Total_Booking_Price">
-    
-          <h6>Actual Booking Value</h6>
-          <h4>${{ parseFloat(this.servies_price - this.PartialDone -this.Cancel_price - this.Refund_booking) }}</h4>
+          <h6>Actual B.Value</h6>
+          <h4>${{ parseFloat(this.Actual_B_Value) }}</h4>
         </li>
         <li class="Price Revenue_price">
-   
+          <h6>Total Revenue(est)</h6>
+          <h4>${{ this.Initial_P_Revenue + this.Initial_Revenue }}</h4>
+        </li>
+        <li class="Price Revenue_price">
+          <h6>Initial P. Revenue</h6>
+          <h4>${{ this.Initial_P_Revenue }}</h4>
+        </li>
+        <li class="Price Revenue_price">
           <h6>Initial Revenue</h6>
-          <h4>${{ this.Initial_revenue }}</h4>
-        </li>
-        <li class="Price Revenue_price">
-          <h6>Actual Revenue </h6>
-          <h4>${{ this.RevenueTatol }} </h4>
+          <h4>${{ this.Initial_Revenue }}</h4>
         </li>
 
-<!--         <li class="Price Done_price">
-          <img :src="'/assets/images/Done.png'" alt="" srcset="" />
-          <h6>Done Revenue</h6>
-          <h4>${{ parseFloat(this.Done_price_revenue) }}</h4>
-        </li>
-
-        <li class="Price Done_price">
-          <img :src="'/assets/images/Done.png'" alt="" srcset="" />
-          <h6>Done Booking Price </h6>
-          <h4>${{ parseFloat(this.Done_price) }}</h4>
-        </li>
- -->
-    
-         <li class="Price Refund_price">
-
+        <li class="Price Refund_price">
           <h6>Refund</h6>
-          <h4>${{ parseFloat(this.Refund_price) }}</h4>
+          <h4>${{ parseFloat(this.Refund) }}</h4>
         </li>
 
         <li class="Price Refund_price">
           <h6>Booking Refund Value</h6>
-          <h4>${{ parseFloat(this.Refund_booking) }}</h4>
+          <h4>${{ parseFloat(this.B_Refund_Value) }}</h4>
         </li>
-
 
         <li class="Price Deposit_price">
           <h6>Deposit</h6>
-          <h4>${{ parseFloat(this.Deposit_price) }}</h4>
+          <h4>${{ parseFloat(this.Deposit) }}</h4>
         </li>
         <li class="Price Remaining_price">
           <h6>Remaining</h6>
-          <h4>${{ parseFloat(this.Remaining_price) }}</h4>
+          <h4>${{ parseFloat(this.Remaining) }}</h4>
         </li>
         <li class="Price Refund_price">
           <h6>Upsell ( Artist )</h6>
-          <h4>${{ parseFloat(this.upsale) }}</h4>
+          <h4>${{ parseFloat(this.Upsell) }}</h4>
         </li>
-  
 
         <li class="Price Cancel_price">
           <h6>Cancel Booking Value</h6>
-          <h4>${{ parseFloat(this.Cancel_price) }}</h4>
+          <h4>${{ parseFloat(this.Cancel_Booking_Value) }}</h4>
         </li>
 
         <li class="Price Cancel_price">
           <h6>Total Booking</h6>
-          <h4>{{ parseFloat(this.numberOfBooks) }}</h4>
+          <h4>{{ parseFloat(this.Total_Booking) }}</h4>
         </li>
-        </ul>
+      </ul>
 
-        <ul
+      <ul
         class="main__body__box-info admin_dashboard"
         :class="{ fade: isTransitioning }"
       >
-
         <li class="Price">
           <h6>%Done</h6>
-            <h4>
-            {{ calculatePercentage(this.Done ,this.numberOfBooks ) }} % 
+          <h4>
+            {{ calculatePercentage(this.percent_done, this.Total_Booking) }} %
           </h4>
         </li>
         <li class="Price">
-          <h6> %Waiting </h6>
-            <h4>
-            {{ calculatePercentage(this.Waiting ,this.numberOfBooks ) }} %
+          <h6>%Waiting</h6>
+          <h4>
+            {{
+              calculatePercentage(this.percent_waiting, this.Total_Booking)
+            }}
+            %
           </h4>
         </li>
         <li class="Price">
-          <h6> %Cancel</h6>
-            <h4>
-          {{ calculatePercentage(this.Cancel ,this.numberOfBooks ) }} % 
+          <h6>%Cancel</h6>
+          <h4>
+            {{ calculatePercentage(this.percent_cancel, this.Total_Booking) }} %
           </h4>
         </li>
         <li class="Price">
-          <h6> %Refund</h6>
-            <h4>
-          {{ calculatePercentage(this.Refund ,this.numberOfBooks ) }} %
+          <h6>%Refund</h6>
+          <h4>
+            {{ calculatePercentage(this.percent_refund, this.Total_Booking) }} %
           </h4>
         </li>
-        <li class="Price" v-if="this.title !== 'Artist' && this.employeeId === null && this.kpi != undefined">
+        <li
+          class="Price"
+          v-if="
+            this.title !== 'Artist' &&
+            this.employeeId === null &&
+            this.kpi != undefined
+          "
+        >
           <h6>Total KPI | % Completed</h6>
           <h4>
-            ${{ this.servies_price }} / ${{parseFloat(this.kpi)}} Completed
-            {{ calculatePercentage(this.servies_price , parseFloat(this.kpi) ) }} %
+            ${{ this.Booking_Value }} / ${{ parseFloat(this.kpi) }} Completed
+            {{
+              calculatePercentage(this.Booking_Value, parseFloat(this.kpi))
+            }}
+            %
           </h4>
         </li>
       </ul>
@@ -209,7 +207,7 @@
 import DateRangePicker from "vue2-daterange-picker";
 import "vue2-daterange-picker/dist/vue2-daterange-picker.css"; // Import the CSS
 import axios from "axios";
-import moment from "moment";
+import moment, { locale } from "moment";
 
 export default {
   components: {
@@ -235,23 +233,8 @@ export default {
       currentURL: "",
       apiData: [],
       apiData_id: [],
-      Total_price: "",
-      Deposit_price: "",
-      Remaining_price: "",
-      servies_price: "",
-      Revenue: "",
-      RevenueDone: "",
-      RevenueRefund: "",
-      RevenueTatol: "",
-      Done_price: "",
-      Cancel_price: "",
-      Refund_price: "",
-      Done_price_revenue: "",
-      PartialDone: 0,
-      Initial_revenue: 0,
-      Refund_booking:0,
       kpi: "",
-      upsale: "",
+      /*       upsale: "", */
       adminId: null,
       employeeId: null,
       artistId: null,
@@ -270,10 +253,22 @@ export default {
       apiDatakpi: [],
       kpi: 0,
       resuft: [],
-      Done: 0,
-       Waiting: 0,
-       Cancel : 0,
-       Refund : 0,
+      Booking_Value: 0,
+      Actual_B_Value: 0,
+      Total_Revenue: 0,
+      Initial_P_Revenue: 0,
+      Initial_Revenue: 0,
+      Refund: 0,
+      B_Refund_Value: 0,
+      Deposit: 0,
+      Remaining: 0,
+      Upsell: 0,
+      Cancel_Booking_Value: 0,
+      Total_Booking: 0,
+      percent_done: 0,
+      percent_waiting: 0,
+      percent_refund: 0,
+      percent_cancel: 0,
     };
   },
 
@@ -309,7 +304,7 @@ export default {
     fetchapiData_id(start, end, selectedShowroom, employee, title) {
       if (this.artistId !== null) {
         axios
-          .get(`/api/getDataArtistLocation/${start}/${end}/${selectedShowroom}`)
+          .get(`/api/Dashboard/${start}/${end}/${this.artistId}/${this.title}`)
           .then((response) => {
             this.apiData_id = response.data;
             this.fetchKpis(
@@ -324,15 +319,8 @@ export default {
           });
       } else if (this.employeeId !== null) {
         axios
-          .get(
-            `/api/getDataEmployeeLocation/${start}/${end}/${selectedShowroom}`
-          )
+          .get(`/api/Dashboard/${start}/${end}/${this.employeeId}/${this.title}`)
           .then((response) => {
-            /*       this.apiData_id = Object.values(
-              this.totalByName(response.data)?.find(
-                (filler) => parseInt(filler.id) === parseInt(this.employeeId)
-              ) || {}
-            ); */
             this.apiData_id = response.data;
             this.fetchKpis(
               this.selectedShowroom,
@@ -346,9 +334,7 @@ export default {
           });
       } else {
         axios
-          .get(
-            `/api/getDataShowroomEmployee/${start}/${end}/${employee}/${title}`
-          )
+          .get(`/api/Dashboard/${start}/${end}/${employee}/${title}`)
           .then((response) => {
             this.apiData_id = response.data;
             this.fetchKpis(
@@ -403,29 +389,28 @@ export default {
         .then((response) => {
           this.apiDatakpi = response.data;
           this.kpi = this.apiDatakpi.number_of_kpi;
-       
+
           if (this.kpi == undefined) {
             this.kpi = 0;
           }
-
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
         });
     },
 
-    calculatePercentage(revenueTotal , kpiValue) {
+    calculatePercentage(revenueTotal, kpiValue) {
       // Check if both values are valid numbers and kpiValue is not zero
       if (!isNaN(revenueTotal) && !isNaN(kpiValue) && kpiValue !== 0) {
         const percentage = (revenueTotal / kpiValue) * 100;
         return percentage.toFixed(2); // Adjust the number of decimal places as needed
       } else if (isNaN(revenueTotal) || isNaN(kpiValue)) {
         // Handle the case where one or both values are not valid numbers
-   
+
         return "N/A";
       } else {
         // Handle the case where kpiValue is zero
-  
+
         return "Infinity";
       }
     },
@@ -433,60 +418,52 @@ export default {
     totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       const totals = {};
-console.log(data);
+      console.log('Data in totalByName:', data);
+  
+  // Your existing code...
+
       // Lặp qua các ngày trong dữ liệu của bạn
       for (const date in data) {
         const fillerDatas = data[date];
         for (const Id in fillerDatas) {
           const fillerData = fillerDatas[Id];
           const Name = fillerData.Name;
-          const id = fillerData.id;
-          const total_price = fillerData.Total_price;
-
           // Nếu tên dịch vụ chưa tồn tại trong totals, thì khởi tạo nó với giá trị ban đầu
           if (!totals[Name]) {
             totals[Name] = {
-              id: id,
-              Name: Name,
-              Total_price: 0,
-              Deposit_price: 0,
-              servies_price: 0,
-              Revenue: 0,
-              Done_price: 0,
-              Cancel_price: 0,
-              Refund_price: 0,
-              Remaining_price: 0,
-              length_real: 0,
-              Done_price_revenue: 0,
-              upsale: 0,
-              PartialDone: 0,
-              Initial_revenue:0,
-              Refund_booking:0,
-              Done: 0,
-              Waiting: 0,
-              Cancel : 0,
-              Refund : 0,
+              Booking_Value: 0,
+              Actual_B_Value: 0,
+              Initial_P_Revenue: 0,
+              Initial_Revenue: 0,
+              Refund: 0,
+              B_Refund_Value: 0,
+              Deposit: 0,
+              Remaining: 0,
+              Upsell: 0,
+              Cancel_Booking_Value: 0,
+              Total_Booking: 0,
+              percent_done: 0,
+              percent_waiting: 0,
+              percent_refund: 0,
+              percent_cancel: 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
-          totals[Name].Total_price += total_price;
-          totals[Name].Deposit_price += fillerData.Deposit_price;
-          totals[Name].servies_price += fillerData.servies_price;
-          totals[Name].Revenue += fillerData.revenue;
-          totals[Name].Done_price += fillerData.Done_price;
-          totals[Name].Cancel_price += fillerData.Cancel_price;
-          totals[Name].Refund_price += fillerData.Refund_price;
-          totals[Name].Remaining_price += fillerData.Remaining_price;
-          totals[Name].length_real += fillerData.length_real;
-          totals[Name].Done_price_revenue += fillerData.Done_price_revenue;
-          totals[Name].upsale += fillerData.upsale;
-          totals[Name].PartialDone += fillerData.PartialDone;
-          totals[Name].Initial_revenue += fillerData.Initial_revenue;
-          totals[Name].Refund_booking += fillerData.Refund_booking;
-          totals[Name].Done +=fillerData.Done;
-          totals[Name].Waiting +=fillerData.Waiting;
-          totals[Name].Cancel  +=fillerData.Cancel;
-          totals[Name].Refund  +=fillerData.Refund;
+          totals[Name].Booking_Value += fillerData.Booking_Value;
+          totals[Name].Actual_B_Value += fillerData.Actual_B_Value;
+          totals[Name].Initial_P_Revenue += fillerData.Initial_P_Revenue;
+          totals[Name].Initial_Revenue += fillerData.Initial_Revenue;
+          totals[Name].Refund += fillerData.Refund;
+          totals[Name].B_Refund_Value += fillerData.B_Refund_Value;
+          totals[Name].Deposit += fillerData.Deposit;
+          totals[Name].Remaining += fillerData.Remaining;
+          totals[Name].Upsell += fillerData.Upsell;
+          totals[Name].Cancel_Booking_Value += fillerData.Cancel_Booking_Value;
+          totals[Name].Total_Booking += fillerData.Total_Booking;
+          totals[Name].percent_done += fillerData.percent_done;
+          totals[Name].percent_waiting += fillerData.percent_waiting;
+          totals[Name].percent_refund += fillerData.percent_refund;
+          totals[Name].percent_cancel += fillerData.percent_cancel;
         }
       }
 
@@ -528,92 +505,52 @@ console.log(data);
     },
 
     Price() {
-      this.Total_price = 0;
-      this.Deposit_price = 0;
-      this.servies_price = 0;
-      this.RevenueTatol = 0;
-      this.Cancel_price = 0;
-      this.Refund_price = 0;
-      this.Done_price = 0;
-      this.Remaining_price = 0;
-      this.numberOfBooks = 0;
-      this.Done_price_revenue = 0;
-      this.upsale = 0;
-      this.PartialDone =0;
-      this.Initial_revenue = 0;
-      this.Refund_booking = 0;
-      this.Done = 0 ;
-      this.Waiting = 0;
-      this.Cancel = 0;
+      this.Booking_Value = 0;
+      this.Actual_B_Value = 0;
+      this.Initial_P_Revenue = 0;
+      this.Initial_Revenue = 0;
       this.Refund = 0;
-
-
-      if (this.adminId !== null) {
+      this.B_Refund_Value = 0;
+      this.Deposit = 0;
+      this.Remaining = 0;
+      this.Upsell = 0;
+      this.Cancel_Booking_Value = 0;
+      this.Total_Booking = 0;
+      this.percent_done = 0;
+      this.percent_waiting = 0;
+      this.percent_refund = 0;
+      this.percent_cancel = 0;
+      
         if (this.selectedShowroom !== null) {
           this.resuft = this.filterDataById(
             this.apiData_id,
             this.selectedShowroom
           );
+
         } else {
           this.resuft = this.apiData_id;
         }
 
         const data = this.totalByName(this.resuft);
-        data.forEach((item) => {
-          this.Total_price += parseFloat(item.servies_price);
-          this.Deposit_price += parseFloat(item.Deposit_price);
-          this.servies_price += parseFloat(item.servies_price);
-          this.RevenueTatol += parseFloat(item.Revenue);
-          this.Cancel_price += parseFloat(item.Cancel_price);
-          this.Refund_price += parseFloat(item.Refund_price);
-          this.Done_price += parseFloat(item.Done_price);
-          this.Remaining_price += parseFloat(item.Remaining_price);
-          this.numberOfBooks += parseFloat(item.length_real);
-          this.Done_price_revenue += parseFloat(item.Done_price_revenue);
-          this.upsale += parseFloat(item.upsale);
-          this.PartialDone += parseFloat(item.PartialDone);
-          this.Initial_revenue += parseFloat(item.Initial_revenue);
-          this.Refund_booking += parseFloat(item.Refund_booking);
-          this.Done += parseFloat(item.Done);
-      this.Waiting += parseFloat(item.Waiting);
-      this.Cancel += parseFloat(item.Cancel);
-      this.Refund += parseFloat(item.Refund);
-        });
-      } else {
-        if (this.employeeId !== null) {
-          this.resuft = Object.values(
-            this.totalByName(this.apiData_id)?.find(
-              (filler) => parseInt(filler.id) === parseInt(this.employeeId)
-            ) || {}
-          );
-        } else {
-          this.resuft = Object.values(
-            this.totalByName(this.apiData_id)?.find(
-              (filler) => parseInt(filler.id) === parseInt(this.artistId)
-            ) || {}
-          );
-        }
 
-        const data = this.resuft;
-        this.Total_price += parseFloat(data[2]);
-        this.Deposit_price += parseFloat(data[3]);
-        this.servies_price += parseFloat(data[4]);
-        this.RevenueTatol += parseFloat(data[5]);
-        this.Cancel_price += parseFloat(data[7]);
-        this.Refund_price += parseFloat(data[8]);
-        this.Done_price += parseFloat(data[6]);
-        this.Remaining_price += parseFloat(data[9]);
-        this.numberOfBooks = data[10];
-        this.Done_price_revenue = data[11];
-        this.upsale = data[12];
-        this.PartialDone = data[13];
-        this.Initial_revenue = data[14];
-        this.Refund_booking = data[15];
-        this.Done += data[16];
-        this.Waiting += data[17];
-        this.Cancel += data[18];
-        this.Refund += data[19];
-      }
+        data.forEach((item) => {
+          this.Booking_Value += parseFloat(item.Booking_Value);
+          this.Actual_B_Value += parseFloat(item.Actual_B_Value);
+          this.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
+          this.Initial_Revenue += parseFloat(item.Initial_Revenue);
+          this.Refund += parseFloat(item.Refund);
+          this.B_Refund_Value += parseFloat(item.B_Refund_Value);
+          this.Deposit += parseFloat(item.Deposit);
+          this.Remaining += parseFloat(item.Remaining);
+          this.Upsell += parseFloat(item.Upsell);
+          this.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
+          this.Total_Booking += parseFloat(item.Total_Booking);
+          this.percent_done += parseFloat(item.percent_done);
+          this.percent_waiting += parseFloat(item.percent_waiting);
+          this.percent_refund += parseFloat(item.percent_refund);
+          this.percent_cancel += parseFloat(item.percent_cancel);
+        });
+      
 
       // Lặp qua danh sách dữ liệu và tính tổng
     },
@@ -632,6 +569,12 @@ console.log(data);
 
     if (this.employeeId !== null) {
       this.selectedEmployee = this.employeeId;
+      this.title = "Saler"
+    }
+
+    if (this.artistId !== null) {
+      this.selectedEmployee = this.artistId;
+      this.title = "Artist"
     }
 
     const currentDate = new Date();
@@ -848,26 +791,27 @@ console.log(data);
 }
 
 #main .main__body .main__body__box-info li {
-    flex: 1 0 160px;
-    background: var(--white);
-    padding: 0.75rem 0.75rem;
-    border-radius: 5px;
-    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+  flex: 1 0 160px;
+  background: var(--white);
+  padding: 0.75rem 0.75rem;
+  border-radius: 5px;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
 }
 
-#main .main__body .main__body__box-info li h6,h4{
+#main .main__body .main__body__box-info li h6,
+h4 {
   font-size: 14px;
 }
-.persen{
-    flex: 1 0 25%;
-    padding: 0.75rem 0.75rem;
-    border-radius: 5px;
-    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+.persen {
+  flex: 1 0 25%;
+  padding: 0.75rem 0.75rem;
+  border-radius: 5px;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
 }
-.Persen{
+.Persen {
   flex: 1 0 260px;
-    display: flex;
-    grid-gap: 1.25rem;
-    flex-wrap: wrap;
+  display: flex;
+  grid-gap: 1.25rem;
+  flex-wrap: wrap;
 }
 </style>

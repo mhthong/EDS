@@ -55,6 +55,7 @@
                                         <h5 class="m-0">Add New Booking </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
+
                                     </div>
 
                                     <form action="{{ route('bookings.store') }}" method="post">
@@ -81,6 +82,8 @@
                                         <h5 class="m-0">Add New Booking </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
+
+
                                     </div>
 
                                     <form action="{{ route('employee.bookings.store') }}" method="post">
@@ -125,6 +128,9 @@
                                             id="download-all-data">Download
                                             All
                                             Data</button>
+
+
+
                                     </div>
 
                                 </div>
@@ -172,9 +178,11 @@
                                         <th data-field="Source">Source</th>
                                         <th data-field="Price">Price</th>
                                         <th data-field="Deposit">Deposit</th>
-                                        <th data-field="PaymentType">First Payment</th>
+                                        <th data-field="PaymentType">1st P.</th>
+                                        <th data-field="1stCheck">1st Check</th>
                                         <th data-field="Remaining">Remaining</th>
-                                        <th data-field="PaymentTypeSecond">Second Payment</th>
+                                        <th data-field="PaymentTypeSecond">2nd P.</th>
+                                        <th data-field="2ndCheck">2nd Check</th>
                                         <th data-field="TotalRevenue">Total Revenue</th>
                                         <th data-field="ClientInfo">Client Info</th>
                                         <th data-field="Note">Note</th>
@@ -198,9 +206,11 @@
                                         <th data-field="Source">Source</th>
                                         <th data-field="Price"></th>
                                         <th data-field="Deposit"></th>
-                                        <th data-field="PaymentType">First Payment</th>
+                                        <th data-field="PaymentType">1st P.</th>
+                                        <th data-field="1stCheck"></th>
                                         <th data-field="Remaining"></th>
-                                        <th data-field="PaymentTypeSecond">Second Payment</th>
+                                        <th data-field="PaymentTypeSecond">2nd P.</th>
+                                        <th data-field="2ndCheck"></th>
                                         <th data-field="TotalRevenue"></th>
                                         <th data-field="ClientInfo"></th>
                                         <th data-field="Note"></th>
@@ -229,8 +239,8 @@
                                     @foreach ($bookings as $booking)
                                         <tr>
                                             <td><a class="a" href="{{ route($route, ['id' => $booking->id]) }}">
-                                                {{ $booking->id }}
-                                            </a></td>
+                                                    {{ $booking->id }}
+                                                </a></td>
                                             <td>{{ $booking->source_name }}</td>
                                             <td>{{ $booking->showroom->Name }}</td>
                                             <td>{{ $booking->artist->name }}</td>
@@ -247,39 +257,58 @@
                                             <td>{{ $booking->price ? intval($booking->price->servies_price) : 'N/A' }}</td>
                                             <td>{{ $booking->price ? intval($booking->price->Deposit_price) : 'N/A' }}</td>
                                             <td>{{ $booking->payment ? $booking->payment->payment_type : 'N/A' }}</td>
-                                            <td>{{ $booking->price ? intval($booking->price->Remaining_price) : 'N/A' }}</td>
-                                            <td>{{ $booking->payment ? $booking->payment->payment_type_remainding : 'N/A' }}</td>
+                                            <td>
+                                                <label class="switch bookingcheck" id = "{{ $booking->payment->id }}">
+
+                                                    <input type="hidden" id="1stchecknone_{{ $booking->payment->id }}"
+                                                        name="1stcheck" value="0"
+                                                        {{ $booking->payment->{'1stcheck'} == 1 ? '' : 'checked' }}>
+                                                    <input type="checkbox" name="1stcheck"
+                                                        id="1stcheck_{{ $booking->payment->id }}"
+                                                        class="onoffswitch-checkbox" id="is_featured" value="1"
+                                                        {{ $booking->payment->{'1stcheck'} == 1 ? 'checked' : '' }}>
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </td>
+                                            <td>{{ $booking->price ? intval($booking->price->Remaining_price) : 'N/A' }}
+                                            </td>
+                                            <td>{{ $booking->payment ? $booking->payment->payment_type_remainding : 'N/A' }}
+                                            </td>
+                                            <td>
+                                                <label class="switch bookingcheck" id = "{{ $booking->payment->id }}">
+                                                    <input type="hidden" name="2ndcheck" value="0"
+                                                        {{ $booking->payment->{'2ndcheck'} == 1 ? '' : 'checked' }}>
+                                                    <input type="checkbox" name="2ndcheck" class="onoffswitch-checkbox"
+                                                        id="is_featured" value="1"
+                                                        {{ $booking->payment->{'2ndcheck'} == 1 ? 'checked' : '' }}>
+                                                    <span class="slider"></span>
+                                                </label>
+                                            </td>
                                             <td>{{ $booking->price ? intval($booking->price->Total_price) : 'N/A' }}</td>
                                             <td><span>
-                                                Email: {{ $booking->get->Email }} , Address:
-                                                {{ $booking->get->Address }} , Phone: {{ $booking->get->Phone }}
-                                            </span>
+                                                    Email: {{ $booking->get->Email }} , Address:
+                                                    {{ $booking->get->Address }} , Phone: {{ $booking->get->Phone }}
+                                                </span>
                                             </td>
                                             <td><span> {{ $booking->get->Note }} </span></td>
                                             <td><span>
                                                     <textarea name="" id="" cols="30" rows="2">{{ $booking->get->Source }}</textarea>
                                                 </span></td>
-                    
+
                                             <td>{{ $booking->content }}</td>
                                             <td>{{ $booking->action }}</td>
-                                
+
 
                                             <td
                                                 style="display: flex;
                                             gap: 10px;">
-                                                <a class="a" href="{{ route($route, ['id' => $booking->id]) }}">
-                                                    <button class="custom-btn btn-16" type="button"
-                                                        style="margin: 11px;">
-                                                        Edit
-                                                    </button>
-                                                </a>
                                                 <div class ="delete">
                                                     <form method="POST"
                                                         action="{{ route('bookings.delete', $booking->id) }}">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="custom-btn btn-danger"
-                                                            style="color:rgb(255, 116, 116); margin: 11px;">Delete
+                                                        <button type="submit" class="custom-btn btn-danger custom"
+                                                            style="color:rgb(255, 116, 116); margin: 11px;"><i class="fa-solid fa-trash" style="color: #ff1f1f;"></i>
                                                         </button>
                                                     </form>
                                                 </div>
@@ -321,6 +350,7 @@
                     type: 'date',
                     targets: [7, 8]
                 }],
+                stateSave: true, // Bật tính năng lưu trạng thái
                 columns: [{
                         width: '20px'
                     },
@@ -390,14 +420,19 @@
                     {
                         width: '100px'
                     },
+                    {
+                        width: '100px'
+                    },
+                    {
+                        width: '100px'
+                    },
                 ],
 
 
             });
 
 
-
-            table.columns([1, 2,3 ,8,10,13,15,21]).every(function() {
+            table.columns([1, 2, 3, 8, 10, 13, 16, 23]).every(function() {
                 const column = this;
                 const select = $('<select><option value=""></option></select>')
                     .appendTo($(column.header()).empty())
@@ -407,9 +442,13 @@
                     });
 
                 column.data().unique().sort().each(function(d, j) {
-                    select.append('<option value="' + d + '">' + d + '</option>');
+                    const isSelected = column.search() === '^' + $.fn.dataTable.util.escapeRegex(
+                        d) + '$';
+                    select.append('<option value="' + d + '"' + (isSelected ? ' selected' : '') +
+                        '>' + d + '</option>');
                 });
             });
+
 
 
             $('#date-range-filter').daterangepicker({
@@ -474,21 +513,82 @@
             }
 
             // Sử dụng hàm generateFileName để tạo tên tệp
+
             $('#download-visible-data').on('click', function() {
+                const fileName = generateFileName('visible_data', 'xlsx');
+
+                // Lưu trạng thái DataTable trước khi làm mới
+                table.state.save();
+
+                // Làm mới DataTable
+                table.rows().invalidate().draw();
+
+                // Lấy thêm thông tin về bộ lọc hiện tại (nếu có)
+                // Lấy thêm thông tin về bộ lọc hiện tại (nếu có)
+                const dateRangePicker = $('#date-range-filter').data('daterangepicker');
+                const startDate = dateRangePicker.startDate.format('YYYY-MM-DD');
+                const endDate = dateRangePicker.endDate.format('YYYY-MM-DD');
+                const datecolumns = $('#datecolumns').val();
+
+                console.log(startDate, endDate, datecolumns);
+
+                // Áp dụng bộ lọc tùy chỉnh nếu có
+                if (startDate && endDate && datecolumns) {
+                    applyFilter(startDate, endDate, datecolumns);
+                }
+
+                // Tải dữ liệu từ DataTable (đã được lọc)
                 const visibleData = table.rows({
                     search: 'applied'
                 }).data().toArray();
-                const fileName = generateFileName('visible_data', 'xlsx');
+
+                console.log(fileName, visibleData);
+
+                // Tải dữ liệu xuống tệp Excel
                 downloadDataToExcel(visibleData, fileName);
             });
 
+
             $('#download-all-data').on('click', function() {
+                // Lấy lại dữ liệu từ bảng
                 const allData = table.rows().data().toArray();
+
+                // Tạo tên tệp và tải về
                 const fileName = generateFileName('all_data', 'xlsx');
-                downloadDataToExcel(allData, fileName);
+                // Lưu trạng thái DataTable trước khi làm mới
+                table.state.save();
+
+                // Làm mới DataTable
+                table.rows().invalidate().draw();
+
+                // Tải dữ liệu từ DataTable
+                const visibleData = table.rows({
+                    search: 'applied'
+                }).data().toArray();
+
+                console.log(fileName, visibleData);
+
+                // Tải dữ liệu xuống tệp Excel
+                downloadDataToExcel(visibleData, fileName);
             });
 
 
+
+
+            $('#clear-filters').on('click', function() {
+                // Clear filters for all columns
+                table.columns().search('').draw();
+
+                // Clear individual column filters
+                table.columns([1, 2, 3, 8, 10, 13, 16, 23]).every(function() {
+                    this.search('').draw();
+                });
+
+                // Clear selected options in column filters
+                table.columns([1, 2, 3, 8, 10, 13, 16, 23]).every(function() {
+                    $(this.header()).find('select').val('').trigger('change');
+                });
+            });
 
             // Hàm để loại bỏ thẻ HTML từ chuỗi
             function stripHtmlTags(html) {
@@ -498,18 +598,42 @@
             }
 
 
+            function checkCheckboxStatus(html) {
+                // Tạo một div ẩn và thiết lập innerHTML bằng mã HTML được cung cấp
+                var container = document.createElement('div');
+                container.innerHTML = html;
+
+                // Tìm input type="hidden"
+                var hiddenInput = container.querySelector('input[type="hidden"]');
+
+                // Tìm input type="checkbox"
+                var checkboxInput = container.querySelector('input[type="checkbox"]');
+
+                // Kiểm tra trạng thái và trả về kết quả
+                if (hiddenInput && hiddenInput.hasAttribute('checked')) {
+                    return false;
+                } else if (checkboxInput && checkboxInput.checked) {
+                    return true;
+                }
+
+                // Nếu không tìm thấy input nào có checked, trả về null
+                return null;
+            }
+
+            // Sử dụng function và in kết quả
+
             function downloadDataToExcel(data, filename) {
                 const excelData = [];
-                /*    excelData.push([
-                       'Location', 'Artist', 'Client Name', 'Client Info', 'Services',
-                       'Deposit', 'Payment Type', 'Status', 'Note',
-                       'Remaining', 'Total Revenue', 'Staff'
-                   ]); */
+
                 excelData.push([
-                    'No', 'Staff', 'Location', 'Artist', 'Client Name', 'Booking Date Create', 'Treatment Date',
-                    'Treatment Time','Status', 'Services','Source',  'Price', 'Deposit','First Payment', 'Remaining','Second Payment', 'Total Revenue','Client Info', 'Note',
-                     'Source_Data',  'Status Note','Approved'
+                    'No', 'Staff', 'Location', 'Artist', 'Client Name', 'Booking Date Create',
+                    'Treatment Date',
+                    'Treatment Time', 'Status', 'Services', 'Source', 'Price', 'Deposit', 'First Payment',
+                    '1st Check', 'Remaining', 'Second Payment', '2nd Check', 'Total Revenue', 'Client Info',
+                    'Note',
+                    'Source_Data', 'Status Note', 'Approved'
                 ]);
+                console.log(data);
                 data.forEach(row => {
                     // Extract values for specific columns
                     const rowData = [
@@ -527,30 +651,120 @@
                         stripHtmlTags(row[11]), // Client Info
                         stripHtmlTags(row[12]), // Client Info
                         stripHtmlTags(row[13]), // Client Info
-                        stripHtmlTags(row[14]), // Client Info
-                        stripHtmlTags(row[15]), // Client Info
+                        checkCheckboxStatus(row[14]),
+                        stripHtmlTags(row[15]), // Client Info4
                         stripHtmlTags(row[16]), // Client Info
-                        stripHtmlTags(row[17]), // Client Info
+                        checkCheckboxStatus(row[17]),
                         stripHtmlTags(row[18]), // Client Info
                         stripHtmlTags(row[19]), // Client Info
                         stripHtmlTags(row[20]), // Client Info
                         stripHtmlTags(row[21]), // Client Info
+                        stripHtmlTags(row[22]), // Client Info
+                        stripHtmlTags(row[23]), // Client Info
                     ];
 
+                    console.log(rowData);
                     // Push rowData into excelData
                     excelData.push(rowData);
 
                 });
-
                 const wb = XLSX.utils.book_new();
                 const ws = XLSX.utils.aoa_to_sheet(excelData);
                 XLSX.utils.book_append_sheet(wb, ws, 'Data');
                 XLSX.writeFile(wb, filename);
             }
-
+            table.columns([10, 14, 17, 19, 20, 21, 22, 23, 24]).visible(false);
+            @if (Auth::user() instanceof \App\Models\Admin && Auth::user()->manage_supers == 0)
+                // Set column visibility for specific user roles
+                table.columns([10, 14, 17, 19, 20, 21, 22, 23, 24]).visible(true);
+            @elseif(Auth::user() instanceof \App\Models\Admin && Auth::user()->manage_supers == 1 )
+                table.columns([14, 17]).visible(true);
+            @elseif(Auth::user() instanceof \App\Models\Admin && Auth::user()->manage_supers == 2 )
+                table.columns([13,16,21]).visible(true);
+            @elseif(Auth::user() instanceof \App\Models\Admin && Auth::user()->manage_supers == 3 )
+            table.columns([10, 19, 20, 21, 22, 23]).visible(true);
+            @elseif(Auth::user() instanceof \App\Models\Admin && Auth::user()->manage_supers == 4 )
+                table.columns([13,16,20,23]).visible(true);
+            @else
+             // Set column visibility for specific user roles
+             table.columns([10, 19, 20, 21, 22, 23]).visible(true);
+            @endif
 
         });
+
     </script>
+
+
+
+    <script>
+        $('.bookingcheck input[type="checkbox"]').click(function() {
+            var $checkbox = $(this);
+            var $bookingcheck = $checkbox.closest('.bookingcheck');
+            var isChecked = $checkbox.prop('checked') ? 1 : 0;
+
+            // Uncheck other checkboxes within the same container
+            $bookingcheck.find('input[type="checkbox"]').not($checkbox).prop('checked', false);
+
+            // Make AJAX request to update database
+            updatePaymentStatus($bookingcheck, isChecked);
+        });
+
+        $('.bookingcheck input[type="hidden"]').click(function() {
+            var $bookingcheck = $(this).closest('.bookingcheck');
+            var checkboxInput = $bookingcheck.find('input[type="checkbox"]');
+
+            // Toggle the checked attribute between hidden and checkbox inputs
+            checkboxInput.prop('checked', !checkboxInput.prop('checked'));
+
+            // Make AJAX request to update database
+            updatePaymentStatus($bookingcheck, checkboxInput.prop('checked') ? 1 : 0);
+        });
+
+        // Function to update payment status via AJAX
+        function updatePaymentStatus($bookingcheck, isChecked) {
+            var paymentId = $bookingcheck.attr('id');
+            var checkboxName = $bookingcheck.find('input[type="checkbox"]').attr('name');
+
+            $.ajax({
+                url: '/admin/update-payment-status/' + paymentId,
+                type: 'POST',
+                data: {
+                    checkboxName: checkboxName,
+                    isChecked: isChecked,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                    // Update the div content after a successful update
+                    $('#paymentStatus').text(response.paymentStatus);
+                    if (isChecked == 0) {
+                        // Uncheck all checkboxes
+                        $bookingcheck.find('input').removeAttr('checked');
+
+                        // Check the hidden input
+                        var hiddenInput = $bookingcheck.find('input[type="hidden"]');
+                        hiddenInput.attr('checked', 'checked');
+                        console.log('Hidden Input Checked:', hiddenInput);
+                    } else {
+                        // Uncheck all checkboxes
+                        $bookingcheck.find('input').removeAttr('checked');
+
+                        // Check the checkbox input
+                        var checkboxInput = $bookingcheck.find('input[type="checkbox"]');
+                        checkboxInput.attr('checked', 'checked');
+                        console.log('Checkbox Input Checked:', checkboxInput);
+                    }
+
+
+                    // Log removal of checked attributes
+
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
+        }
+    </script>
+
 
     <Style>
         /* Thêm các cài đặt khác tùy theo ý muốn */
@@ -648,6 +862,14 @@
             text-overflow: ellipsis;
             max-width: 150px;
             /* Đặt giới hạn 50 ký tự, tùy chỉnh theo nhu cầu */
+        }
+
+        .bookingcheck .slider::after {
+            left: 0;
+        }
+        .custom{
+            width: auto;
+            padding: 0px 10px;
         }
     </Style>
 @endsection

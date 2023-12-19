@@ -12,8 +12,8 @@ class Payment extends Model
 {
     use HasFactory, LogsActivity;
 
-    protected static $logAttributes = ['PricelD', 'BookingID', 'date', 'payment_type','payment_deposit','payment_type_remainding','payment_remainding'];
-    protected $fillable = ['PricelD', 'BookingID', 'date', 'payment_type','payment_deposit','payment_type_remainding','payment_remainding'];
+    protected static $logAttributes = ['PricelD', 'BookingID', 'date', 'payment_type','payment_deposit','1stcheck','payment_type_remainding','payment_remainding','2ndcheck'];
+    protected $fillable = ['PricelD', 'BookingID', 'date', 'payment_type','payment_deposit','1stcheck','payment_type_remainding','payment_remainding','2ndcheck'];
 
     public function price()
     {

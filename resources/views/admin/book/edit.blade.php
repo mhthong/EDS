@@ -164,11 +164,11 @@
                                                 @if ($imagePath)
                                                     <div
                                                         style="    flex: 1 0 130px;
-    background: var(--white);
-    padding: 1.25rem 1.5rem;
-    border-radius: 5px;
-    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
-}">
+                                                            background: var(--white);
+                                                            padding: 1.25rem 1.5rem;
+                                                            border-radius: 5px;
+                                                            box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+                                                        }">
                                                         <img src="{{ $imagePath }}" alt="Ảnh"></div>
                                                 @endif
                                             @endforeach
@@ -203,11 +203,11 @@
                                                 @if ($imagePath)
                                                     <div
                                                         style="    flex: 1 0 130px;
-    background: var(--white);
-    padding: 1.25rem 1.5rem;
-    border-radius: 5px;
-    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
-}">
+                                                            background: var(--white);
+                                                            padding: 1.25rem 1.5rem;
+                                                            border-radius: 5px;
+                                                            box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+                                                        }">
                                                         <img src="{{ $imagePath }}" alt="Ảnh"></div>
                                                 @endif
                                             @endforeach
@@ -241,11 +241,11 @@
                                                 @if ($imagePath)
                                                     <div
                                                         style="    flex: 1 0 130px;
-    background: var(--white);
-    padding: 1.25rem 1.5rem;
-    border-radius: 5px;
-    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
-}">
+                                                        background: var(--white);
+                                                        padding: 1.25rem 1.5rem;
+                                                        border-radius: 5px;
+                                                        box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+                                                    }">
                                                         <img src="{{ $imagePath }}" alt="Ảnh"></div>
                                                 @endif
                                             @endforeach
@@ -281,12 +281,12 @@
                                                 @if ($imagePath)
                                                     <div
                                                         style="    flex: 1 0 130px;
-    background: var(--white);
-    padding: 1.25rem 1.5rem;
-    border-radius: 5px;
-    box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
-}">
-                                                        <img src="{{ $imagePath }}" alt="Ảnh"></div>
+                                                        background: var(--white);
+                                                        padding: 1.25rem 1.5rem;
+                                                        border-radius: 5px;
+                                                        box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+                                                    }">
+                                               <img src="{{ $imagePath }}" alt="Ảnh"></div>
                                                 @endif
                                             @endforeach
                                             </div>
