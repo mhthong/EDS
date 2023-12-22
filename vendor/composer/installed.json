@@ -10426,17 +10426,17 @@
         },
         {
             "name": "unisharp/laravel-filemanager",
-            "version": "v2.6.0",
-            "version_normalized": "2.6.0.0",
+            "version": "v2.6.3",
+            "version_normalized": "2.6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/UniSharp/laravel-filemanager.git",
-                "reference": "c3c6ded95fd0cd6ec8a0f53af953a6273b9348c1"
+                "reference": "3bf53c9aae09d11235304e9305cd16bc27e6424a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/UniSharp/laravel-filemanager/zipball/c3c6ded95fd0cd6ec8a0f53af953a6273b9348c1",
-                "reference": "c3c6ded95fd0cd6ec8a0f53af953a6273b9348c1",
+                "url": "https://api.github.com/repos/UniSharp/laravel-filemanager/zipball/3bf53c9aae09d11235304e9305cd16bc27e6424a",
+                "reference": "3bf53c9aae09d11235304e9305cd16bc27e6424a",
                 "shasum": ""
             },
             "require": {
@@ -10459,7 +10459,7 @@
                 "ext-gd": "to use GD library based image processing.",
                 "ext-imagick": "to use Imagick based image processing."
             },
-            "time": "2023-03-01T02:04:57+00:00",
+            "time": "2023-11-22T08:33:54+00:00",
             "type": "library",
             "extra": {
                 "laravel": {
@@ -10489,7 +10489,7 @@
                     "email": "opensource@unisharp.com"
                 }
             ],
-            "description": "A file upload/editor intended for use with Laravel 5 to 6 and CKEditor / TinyMCE",
+            "description": "A file upload/editor intended for use with Laravel 5 to 10 and CKEditor / TinyMCE",
             "keywords": [
                 "CKEditor",
                 "file",
@@ -10502,7 +10502,7 @@
             ],
             "support": {
                 "issues": "https://github.com/UniSharp/laravel-filemanager/issues",
-                "source": "https://github.com/UniSharp/laravel-filemanager/tree/v2.6.0"
+                "source": "https://github.com/UniSharp/laravel-filemanager/tree/v2.6.3"
             },
             "install-path": "../unisharp/laravel-filemanager"
         },

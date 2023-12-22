@@ -59,13 +59,22 @@
           </a>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle hello" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-sort fa-fw"></i>{{ trans('laravel-filemanager::lfm.nav-sort') }}
           </a>
           <div class="dropdown-menu dropdown-menu-right border-0"></div>
         </li>
       </ul>
     </div>
+
+    <div id="search-form">
+      <input type="text" id="search-input" placeholder="Search by name">
+      <button id="search-button" class="btn btn-primary">Search</button>
+    </div>
+    
+    {{-- Add this section above or below the part where you list items --}}
+</div>
+  
   </nav>
 
   <nav class="bg-light fixed-bottom border-top d-none" id="actions">
@@ -77,7 +86,7 @@
   <div class="d-flex flex-row">
     <div id="tree"></div>
 
-    <div id="main">
+    <div id="main" class="test">
       <div id="alerts"></div>
 
       <nav aria-label="breadcrumb" class="d-none d-lg-block" id="breadcrumbs">
@@ -288,5 +297,6 @@
       maxFilesize: ({{ $helper->maxUploadSize() }} / 1000)
     }
   </script>
+
 </body>
 </html>

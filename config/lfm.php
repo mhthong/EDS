@@ -28,8 +28,6 @@ return [
 
     'allow_private_folder'     => true,
 
-    'url_prefix' => 'laravel-filemanager',
-
     // Flexible way to customize client folders accessibility
     // If you want to customize client folders, publish tag="lfm_handler"
     // Then you can rewrite userField function in App\Handler\ConfigHandler class
@@ -46,7 +44,7 @@ return [
     | Folder Names
     |--------------------------------------------------------------------------
      */
- 
+
     'folder_categories'        => [
         'file'  => [
             'folder_name'  => 'files',
@@ -60,7 +58,6 @@ return [
                 'image/pjpeg',
                 'image/png',
                 'image/gif',
-                'image/webp',
                 'application/pdf',
                 'text/plain',
             ],
@@ -78,41 +75,6 @@ return [
                 'image/png',
                 'image/gif',
             ],
-        ],
-
-        'artists_file' => [
-            'folder_name' => 'artists_files', 
-            'startup_view' => 'list',
-            'max_size'     => 50000, // size in KB
-            'thumb' => true,
-            'thumb_width' => 80,
-            'thumb_height' => 80,
-            'valid_mime'   => [
-                'image/jpeg',
-                'image/pjpeg',
-                'image/png',
-                'image/gif',
-                'image/webp',
-                'application/pdf',
-                'text/plain',
-            ],
-            // Tên thư mục cho artistss
-            // ... Các cài đặt khác
-        ],
-        'artists_image' => [
-            'folder_name' => 'artists_images',
-            'startup_view' => 'grid',
-            'max_size'     => 50000, // size in KB
-            'thumb' => true,
-            'thumb_width' => 80,
-            'thumb_height' => 80,
-            'valid_mime'   => [
-                'image/jpeg',
-                'image/pjpeg',
-                'image/png',
-                'image/gif',
-            ], // Tên thư mục cho artists
-            // ... Các cài đặt khác
         ],
     ],
 
@@ -154,6 +116,9 @@ return [
     // mimetypes of executables to prevent from uploading
     'disallowed_mimetypes' => ['text/x-php', 'text/html', 'text/plain'],
 
+    // extensions of executables to prevent from uploading
+    'disallowed_extensions' => ['php', 'html'],
+
     // Item Columns
     'item_columns' => ['name', 'url', 'time', 'icon', 'is_file', 'is_image', 'thumb_url'],
 
@@ -164,7 +129,7 @@ return [
      */
 
     // If true, image thumbnails would be created during upload
-    'should_create_thumbnails' => false,
+    'should_create_thumbnails' => true,
 
     'thumb_folder_name'        => 'thumbs',
 

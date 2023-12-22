@@ -6,11 +6,13 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Unisharp\Laravelfilemanager\Events\ImageWasUploaded;
+use App\Providers\UploadListener;
 
 class EventServiceProvider extends ServiceProvider
 {
     /**
-     * The event listener mappings for the application.
+     * The event listener mappings for the application.p
      *
      * @var array
      */
@@ -18,7 +20,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        ImageWasUploaded::class => [
+            UploadListener::class,
+        ],
+        
     ];
+
 
     /**
      * Register any events for your application.

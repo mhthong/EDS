@@ -20,15 +20,31 @@ class ItemsController extends LfmController
         $currentPage = self::getCurrentPageFromRequest();
 
         $perPage = $this->helper->getPaginationPerPage();
-        $items = array_merge($this->lfm->folders(), $this->lfm->files());
+        $searchTerm = request()->get('search', ''); // Get the search term from the request
+
+
+        $currentUrl = url()->current();
+
+    /*     $searchTerm = "b5b6b02600bdf27bc3535dbe00fc25"; */
+        // Get all items (folders and files)
+        $allItems = array_merge($this->lfm->folders(), $this->lfm->files());
+
+        // Filter items based on the search term
+        $filteredItems = array_filter($allItems, function ($item) use ($searchTerm) {
+            // Assuming $item->name is the property representing the name of the item
+            return str_contains(strtolower($item->name), strtolower($searchTerm));
+        });
+
+        // Paginate the filtered items
+        $paginatedItems = array_slice($filteredItems, ($currentPage - 1) * $perPage, $perPage);
 
         return [
             'items' => array_map(function ($item) {
                 return $item->fill()->attributes;
-            }, array_slice($items, ($currentPage - 1) * $perPage, $perPage)),
+            }, $paginatedItems),
             'paginator' => [
                 'current_page' => $currentPage,
-                'total' => count($items),
+                'total' => count($filteredItems),
                 'per_page' => $perPage,
             ],
             'display' => $this->helper->getDisplayMode(),
