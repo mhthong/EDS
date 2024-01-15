@@ -14,6 +14,8 @@ use App\Models\Booking;
 use App\Models\Employee;
 use App\Models\Get;
 use App\Models\WorkingHour;
+use Carbon\Carbon;
+
 
 class APIBookingController extends Controller
 {
@@ -151,9 +153,58 @@ class APIBookingController extends Controller
         return response()->json($bookings);
     }
 
+    public function getAllDataTable($startDate, $endDate, $type)
+    {
+        $startDate = Carbon::parse($startDate)->startOfDay();
+        $endDate = Carbon::parse($endDate)->endOfDay();
+
+        $bookings = Booking::select('bookings.id', 'bookings.date' , 'bookings.GetID' , 'bookings.time' , 'bookings.time_end', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action','bookings.content', 'bookings.source_name', 'bookings.created_at', 'bookings.price_id')
+         ->with([
+            'artist' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'showroom' => function ($query) {
+                $query->select('id', 'Name');
+            },
+            'get' => function ($query) {
+                $query->select('id', 'Name','Source','Phone','Email','Address','source_data','Note');
+            },
+            'services' => function ($query) {
+                $query->select('Name'); // Select only the 'Name' column
+            },
+            'price' => function ($query) {
+                $query->select('id','Total_price','Deposit_price','Remaining_price','servies_price');
+            },
+            'payment' => function ($query) {
+                $query->select('id','BookingID', 'payment_type', '1stcheck', 'payment_type_remainding', '2ndcheck');
+            }
+        ])
+       ->where(function ($query) use ($startDate, $endDate, $type) {
+
+            // Check either 'bookings.date' or 'bookings.created_at' based on $type
+            if ($type == 'null') {
+                $query->whereBetween('bookings.date', [$startDate, $endDate])
+                    ->orWhereBetween('bookings.created_at', [$startDate, $endDate]);
+            } elseif ($type == 1) {
+                $query->whereBetween('bookings.created_at', [$startDate, $endDate]);
+            } elseif ($type == 2) {
+                $query->whereBetween('bookings.date', [$startDate, $endDate]);
+            }
+        })
+        ->orderBy('created_at', 'desc') // Sắp xếp theo thứ tự mới nhất dựa trên created_at
+            ->get();
+        
+        return response()->json($bookings); 
+        
+    } 
+
+
+
+
     public function bookingsData($id)
     {
 
+        
 
         $bookingsData = Booking::with([
             'artist' => function ($query) {
@@ -161,7 +212,10 @@ class APIBookingController extends Controller
             },
             'showroom',
             'get',
-            'services',
+            'services' => function ($query) {
+                // Include additional information about groupService
+                $query->with('groupService:id,name');
+            },
             'price',
             'payment'
         ])->where('id', '=', $id)->get();
@@ -1641,7 +1695,6 @@ class APIBookingController extends Controller
             ->get();
 
 
-
         foreach ($bookingupdates as $bookingupdate) {
             $newRevenue = $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
             $summarizedData['revenue'] += $newRevenue;
@@ -1788,9 +1841,7 @@ class APIBookingController extends Controller
         $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.date', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
-            ->whereHas('price', function ($query) use ($date) {
-                $query->whereDate('prices.updated_at', $date);
-            })
+            ->whereDate('bookings.date', $date)
             ->where('bookings.ShowroomID', '=', $showroomID)
             ->orderBy('bookings.created_at', 'desc');
 
@@ -1810,7 +1861,10 @@ class APIBookingController extends Controller
 
             $summarizedData['Upsell'] += $bookingupdate->price->upsale;
 
-            $summarizedData['Initial_Revenue'] += $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
+            if($bookingupdate->status == "Done"){
+                $summarizedData['Initial_Revenue'] += $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;
+            }
+           
             
             if ($bookingupdate->created_at <= $startDate && $bookingupdate->status == "Waiting") {
                 $summarizedData['Initial_P_Revenue'] += $bookingupdate->price->Remaining_price;

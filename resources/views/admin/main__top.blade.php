@@ -25,6 +25,7 @@
     </ul>
 </div>
 <ul class="main__top__menu">
+    
 {{--     <li class="search">
         <a href="#">
             <i class="ph-magnifying-glass"></i>

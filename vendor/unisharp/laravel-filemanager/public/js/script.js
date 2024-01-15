@@ -552,6 +552,8 @@ function loading(show_loading) {
   $('#loading').toggleClass('d-none', !show_loading);
 }
 
+
+
 function createFolder(folder_name) {
   performLfmRequest('newfolder', {name: folder_name})
     .done(refreshFoldersAndItems);

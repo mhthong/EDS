@@ -14,6 +14,7 @@ use App\Models\Booking;
 use App\Models\Employee;
 use App\Models\Get;
 use App\Models\Admin;
+use App\Models\Price;
 use App\Models\WorkingHour;
 use App\Models\Kpi;
 use App\Models\Source;
@@ -212,7 +213,7 @@ class ApiPostController extends Controller
                 return false;
             }
         } else {
-            return true;
+            return false;
         }
     }
 
@@ -252,6 +253,35 @@ class ApiPostController extends Controller
             }
 
             $kpi->delete();
+
+            return response()->json(['message' => 'Data deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Error deleting data', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function deleteBooking($id)
+    {
+ 
+        try {
+            $booking = Booking::find($id);
+
+            if (!$booking) {
+                return response()->json(['message' => 'Booking not found'], 404);
+            }
+
+            $booking->deleteBooking();
+
+            // Now you can safely delete the price
+            $price = Price::find($booking->price_id);
+
+            $Get = Get::find($booking->GetID);
+
+            $price->delete();
+
+            $Get->delete();
+
 
             return response()->json(['message' => 'Data deleted successfully']);
         } catch (\Exception $e) {

@@ -70,16 +70,13 @@ __webpack_require__.r(__webpack_exports__);
       htmlData: "",
       groupServiceStates: {},
       isLabelActive: false,
-      isIconActive: false
+      isIconActive: false,
+      ImageDeposit: "0",
+      adminId: null,
+      artistId: null,
+      employeeId: null
       /*   selectedOption: "option1", */
     };
-  },
-
-  watch: {
-    selectedArtist: function selectedArtist(newValue, oldValue) {
-      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
-      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
-    }
   },
 
   computed: {
@@ -143,6 +140,13 @@ __webpack_require__.r(__webpack_exports__);
       this.selectedArtistlevel === undefined;
     }
   },
+  watch: {
+    selectedArtist: function selectedArtist(newValue, oldValue) {
+      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
+      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
+    }
+  },
+
   methods: {
     formatTime: function formatTime(time) {
       // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
@@ -163,6 +167,20 @@ __webpack_require__.r(__webpack_exports__);
         _this5.showrooms = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
+      });
+    },
+    ImageDepositSelected: function ImageDepositSelected() {
+      if (this.employeeId !== null) {
+        var route_prefix = "/employee/laravel-filemanager";
+      }
+      if (this.artistId !== null) {
+        var route_prefix = "/artists/laravel-filemanager";
+      }
+      if (this.adminId !== null) {
+        var route_prefix = "/admin/laravel-filemanager";
+      }
+      $("#image_manager").filemanager("image", {
+        prefix: route_prefix
       });
     },
     fetchGroupServices: function fetchGroupServices() {
@@ -225,7 +243,7 @@ __webpack_require__.r(__webpack_exports__);
 
         // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
       })["catch"](function (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       });
       this.filteredDays = this.apiData.filter(function (schedule) {
         return schedule.date === _this10.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this10.selectedArtist);
@@ -403,6 +421,7 @@ __webpack_require__.r(__webpack_exports__);
         if (this.selectedShowroom) {
           this.fetchShowroomSchedule();
           this.step = "showroomschedule";
+          this.ImageDeposit = this.$refs.inputDeposit.value;
         }
       } else if (this.step === "showroomschedule") {
         this.fetchArtists();
@@ -422,7 +441,8 @@ __webpack_require__.r(__webpack_exports__);
             workingHour: this.startTime,
             WorkingHour_end_time: this.endTime,
             Status: this.selectedStatus,
-            PaymentType: this.selectedPaymentType
+            PaymentType: this.selectedPaymentType,
+            ImageDeposit: this.ImageDeposit
           };
           this.bookingData = JSON.stringify(bookingDatavalue);
         }
@@ -480,6 +500,9 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   mounted: function mounted() {
+    this.adminId = this.$root.adminId;
+    this.artistId = this.$root.artistId;
+    this.employeeId = this.$root.employeeId;
     this.fetchShowrooms();
     this.fetchServices();
     this.fetchArtistlevels();
@@ -1080,7 +1103,51 @@ var render = function render() {
     }
   }), _vm._v(" "), _vm.inputError ? _c("p", {
     staticClass: "error-message"
-  }, [_vm._v("\n          Value exceeds limit min 100.\n        ")]) : _vm._e()]), _vm._v(" "), _c("li", {
+  }, [_vm._v("\n          Value exceeds limit min 100.\n        ")]) : _vm._e()]), _vm._v(" "), _c("li", [_c("div", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Payment Deposit Image")]), _vm._v(" "), _c("div", {
+    staticClass: "form-group mt-4"
+  }, [_c("div", {
+    staticClass: "holder image-category",
+    attrs: {
+      id: "image-category",
+      value: ""
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "-space-y-px mb-4"
+  }, [_c("div", {
+    staticClass: "containerInput input-group"
+  }, [_c("div", {
+    staticClass: "main__body__box-info"
+  }), _vm._v(" "), _c("span", {
+    staticClass: "input-group-btn"
+  }, [_c("a", {
+    staticClass: "radio-header radio-text",
+    attrs: {
+      id: "image_manager",
+      "data-input": "Deposit",
+      "data-preview": "image-category"
+    },
+    on: {
+      click: _vm.ImageDepositSelected
+    }
+  }, [_c("button", {
+    staticClass: "custom-btn btn-16",
+    attrs: {
+      type: "button"
+    }
+  }, [_vm._v("\n                  Choose\n                ")])])]), _vm._v(" "), _c("input", {
+    ref: "inputDeposit",
+    staticClass: "form-control",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "Deposit",
+      type: "text",
+      name: "Deposit"
+    }
+  })])])])]), _vm._v(" "), _c("li", {
     staticClass: "mt-3 mb-3"
   }, [_c("div", {
     staticClass: "radio-header radio-text"
@@ -1331,7 +1398,7 @@ var render = function render() {
       staticClass: "label label-schedule m-0"
     }, [_c("span", {
       staticClass: "radio-header radio-text"
-    }, [_vm._v("Spot " + _vm._s(index + 1) + " ( " + _vm._s(_vm.formatTime(schedule.time)) + " -\n                    " + _vm._s(_vm.formatTime(schedule.time_end)) + " )")])])])]);
+    }, [_vm._v("Spot " + _vm._s(index + 1) + " ( " + _vm._s(_vm.formatTime(schedule.time)) + " -\n                " + _vm._s(_vm.formatTime(schedule.time_end)) + " )")])])])]);
   })], 2) : _vm._e(), _vm._v(" "), _vm.filteredDays.length < 1 ? _c("div", [_c("span", {
     staticClass: "radio-text"
   }, [_vm._v("None spot exists .")])]) : _vm._e(), _vm._v(" "), _c("div", [_c("div", {
@@ -21145,6 +21212,11 @@ new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({
   el: '#app',
   components: {
     CreateBooking: _components_CreateBooking_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
+  data: {
+    adminId: document.getElementById('app').getAttribute('data-admin-id'),
+    artistId: document.getElementById('app').getAttribute('data-artist-id'),
+    employeeId: document.getElementById('app').getAttribute('data-employee-id')
   }
 });
 new vue__WEBPACK_IMPORTED_MODULE_4__["default"]({

@@ -6,9 +6,15 @@
     <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
       <div>
         <h4 class="col-12">
+          <p class="radio-header radio-text">Staff : {{ this.Staff }}</p>
           <p class="radio-header radio-text">
             Service : {{ selectedServicesName }}
           </p>
+
+          <p class="radio-header radio-text">
+           Group Service : {{ this.group_service }}
+          </p>
+          
         </h4>
         <div class="col-12">
           <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
@@ -408,82 +414,78 @@
           </div>
           <div class="widget-body p-3">
             <div class="ui-select-wrapper form-group">
+              <select
+                class="form-control pointer-events-p"
+                v-model="selectedStatus"
+                name="status"
+              >
+                <option value="Waiting" selected>Waiting</option>
+                <option value="Done">Done</option>
+                <option value="Partial Done">Partial Done</option>
+                <option value="Reschedule">Reschedule</option>
+                <option value="Cancel">Cancel</option>
+                <option value="Refund">Refund</option>
+              </select>
+
+              <div class="form-group" v-if="selectedStatus === 'Cancel'">
+                <label for="">Reason cancel</label>
 
                 <select
                   class="form-control pointer-events-p"
-                  v-model="selectedStatus"
-                  name="status"
+                  v-model="Cancel"
+                  name="Cancel"
+                  
                 >
-                  <option value="Waiting" selected>Waiting</option>
-                  <option value="Done">Done</option>
-                  <option value="Partial Done">Partial Done</option>
-                  <option value="Reschedule">Reschedule</option>
-                  <option value="Cancel">Cancel</option>
-                  <option value="Refund">Refund</option>
+                <option value="" selected>Select</option>
+                  <option value="Clients" selected>Clients</option>
+                  <option value="Operation">Operation</option>
                 </select>
+              </div>
 
-                <div class="form-group" v-if="selectedStatus === 'Cancel'">
-                  <label for="">Reason cancel</label>
+              <div class="form-group" v-if="selectedStatus === 'Refund'">
+                <label for="">Refund Price</label>
+                <!-- Input field for "Cancel" or "Refund" status -->
+                <input
+                  type="number"
+                  class="form-control"
+                  name="Refund"
+                  v-model="Refund"
+                  min="0"
+                  :max="this.maxRefund"
+                  required
+                />
+              </div>
 
-                  <select
-                    class="form-control pointer-events-p"
-                    v-model="Cancel"
-                    name="Cancel"
-                  >
-                    <option value="Clients" selected>Clients</option>
-                    <option value="Operation">Operation</option>
-                  </select>
-                </div>
-
-                <div class="form-group" v-if="selectedStatus === 'Refund'">
-                  <label for="">Refund Price</label>
-                  <!-- Input field for "Cancel" or "Refund" status -->
-                  <input
-                    type="number"
-                    class="form-control"
-                    name="Refund"
-                    v-model="Refund"
-                    min="0"
-                    :max="this.maxRefund"
-                    required
-                  />
-                </div>
-
-                <div
-                  class="form-group"
-                  v-if="selectedStatus === 'Partial Done'"
-                >
-                  <label for="">Price</label>
-                  <!-- Input field for "Cancel" or "Refund" status -->
-                  <input
-                    type="number"
-                    class="form-control"
-                    name="Partial_Done"
-                    v-model="Partial_Done"
-                    min="0"
-                    :max="this.maxPartial_Done"
-                    required
-                  />
-                </div>
-                <div
-                  class="form-group"
-                  v-if="
-                    selectedStatus === 'Done' ||
-                    selectedStatus === 'Partial Done'
-                  "
-                >
-                  <label for="">Upsell</label>
-                  <!-- Input field for "Cancel" or "Refund" status -->
-                  <input
-                    type="number"
-                    class="form-control"
-                    name="upsale"
-                    v-model="upsale"
-                    min="0"
-                    required
-                  />
-                </div>
-   
+              <div class="form-group" v-if="selectedStatus === 'Partial Done'">
+                <label for="">Price</label>
+                <!-- Input field for "Cancel" or "Refund" status -->
+                <input
+                  type="number"
+                  class="form-control"
+                  name="Partial_Done"
+                  v-model="Partial_Done"
+                  min="0"
+                  :max="this.maxPartial_Done"
+                  required
+                />
+              </div>
+              <div
+                class="form-group"
+                v-if="
+                  selectedStatus === 'Done' || selectedStatus === 'Partial Done'
+                "
+              >
+                <label for="">Upsell</label>
+                <!-- Input field for "Cancel" or "Refund" status -->
+                <input
+                  type="number"
+                  class="form-control"
+                  name="upsale"
+                  v-model="upsale"
+                  min="0"
+                  required
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -612,6 +614,219 @@
       </div>
     </div>
 
+    <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12">
+      <ul class="main__body__box-info">
+        <li>
+          <p>Payment Deposit Image</p>
+          <div class="form-group mt-4">
+            <div class="main__body__box-info">
+              <div
+                class="holder image-category"
+                id="image-category"
+                value=""
+              ></div>
+            </div>
+
+            <div class="-space-y-px mb-4">
+              <div class="containerInput input-group">
+                <div class="main__body__box-info">
+                  <div class="img_body">
+                    <img
+                      v-for="(url, index) in this.payment_deposits"
+                      :src="url"
+                      :key="index"
+                      alt="Image"
+                      @click="openImagePopup(url)"
+                    />
+                    <!-- Popup for enlarged image -->
+                  </div>
+                </div>
+                <a
+                  class="radio-header radio-text"
+                  id="image_manager"
+                  data-input="Deposit"
+                  data-preview="image-category"
+                >
+                  <btn
+                    class="input-group-btn custom-btn btn-16 text-center"
+                    type="button"
+                    @click="ImageSelected()"
+                  >
+                    Upload
+                  </btn>
+                </a>
+
+                <input
+                  class="form-control"
+                  value=""
+                  id="Deposit"
+                  style="display: none"
+                  type="text"
+                  name="Deposit"
+                />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <p>Payment Remaining Image</p>
+
+          <div class="form-group mt-4">
+            <div
+              class="holder image-category"
+              id="PaymentRemainingImage"
+              value=""
+            ></div>
+
+            <div class="-space-y-px mb-4">
+              <div class="containerInput input-group">
+                <div class="main__body__box-info">
+                  <div class="img_body">
+                    <img
+                      v-for="(url, index) in this.payment_remaindings"
+                      :src="url"
+                      :key="index"
+                      alt="Image"
+                      @click="openImagePopup(url)"
+                    />
+                    <!-- Popup for enlarged image -->
+                  </div>
+                </div>
+
+                <a
+                  class="radio-header radio-text"
+                  id="image_PaymentRemainingImage"
+                  data-input="Remaining"
+                  data-preview="PaymentRemainingImage"
+                >
+                  <btn
+                    class="input-group-btn custom-btn btn-16 text-center"
+                    type="button"
+                    @click="ImageSelected()"
+                  >
+                    Upload
+                  </btn>
+                </a>
+
+                <input
+                  class="form-control"
+                  value=""
+                  id="Remaining"
+                  style="display: none"
+                  type="text"
+                  name="Remaining"
+                />
+              </div>
+            </div>
+          </div>
+        </li>
+
+        <li>
+          <p>Before Image</p>
+
+          <div class="form-group mt-4">
+            <div class="holder image-category" id="BeforeImage" value=""></div>
+            <div class="-space-y-px mb-4">
+              <div class="containerInput input-group">
+                <div class="main__body__box-info">
+                  <div class="img_body">
+                    <img
+                      v-for="(url, index) in this.Before_imgs"
+                      :src="url"
+                      :key="index"
+                      alt="Image"
+                      @click="openImagePopup(url)"
+                    />
+                    <!-- Popup for enlarged image -->
+                  </div>
+                </div>
+
+                <a
+                  class="radio-header radio-text"
+                  id="image_BeforeImage"
+                  data-input="Before"
+                  data-preview="BeforeImage"
+                >
+                  <btn
+                    class="input-group-btn custom-btn btn-16 text-center"
+                    type="button"
+                    @click="ImageSelected()"
+                  >
+                    Upload
+                  </btn>
+                </a>
+
+                <input
+                  class="form-control"
+                  id="Before"
+                  value=""
+                  style="display: none"
+                  type="text"
+                  name="Before"
+                />
+              </div>
+            </div>
+          </div>
+        </li>
+        <li>
+          <p>After Image</p>
+
+          <div class="form-group mt-4">
+            <div class="holder image-category" id="AfterImage" value=""></div>
+            <div class="-space-y-px mb-4">
+              <div class="containerInput input-group">
+                <div class="main__body__box-info">
+                  <div class="img_body">
+                    <img
+                      v-for="(url, index) in this.After_imgs"
+                      :src="url"
+                      :key="index"
+                      alt="Image"
+                      @click="openImagePopup(url)"
+                    />
+                    <!-- Popup for enlarged image -->
+                  </div>
+                </div>
+
+                <a
+                  class="radio-header radio-text"
+                  id="image_AfterImage"
+                  data-input="After"
+                  data-preview="AfterImage"
+                >
+                  <btn
+                    class="input-group-btn custom-btn btn-16 text-center"
+                    type="button"
+                    @click="ImageSelected()"
+                  >
+                    Upload
+                  </btn>
+                </a>
+
+                <input
+                  class="form-control"
+                  id="After"
+                  value=""
+                  style="display: none"
+                  type="text"
+                  name="After"
+                />
+              </div>
+            </div>
+          </div>
+        </li>
+        <!-- Popup for enlarged image -->
+        <div
+          v-if="showImagePopup"
+          class="image-popup"
+          @click="closeImagePopupOutside"
+        >
+          <span @click="closeImagePopup" class="close-button">&times;</span>
+          <img :src="selectedImageUrl" alt="Enlarged Image" />
+        </div>
+      </ul>
+    </div>
+
     <!--      -->
   </div>
 </template>
@@ -625,6 +840,7 @@ export default {
       showrooms: [],
       showroomspath: "N/A",
       selectedShowroom: null,
+      Staff: null,
       selectedArtist: 0,
       isActive: false,
       groupServices: [],
@@ -697,6 +913,13 @@ export default {
       selectedEndTime: "",
       StatusPresent: "",
       selectedPaymentRemainingType: "",
+      payment_deposits: [],
+      payment_remaindings: [],
+      After_imgs: [],
+      Before_imgs: [],
+      showImagePopup: false,
+      selectedImageUrl: null,
+      group_service:null,
       /*   selectedOption: "option1", */
     };
   },
@@ -788,6 +1011,74 @@ export default {
   },
 
   methods: {
+    openImagePopup(url) {
+      this.selectedImageUrl = url;
+      this.showImagePopup = true;
+    },
+    closeImagePopup() {
+      this.showImagePopup = false;
+      this.selectedImageUrl = null;
+    },
+
+    closeImagePopupOutside(event) {
+      // Close the popup if the click is outside of the image
+      if (!event.target.closest(".image-popup img")) {
+        this.closeImagePopup();
+      }
+    },
+
+    ImageSelected() {
+
+      if (this.employeeId !== null) {
+        var route_prefix = "/employee/laravel-filemanager";
+        $("#image_PaymentRemainingImage").filemanager("image", {
+        prefix: route_prefix,
+        });
+        $("#image_manager").filemanager("image", {
+          prefix: route_prefix,
+        });
+        $("#image_AfterImage").filemanager("image", {
+          prefix: route_prefix,
+        });
+        $("#image_BeforeImage").filemanager("image", {
+          prefix: route_prefix,
+        });
+      }
+
+      if (this.artistId !== null) {
+        var route_prefix = "/artists/laravel-filemanager";
+        $("#image_PaymentRemainingImage").filemanager("image", {
+        prefix: route_prefix,
+      });
+      $("#image_manager").filemanager("image", {
+        prefix: route_prefix,
+      });
+      $("#image_AfterImage").filemanager("image", {
+        prefix: route_prefix,
+      });
+      $("#image_BeforeImage").filemanager("image", {
+        prefix: route_prefix,
+      });
+      }
+
+      if (this.adminId !== null) {
+        var route_prefix = "/admin/laravel-filemanager";
+        $("#image_PaymentRemainingImage").filemanager("image", {
+        prefix: route_prefix,
+      });
+      $("#image_manager").filemanager("image", {
+        prefix: route_prefix,
+      });
+      $("#image_AfterImage").filemanager("image", {
+        prefix: route_prefix,
+      });
+      $("#image_BeforeImage").filemanager("image", {
+        prefix: route_prefix,
+      });
+      }
+
+    },
+
     fetchapiData_id() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios
@@ -795,6 +1086,7 @@ export default {
         .then((response) => {
           this.apiData_id = response.data;
           this.selectedShowroom = this.apiData_id[0].ShowroomID;
+          this.Staff = this.apiData_id[0].source_name;
           this.selectedArtist = this.apiData_id[0].ArtistID;
           this.GetID = this.apiData_id[0].GetID;
           this.selectedStatus = this.apiData_id[0].status;
@@ -805,6 +1097,7 @@ export default {
           this.endTime = this.apiData_id[0].time_end;
           this.selectedServices = this.apiData_id[0].services[0].id;
           this.selectedServicesName = this.apiData_id[0].services[0].Name;
+          this.group_service  =  this.apiData_id[0].services[0].group_service.name;
           this.content = this.apiData_id[0].content;
           this.upsale = this.apiData_id[0].price.upsale;
           this.Refund =
@@ -814,6 +1107,7 @@ export default {
           this.Partial_Done =
             this.apiData_id[0].price.Total_price -
             this.apiData_id[0].price.Deposit_price;
+
 
           this.Cancel = this.apiData_id[0].content;
           this.maxRefund = this.apiData_id[0].price.Deposit_price;
@@ -843,6 +1137,19 @@ export default {
             source_data: this.apiData_id[0].get.source_data,
             note: this.apiData_id[0].get.Note,
           };
+          this.payment_deposits = this.apiData_id[0].payment.payment_deposit
+            ? this.apiData_id[0].payment.payment_deposit.split(",")
+            : [];
+          this.payment_remaindings = this.apiData_id[0].payment
+            .payment_remainding
+            ? this.apiData_id[0].payment.payment_remainding.split(",")
+            : [];
+          this.After_imgs = this.apiData_id[0].get.After_img
+            ? this.apiData_id[0].get.After_img.split(",")
+            : [];
+          this.Before_imgs = this.apiData_id[0].get.Before_img
+            ? this.apiData_id[0].get.Before_img.split(",")
+            : [];
           this.fetchApiData();
           this.fetchShowroomSchedule();
           this.calculateTotalSelectedServicesPrice();
@@ -1284,6 +1591,14 @@ export default {
   },
 
   mounted() {
+      this.adminId = this.$root.adminId;
+
+      this.artistId = this.$root.artistId;
+
+      this.employeeId = this.$root.employeeId;
+
+      this.manage_supers = this.$root.manage_supers;
+
     this.fetchApiData();
     this.fetchShowrooms();
     this.fetchServices();
@@ -1442,5 +1757,55 @@ export default {
 
 .error-message {
   color: #ff6666;
+}
+
+
+.img_body,
+.holder {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.img_body img {
+  width: 50% !important;
+  padding: 1rem;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.holder img {
+  width: 50% !important;
+  padding: 1rem;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
+  border: solid 1px #8abef6;
+
+}
+
+.image-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(48, 42, 42, 0.686);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  padding: 5%;
+  
+}
+.image-popup  img {
+
+}
+/* Style the close button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 40px;
+  color: #fff;
+  cursor: pointer;
 }
 </style>

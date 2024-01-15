@@ -7,11 +7,12 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ApiPostController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\SourceController;
+use App\Http\Controllers\PaymentController;
 
 
 
 /*
-|--------------------------------------------------------------------------
+|------------------------PaymentController--------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 |
@@ -41,6 +42,7 @@ Route::get('/get', [APIBookingController::class, 'Get']);
 
 
 Route::get('all-data', [APIBookingController::class, 'getAllData']);
+Route::get('getAllDataTable/{start}/{end}/{type}', [APIBookingController::class, 'getAllDataTable']);
 
 
 
@@ -105,6 +107,8 @@ Route::put('/kpi-update', [ApiPostController::class, 'updateDataKPI']);
 
 Route::delete('/kpis/{id}', [ApiPostController::class, 'deleteKpi']);
 
+Route::delete('/deleteBooking/{id}', [ApiPostController::class, 'deleteBooking']);
+
 
 
 Route::get('/kpis', [KpiController::class, 'getKpis']);
@@ -124,3 +128,5 @@ Route::delete('/Source/{id}', [ApiPostController::class, 'deleteSource']);
 
 
 Route::get('/Sources', [SourceController::class, 'getSource']);
+
+Route::post('/update-payment-status', [PaymentController::class,'updatePaymentStatus']);

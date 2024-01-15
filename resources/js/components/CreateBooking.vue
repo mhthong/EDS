@@ -1,6 +1,8 @@
 <template>
   <div>
+
     <div v-if="selectedShowroom" class="selectedShowroom">
+      
       <div class="form-control mb-4">
         <div class="book_detail">
           <i class="fa-solid fa-location-dot"></i>
@@ -137,6 +139,7 @@
     </template>
 
     <template v-if="step === 'artistlevels'">
+    
       <ul>
         <li class="mt-3 mb-3">
           <div class="radio-header radio-text">Deposit Price</div>
@@ -152,6 +155,45 @@
           <p v-if="inputError" class="error-message">
             Value exceeds limit min 100.
           </p>
+        </li>
+        <li>
+          <div class="radio-header radio-text">Payment Deposit Image</div>
+          <div class="form-group mt-4">
+            <div
+              class="holder image-category"
+              id="image-category"
+              value=""
+            ></div>
+            <div class="-space-y-px mb-4">
+              <div class="containerInput input-group">
+                <div class="main__body__box-info"></div>
+                
+                <span class="input-group-btn">
+                
+                    <a
+                    class="radio-header radio-text"
+                    id="image_manager"
+                    data-input="Deposit"
+                    data-preview="image-category"
+                    @click="ImageDepositSelected"
+                  >
+                  <button class="custom-btn btn-16"  type="button">
+                    Choose
+                  </button>
+                  </a>
+
+                </span>
+                <input
+                  class="form-control"
+                  id="Deposit"
+                  type="text"
+                  style="display: none;"
+                  name="Deposit"
+                  ref="inputDeposit"
+                />
+              </div>
+            </div>
+          </div>
         </li>
 
         <li class="mt-3 mb-3">
@@ -223,8 +265,11 @@
               :id="selectedDate"
               ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Date</label
             >
-          
-            <div v-if="this.isActive === false && selectedDate" class="error-message">
+
+            <div
+              v-if="this.isActive === false && selectedDate"
+              class="error-message"
+            >
               This day is inactive .
             </div>
             <div v-if="showWarning" class="error-message">
@@ -295,29 +340,27 @@
       </div>
 
       <!-- Hiển thị danh sách các ngày active và working_hours -->
-      <div class="col-12" >
-
+      <div class="col-12">
         <div v-if="filteredDays.length > 0">
           <span class="radio-text">Spot exists</span>
 
-              <div v-for="(schedule, index) in filteredDays" :key="index">
-                <!--          <h3>{{ day.day }}</h3> -->
+          <div v-for="(schedule, index) in filteredDays" :key="index">
+            <!--          <h3>{{ day.day }}</h3> -->
 
-                <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
-                  <label class="label label-schedule m-0">
-                    <span class="radio-header radio-text"
-                      >Spot {{ index + 1 }} ( {{ formatTime(schedule.time) }} -
-                      {{ formatTime(schedule.time_end) }} )</span
-                    >
-                  </label>
-                </div>
-              </div>
+            <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
+              <label class="label label-schedule m-0">
+                <span class="radio-header radio-text"
+                  >Spot {{ index + 1 }} ( {{ formatTime(schedule.time) }} -
+                  {{ formatTime(schedule.time_end) }} )</span
+                >
+              </label>
+            </div>
+          </div>
         </div>
 
         <div v-if="filteredDays.length < 1">
           <span class="radio-text">None spot exists .</span>
         </div>
-   
 
         <div>
           <div class="col-12">
@@ -379,7 +422,13 @@
         class="custom-btn btn-16"
         @click.prevent="nextStep"
         type="button"
-        :disabled="!startTime || !endTime || !selectedArtist || !selectedDate || this.isActive === false"
+        :disabled="
+          !startTime ||
+          !endTime ||
+          !selectedArtist ||
+          !selectedDate ||
+          this.isActive === false
+        "
       >
         Next
       </button>
@@ -442,8 +491,11 @@
       </div>
 
       <div class="controls mb-4">
-
-        <select name="source_data" id="source_data"   v-model="formData.source_data">
+        <select
+          name="source_data"
+          id="source_data"
+          v-model="formData.source_data"
+        >
           <option value="Facebook">Facebook</option>
           <option value="Instagram">Instagram</option>
           <option value="WhatsApp">WhatsApp</option>
@@ -531,7 +583,7 @@ export default {
         phone: "",
         source: "",
         note: "",
-        source_data:"",
+        source_data: "",
       },
       errorMessage: "", // Dữ liệu từ API
       jsonData: "",
@@ -550,16 +602,15 @@ export default {
       groupServiceStates: {},
       isLabelActive: false,
       isIconActive: false,
+      ImageDeposit:"0",
+      adminId : null,
+      artistId : null,
+      employeeId: null,
       /*   selectedOption: "option1", */
     };
   },
 
-  watch: {
-    selectedArtist: function (newValue, oldValue) {
-      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
-      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
-    },
-  },
+
 
   computed: {
     selectedShowroomMap() {
@@ -626,6 +677,13 @@ export default {
     },
   },
 
+  watch: {
+  selectedArtist: function (newValue, oldValue) {
+      // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
+      this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
+    },
+},
+
   methods: {
     formatTime(time) {
       // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
@@ -649,6 +707,26 @@ export default {
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
+        });
+    },
+
+    ImageDepositSelected(){
+
+        if (this.employeeId !== null) {
+          var route_prefix = "/employee/laravel-filemanager";
+        }
+
+        if (this.artistId !== null) {
+          var route_prefix = "/artists/laravel-filemanager";
+        }
+
+        if (this.adminId !== null) {
+          var route_prefix = "/admin/laravel-filemanager";
+        }
+      
+
+        $("#image_manager").filemanager("image", {
+          prefix: route_prefix,
         });
     },
 
@@ -715,25 +793,24 @@ export default {
     filterActiveDays() {
       if (!this.selectedDate || !this.selectedShowroom) return;
 
-
       // Gửi yêu cầu API để lấy dữ liệu
-      axios.get(`/api/date-active/${this.selectedDate}/${this.selectedShowroom}`)
-        .then(response => {
+      axios
+        .get(`/api/date-active/${this.selectedDate}/${this.selectedShowroom}`)
+        .then((response) => {
           // Lấy giá trị active từ API
           this.isActive = response.data.active;
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
-        .catch(error => {
-          console.error('Error fetching data:', error);
+        .catch((error) => {
+          console.error("Error fetching data:", error);
         });
-    
+
       this.filteredDays = this.apiData.filter(
         (schedule) =>
           schedule.date === this.selectedDate &&
           parseInt(schedule.ArtistID) === parseInt(this.selectedArtist)
       );
-
     },
 
     selectedDateToDay(dateString) {
@@ -772,7 +849,6 @@ export default {
         matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom
       );
     },
-
     checkTimeConflict() {
       if (!this.startTime || !this.endTime) {
         this.isTimeConflict = false;
@@ -782,9 +858,11 @@ export default {
       const selectedStartTime = new Date(`1970-01-01T${this.startTime}`);
       const selectedEndTime = new Date(`1970-01-01T${this.endTime}`);
       // ...
- // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
-        const isStartTimeValid = selectedStartTime.getHours() >= 8 && selectedStartTime.getHours() < 20;
-    const isEndTimeValid = selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
+      // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
+      const isStartTimeValid =
+        selectedStartTime.getHours() >= 8 && selectedStartTime.getHours() < 20;
+      const isEndTimeValid =
+        selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
       // Kiểm tra xung đột thời gian cho cả startTime và endTime
       const conflict = this.filteredDays.some((schedule) => {
         const startTime = new Date(`1970-01-01T${schedule.time}`);
@@ -797,7 +875,12 @@ export default {
         );
       });
 
-      if (conflict || selectedStartTime >= selectedEndTime || !isStartTimeValid || !isEndTimeValid) {
+      if (
+        conflict ||
+        selectedStartTime >= selectedEndTime ||
+        !isStartTimeValid ||
+        !isEndTimeValid
+      ) {
         this.isTimeConflict = true;
         this.showAlert = true;
         this.startTime = null;
@@ -832,7 +915,6 @@ export default {
     handleFileChange() {
       // Handle the file selection here, e.g., store it in a data property
       this.paymentImage = this.$refs.fileInput.files[0];
-      
     },
 
     fetchServices() {
@@ -931,8 +1013,6 @@ export default {
         );
 
         serviceTotalPrice = parseFloat(servicePrice);
-
-      
       }
 
       this.maxDepositPrice = serviceTotalPrice;
@@ -966,16 +1046,17 @@ export default {
           this.step = "groupService";
         }
       } else if (this.step === "groupService") {
-      
         if (this.selectedServices) {
           this.fetchArtistlevels();
           this.step = "artistlevels";
         }
       } else if (this.step === "artistlevels") {
-       
         if (this.selectedShowroom) {
           this.fetchShowroomSchedule();
           this.step = "showroomschedule";
+         this.ImageDeposit = this.$refs.inputDeposit.value;
+
+
         }
       } else if (this.step === "showroomschedule") {
         this.fetchArtists();
@@ -999,9 +1080,8 @@ export default {
             WorkingHour_end_time: this.endTime,
             Status: this.selectedStatus,
             PaymentType: this.selectedPaymentType,
+            ImageDeposit: this.ImageDeposit,
           };
-
-      
 
           this.bookingData = JSON.stringify(bookingDatavalue);
         }
@@ -1067,7 +1147,14 @@ export default {
     },
   },
 
-  mounted() {
+  mounted() {   
+  
+    this.adminId = this.$root.adminId;
+
+    this.artistId = this.$root.artistId;
+
+    this.employeeId = this.$root.employeeId;
+
     this.fetchShowrooms();
     this.fetchServices();
     this.fetchArtistlevels();

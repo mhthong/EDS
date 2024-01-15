@@ -73,11 +73,11 @@ class AuthAdminController extends Controller
 
     
         if( $data['role'] == "Administrator"){
-            $data['manage_supers'] = 0;
+            $data['manage_supers'] = 1;
             $data['super_user'] = "Administrator";
 
         } elseif ( $data['role'] == "Acoutant"){
-            $data['manage_supers'] = 1;
+            $data['manage_supers'] = 5;
             $data['super_user'] = "Acoutant";
         } elseif ( $data['role'] == "Marketing"){
             $data['manage_supers'] = 2;

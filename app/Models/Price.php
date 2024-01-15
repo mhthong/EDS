@@ -22,7 +22,7 @@ class Price extends Model
 
     public function bookings()
     {
-        return $this->hasMany(Booking::class, 'PriceID');
+        return $this->hasMany(Booking::class, 'price_id');
     }
     public function getActivitylogOptions(): LogOptions
     {

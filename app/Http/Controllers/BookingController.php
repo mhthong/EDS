@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 
+
 class BookingController extends Controller
 {
     //
@@ -46,7 +47,6 @@ class BookingController extends Controller
                     'price',
                     'payment'
                 ])->orderBy('created_at', 'desc')->where('action', '=', 'approved')->where('ArtistID', '=', $userId)->get();
-
             } elseif (Auth::user() instanceof \App\Models\Admin) {
 
                 $bookings = Booking::with([
@@ -60,7 +60,6 @@ class BookingController extends Controller
                     'payment'
                 ])->orderBy('created_at', 'desc') // Sắp xếp theo thứ tự mới nhất dựa trên created_at
                     ->get();
-
             } elseif (Auth::user() instanceof \App\Models\Employee) {
 
                 $bookings = Booking::with([
@@ -73,7 +72,6 @@ class BookingController extends Controller
                     'price',
                     'payment'
                 ])->orderBy('created_at', 'desc')->where('source_id', '=', $userId)->where('source_type', '=', "App\Models\Employee")->get();
-
             } else {
                 $bookings = Booking::with([
                     'artist' => function ($query) {
@@ -86,7 +84,6 @@ class BookingController extends Controller
                     'payment'
                 ])->orderBy('created_at', 'desc')->get();
             }
-
         }
 
 
@@ -102,7 +99,6 @@ class BookingController extends Controller
     public function store(Request $request)
     {
 
-                       
         if (Auth::check()) {
             if (Auth::user() instanceof \App\Models\Artists) {
                 $source_name = Auth::user()->name;
@@ -121,22 +117,39 @@ class BookingController extends Controller
                 $source_id = "";
                 $source_type = "";
             }
-
         }
+
+
 
 
         // Xử lý dữ liệu đầu vào từ $request
         $bookingData = json_decode($request->input('bookingData'), true);
+
+        // Example input string
+        $imageDeposit = $bookingData['ImageDeposit'];
+
+        // Base URL to be removed
+        $baseUrl = env('APP_ENV');
+
+        // Explode the string into an array of URLs
+        $imageUrls = explode(",", $imageDeposit);
+
+        // Remove the base URL from each URL
+        $imageUrls = array_map(function ($url) use ($baseUrl) {
+            return str_replace($baseUrl, "", $url);
+        }, $imageUrls);
+
+        // Implode the array back into a comma-separated string
+        $newImageDeposit = implode(",", $imageUrls);
+
 
         $artists = Artists::where('name', '=', 'N/A')->first();
 
         if ($bookingData['ArtistID'] == 0) {
             $artists = Artists::where('name', '=', 'N/A')->first();
             $ArtistID = $artists->id;
-
         } else {
             $ArtistID = $bookingData['ArtistID'];
-
         }
 
         $price = Price::create([
@@ -181,15 +194,15 @@ class BookingController extends Controller
             'source_type' => $source_type,
             // Các trường khác của Price ở đây...
         ]);
- 
+
         $Payment = Payment::create([
             'PricelD' => $price->id,
             'BookingID' => $book->id,
             'payment_type' => $bookingData['PaymentType'],
             'date' => now(),
-            'payment_deposit'=>"",
-            'payment_remainding'=>""
-            
+            'payment_deposit' =>  $newImageDeposit,
+            'payment_remainding' => ""
+
         ]);
 
 
@@ -233,14 +246,11 @@ class BookingController extends Controller
         $check = $this->CheckAuthBooking($bookingsData[0]);
 
 
-        if($check == true){
+        if ($check == true) {
             return view('admin.book.edit', compact('bookingsData'));
         } else {
             return redirect()->back()->with("failed", "You do not have access !");
-
         }
-
-
     }
 
 
@@ -250,50 +260,45 @@ class BookingController extends Controller
 
         if (Auth::user() instanceof \App\Models\Artists) {
 
-            if($Data -> ArtistID == Auth::user()->id && $Data -> status == "Approved") {
-            
+            if ($Data->ArtistID == Auth::user()->id && $Data->status == "Approved") {
+
                 return true;
             } else {
                 return false;
             }
-           
         } else if (Auth::user() instanceof \App\Models\Employee) {
 
-            if($Data -> source_name == Auth::user()->name && $Data -> source_id ==Auth::user()->id ) {
+            if ($Data->source_name == Auth::user()->name && $Data->source_id == Auth::user()->id) {
                 return true;
             } else {
                 return false;
             }
-
-        } else{
+        } else {
             return true;
         }
-
     }
 
-    public function CheckAuthUpdate($Data , $status)
+    public function CheckAuthUpdate($Data, $status)
     {
 
         if (Auth::user() instanceof \App\Models\Artists) {
 
-            if($Data -> ArtistID == Auth::user()->id && $Data -> action == "Approved") {
-            
+            if ($Data->ArtistID == Auth::user()->id && $Data->action == "Approved") {
+
                 return true;
             } else {
                 return false;
             }
-           
         } else if (Auth::user() instanceof \App\Models\Employee) {
 
-            if($Data -> source_name == Auth::user()->name && $Data -> source_id ==Auth::user()->id  && $Data -> status != $status) {
+            if ($Data->source_name == Auth::user()->name && $Data->source_id == Auth::user()->id  && $Data->status != $status) {
                 return true;
             } else {
                 return false;
             }
-        } else{
+        } else {
             return true;
         }
-        
     }
 
 
@@ -302,24 +307,20 @@ class BookingController extends Controller
     public function update(Booking $id, Request $request)
     {
 
-       
+
 
         if (Auth::check()) {
             if (Auth::user() instanceof \App\Models\Artists) {
                 $route = 'artists.bookings.edit';
                 $route_exit = 'artists.book.index';
-
             } elseif (Auth::user() instanceof \App\Models\Admin) {
                 $route = 'bookings.edit';
                 $route_exit = 'book.index';
             } elseif (Auth::user() instanceof \App\Models\Employee) {
                 $route = 'employee.bookings.edit';
                 $route_exit = 'employee.book.index';
-
             } else {
-
             }
-
         }
 
         if ($request->submit == "sendmail") {
@@ -328,32 +329,19 @@ class BookingController extends Controller
                 return redirect()->back()->with('success', 'E-mail sent successfully!');
             } else {
                 return redirect()->back()->with("failed", "E-mail not sent!");
-
             }
-
-        } elseif ($request->submit == "Upload"){
-
-            $updateEdit_resuft = $this->updateImage($id, $request->all());
-
-            if ($updateEdit_resuft) {
-                return redirect()->back()->with('success', 'Updated successfully!');
-            } else {
-                return redirect()->back()->with('failed', 'Failed to update. Please try again.');
-            }
-
         } else {
             if (!isset($request->service_id)) {
 
                 $updateEdit_resuft = $this->updateEdit($id, $request->all());
 
-                if($request->submit == "apply"){
+                if ($request->submit == "apply") {
 
                     if ($updateEdit_resuft) {
                         return redirect()->route($route_exit)->with('success', 'Updated successfully!');
                     } else {
                         return redirect()->back()->with('failed', 'Failed to update. Please try again.');
                     }
-
                 } else {
 
                     if ($updateEdit_resuft) {
@@ -361,9 +349,7 @@ class BookingController extends Controller
                     } else {
                         return redirect()->back()->with('failed', 'Failed to update. Please try again.');
                     }
-
                 }
-
             } else {
 
                 $data = $request->all();
@@ -371,18 +357,17 @@ class BookingController extends Controller
                 $deposit = $data['deposit'];
                 $discount = $data['discount'];
 
-                $updateServices_resuft = $this->updateServices($id, $services ,  $deposit  , $discount);
+                $updateServices_resuft = $this->updateServices($id, $services,  $deposit, $discount);
 
                 $updateEdit_resuft = $this->updateEdit($id, $data);
 
-                if($request->submit == "apply"){
+                if ($request->submit == "apply") {
 
                     if ($updateEdit_resuft && $updateServices_resuft) {
                         return redirect()->route($route_exit)->with('success', 'Updated successfully!');
                     } else {
                         return redirect()->back()->with('failed', 'Failed to update. Please try again.');
                     }
-
                 } else {
 
                     if ($updateEdit_resuft && $updateServices_resuft) {
@@ -390,25 +375,20 @@ class BookingController extends Controller
                     } else {
                         return redirect()->back()->with('failed', 'Failed to update. Please try again.');
                     }
-
                 }
-
-         
             }
         }
     }
 
     public function updateEdit($book, $data)
     {
-        
+     
         if ($data['artist'] == 0) {
             $artists = Artists::where('name', '=', 'N/A')->first();
             $ArtistID = $artists->id;
-
         } else {
             $ArtistID = $data['artist'];
         }
-
 
         if (isset($data['content'])) {
             $content = $data['content'];
@@ -429,40 +409,33 @@ class BookingController extends Controller
             $Total_price = $Price->Deposit_price + $Price->Remaining_price;
             $Remaining_price = 0;
             $upsale = $data['upsale'];
-
         } elseif ($data['status'] === "Cancel") {
 
             $content = $data['Cancel'];
 
-            if($data['Cancel'] === "Operation")
-            {
+            if ($data['Cancel'] === "Operation") {
                 $Total_price = $Price->Deposit_price;
                 $Remaining_price = 0;
-                $com = $Price->servies_price * 1/2 - $Price->Deposit_price;
-           
-            }
-            else{
+                $com = $Price->servies_price * 1 / 2 - $Price->Deposit_price;
+            } else {
                 $Total_price = $Price->Deposit_price;
                 $Remaining_price = 0;
             }
-      
         } elseif ($data['status'] === "Refund") {
 
             $Total_price = $Price->Deposit_price -  $data['Refund'];
             $Remaining_price = 0;
-        }
-        elseif ($data['status'] === "Partial Done") {
+        } elseif ($data['status'] === "Partial Done") {
 
-            $Total_price = $Price->Deposit_price +  $data['Partial_Done'];
-            $Remaining_price = $Price->Remaining_price - +  $data['Partial_Done'];
-            $upsale = $data['upsale'];
-        }
-        elseif ($data['status'] === "Waiting") {
+                $Total_price = $Price->Deposit_price +  $data['Partial_Done'];
+                $Remaining_price = $Price->servies_price -  $Total_price ;
+                $upsale = $data['upsale'];
+
+        } elseif ($data['status'] === "Waiting") {
 
             $Total_price = $Price->Deposit_price;
             $Remaining_price = $Price->servies_price - $Price->Deposit_price;
-        } 
-        else {
+        } else {
             $Total_price = $Price->Deposit_price;
             $Remaining_price = $Price->Remaining_price;
         }
@@ -505,10 +478,32 @@ class BookingController extends Controller
                 'Note' => $data['note'],
             ]);
 
+            // Check and update 'After_img' if $data['After'] is not null
+                if ($data['After'] !== null) {
+                    $get->update(['After_img' => $data['After']]);
+                }
+
+                // Check and update 'Before_img' if $data['Before'] is not null
+                if ($data['Before'] !== null) {
+                    $get->update(['Before_img' => $data['Before']]);
+                }
+
+
             $payment->update([
                 'payment_type' => $data['payment_type'],
                 'payment_type_remainding' => $data['payment_remaining_type'],
             ]);
+
+                       // Check and update 'After_img' if $data['After'] is not null
+                       if ($data['Deposit'] !== null) {
+                        $payment->update(['payment_deposit' => $data['Deposit']]);
+                    }
+    
+                    if ($data['Remaining'] !== null) {
+                        $payment->update(['payment_remainding' => $data['Remaining']]);
+                    }
+                    // Check and update 'Before_img' if $data['Before'] is not null
+
 
             $Price->update([
                 'Total_price' => $Total_price,
@@ -535,58 +530,11 @@ class BookingController extends Controller
             return false;
             /* return redirect()->route('bookings.edit', ['id' => $book->id])->with('failed', 'Failed to update. Please try again.'); */
         }
-
     }
 
 
-  
-    public function updateImage($book, $data)
-    {
 
-  
-
-
-        $get = Get::where('id', $book->GetID)->first();
-
-        $payment = Payment::where('BookingID', '=', $book->id)->first();
-
-
-        try {
-
-            // Update the service record using the validated data
-
-            $get->update([
-                'After_img' => $data['After'],
-                'Before_img' => $data['Before'],
-            ]);
-
-  
-            $payment->update([
-                'payment_deposit' => $data['Deposit'],
-                'payment_remainding' => $data['Remaining'],
-            ]);
-            // Assign the group_service_id separately
-
-            $get->save();
-            $payment->save();
-
-            /*  
-             */
-            return true;
-            // Redirect to the index page or wherever you wish after updating the service
-
-        } catch (\Exception $e) {
-
-            // Handle the exception if any error occurs during the update process
-            // You can log the error or display an error message to the user
-            return false;
-            /* return redirect()->route('bookings.edit', ['id' => $book->id])->with('failed', 'Failed to update. Please try again.'); */
-        }
-
-    }
-
-
-    public function updateServices($id, $services , $deposit  , $discount)
+    public function updateServices($id, $services, $deposit, $discount)
     {
 
         $Price = Price::where('id', $id->price_id)->first();
@@ -594,7 +542,7 @@ class BookingController extends Controller
         $serviceBookings = ServiceBooking::where('booking_id', $id->id)->first();
 
         $servies = Service::where('id', $services)->first();
-   
+
         try {
 
             $serviceBookings->update([
@@ -611,7 +559,7 @@ class BookingController extends Controller
                 // Giả sử bạn không có dữ liệu về Deposit Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn
                 'Remaining_price' =>  $servies->Price  - $discount - $deposit,
                 // Giả sử bạn không có dữ liệu về Remaining Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn
-                'servies_price' => $servies->Price - $discount ,
+                'servies_price' => $servies->Price - $discount,
                 // Các trường khác của Price ở đây...
                 'Deposit_price' => $deposit,
 
@@ -631,8 +579,6 @@ class BookingController extends Controller
             return false;
             /* return redirect()->route('bookings.edit', ['id' => $book->id])->with('failed', 'Failed to update. Please try again.'); */
         }
-
-
     }
 
 
@@ -721,7 +667,7 @@ class BookingController extends Controller
         return true;
 
 
-/*         if (Mail::failures() != 0) {
+        /*         if (Mail::failures() != 0) {
             return true;
         } else {
             return false;
@@ -734,7 +680,7 @@ class BookingController extends Controller
     public function delete($id)
     {
         $booking = Booking::find($id);
-        
+
 
         if (!$booking) {
             return redirect()->route('book.index')->with('error', 'Booking not found.');
@@ -743,12 +689,10 @@ class BookingController extends Controller
         $booking->deleteBooking();
 
         // Now you can safely delete the price
-            $price = Price::find($booking->price_id);
-            $price->delete();
+        $price = Price::find($booking->price_id);
+        $price->delete();
 
 
         return redirect()->route('book.index')->with('success', 'Booking has been deleted.');
     }
-
-
 }

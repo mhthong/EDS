@@ -44,6 +44,7 @@
         "datatables.net-bs4": "^1.13.8",
         "datatables.net-bs5": "^1.13.8",
         "datatables.net-dt": "^1.13.6",
+        "exceljs": "^4.4.0",
         "fullcalendar": "^6.1.8",
         "fullpage.js": "^4.0.15",
         "jquery": "^3.6.0",
@@ -58,6 +59,7 @@
         "vue-fullcalendar": "^1.0.9",
         "vue-js-modal": "^2.0.1",
         "vue-router": "^2.8.1",
+        "vue-script2": "^2.1.0",
         "vue2-daterange-picker": "^0.6.8",
         "vuetify": "^2.7.1",
         "wow.js": "^1.2.2"

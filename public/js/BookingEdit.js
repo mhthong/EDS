@@ -28,6 +28,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       showrooms: [],
       showroomspath: "N/A",
       selectedShowroom: null,
+      Staff: null,
       selectedArtist: 0,
       isActive: false,
       groupServices: [],
@@ -90,7 +91,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       currentURL: "",
       apiData_id: [],
       GetID: []
-    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _ref;
+    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _defineProperty(_ref, "payment_deposits", []), _defineProperty(_ref, "payment_remaindings", []), _defineProperty(_ref, "After_imgs", []), _defineProperty(_ref, "Before_imgs", []), _defineProperty(_ref, "showImagePopup", false), _defineProperty(_ref, "selectedImageUrl", null), _defineProperty(_ref, "group_service", null), _ref;
   },
   created: function created() {
     // Lấy URL hiện tại và gán cho biến currentURL
@@ -175,12 +176,74 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     }
   },
   methods: {
+    openImagePopup: function openImagePopup(url) {
+      this.selectedImageUrl = url;
+      this.showImagePopup = true;
+    },
+    closeImagePopup: function closeImagePopup() {
+      this.showImagePopup = false;
+      this.selectedImageUrl = null;
+    },
+    closeImagePopupOutside: function closeImagePopupOutside(event) {
+      // Close the popup if the click is outside of the image
+      if (!event.target.closest(".image-popup img")) {
+        this.closeImagePopup();
+      }
+    },
+    ImageSelected: function ImageSelected() {
+      if (this.employeeId !== null) {
+        var route_prefix = "/employee/laravel-filemanager";
+        $("#image_PaymentRemainingImage").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_manager").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_AfterImage").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_BeforeImage").filemanager("image", {
+          prefix: route_prefix
+        });
+      }
+      if (this.artistId !== null) {
+        var route_prefix = "/artists/laravel-filemanager";
+        $("#image_PaymentRemainingImage").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_manager").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_AfterImage").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_BeforeImage").filemanager("image", {
+          prefix: route_prefix
+        });
+      }
+      if (this.adminId !== null) {
+        var route_prefix = "/admin/laravel-filemanager";
+        $("#image_PaymentRemainingImage").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_manager").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_AfterImage").filemanager("image", {
+          prefix: route_prefix
+        });
+        $("#image_BeforeImage").filemanager("image", {
+          prefix: route_prefix
+        });
+      }
+    },
     fetchapiData_id: function fetchapiData_id() {
       var _this4 = this;
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/data-bookings/".concat(this.id)).then(function (response) {
         _this4.apiData_id = response.data;
         _this4.selectedShowroom = _this4.apiData_id[0].ShowroomID;
+        _this4.Staff = _this4.apiData_id[0].source_name;
         _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
         _this4.GetID = _this4.apiData_id[0].GetID;
         _this4.selectedStatus = _this4.apiData_id[0].status;
@@ -191,6 +254,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         _this4.endTime = _this4.apiData_id[0].time_end;
         _this4.selectedServices = _this4.apiData_id[0].services[0].id;
         _this4.selectedServicesName = _this4.apiData_id[0].services[0].Name;
+        _this4.group_service = _this4.apiData_id[0].services[0].group_service.name;
         _this4.content = _this4.apiData_id[0].content;
         _this4.upsale = _this4.apiData_id[0].price.upsale;
         _this4.Refund = _this4.apiData_id[0].price.Deposit_price - _this4.apiData_id[0].price.Total_price;
@@ -223,6 +287,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           source_data: _this4.apiData_id[0].get.source_data,
           note: _this4.apiData_id[0].get.Note
         };
+        _this4.payment_deposits = _this4.apiData_id[0].payment.payment_deposit ? _this4.apiData_id[0].payment.payment_deposit.split(",") : [];
+        _this4.payment_remaindings = _this4.apiData_id[0].payment.payment_remainding ? _this4.apiData_id[0].payment.payment_remainding.split(",") : [];
+        _this4.After_imgs = _this4.apiData_id[0].get.After_img ? _this4.apiData_id[0].get.After_img.split(",") : [];
+        _this4.Before_imgs = _this4.apiData_id[0].get.Before_img ? _this4.apiData_id[0].get.Before_img.split(",") : [];
         _this4.fetchApiData();
         _this4.fetchShowroomSchedule();
         _this4.calculateTotalSelectedServicesPrice();
@@ -575,6 +643,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     }
   },
   mounted: function mounted() {
+    this.adminId = this.$root.adminId;
+    this.artistId = this.$root.artistId;
+    this.employeeId = this.$root.employeeId;
+    this.manage_supers = this.$root.manage_supers;
     this.fetchApiData();
     this.fetchShowrooms();
     this.fetchServices();
@@ -678,7 +750,11 @@ var render = function render() {
     staticClass: "col-12"
   }, [_c("p", {
     staticClass: "radio-header radio-text"
-  }, [_vm._v("\n          Service : " + _vm._s(_vm.selectedServicesName) + "\n        ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("Staff : " + _vm._s(this.Staff))]), _vm._v(" "), _c("p", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("\n          Service : " + _vm._s(_vm.selectedServicesName) + "\n        ")]), _vm._v(" "), _c("p", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("\n         Group Service : " + _vm._s(this.group_service) + "\n        ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-12"
   }, [_c("div", {
     staticClass: "col-12 col-sm-12 col-lg-12 p-2 mb-2"
@@ -1359,6 +1435,11 @@ var render = function render() {
     }
   }, [_c("option", {
     attrs: {
+      value: "",
+      selected: ""
+    }
+  }, [_vm._v("Select")]), _vm._v(" "), _c("option", {
+    attrs: {
       value: "Clients",
       selected: ""
     }
@@ -1632,7 +1713,248 @@ var render = function render() {
     }
   }, [_c("i", {
     staticClass: "fa-regular fa-paper-plane"
-  }), _vm._v("\n                    Send\n                  ")])])])])])])])])])]);
+  }), _vm._v("\n                    Send\n                  ")])])])])])])])])]), _vm._v(" "), _c("div", {
+    staticClass: "col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12"
+  }, [_c("ul", {
+    staticClass: "main__body__box-info"
+  }, [_c("li", [_c("p", [_vm._v("Payment Deposit Image")]), _vm._v(" "), _c("div", {
+    staticClass: "form-group mt-4"
+  }, [_vm._m(8), _vm._v(" "), _c("div", {
+    staticClass: "-space-y-px mb-4"
+  }, [_c("div", {
+    staticClass: "containerInput input-group"
+  }, [_c("div", {
+    staticClass: "main__body__box-info"
+  }, [_c("div", {
+    staticClass: "img_body"
+  }, _vm._l(this.payment_deposits, function (url, index) {
+    return _c("img", {
+      key: index,
+      attrs: {
+        src: url,
+        alt: "Image"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.openImagePopup(url);
+        }
+      }
+    });
+  }), 0)]), _vm._v(" "), _c("a", {
+    staticClass: "radio-header radio-text",
+    attrs: {
+      id: "image_manager",
+      "data-input": "Deposit",
+      "data-preview": "image-category"
+    }
+  }, [_c("btn", {
+    staticClass: "input-group-btn custom-btn btn-16 text-center",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.ImageSelected();
+      }
+    }
+  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      value: "",
+      id: "Deposit",
+      type: "text",
+      name: "Deposit"
+    }
+  })])])])]), _vm._v(" "), _c("li", [_c("p", [_vm._v("Payment Remaining Image")]), _vm._v(" "), _c("div", {
+    staticClass: "form-group mt-4"
+  }, [_c("div", {
+    staticClass: "holder image-category",
+    attrs: {
+      id: "PaymentRemainingImage",
+      value: ""
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "-space-y-px mb-4"
+  }, [_c("div", {
+    staticClass: "containerInput input-group"
+  }, [_c("div", {
+    staticClass: "main__body__box-info"
+  }, [_c("div", {
+    staticClass: "img_body"
+  }, _vm._l(this.payment_remaindings, function (url, index) {
+    return _c("img", {
+      key: index,
+      attrs: {
+        src: url,
+        alt: "Image"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.openImagePopup(url);
+        }
+      }
+    });
+  }), 0)]), _vm._v(" "), _c("a", {
+    staticClass: "radio-header radio-text",
+    attrs: {
+      id: "image_PaymentRemainingImage",
+      "data-input": "Remaining",
+      "data-preview": "PaymentRemainingImage"
+    }
+  }, [_c("btn", {
+    staticClass: "input-group-btn custom-btn btn-16 text-center",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.ImageSelected();
+      }
+    }
+  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      value: "",
+      id: "Remaining",
+      type: "text",
+      name: "Remaining"
+    }
+  })])])])]), _vm._v(" "), _c("li", [_c("p", [_vm._v("Before Image")]), _vm._v(" "), _c("div", {
+    staticClass: "form-group mt-4"
+  }, [_c("div", {
+    staticClass: "holder image-category",
+    attrs: {
+      id: "BeforeImage",
+      value: ""
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "-space-y-px mb-4"
+  }, [_c("div", {
+    staticClass: "containerInput input-group"
+  }, [_c("div", {
+    staticClass: "main__body__box-info"
+  }, [_c("div", {
+    staticClass: "img_body"
+  }, _vm._l(this.Before_imgs, function (url, index) {
+    return _c("img", {
+      key: index,
+      attrs: {
+        src: url,
+        alt: "Image"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.openImagePopup(url);
+        }
+      }
+    });
+  }), 0)]), _vm._v(" "), _c("a", {
+    staticClass: "radio-header radio-text",
+    attrs: {
+      id: "image_BeforeImage",
+      "data-input": "Before",
+      "data-preview": "BeforeImage"
+    }
+  }, [_c("btn", {
+    staticClass: "input-group-btn custom-btn btn-16 text-center",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.ImageSelected();
+      }
+    }
+  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "Before",
+      value: "",
+      type: "text",
+      name: "Before"
+    }
+  })])])])]), _vm._v(" "), _c("li", [_c("p", [_vm._v("After Image")]), _vm._v(" "), _c("div", {
+    staticClass: "form-group mt-4"
+  }, [_c("div", {
+    staticClass: "holder image-category",
+    attrs: {
+      id: "AfterImage",
+      value: ""
+    }
+  }), _vm._v(" "), _c("div", {
+    staticClass: "-space-y-px mb-4"
+  }, [_c("div", {
+    staticClass: "containerInput input-group"
+  }, [_c("div", {
+    staticClass: "main__body__box-info"
+  }, [_c("div", {
+    staticClass: "img_body"
+  }, _vm._l(this.After_imgs, function (url, index) {
+    return _c("img", {
+      key: index,
+      attrs: {
+        src: url,
+        alt: "Image"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.openImagePopup(url);
+        }
+      }
+    });
+  }), 0)]), _vm._v(" "), _c("a", {
+    staticClass: "radio-header radio-text",
+    attrs: {
+      id: "image_AfterImage",
+      "data-input": "After",
+      "data-preview": "AfterImage"
+    }
+  }, [_c("btn", {
+    staticClass: "input-group-btn custom-btn btn-16 text-center",
+    attrs: {
+      type: "button"
+    },
+    on: {
+      click: function click($event) {
+        return _vm.ImageSelected();
+      }
+    }
+  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+    staticClass: "form-control",
+    staticStyle: {
+      display: "none"
+    },
+    attrs: {
+      id: "After",
+      value: "",
+      type: "text",
+      name: "After"
+    }
+  })])])])]), _vm._v(" "), _vm.showImagePopup ? _c("div", {
+    staticClass: "image-popup",
+    on: {
+      click: _vm.closeImagePopupOutside
+    }
+  }, [_c("span", {
+    staticClass: "close-button",
+    on: {
+      click: _vm.closeImagePopup
+    }
+  }, [_vm._v("×")]), _vm._v(" "), _c("img", {
+    attrs: {
+      src: _vm.selectedImageUrl,
+      alt: "Enlarged Image"
+    }
+  })]) : _vm._e()])])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -1721,6 +2043,18 @@ var staticRenderFns = [function () {
       "aria-required": "true"
     }
   }, [_vm._v("Action")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "main__body__box-info"
+  }, [_c("div", {
+    staticClass: "holder image-category",
+    attrs: {
+      id: "image-category",
+      value: ""
+    }
+  })]);
 }];
 render._withStripped = true;
 
@@ -3880,7 +4214,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.img_body,\n.holder {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.img_body img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.holder img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n  border: solid 1px #8abef6;\n}\n.image-popup {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(48, 42, 42, 0.686);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 5%;\n}\n.image-popup  img {\n}\n/* Style the close button */\n.close-button {\n  position: absolute;\n  top: 10px;\n  right: 20px;\n  font-size: 40px;\n  color: #fff;\n  cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -20670,6 +21004,12 @@ new vue__WEBPACK_IMPORTED_MODULE_2__["default"]({
   components: {
     EditBooking: _components_EditBooking_vue__WEBPACK_IMPORTED_MODULE_0__["default"],
     PriceBooking: _components_PriceBooking_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+  },
+  data: {
+    adminId: document.getElementById('app').getAttribute('data-admin-id'),
+    artistId: document.getElementById('app').getAttribute('data-artist-id'),
+    employeeId: document.getElementById('app').getAttribute('data-employee-id'),
+    manage_supers: document.getElementById('app').getAttribute('manage_supers')
   }
 });
 })();

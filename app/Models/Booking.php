@@ -48,8 +48,10 @@ class Booking extends Model
 
     public function payment()
     {
-        return $this->hasOne(Payment::class, 'BookingID');
+        return $this->hasOne(Payment::class, 'BookingID', 'id');
     }
+
+    
 
     public function sourceBookings()
         {

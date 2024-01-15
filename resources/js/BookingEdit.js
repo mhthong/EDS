@@ -9,5 +9,11 @@ new Vue({
         EditBooking,
         PriceBooking,
     },
+    data: {
+        adminId: document.getElementById('app').getAttribute('data-admin-id'),
+        artistId: document.getElementById('app').getAttribute('data-artist-id'),
+        employeeId: document.getElementById('app').getAttribute('data-employee-id'),
+        manage_supers: document.getElementById('app').getAttribute('manage_supers')
+    },
 
 });

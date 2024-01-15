@@ -82,6 +82,7 @@
         </div>
     </div>
 </main>
+
 @endsection
 
 @section('footer')
