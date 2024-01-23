@@ -19,21 +19,12 @@
             </p>
             <ul class="m-0">
               <li class="book-title">
-                <div v-if="selectedServices.length > 0" >
-
-                  <p class="radio-text" v-for="selectedService in selectedServices" :key="selectedServices.id">
-               {{ getServiceName(selectedService) }} --   {{ formatCurrency(getServicePrice(selectedService)) }}
-                  </p>
-                  
-                   <!--  <p class="radio-text">Selected Services: {{ getSelectedServiceNames() }} -- {{ getSelectedServicePrice() }}</p> -->
-                  </div>
-                  <div v-else="selectedServices.length > 0" >
-                    <p class="radio-text" v-for="selectedService in selectedServices" :key="selectedServices.id">
-                      {{ getServiceName(selectedService) }} -- Price:
-                      {{ formatCurrency(getServicePrice(selectedService)) }}
-
-                    </p>
-                </div>
+                <p class="radio-text">
+                  {{ getServiceName(selectedServices) }} -- Price:
+                  {{ formatCurrency(getServicePrice(selectedServices)) }}
+                  <!-- -- SalePrice :
+                {{ formatCurrency(getServiceSalePrice(selectedServices)) }} -->
+                </p>
               </li>
             </ul>
             <div v-if="selectedArtistlevelDetails">
@@ -121,13 +112,13 @@
           >
             <label class="flex-groupService">
               <input
-                type="checkbox"
+                type="radio"
                 :value="service.id"
                 v-model="selectedServices"
                 @change="calculateTotalSelectedServicesPrice()"
               />
               <div class="radio-header radio-text">
-                {{ service.Name }} -- Sale_PricepriceString: {{ formatCurrency(service.Price) }}
+                {{ service.Name }} -- Price: {{ formatCurrency(service.Price) }}
               </div>
             </label>
           </li>
@@ -179,7 +170,7 @@
                 
                 <span class="input-group-btn">
                 
-                <a
+                    <a
                     class="radio-header radio-text"
                     id="image_manager"
                     data-input="Deposit"
@@ -513,7 +504,7 @@
           <option value="Google">Google</option>
           <option value="Website">Website</option>
           <option value="Tiktok">Tiktok</option>
-          <option value="Orther">Orther</option>
+          <option value="Oder">Oder</option>
         </select>
         <label for="name" class="label-date active">Source :</label>
       </div>
@@ -574,7 +565,7 @@ export default {
       selectedGroupService: "",
       selectedGroupServiceServices: [],
       step: "showroom",
-      selectedServices: [],
+      selectedServices: null,
       totalPrice: 0,
       selectedDate: "",
       showWarning: false, // Ngày tối thiểu cho trường input
@@ -611,7 +602,7 @@ export default {
       groupServiceStates: {},
       isLabelActive: false,
       isIconActive: false,
-      ImageDeposit:[],
+      ImageDeposit:"0",
       adminId : null,
       artistId : null,
       employeeId: null,
@@ -960,20 +951,9 @@ export default {
       return formatter.format(value);
     },
 
-    getSelectedServiceNames() {
-      return this.selectedServices
-        .map((id) => this.getServiceName(id))
-        .join(", ");
-    },
     getServiceName(id) {
       const service = this.services.find((service) => service.id === id);
       return service ? service.Name : "";
-    },
-
-    getSelectedServicePrice() {
-      return this.selectedServices
-        .map((id) => this.getServicePrice(id))
-        .join(", ");
     },
 
     getServicePrice(id) {
@@ -1025,23 +1005,16 @@ export default {
     calculateTotalSelectedServicesPrice() {
       let serviceTotalPrice = 0;
 
-      // Check if selectedServices is not null and is an array
-      if (this.selectedServices !== null && Array.isArray(this.selectedServices)) {
-        // Loop through each selected service
-        this.selectedServices.map((id) => {
+      if (this.selectedServices !== null) {
+        // Tìm dịch vụ được chọn trong danh sách dịch vụ
+        const servicePrice = this.getServicePrice(this.selectedServices);
+        const serviceSalePrice = this.getServiceSalePrice(
+          this.selectedServices
+        );
 
-          const servicePrice = this.getServicePrice(id);
-          const serviceSalePrice = this.getServiceSalePrice(id);
-          // Calculate the effective price (considering sale price if available)
-          const effectivePrice = serviceSalePrice !== null ? serviceSalePrice : 0;
-     
-          // Add the effective price to the total
-          serviceTotalPrice += parseFloat(effectivePrice) + parseFloat(servicePrice);
-
-        });
+        serviceTotalPrice = parseFloat(servicePrice);
       }
 
-      // Now serviceTotalPrice contains the total price of selected services
       this.maxDepositPrice = serviceTotalPrice;
 
       this.maxDiscountPrice = serviceTotalPrice;
@@ -1055,7 +1028,7 @@ export default {
 
         return (
           serviceTotalPrice +
-          this.totalLevelPrice*this.selectedServices.length -
+          this.totalLevelPrice -
           parseFloat(selectedDepositPrice) -
           parseFloat(selectedDiscountPrice)
         );
@@ -1340,60 +1313,5 @@ export default {
 
 .error-message {
   color: #ff6666;
-}
-
-input [type="checkbox"] {
-  border-radius: 10rem;
-}
-
-.img_body,
-.holder {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-
-.img_body img {
-  width: 50% !important;
-  padding: 1rem;
-  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
-}
-
-.holder img {
-  width: 150px !important;
-  padding: 1rem;
-  margin: 1rem;
-  border-radius: 1rem;
-  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
-  border: solid 1px #8abef6;
-
-}
-
-.image-popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(48, 42, 42, 0.686);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 5%;
-  
-}
-.image-popup  img {
-
-}
-/* Style the close button */
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  font-size: 40px;
-  color: #fff;
-  cursor: pointer;
 }
 </style>

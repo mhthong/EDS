@@ -32,7 +32,7 @@ __webpack_require__.r(__webpack_exports__);
       selectedGroupService: "",
       selectedGroupServiceServices: [],
       step: "showroom",
-      selectedServices: null,
+      selectedServices: [],
       totalPrice: 0,
       selectedDate: "",
       showWarning: false,
@@ -71,7 +71,7 @@ __webpack_require__.r(__webpack_exports__);
       groupServiceStates: {},
       isLabelActive: false,
       isIconActive: false,
-      ImageDeposit: "0",
+      ImageDeposit: [],
       adminId: null,
       artistId: null,
       employeeId: null
@@ -345,11 +345,23 @@ __webpack_require__.r(__webpack_exports__);
       });
       return formatter.format(value);
     },
+    getSelectedServiceNames: function getSelectedServiceNames() {
+      var _this13 = this;
+      return this.selectedServices.map(function (id) {
+        return _this13.getServiceName(id);
+      }).join(", ");
+    },
     getServiceName: function getServiceName(id) {
       var service = this.services.find(function (service) {
         return service.id === id;
       });
       return service ? service.Name : "";
+    },
+    getSelectedServicePrice: function getSelectedServicePrice() {
+      var _this14 = this;
+      return this.selectedServices.map(function (id) {
+        return _this14.getServicePrice(id);
+      }).join(", ");
     },
     getServicePrice: function getServicePrice(id) {
       var service = this.services.find(function (service) {
@@ -387,19 +399,30 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
+      var _this15 = this;
       var serviceTotalPrice = 0;
-      if (this.selectedServices !== null) {
-        // Tìm dịch vụ được chọn trong danh sách dịch vụ
-        var servicePrice = this.getServicePrice(this.selectedServices);
-        var serviceSalePrice = this.getServiceSalePrice(this.selectedServices);
-        serviceTotalPrice = parseFloat(servicePrice);
+
+      // Check if selectedServices is not null and is an array
+      if (this.selectedServices !== null && Array.isArray(this.selectedServices)) {
+        // Loop through each selected service
+        this.selectedServices.map(function (id) {
+          var servicePrice = _this15.getServicePrice(id);
+          var serviceSalePrice = _this15.getServiceSalePrice(id);
+          // Calculate the effective price (considering sale price if available)
+          var effectivePrice = serviceSalePrice !== null ? serviceSalePrice : 0;
+
+          // Add the effective price to the total
+          serviceTotalPrice += parseFloat(effectivePrice) + parseFloat(servicePrice);
+        });
       }
+
+      // Now serviceTotalPrice contains the total price of selected services
       this.maxDepositPrice = serviceTotalPrice;
       this.maxDiscountPrice = serviceTotalPrice;
       if (this.selectedDepositPrice !== "" || this.selectedDiscountPrice !== "") {
         var selectedDepositPrice = this.selectedDepositPrice;
         var selectedDiscountPrice = this.selectedDiscountPrice;
-        return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice) - parseFloat(selectedDiscountPrice);
+        return serviceTotalPrice + this.totalLevelPrice * this.selectedServices.length - parseFloat(selectedDepositPrice) - parseFloat(selectedDiscountPrice);
       } else {
         return serviceTotalPrice + this.totalLevelPrice;
       }
@@ -951,9 +974,17 @@ var render = function render() {
     staticClass: "m-0"
   }, [_c("li", {
     staticClass: "book-title"
-  }, [_c("p", {
-    staticClass: "radio-text"
-  }, [_vm._v("\n                " + _vm._s(_vm.getServiceName(_vm.selectedServices)) + " -- Price:\n                " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(_vm.selectedServices))) + "\n                ")])])]), _vm._v(" "), _vm.selectedArtistlevelDetails ? _c("div", [_c("div", {}, [_c("p", [_c("i", {
+  }, [_vm.selectedServices.length > 0 ? _c("div", _vm._l(_vm.selectedServices, function (selectedService) {
+    return _c("p", {
+      key: _vm.selectedServices.id,
+      staticClass: "radio-text"
+    }, [_vm._v("\n             " + _vm._s(_vm.getServiceName(selectedService)) + " --   " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(selectedService))) + "\n                ")]);
+  }), 0) : _c("div", _vm._l(_vm.selectedServices, function (selectedService) {
+    return _c("p", {
+      key: _vm.selectedServices.id,
+      staticClass: "radio-text"
+    }, [_vm._v("\n                    " + _vm._s(_vm.getServiceName(selectedService)) + " -- Price:\n                    " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(selectedService))) + "\n\n                  ")]);
+  }), 0)])]), _vm._v(" "), _vm.selectedArtistlevelDetails ? _c("div", [_c("div", {}, [_c("p", [_c("i", {
     staticClass: "fa-solid fa-user",
     staticStyle: {
       color: "#944747"
@@ -1040,22 +1071,35 @@ var render = function render() {
           expression: "selectedServices"
         }],
         attrs: {
-          type: "radio"
+          type: "checkbox"
         },
         domProps: {
           value: service.id,
-          checked: _vm._q(_vm.selectedServices, service.id)
+          checked: Array.isArray(_vm.selectedServices) ? _vm._i(_vm.selectedServices, service.id) > -1 : _vm.selectedServices
         },
         on: {
           change: [function ($event) {
-            _vm.selectedServices = service.id;
+            var $$a = _vm.selectedServices,
+              $$el = $event.target,
+              $$c = $$el.checked ? true : false;
+            if (Array.isArray($$a)) {
+              var $$v = service.id,
+                $$i = _vm._i($$a, $$v);
+              if ($$el.checked) {
+                $$i < 0 && (_vm.selectedServices = $$a.concat([$$v]));
+              } else {
+                $$i > -1 && (_vm.selectedServices = $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+              }
+            } else {
+              _vm.selectedServices = $$c;
+            }
           }, function ($event) {
             return _vm.calculateTotalSelectedServicesPrice();
           }]
         }
       }), _vm._v(" "), _c("div", {
         staticClass: "radio-header radio-text"
-      }, [_vm._v("\n              " + _vm._s(service.Name) + " -- Price: " + _vm._s(_vm.formatCurrency(service.Price)) + "\n            ")])])]);
+      }, [_vm._v("\n              " + _vm._s(service.Name) + " -- Sale_PricepriceString: " + _vm._s(_vm.formatCurrency(service.Price)) + "\n            ")])])]);
     }), 0) : _vm._e()]);
   }), _vm._v(" "), _c("button", {
     staticClass: "custom-btn btn-16",
@@ -1669,9 +1713,9 @@ var render = function render() {
     }
   }, [_vm._v("Tiktok")]), _vm._v(" "), _c("option", {
     attrs: {
-      value: "Oder"
+      value: "Orther"
     }
-  }, [_vm._v("Oder")])]), _vm._v(" "), _c("label", {
+  }, [_vm._v("Orther")])]), _vm._v(" "), _c("label", {
     staticClass: "label-date active",
     attrs: {
       "for": "name"
@@ -4068,7 +4112,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\ninput [type=\"checkbox\"] {\n  border-radius: 10rem;\n}\n.img_body,\n.holder {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.img_body img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.holder img {\n  width: 150px !important;\n  padding: 1rem;\n  margin: 1rem;\n  border-radius: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n  border: solid 1px #8abef6;\n}\n.image-popup {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(48, 42, 42, 0.686);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 5%;\n}\n.image-popup  img {\n}\n/* Style the close button */\n.close-button {\n  position: absolute;\n  top: 10px;\n  right: 20px;\n  font-size: 40px;\n  color: #fff;\n  cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
