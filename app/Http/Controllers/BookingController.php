@@ -406,7 +406,8 @@ class BookingController extends Controller
         $upsale = 0;
 
         if ($data['status'] === "Done") {
-            $Total_price = $Price->Deposit_price + $Price->Remaining_price;
+                 $Total_price = $Price->Total_price + $Price->Remaining_price;
+          
             $Remaining_price = 0;
             $upsale = $data['upsale'];
         } elseif ($data['status'] === "Cancel") {
