@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 
 
@@ -94,76 +95,31 @@ class BookingController extends Controller
 
 
 
-
-
     public function store(Request $request)
     {
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa và xác định người dùng đang đăng nhập là loại gì
+        $source_name = "N/A";
+        $source_id = "";
+        $source_type = "";
 
         if (Auth::check()) {
-            if (Auth::user() instanceof \App\Models\Artists) {
-                $source_name = Auth::user()->name;
-                $source_id = Auth::user()->id;
+            $user = Auth::user();
+            if ($user instanceof \App\Models\Artists) {
+                $source_name = $user->name;
+                $source_id = $user->id;
                 $source_type = "App\Models\Artists";
-            } elseif (Auth::user() instanceof \App\Models\Admin) {
-                $source_name = Auth::user()->name;
-                $source_id = Auth::user()->id;
+            } elseif ($user instanceof \App\Models\Admin) {
+                $source_name = $user->name;
+                $source_id = $user->id;
                 $source_type = "App\Models\Admin";
-            } elseif (Auth::user() instanceof \App\Models\Employee) {
-                $source_name = Auth::user()->name;
-                $source_id = Auth::user()->id;
+            } elseif ($user instanceof \App\Models\Employee) {
+                $source_name = $user->name;
+                $source_id = $user->id;
                 $source_type = "App\Models\Employee";
-            } else {
-                $source_name = "N/A";
-                $source_id = "";
-                $source_type = "";
             }
         }
 
-
-
-
-        // Xử lý dữ liệu đầu vào từ $request
-        $bookingData = json_decode($request->input('bookingData'), true);
-
-        // Example input string
-        $imageDeposit = $bookingData['ImageDeposit'];
-
-        // Base URL to be removed
-        $baseUrl = env('APP_ENV');
-
-        // Explode the string into an array of URLs
-        $imageUrls = explode(",", $imageDeposit);
-
-        // Remove the base URL from each URL
-        $imageUrls = array_map(function ($url) use ($baseUrl) {
-            return str_replace($baseUrl, "", $url);
-        }, $imageUrls);
-
-        // Implode the array back into a comma-separated string
-        $newImageDeposit = implode(",", $imageUrls);
-
-
-        $artists = Artists::where('name', '=', 'N/A')->first();
-
-        if ($bookingData['ArtistID'] == 0) {
-            $artists = Artists::where('name', '=', 'N/A')->first();
-            $ArtistID = $artists->id;
-        } else {
-            $ArtistID = $bookingData['ArtistID'];
-        }
-
-        $price = Price::create([
-            'Total_price' => $bookingData['Deposit_price'],
-            'Deposit_price' => $bookingData['Deposit_price'],
-            // Giả sử bạn không có dữ liệu về Deposit Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn
-            'Remaining_price' => $bookingData['Remaining_price'],
-            // Giả sử bạn không có dữ liệu về Remaining Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn
-            'Level_price' => $bookingData['Level_price'],
-            'Artist_levelID' => $bookingData['Artist_levelID'],
-            'servies_price' => $bookingData['Total_price'],
-            // Các trường khác của Price ở đây...
-        ]);
-
+        // Tạo đối tượng Get
         $get = Get::create([
             'Name' => $request->name,
             'Email' => $request->email,
@@ -176,54 +132,89 @@ class BookingController extends Controller
             'Before_img' => "",
         ]);
 
-        $book = Booking::create([
-            'ArtistID' => $ArtistID,
-            'ShowroomID' => $bookingData['showroomId'],
-            // Giả sử bạn không có dữ liệu về Deposit Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn // Giả sử bạn không có dữ liệu về Remaining Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn
-            'time' => $bookingData['workingHour'],
-            'time_end' => $bookingData['WorkingHour_end_time'],
-            'date' => $bookingData['Date'],
-            'GetID' => $get->id,
-            'price_id' => $price->id,
-            'content' => "",
-            'status' => $bookingData['Status'],
-            'action' => "pending",
-            'source_data' => $request->source_data,
-            'source_name' => $source_name,
-            'source_id' => $source_id,
-            'source_type' => $source_type,
-            // Các trường khác của Price ở đây...
-        ]);
+        // Xử lý dữ liệu bookingData
 
-        $Payment = Payment::create([
-            'PricelD' => $price->id,
-            'BookingID' => $book->id,
-            'payment_type' => $bookingData['PaymentType'],
-            'date' => now(),
-            'payment_deposit' =>  $newImageDeposit,
-            'payment_remainding' => ""
+        $Data = json_decode($request->input('bookingData'), true);
+        $bookingDatas =  $Data['serviceIds'];
 
-        ]);
+        $showroomId = $Data['showroomId'];
+        $Artist_levelID =  $Data['Artist_levelID']; 
+        $Level_price =  $Data['Level_price']; 
 
+        // Bắt đầu giao dịch cơ sở dữ liệu
+        DB::beginTransaction();
 
-        $serviceBookings = ServiceBooking::create([
-            'service_id' => $bookingData['serviceIds'],
-            'booking_id' => $book->id,
-            'artist_levelID' => $bookingData['Artist_levelID'],
-        ]);
+        try {
+            foreach ($bookingDatas as $bookingData) {
+                // Tạo đối tượng Price
+                $price = Price::create([
+                    'Total_price' => $bookingData['Deposit'],
+                    'Deposit_price' => $bookingData['Deposit'],
+                    'Remaining_price' => $bookingData['RemainingPrice'],
+                    'Level_price' => $Level_price,
+                    'Artist_levelID' =>  $Artist_levelID,
+                    'servies_price' => $bookingData['price'],
+                    'op_kpi' => $bookingData['price']
+                ]);
 
+                // Xác định ArtistID
+                $ArtistID = $bookingData['Artist'] == 0 ? Artists::where('name', '=', 'N/A')->first()->id : $bookingData['Artist'];
 
-        if ($serviceBookings || $Payment || $book || $get || $price) {
-            // If the artist was successfully created, redirect with success message
+                // Tạo đối tượng Booking
+                $book = Booking::create([
+                    'ArtistID' => $ArtistID,
+                    'ShowroomID' => $showroomId,
+                    'time' => $bookingData['StartTime'],
+                    'time_end' => $bookingData['EndTime'],
+                    'date' => $bookingData['DateTreament'],
+                    'GetID' => $get->id,
+                    'price_id' => $price->id,
+                    'content' => "",
+                    'status' => $bookingData['Status'],
+                    'action' => "pending",
+                    'source_data' => $request->source_data,
+                    'source_name' => $source_name,
+                    'source_id' => $source_id,
+                    'source_type' => $source_type,
+                ]);
+
+                // Xử lý dữ liệu ImageDeposit
+                $imageDeposit = $bookingData['ImageDeposit'];
+                $baseUrl = env('APP_ENV');
+                $imageUrls = explode(",", $imageDeposit);
+                $imageUrls = array_map(function ($url) use ($baseUrl) {
+                    return str_replace($baseUrl, "", $url);
+                }, $imageUrls);
+                $newImageDeposit = implode(",", $imageUrls);
+
+                // Tạo đối tượng Payment
+                $payment = Payment::create([
+                    'PricelD' => $price->id,
+                    'BookingID' => $book->id,
+                    'payment_type' => $bookingData['PaymentType'],
+                    'date' => now(),
+                    'payment_deposit' =>  $newImageDeposit,
+                    'payment_remainding' => ""
+                ]);
+
+                // Tạo đối tượng ServiceBooking
+                $serviceBookings = ServiceBooking::create([
+                    'service_id' => $bookingData['id'],
+                    'booking_id' => $book->id,
+                    'artist_levelID' =>   $Artist_levelID,
+                ]);
+            }
+
+            // Nếu không có lỗi, commit giao dịch và chuyển hướng trở lại với thông báo thành công
+            DB::commit();
             return redirect()->back()->with('success', 'Book created successfully.');
-        } else {
-            // If the artist creation failed, redirect back with an error message
+        } catch (\Exception $e) {
+            // Nếu có lỗi, rollback giao dịch và chuyển hướng trở lại với thông báo thất bại
+            DB::rollback();
             return redirect()->back()->with('failed', 'Failed to create book.');
         }
-
-        // Tạo một bản ghi mới trong cơ sở dữ liệu
-
     }
+
 
     // Show the form for editing an existing service
 
@@ -382,7 +373,7 @@ class BookingController extends Controller
 
     public function updateEdit($book, $data)
     {
-     
+
         if ($data['artist'] == 0) {
             $artists = Artists::where('name', '=', 'N/A')->first();
             $ArtistID = $artists->id;
@@ -404,10 +395,11 @@ class BookingController extends Controller
 
         $com = 0;
         $upsale = 0;
+        $op_kpi = $data['valueOP'];
 
         if ($data['status'] === "Done") {
-                 $Total_price = $Price->Total_price + $Price->Remaining_price;
-          
+            $Total_price = $Price->Total_price + $Price->Remaining_price;
+
             $Remaining_price = 0;
             $upsale = $data['upsale'];
         } elseif ($data['status'] === "Cancel") {
@@ -428,10 +420,9 @@ class BookingController extends Controller
             $Remaining_price = 0;
         } elseif ($data['status'] === "Partial Done") {
 
-                $Total_price = $Price->Deposit_price +  $data['Partial_Done'];
-                $Remaining_price = $Price->servies_price -  $Total_price ;
-                $upsale = $data['upsale'];
-
+            $Total_price = $Price->Deposit_price +  $data['Partial_Done'];
+            $Remaining_price = $Price->servies_price -  $Total_price;
+            $upsale = $data['upsale'];
         } elseif ($data['status'] === "Waiting") {
 
             $Total_price = $Price->Deposit_price;
@@ -480,14 +471,14 @@ class BookingController extends Controller
             ]);
 
             // Check and update 'After_img' if $data['After'] is not null
-                if ($data['After'] !== null) {
-                    $get->update(['After_img' => $data['After']]);
-                }
+            if ($data['After'] !== null) {
+                $get->update(['After_img' => $data['After']]);
+            }
 
-                // Check and update 'Before_img' if $data['Before'] is not null
-                if ($data['Before'] !== null) {
-                    $get->update(['Before_img' => $data['Before']]);
-                }
+            // Check and update 'Before_img' if $data['Before'] is not null
+            if ($data['Before'] !== null) {
+                $get->update(['Before_img' => $data['Before']]);
+            }
 
 
             $payment->update([
@@ -495,15 +486,15 @@ class BookingController extends Controller
                 'payment_type_remainding' => $data['payment_remaining_type'],
             ]);
 
-                       // Check and update 'After_img' if $data['After'] is not null
-                       if ($data['Deposit'] !== null) {
-                        $payment->update(['payment_deposit' => $data['Deposit']]);
-                    }
-    
-                    if ($data['Remaining'] !== null) {
-                        $payment->update(['payment_remainding' => $data['Remaining']]);
-                    }
-                    // Check and update 'Before_img' if $data['Before'] is not null
+            // Check and update 'After_img' if $data['After'] is not null
+            if ($data['Deposit'] !== null) {
+                $payment->update(['payment_deposit' => $data['Deposit']]);
+            }
+
+            if ($data['Remaining'] !== null) {
+                $payment->update(['payment_remainding' => $data['Remaining']]);
+            }
+            // Check and update 'Before_img' if $data['Before'] is not null
 
 
             $Price->update([
@@ -511,6 +502,7 @@ class BookingController extends Controller
                 'Remaining_price' => $Remaining_price,
                 'com' => $com,
                 'upsale' => $upsale,
+                'op_kpi' => $op_kpi,
             ]);
 
             // Assign the group_service_id separately

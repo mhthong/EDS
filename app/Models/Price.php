@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Auth;
 class Price extends Model
 {
     use HasFactory, LogsActivity;
-    protected static $logAttributes =  ['Total_price', 'Deposit_price', 'Remaining_price', 'Level_price', 'Artist_levelID','servies_price','com','upsale'];
+    protected static $logAttributes =  ['Total_price', 'Deposit_price', 'Remaining_price', 'Level_price', 'Artist_levelID','servies_price','com','upsale','op_kpi'];
 
-    protected $fillable = ['Total_price', 'Deposit_price', 'Remaining_price', 'Level_price', 'Artist_levelID','servies_price','com','upsale'];
+    protected $fillable = ['Total_price', 'Deposit_price', 'Remaining_price', 'Level_price', 'Artist_levelID','servies_price','com','upsale','op_kpi'];
 
     public function artistLevel()
     {

@@ -16,7 +16,7 @@ class Artists extends Model implements Authenticatable
     // Define the table associated with the model
     protected $table = 'artists';
 
-    protected $fillable = ['name', 'fullname', 'password', 'phone', 'email', 'avatar', 'description', 'status', 'artist_levelID'];
+    protected $fillable = ['name', 'fullname', 'password', 'phone', 'email', 'avatar', 'description', 'status', 'artist_levelID','artist_pay'];
 
     public function artistLevel()
     {

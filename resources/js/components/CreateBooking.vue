@@ -1,8 +1,6 @@
 <template>
   <div>
-
     <div v-if="selectedShowroom" class="selectedShowroom">
-      
       <div class="form-control mb-4">
         <div class="book_detail">
           <i class="fa-solid fa-location-dot"></i>
@@ -19,20 +17,27 @@
             </p>
             <ul class="m-0">
               <li class="book-title">
-                <div v-if="selectedServices.length > 0" >
-
-                  <p class="radio-text" v-for="selectedService in selectedServices" :key="selectedServices.id">
-               {{ getServiceName(selectedService) }} --   {{ formatCurrency(getServicePrice(selectedService)) }}
+                <div v-if="selectedServices.length > 0">
+                  <p
+                    class="radio-text"
+                    v-for="selectedService in selectedServices"
+                    :key="selectedServices.id"
+                  >
+                    {{ getServiceName(selectedService.id) }} --
+                    {{ formatCurrency(getServicePrice(selectedService.id)) }}
                   </p>
-                  
-                   <!--  <p class="radio-text">Selected Services: {{ getSelectedServiceNames() }} -- {{ getSelectedServicePrice() }}</p> -->
-                  </div>
-                  <div v-else="selectedServices.length > 0" >
-                    <p class="radio-text" v-for="selectedService in selectedServices" :key="selectedServices.id">
-                      {{ getServiceName(selectedService) }} -- Price:
-                      {{ formatCurrency(getServicePrice(selectedService)) }}
 
-                    </p>
+                  <!--  <p class="radio-text">Selected Services: {{ getSelectedServiceNames() }} -- {{ getSelectedServicePrice() }}</p> -->
+                </div>
+                <div v-else="selectedServices.length > 0">
+                  <p
+                    class="radio-text"
+                    v-for="selectedService in selectedServices"
+                    :key="selectedServices.id"
+                  >
+                    {{ getServiceName(selectedService) }} -- Price:
+                    {{ formatCurrency(getServicePrice(selectedService)) }}
+                  </p>
                 </div>
               </li>
             </ul>
@@ -44,25 +49,17 @@
                     selectedArtistlevelDetails.Name
                   }}</span>
                 </p>
-                <ul>
-                  <li>
-                    <p class="radio-text">
-                      <i>{{
-                        formatCurrency(selectedArtistlevelDetails.Level_price)
-                      }}</i>
-                    </p>
-
-                    <p class="radio-text">
-                      Level Price: {{ formatCurrency(totalLevelPrice) }}
-                    </p>
-                  </li>
-                </ul>
               </div>
             </div>
             <p v-else class="radio-text">No selected level</p>
             <p class="radio-header radio-text">
               Remaining Price:
               {{ formatCurrency(calculateTotalSelectedServicesPrice()) }}
+            </p>
+
+            <p class="radio-header radio-text">
+              Deposit Price:
+              {{ formatCurrency(this.selectedDepositPrice) }}
             </p>
           </div>
         </div>
@@ -122,12 +119,30 @@
             <label class="flex-groupService">
               <input
                 type="checkbox"
-                :value="service.id"
+                :value="{
+                  id: service.id,
+                  price: service.Price,
+                  salePrice: service.Sale_Price,
+                  Deposit: 0,
+                  RemainingPrice: 0,
+                  ImageDeposit: '',
+                  DateTreament: '',
+                  Artist: 0,
+                  filteredDays: [],
+                  StartTime: null,
+                  EndTime: null,
+                  dateActive: null,
+                  isTimeConflict: false,
+                  showAlert: false,
+                  Status: 'Waiting',
+                  PaymentType: 'Bank transfer',
+                }"
                 v-model="selectedServices"
                 @change="calculateTotalSelectedServicesPrice()"
               />
               <div class="radio-header radio-text">
-                {{ service.Name }} -- Sale_PricepriceString: {{ formatCurrency(service.Price) }}
+                {{ service.Name }} -- Sale_PricepriceString:
+                {{ formatCurrency(service.Price) }}
               </div>
             </label>
           </li>
@@ -148,75 +163,293 @@
     </template>
 
     <template v-if="step === 'artistlevels'">
-    
-      <ul>
-        <li class="mt-3 mb-3">
-          <div class="radio-header radio-text">Deposit Price</div>
-          <input
-            class="deposit"
-            type="number"
-            v-model="selectedDepositPrice"
-            @change="calculateTotalSelectedServicesPrice"
-            :max="maxDepositPrice"
-            :min="minDepositPrice"
-            @input="checkInputValue"
-          />
-          <p v-if="inputError" class="error-message">
-            Value exceeds limit min 100.
-          </p>
-        </li>
+      <ul class="ps-0 ul_bookingg">
         <li>
-          <div class="radio-header radio-text">Payment Deposit Image</div>
-          <div class="form-group mt-4">
-            <div
-              class="holder image-category"
-              id="image-category"
-              value=""
-            ></div>
-            <div class="-space-y-px mb-4">
-              <div class="containerInput input-group">
-                <div class="main__body__box-info"></div>
-                
-                <span class="input-group-btn">
-                
-                <a
-                    class="radio-header radio-text"
-                    id="image_manager"
-                    data-input="Deposit"
-                    data-preview="image-category"
-                    @click="ImageDepositSelected"
-                  >
-                  <button class="custom-btn btn-16"  type="button">
-                    Choose
-                  </button>
-                  </a>
+          <div v-if="this.selectedServices !== null">
+            <div>
+              <div v-if="selectedServices.length > 0">
+                <div
+                  class="radio-text form-control mb-3"
+                  v-for="(selectedService, index) in selectedServices"
+                  :key="selectedService.id"
+                >
+                  <div class="radio-header radio-text">
+                    {{ getServiceName(selectedService.id) }}
+                  </div>
+                  <div class="form-price">
+                    <div>
+                      Booking Value
+                      <input
+                        class="deposit"
+                        type="number"
+                        v-model="selectedService.price"
+                        @change="calculateTotalSelectedServicesPrice"
+                        :max="getServicePrice(selectedService.id)"
+                        @min="0"
+                      />
+                    </div>
 
-                </span>
-                <input
-                  class="form-control"
-                  id="Deposit"
-                  type="text"
-                  style="display: none;"
-                  name="Deposit"
-                  ref="inputDeposit"
-                />
+                    <div>
+                      Deposit Price
+                      <input
+                        class="deposit"
+                        type="number"
+                        v-model="selectedService.Deposit"
+                        @change="calculateTotalSelectedServicesPrice"
+                        :max="maxDepositPrice"
+                        :min="minDepositPrice"
+                        @input="checkInputValue(index)"
+                      />
+                    </div>
+                    <div>
+                      Remaining Price
+                      <input
+                        class="deposit"
+                        type="number"
+                        v-model="selectedService.RemainingPrice"
+                        @change="calculateTotalSelectedServicesPrice"
+                        :max="maxDepositPrice"
+                        :min="minDepositPrice"
+                        @input="checkInputValue(index)"
+                      />
+                    </div>
+                  </div>
+                  <p v-if="inputError" class="error-message">
+                    Please check the Remaining Price and Deposit price values
+                    above
+                  </p>
+
+                  <div
+                    v-if="selectedService.Deposit > 0"
+                    class="form-group mt-4"
+                    style="
+                      display: flex;
+                      flex-direction: row-reverse;
+                      align-items: end;
+                    "
+                  >
+                    <div
+                      class="holder image-category"
+                      :id="'image-category_' + selectedService.id"
+                      value=""
+                    ></div>
+                    <div class="-space-y-px mb-4">
+                      <div class="containerInput input-group">
+                        <div class="main__body__box-info"></div>
+                        <span class="input-group-btn">
+                          <a
+                            class="radio-header radio-text"
+                            :id="'image_manager_' + selectedService.id"
+                            :data-input="'Deposit_' + selectedService.id"
+                            :data-preview="
+                              'image-category_' + selectedService.id
+                            "
+                            @click="
+                              ImageDepositSelected(
+                                'image_manager_' + selectedService.id,
+                                index
+                              )
+                            "
+                          >
+                            <button
+                              class="custom-btn btn-16 mt-0"
+                              type="button"
+                            >
+                              Choose
+                            </button>
+                          </a>
+                        </span>
+                        <input
+                          class="form-control"
+                          :id="'Deposit_' + selectedService.id"
+                          type="text"
+                          :name="'Deposit_' + selectedService.id"
+                          style="display: none;"
+                          @input="
+                            updateImageDeposit(
+                              selectedService,
+                              $event.target.value
+                            )
+                          "
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="container">
+                    <div class="row">
+                      <div class="controls col">
+                        Artist
+
+                        <select
+                          v-model="selectedService.Artist"
+                          @input="checkselectedArtist"
+                          @change="
+                            filterActiveDays(
+                              selectedService.DateTreament,
+                              index ,selectedService.Artist
+                            )
+                          "
+                          id="artistSelect"
+                          class="floatLabel"
+                        >
+                          <option
+                            v-for="artist in artists"
+                            :key="artist.id"
+                            :value="artist.id"
+                          >
+                            {{ artist.name }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="controls col">
+                        Treament Date
+                        <input
+                          id="depart"
+                          class="floatLabel"
+                          type="date"
+                          :id="'Date' + selectedService.DateTreament"
+                          v-model="selectedService.DateTreament"
+                          @change="
+                          filterActiveDays(
+                              selectedService.DateTreament,
+                              index ,selectedService.Artist
+                            )
+                          "
+                          @input="
+                            checkSelectedDate(selectedService.DateTreament)
+                          "
+                        />
+
+                        <div
+                          v-if="
+                            selectedService.dateActive === false &&
+                            selectedService.DateTreament !== ''
+                          "
+                          class="error-message"
+                        >
+                          This day is inactive .
+                        </div>
+                        <div v-if="showWarning" class="error-message">
+                          Please select a date more today.
+                        </div>
+                      </div>
+                      <div class="controls col">
+                        Status
+                        <i class="fa fa-sort"></i>
+                        <select v-model="selectedService.Status">
+                          <option value="Waiting" selected>Waiting</option>
+                          <!--<option value="Done" >Done</option>
+                    <option value="Cancel">Cancel</option>
+                    <option value="Refund">Refund</option> -->
+                        </select>
+                      </div>
+
+                      <div class="controls col">
+                        Payment Type
+                        <i class="fa fa-sort"></i>
+                        <select v-model="selectedService.PaymentType">
+                          <option value="Bank transfer">Bank transfer</option>
+                          <option value="After Pay">After Pay</option>
+                          <option value="Cash">Cash</option>
+                          <option value="Card">Card</option>
+                        </select>
+                      </div>
+
+                      <!-- Hiển thị danh sách các ngày active và working_hours -->
+                      <div class="col-12">
+                        <div v-if="selectedService.filteredDays.length > 0">
+                          <span class="radio-text">Spot exists</span>
+
+                          <div
+                            v-for="(
+                              schedule, index
+                            ) in selectedService.filteredDays"
+                            :key="index"
+                          >
+                            <!--          <h3>{{ day.day }}</h3> -->
+
+                            <div
+                              class="radio-section col-12 col-sm-6 col-lg-3 p-2"
+                            >
+                              <label class="label label-schedule m-0">
+                                <span class="radio-header radio-text"
+                                  >Spot {{ index + 1 }} (
+                                  {{ formatTime(schedule.time) }} -
+                                  {{ formatTime(schedule.time_end) }} )</span
+                                >
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div v-if="selectedService.filteredDays.length < 1">
+                          <span class="radio-text">None spot exists .</span>
+                        </div>
+
+                        <div>
+                          <div class="col-12">
+                            <span class="radio-text col-12 mb-3 mt-1"
+                              >Please choose a time that does not coincide with
+                              the Spot's existence .</span
+                            >
+                            <!-- Trường đầu vào cho thời gian bắt đầu -->
+
+                            <div
+                              class="radio-section col-12 col-sm-6 col-lg-3 p-2"
+                              style="margin-right: 1rem"
+                            >
+                              <div class="controls">
+                                Start Time
+                                <input
+                                  class="floatLabe"
+                                  type="time"
+                                  :id="selectedService.StartTime"
+                                  v-model="selectedService.StartTime"
+                                  @change="checkTimeConflict(index)"
+                                  step="1800"
+                                />
+                              </div>
+                            </div>
+
+                            <div
+                              class="radio-section col-12 col-sm-6 col-lg-3 p-2"
+                            >
+                              <!-- Trường đầu vào cho thời gian kết thúc -->
+                              <div class="controls">
+                                End Time
+                                <input
+                                  class="floatLabel"
+                                  type="time"
+                                  v-model="selectedService.EndTime"
+                                  @change="checkTimeConflict(index)"
+                                  step="1800"
+                                />
+                              </div>
+                            </div>
+
+                            <div
+                              class="alert col-12 draft"
+                              v-if="selectedService.showAlert"
+                            >
+                              <i>The selected time conflicts or is invalid.</i>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!--         <p v-else class="error-message">
+          No active days for the selected showroom and date.
+        </p> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!--  <p class="radio-text">Selected Services: {{ getSelectedServiceNames() }} -- {{ getSelectedServicePrice() }}</p> -->
               </div>
             </div>
           </div>
-        </li>
-
-        <li class="mt-3 mb-3">
-          <div class="radio-header radio-text">Discount Price</div>
-          <input
-            class="deposit"
-            type="number"
-            v-model="selectedDiscountPrice"
-            @change="calculateTotalSelectedServicesPrice"
-            :max="maxDiscountPrice"
-            :min="minDiscountPrice"
-            @input="checkInputValueDiscount"
-          />
-          <p v-if="inputError_01" class="error-message">Value exceeds limit.</p>
         </li>
 
         <div class="radio-header radio-text">Select Level Artist</div>
@@ -241,203 +474,19 @@
           </label>
         </li>
       </ul>
+
+      <div v-if="!checkPrice()" class="error-message">
+        Please check the total Remaining Price and Deposit price values above .
+      </div>
+
       <button class="custom-btn btn-16" @click="prevStep" type="button">
         Back
       </button>
       <button
         class="custom-btn btn-16"
         @click="nextStep"
-        :disabled="isNextButtonDisabled"
+        :disabled="isNextButtonDisabled || !checkPrice() ||  !checkButton()"
         type="button"
-      >
-        Next
-      </button>
-    </template>
-
-    <template v-if="step === 'showroomschedule'">
-      <div class="col-12">
-        <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
-          <div class="controls">
-            <input
-              id="depart"
-              class="floatLabel"
-              type="date"
-              :id="selectedDate"
-              v-model="selectedDate"
-              @change="filterActiveDays"
-              @input="checkSelectedDate"
-            />
-            <label
-              for="selectedDate"
-              class="label-date"
-              :class="{ active: isLabelActive }"
-              :id="selectedDate"
-              ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Date</label
-            >
-
-            <div
-              v-if="this.isActive === false && selectedDate"
-              class="error-message"
-            >
-              This day is inactive .
-            </div>
-            <div v-if="showWarning" class="error-message">
-              Please select a date more today.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12">
-        <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
-          <div class="controls">
-            <i class="fa fa-sort"></i>
-
-            <select
-              v-model="selectedArtist"
-              @input="checkselectedArtist"
-              @change="filterActiveDays"
-              id="artistSelect"
-              class="floatLabel"
-            >
-              <option
-                v-for="artist in artists"
-                :key="artist.id"
-                :value="artist.id"
-              >
-                {{ artist.name }}
-              </option>
-            </select>
-
-            <label for="artistSelect" class="label-date active"
-              ><i class="fa fa-male"></i>&nbsp;&nbsp;Artist</label
-            >
-          </div>
-        </div>
-
-        <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
-          <div class="controls">
-            <i class="fa fa-sort"></i>
-            <select v-model="selectedStatus">
-              <option value="Waiting" selected>Waiting</option>
-              <!--<option value="Done" >Done</option>
-            <option value="Cancel">Cancel</option>
-            <option value="Refund">Refund</option> -->
-            </select>
-
-            <label for="artistSelect" class="label-date active"
-              >&nbsp;&nbsp;Status</label
-            >
-          </div>
-        </div>
-
-        <div class="col-12 col-sm-4 col-lg-4 p-2 mb-2">
-          <div class="controls">
-            <i class="fa fa-sort"></i>
-            <select v-model="selectedPaymentType">
-              <option value="Bank transfer">Bank transfer</option>
-              <option value="After Pay">After Pay</option>
-              <option value="Cash">Cash</option>
-              <option value="Card">Card</option>
-            </select>
-
-            <label for="selectedPaymentType" class="label-date active"
-              >&nbsp;&nbsp;Payment Type</label
-            >
-          </div>
-        </div>
-      </div>
-
-      <!-- Hiển thị danh sách các ngày active và working_hours -->
-      <div class="col-12">
-        <div v-if="filteredDays.length > 0">
-          <span class="radio-text">Spot exists</span>
-
-          <div v-for="(schedule, index) in filteredDays" :key="index">
-            <!--          <h3>{{ day.day }}</h3> -->
-
-            <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
-              <label class="label label-schedule m-0">
-                <span class="radio-header radio-text"
-                  >Spot {{ index + 1 }} ( {{ formatTime(schedule.time) }} -
-                  {{ formatTime(schedule.time_end) }} )</span
-                >
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="filteredDays.length < 1">
-          <span class="radio-text">None spot exists .</span>
-        </div>
-
-        <div>
-          <div class="col-12">
-            <span class="radio-text col-12 mb-3 mt-1"
-              >Please choose a time that does not coincide with the Spot's
-              existence .</span
-            >
-            <!-- Trường đầu vào cho thời gian bắt đầu -->
-
-            <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
-              <div class="controls">
-                <input
-                  class="floatLabe"
-                  type="time"
-                  :id="startTime"
-                  v-model="startTime"
-                  @change="checkTimeConflict"
-                  step="1800"
-                />
-                <label for="artistSelect" class="label-date active"
-                  ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;Start
-                  Time</label
-                >
-              </div>
-            </div>
-
-            <div class="radio-section col-12 col-sm-6 col-lg-3 p-2">
-              <!-- Trường đầu vào cho thời gian kết thúc -->
-              <div class="controls">
-                <input
-                  class="floatLabel"
-                  type="time"
-                  v-model="endTime"
-                  @change="checkTimeConflict"
-                  step="1800"
-                />
-                <label for="artistSelect" class="label-date active"
-                  ><i class="fa-regular fa-clock"></i>&nbsp;&nbsp;End
-                  Time</label
-                >
-              </div>
-            </div>
-
-            <div class="alert col-12 draft" v-if="showAlert">
-              <i>The selected time conflicts or is invalid.</i>
-            </div>
-          </div>
-        </div>
-
-        <!--         <p v-else class="error-message">
-          No active days for the selected showroom and date.
-        </p> -->
-      </div>
-
-      <button class="custom-btn btn-16" @click="prevStep" type="button">
-        Back
-      </button>
-      <button
-        class="custom-btn btn-16"
-        @click.prevent="nextStep"
-        type="button"
-        :disabled="
-          !startTime ||
-          !endTime ||
-          !selectedArtist ||
-          !selectedDate ||
-          this.isActive === false
-        "
       >
         Next
       </button>
@@ -513,7 +562,7 @@
           <option value="Google">Google</option>
           <option value="Website">Website</option>
           <option value="Tiktok">Tiktok</option>
-          <option value="Orther">Orther</option>
+          <option value="Other">Other</option>
         </select>
         <label for="name" class="label-date active">Source :</label>
       </div>
@@ -598,7 +647,7 @@ export default {
       jsonData: "",
       bookingData: "",
       selectedDiscountPrice: 0,
-      selectedDepositPrice: 100,
+      selectedDepositPrice: 0,
       maxDepositPrice: 0,
       maxDiscountPrice: 0,
       minDepositPrice: 0,
@@ -611,15 +660,14 @@ export default {
       groupServiceStates: {},
       isLabelActive: false,
       isIconActive: false,
-      ImageDeposit:[],
-      adminId : null,
-      artistId : null,
+      ImageDeposit: [],
+      adminId: null,
+      artistId: null,
       employeeId: null,
+      ArrayPricedService: [],
       /*   selectedOption: "option1", */
     };
   },
-
-
 
   computed: {
     selectedShowroomMap() {
@@ -687,13 +735,19 @@ export default {
   },
 
   watch: {
-  selectedArtist: function (newValue, oldValue) {
+    selectedArtist: function (newValue, oldValue) {
       // Khi selectedArtist thay đổi, đặt selectedWorkingHour về giá trị mặc định hoặc null
       this.selectedWorkingHour = null; // hoặc giá trị mặc định nếu bạn đã xác định nó
     },
-},
+  },
 
   methods: {
+    updateImageDeposit(selectedService, newValue) {
+      selectedService.ImageDeposit = newValue;
+
+      console.log(this.selectedServices);
+    },
+
     formatTime(time) {
       // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
       const timeParts = time.split(":");
@@ -719,24 +773,24 @@ export default {
         });
     },
 
-    ImageDepositSelected(){
+    ImageDepositSelected(value, index) {
+      let route_prefix = "";
 
-        if (this.employeeId !== null) {
-          var route_prefix = "/employee/laravel-filemanager";
-        }
+      if (this.employeeId !== null) {
+        route_prefix = "/employee/laravel-filemanager";
+      } else if (this.artistId !== null) {
+        route_prefix = "/artists/laravel-filemanager";
+      } else if (this.adminId !== null) {
+        route_prefix = "/admin/laravel-filemanager";
+      }
 
-        if (this.artistId !== null) {
-          var route_prefix = "/artists/laravel-filemanager";
-        }
+      $("#" + value).filemanager("image", {
+        prefix: route_prefix,
+      });
 
-        if (this.adminId !== null) {
-          var route_prefix = "/admin/laravel-filemanager";
-        }
-      
-
-        $("#image_manager").filemanager("image", {
-          prefix: route_prefix,
-        });
+      $("#image_manager").filemanager("image", {
+        prefix: route_prefix,
+      });
     },
 
     fetchGroupServices() {
@@ -799,15 +853,19 @@ export default {
 
         console.log( this.filteredDays);
     }, */
-    filterActiveDays() {
-      if (!this.selectedDate || !this.selectedShowroom) return;
+    filterActiveDays(DateTreament, index ,artistId) {
+      let InforData = this.selectedServices[index];
+
+      if (!DateTreament || !this.selectedShowroom) return;
 
       // Gửi yêu cầu API để lấy dữ liệu
       axios
-        .get(`/api/date-active/${this.selectedDate}/${this.selectedShowroom}`)
+        .get(`/api/date-active/${DateTreament}/${this.selectedShowroom}/${artistId}`)
         .then((response) => {
           // Lấy giá trị active từ API
-          this.isActive = response.data.active;
+          InforData.dateActive = response.data.active;
+
+          console.log("      InforData.dateActive",      InforData.dateActive ,this.selectedShowroom,artistId);
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
@@ -815,10 +873,10 @@ export default {
           console.error("Error fetching data:", error);
         });
 
-      this.filteredDays = this.apiData.filter(
+      InforData.filteredDays = this.apiData.filter(
         (schedule) =>
-          schedule.date === this.selectedDate &&
-          parseInt(schedule.ArtistID) === parseInt(this.selectedArtist)
+          schedule.date === DateTreament &&
+          parseInt(schedule.ArtistID) === parseInt(InforData.Artist)
       );
     },
 
@@ -858,14 +916,17 @@ export default {
         matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom
       );
     },
-    checkTimeConflict() {
-      if (!this.startTime || !this.endTime) {
-        this.isTimeConflict = false;
+
+    checkTimeConflict(index) {
+      let InforData = this.selectedServices[index];
+
+      if (!InforData.StartTime || !InforData.EndTime) {
+        InforData.isTimeConflict = false;
         return;
       }
 
-      const selectedStartTime = new Date(`1970-01-01T${this.startTime}`);
-      const selectedEndTime = new Date(`1970-01-01T${this.endTime}`);
+      const selectedStartTime = new Date(`1970-01-01T${InforData.StartTime}`);
+      const selectedEndTime = new Date(`1970-01-01T${InforData.EndTime}`);
       // ...
       // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
       const isStartTimeValid =
@@ -873,7 +934,8 @@ export default {
       const isEndTimeValid =
         selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
       // Kiểm tra xung đột thời gian cho cả startTime và endTime
-      const conflict = this.filteredDays.some((schedule) => {
+
+      const conflict = InforData.filteredDays.some((schedule) => {
         const startTime = new Date(`1970-01-01T${schedule.time}`);
         const endTime = new Date(`1970-01-01T${schedule.time_end}`);
         // ...
@@ -890,20 +952,22 @@ export default {
         !isStartTimeValid ||
         !isEndTimeValid
       ) {
-        this.isTimeConflict = true;
-        this.showAlert = true;
-        this.startTime = null;
-        this.endTime = null;
+        InforData.isTimeConflict = true;
+        InforData.showAlert = true;
+   
+        InforData.StartTime = null;
+        InforData.EndTime = null;
       } else {
-        this.isTimeConflict = false;
-        this.showAlert = false;
+        InforData.isTimeConflict = false;
+        InforData.showAlert = false;
+
       }
     },
 
-    checkSelectedDate() {
+    checkSelectedDate(DateTreament) {
       // Xử lý sự kiện khi ngày được chọn thay đổi
       const currentDate = new Date();
-      const selectedDate = new Date(this.selectedDate);
+      const selectedDate = new Date(DateTreament);
       this.isLabelActive = true;
 
       // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
@@ -972,7 +1036,7 @@ export default {
 
     getSelectedServicePrice() {
       return this.selectedServices
-        .map((id) => this.getServicePrice(id))
+        .map((service) => this.getServicePrice(service))
         .join(", ");
     },
 
@@ -997,11 +1061,25 @@ export default {
       return 0;
     },
 
-    checkInputValue() {
+    checkInputValue(index) {
+      let TotalDeposit = 0;
+      let TotalRemainingPrice = 0;
+      this.selectedServices.map((Service) => {
+        const DepositPrice = parseFloat(Service.Deposit);
+        const RemainingPrice = parseFloat(Service.RemainingPrice);
+
+        // Add the effective price to the total
+        TotalDeposit += parseFloat(DepositPrice);
+        TotalRemainingPrice += parseFloat(RemainingPrice);
+      });
+
+      let InforData = this.selectedServices[index];
+
       if (
-        this.selectedDepositPrice > this.maxDepositPrice ||
-        this.selectedDepositPrice < this.minDepositPrice ||
-        this.selectedDepositPrice === ""
+        InforData.Deposit > this.maxDepositPrice ||
+        InforData.Deposit < this.minDepositPrice ||
+        InforData.Deposit === "" ||
+        TotalDeposit > this.maxDepositPrice
       ) {
         this.inputError = true;
       } else {
@@ -1022,40 +1100,86 @@ export default {
       }
     },
 
+    SelectedServicesPrice() {
+      let totalPrice = 0;
+
+      // Loop through selected services to calculate total price
+      for (const service of this.selectedServices) {
+        totalPrice += service.price;
+      }
+
+      // Now, totalPrice contains the total price of all selected services
+      console.log("Total price of selected services:", totalPrice);
+    },
+
+    checkPrice() {
+      let RemainingPriceTotalPrice = 0;
+
+      this.selectedServices.map((Service) => {
+        const RemainingPrice = parseFloat(Service.RemainingPrice);
+
+        // Add the effective price to the total
+        RemainingPriceTotalPrice += parseFloat(RemainingPrice);
+      });
+
+      const checkRemanining = this.calculateTotalSelectedServicesPrice();
+
+      if (parseInt(RemainingPriceTotalPrice) === parseInt(checkRemanining)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
+
+    checkButton() {
+          return this.selectedServices.every(Service => {
+            console.log(Service.StartTime, Service.EndTime, Service.DateTreament, Service.DateTreament == "", Service.EndTime == null);
+            return Service.StartTime !== null && Service.EndTime !== null && Service.DateTreament !== "";
+          });
+        },
+
     calculateTotalSelectedServicesPrice() {
       let serviceTotalPrice = 0;
+      let depositTotalPrice = 0;
+
+      this.checkButton();
 
       // Check if selectedServices is not null and is an array
-      if (this.selectedServices !== null && Array.isArray(this.selectedServices)) {
+      if (
+        this.selectedServices !== null &&
+        Array.isArray(this.selectedServices)
+      ) {
         // Loop through each selected service
-        this.selectedServices.map((id) => {
-
-          const servicePrice = this.getServicePrice(id);
-          const serviceSalePrice = this.getServiceSalePrice(id);
+        this.selectedServices.map((Service) => {
+          const servicePrice = parseFloat(Service.price);
+          const serviceSalePrice = parseFloat(Service.salePrice);
+          const depositPrice = parseFloat(Service.Deposit);
           // Calculate the effective price (considering sale price if available)
-          const effectivePrice = serviceSalePrice !== null ? serviceSalePrice : 0;
-     
-          // Add the effective price to the total
-          serviceTotalPrice += parseFloat(effectivePrice) + parseFloat(servicePrice);
+          const effectivePrice =
+            serviceSalePrice !== null ? serviceSalePrice : 0;
 
+          // Add the effective price to the total
+          serviceTotalPrice +=
+            parseFloat(effectivePrice) + parseFloat(servicePrice);
+          depositTotalPrice += parseFloat(depositPrice);
         });
       }
+
+      this.selectedDepositPrice = depositTotalPrice;
 
       // Now serviceTotalPrice contains the total price of selected services
       this.maxDepositPrice = serviceTotalPrice;
 
       this.maxDiscountPrice = serviceTotalPrice;
 
-      if (
-        this.selectedDepositPrice !== "" ||
-        this.selectedDiscountPrice !== ""
-      ) {
-        const selectedDepositPrice = this.selectedDepositPrice;
+      if (this.selectedDiscountPrice !== "") {
+        const selectedDepositPrice = depositTotalPrice;
         const selectedDiscountPrice = this.selectedDiscountPrice;
 
         return (
           serviceTotalPrice +
-          this.totalLevelPrice*this.selectedServices.length -
+          this.totalLevelPrice * this.selectedServices.length -
           parseFloat(selectedDepositPrice) -
           parseFloat(selectedDiscountPrice)
         );
@@ -1078,39 +1202,32 @@ export default {
           this.step = "artistlevels";
         }
       } else if (this.step === "artistlevels") {
+        
         if (this.selectedShowroom) {
           this.fetchShowroomSchedule();
-          this.step = "showroomschedule";
-         this.ImageDeposit = this.$refs.inputDeposit.value;
 
+          this.selectedServices.map((Service) => {
+            const inputId = 'Deposit_' + Service.id;
+            const inputValue = document.getElementById(inputId)?.value;
 
-        }
-      } else if (this.step === "showroomschedule") {
-        this.fetchArtists();
-        if (this.selectedDate && !this.isTimeConflict) {
+            if (inputValue !== undefined) {
+              Service.ImageDeposit = inputValue;
+            }
+
+          });
+
           this.step = "getShow";
-
+          this.fetchArtists();
           const bookingDatavalue = {
             showroomId: this.selectedShowroom,
-            groupServiceId: this.selectedGroupService,
             serviceIds: this.selectedServices,
-            Artist_levelID: this.selectedArtistlevel,
-            ArtistID: this.selectedArtist,
             Level_price: this.totalLevelPrice,
-            Remaining_price: this.calculateTotalSelectedServicesPrice(),
-            Deposit_price: this.selectedDepositPrice,
-            Total_price:
-              parseFloat(this.calculateTotalSelectedServicesPrice()) +
-              parseFloat(this.selectedDepositPrice),
-            Date: this.selectedDate,
-            workingHour: this.startTime,
-            WorkingHour_end_time: this.endTime,
-            Status: this.selectedStatus,
-            PaymentType: this.selectedPaymentType,
-            ImageDeposit: this.ImageDeposit,
+            Artist_levelID: this.selectedArtistlevel,
           };
 
           this.bookingData = JSON.stringify(bookingDatavalue);
+
+          console.log(this.bookingData);
         }
       }
     },
@@ -1123,7 +1240,7 @@ export default {
       if (this.step === "groupService") {
         this.step = "showroom";
         this.selectedGroupService = null;
-        this.selectedServices = null;
+        this.selectedServices = [];
         this.selectedArtistlevel = [];
         this.totalSelectedServicesPrice = 0;
         // Xóa dữ liệu đã chọn
@@ -1131,19 +1248,8 @@ export default {
         this.step = "groupService";
         this.selectedArtistlevel = [];
         this.totalSelectedServicesPrice = 0;
-      } else if (this.step === "showroomschedule") {
-        this.step = "artistlevels";
-        this.selectedshowroomschedule = [];
-        this.selectedDate = "";
-        this.selectedWorkingHour = "";
       } else if (this.step === "getShow") {
-        this.step = "showroomschedule";
-        this.formData = "";
-        this.selectedshowroomschedule = [];
-        this.selectedDate = "";
-        this.selectedArtist = "";
-        this.selectedWorkingHour = "";
-        this.bookingDatavalue = "";
+        this.step = "artistlevels";
       }
     },
 
@@ -1174,8 +1280,7 @@ export default {
     },
   },
 
-  mounted() {   
-  
+  mounted() {
     this.adminId = this.$root.adminId;
 
     this.artistId = this.$root.artistId;
@@ -1194,6 +1299,9 @@ export default {
 </script>
 
 <style>
+.ul_bookingg {
+  padding-left: 0rem !important;
+}
 .label {
   width: 100%;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -1325,7 +1433,7 @@ export default {
 
 .deposit {
   display: block;
-  width: 260px;
+  width: 150px;
   height: 30px;
   padding-left: 10px;
   padding-top: 3px;
@@ -1367,7 +1475,6 @@ input [type="checkbox"] {
   border-radius: 1rem;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
   border: solid 1px #8abef6;
-
 }
 
 .image-popup {
@@ -1382,10 +1489,8 @@ input [type="checkbox"] {
   align-items: center;
   z-index: 1000;
   padding: 5%;
-  
 }
-.image-popup  img {
-
+.image-popup img {
 }
 /* Style the close button */
 .close-button {
@@ -1395,5 +1500,32 @@ input [type="checkbox"] {
   font-size: 40px;
   color: #fff;
   cursor: pointer;
+}
+
+.form-price {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.form-info {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-content: center;
+}
+
+.controls {
+  min-width: 175px;
+}
+
+.controls .fa-sort {
+  position: absolute;
+  right: 20px;
+  top: 53px;
+  color: #999;
 }
 </style>

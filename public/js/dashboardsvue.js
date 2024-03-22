@@ -55,6 +55,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       kpi: "",
       /*       upsale: "", */
       adminId: null,
+      manage_supers: null,
       employeeId: null,
       artistId: null,
       isTransitioning: false,
@@ -66,11 +67,12 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       filteredDataDone: null,
       filteredDataRefund: null,
       selectedEmployee: null,
+      selectedParner: null,
       title: null,
       apiDataAritst: null,
       apiDataEmployee: null,
       apiDatakpi: []
-    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _ref;
+    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _defineProperty(_ref, "percent_Pratial_Done", 0), _defineProperty(_ref, "percent_Reschedule", 0), _defineProperty(_ref, "percent_Unidentified", 0), _defineProperty(_ref, "Operation_KPI", 0), _ref;
   },
   watch: {
     dateRange: {
@@ -127,29 +129,37 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         console.error("Error fetching artist::", error);
       });
     },
-    fetchapiDataEmployee: function fetchapiDataEmployee() {
+    fetchapiDataParner: function fetchapiDataParner() {
       var _this3 = this;
+      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/parner").then(function (response) {
+        _this3.apiDataParner = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching artist::", error);
+      });
+    },
+    fetchapiDataEmployee: function fetchapiDataEmployee() {
+      var _this4 = this;
       axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/employee").then(function (response) {
-        _this3.apiDataEmployee = response.data;
+        _this4.apiDataEmployee = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
     fetchShowrooms: function fetchShowrooms() {
-      var _this4 = this;
+      var _this5 = this;
       axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/showrooms").then(function (response) {
-        _this4.showrooms = response.data;
+        _this5.showrooms = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
     fetchKpis: function fetchKpis(showroom, employee, date) {
-      var _this5 = this;
+      var _this6 = this;
       axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/kpis-data/".concat(showroom, "/").concat(employee, "/").concat(date)).then(function (response) {
-        _this5.apiDatakpi = response.data;
-        _this5.kpi = _this5.apiDatakpi.number_of_kpi;
-        if (_this5.kpi == undefined) {
-          _this5.kpi = 0;
+        _this6.apiDatakpi = response.data;
+        _this6.kpi = _this6.apiDatakpi.number_of_kpi;
+        if (_this6.kpi == undefined) {
+          _this6.kpi = 0;
         }
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
@@ -173,7 +183,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     totalByName: function totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       var totals = {};
-      console.log('Data in totalByName:', data);
+      console.log("Data in totalByName:", data);
 
       // Your existing code...
 
@@ -200,7 +210,11 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               percent_done: 0,
               percent_waiting: 0,
               percent_refund: 0,
-              percent_cancel: 0
+              percent_cancel: 0,
+              percent_Pratial_Done: 0,
+              percent_Reschedule: 0,
+              percent_Unidentified: 0,
+              Operation_KPI: 0
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -219,6 +233,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           totals[Name].percent_waiting += fillerData.percent_waiting;
           totals[Name].percent_refund += fillerData.percent_refund;
           totals[Name].percent_cancel += fillerData.percent_cancel;
+          totals[Name].percent_Pratial_Done += fillerData.percent_Pratial_Done;
+          totals[Name].percent_Reschedule += fillerData.percent_Reschedule;
+          totals[Name].percent_Unidentified += fillerData.percent_Unidentified;
+          totals[Name].Operation_KPI += fillerData.Operation_KPI;
         }
       }
 
@@ -227,18 +245,18 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       return totalsArray;
     },
     filterDataById: function filterDataById(data, targetId) {
-      var _this6 = this;
+      var _this7 = this;
       var filteredData = {};
       Object.keys(data).forEach(function (date) {
         var dateData = data[date];
         var filteredDateData = {};
         Object.keys(dateData).forEach(function (id) {
           if (dateData[id].id === targetId) {
-            _this6.$set(filteredDateData, id, dateData[id]);
+            _this7.$set(filteredDateData, id, dateData[id]);
           }
         });
         if (Object.keys(filteredDateData).length > 0) {
-          _this6.$set(filteredData, date, filteredDateData);
+          _this7.$set(filteredData, date, filteredDateData);
         }
       });
       return filteredData;
@@ -248,7 +266,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
     },
     Price: function Price() {
-      var _this7 = this;
+      var _this8 = this;
       this.Booking_Value = 0;
       this.Actual_B_Value = 0;
       this.Initial_P_Revenue = 0;
@@ -264,6 +282,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.percent_waiting = 0;
       this.percent_refund = 0;
       this.percent_cancel = 0;
+      this.percent_Pratial_Done = 0;
+      this.percent_Reschedule = 0;
+      this.percent_Unidentified = 0;
+      this.Operation_KPI = 0;
       if (this.selectedShowroom !== null) {
         this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
       } else {
@@ -271,21 +293,25 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       }
       var data = this.totalByName(this.resuft);
       data.forEach(function (item) {
-        _this7.Booking_Value += parseFloat(item.Booking_Value);
-        _this7.Actual_B_Value += parseFloat(item.Actual_B_Value);
-        _this7.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
-        _this7.Initial_Revenue += parseFloat(item.Initial_Revenue);
-        _this7.Refund += parseFloat(item.Refund);
-        _this7.B_Refund_Value += parseFloat(item.B_Refund_Value);
-        _this7.Deposit += parseFloat(item.Deposit);
-        _this7.Remaining += parseFloat(item.Remaining);
-        _this7.Upsell += parseFloat(item.Upsell);
-        _this7.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
-        _this7.Total_Booking += parseFloat(item.Total_Booking);
-        _this7.percent_done += parseFloat(item.percent_done);
-        _this7.percent_waiting += parseFloat(item.percent_waiting);
-        _this7.percent_refund += parseFloat(item.percent_refund);
-        _this7.percent_cancel += parseFloat(item.percent_cancel);
+        _this8.Booking_Value += parseFloat(item.Booking_Value);
+        _this8.Actual_B_Value += parseFloat(item.Actual_B_Value);
+        _this8.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
+        _this8.Initial_Revenue += parseFloat(item.Initial_Revenue);
+        _this8.Refund += parseFloat(item.Refund);
+        _this8.B_Refund_Value += parseFloat(item.B_Refund_Value);
+        _this8.Deposit += parseFloat(item.Deposit);
+        _this8.Remaining += parseFloat(item.Remaining);
+        _this8.Upsell += parseFloat(item.Upsell);
+        _this8.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
+        _this8.Total_Booking += parseFloat(item.Total_Booking);
+        _this8.percent_done += parseFloat(item.percent_done);
+        _this8.percent_waiting += parseFloat(item.percent_waiting);
+        _this8.percent_refund += parseFloat(item.percent_refund);
+        _this8.percent_cancel += parseFloat(item.percent_cancel);
+        _this8.percent_Pratial_Done += parseFloat(item.percent_Pratial_Done);
+        _this8.percent_Reschedule += parseFloat(item.percent_Reschedule);
+        _this8.percent_Unidentified += parseFloat(item.percent_Unidentified);
+        _this8.Operation_KPI += parseFloat(item.Operation_KPI);
       });
 
       // Lặp qua danh sách dữ liệu và tính tổng
@@ -298,6 +324,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.adminId = this.$root.adminId;
     this.artistId = this.$root.artistId;
     this.employeeId = this.$root.employeeId;
+    this.manage_supers = this.$root.manage_supers;
     if (this.employeeId !== null) {
       this.selectedEmployee = this.employeeId;
       this.title = "Saler";
@@ -305,6 +332,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     if (this.artistId !== null) {
       this.selectedEmployee = this.artistId;
       this.title = "Artist";
+    }
+    if (this.adminId !== null && parseInt(this.manage_supers) === 4) {
+      this.selectedParner = this.adminId;
+      this.title = "Parner";
     }
     var currentDate = new Date();
     this.currentMonth = currentDate.getMonth() + 1;
@@ -319,6 +350,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.fetchShowrooms();
     this.fetchapiDataEmployee();
     this.fetchArtist();
+    this.fetchapiDataParner();
     this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
     this.fetchKpis(this.selectedShowroom, this.selectedEmployee, this.dateRange.start);
   }
@@ -459,7 +491,12 @@ var render = function render() {
       value: "Artist",
       selected: ""
     }
-  }, [_vm._v("Artist")])])]) : _vm._e(), _vm._v(" "), this.title === "Saler" && this.employeeId === null ? _c("label", [_c("select", {
+  }, [_vm._v("Artist")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Parner",
+      selected: ""
+    }
+  }, [_vm._v("Parner / Operation")])])]) : _vm._e(), _vm._v(" "), this.title === "Saler" && this.employeeId === null ? _c("label", [_c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -547,6 +584,50 @@ var render = function render() {
         value: Aritst.id
       }
     }, [_vm._v("\n          " + _vm._s(Aritst.name) + "\n        ")]);
+  })], 2)]) : _vm._e(), _vm._v(" "), this.title === "Parner" && this.employeeId === null && this.artistId === null ? _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedParner,
+      expression: "selectedParner"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect",
+      disabled: this.title == null
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedParner = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedShowroomPrice();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataParner, function (parner) {
+    return _c("option", {
+      key: parner.id,
+      domProps: {
+        value: parner.id
+      }
+    }, [_vm._v("\n          " + _vm._s(parner.name) + "\n        ")]);
   })], 2)]) : _vm._e()]), _vm._v(" "), _c("div", [_c("ul", {
     staticClass: "main__body__box-info admin_dashboard",
     "class": {
@@ -576,20 +657,21 @@ var render = function render() {
     staticClass: "Price Cancel_price"
   }, [_c("h6", [_vm._v("Cancel Booking Value")]), _vm._v(" "), _c("h4", [_vm._v("$" + _vm._s(parseFloat(this.Cancel_Booking_Value)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price Cancel_price"
-  }, [_c("h6", [_vm._v("Total Booking")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(parseFloat(this.Total_Booking)))])])]), _vm._v(" "), _c("ul", {
-    staticClass: "main__body__box-info admin_dashboard",
-    "class": {
-      fade: _vm.isTransitioning
-    }
-  }, [_c("li", {
+  }, [_c("h6", [_vm._v("Total Booking")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(parseFloat(this.Total_Booking)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
   }, [_c("h6", [_vm._v("%Done")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_done, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
+  }, [_c("h6", [_vm._v("%Pratial Done")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_Pratial_Done, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
   }, [_c("h6", [_vm._v("%Waiting")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_waiting, this.Total_Booking)) + "\n          %\n        ")])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
+  }, [_c("h6", [_vm._v("%Reschedule")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_Reschedule, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
   }, [_c("h6", [_vm._v("%Cancel")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_cancel, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Refund")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_refund, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null && this.kpi != undefined ? _c("li", {
+  }, [_c("h6", [_vm._v("%Refund")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_refund, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
+    staticClass: "Price"
+  }, [_c("h6", [_vm._v("%Unidentified")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_Unidentified, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null && this.kpi != undefined ? _c("li", {
     staticClass: "Price"
   }, [_c("h6", [_vm._v("Total KPI | % Completed")]), _vm._v(" "), _c("h4", [_vm._v("\n          $" + _vm._s(this.Booking_Value) + " / $" + _vm._s(parseFloat(this.kpi)) + " Completed\n          " + _vm._s(_vm.calculatePercentage(this.Booking_Value, parseFloat(this.kpi))) + "\n          %\n        ")])]) : _vm._e()])])]);
 };

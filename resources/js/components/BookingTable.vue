@@ -169,11 +169,9 @@
               <td @click="redirectToEditPage(item.id)">
                 {{ item.TreatmentDate }}
               </td>
-              <td @click="redirectToEditPage(item.id)">
-                S.Time : {{ item.StartTime }}
+              <td @click="redirectToEditPage(item.id)">{{ item.StartTime }}
               </td>
-              <td @click="redirectToEditPage(item.id)">
-                E.Time : {{ item.EndTime }}
+              <td @click="redirectToEditPage(item.id)">{{ item.EndTime }}
               </td>
               <td @click="redirectToEditPage(item.id)">
                 <div
@@ -261,7 +259,10 @@
               <td @click="redirectToEditPage(item.id)">
                 <div class="clamp-text">{{ item.Address }}</div>
               </td>
-
+              <td @click="redirectToEditPage(item.id)">
+                <div class="clamp-text">{{ item.Note }}</div>
+              </td>
+             
               <td @click="redirectToEditPage(item.id)">
                 
                 <div class="clamp-text">  {{ item.Source }}</div>
@@ -455,6 +456,7 @@ export default {
         { id: 4, name: "Refund" },
         { id: 5, name: "Reschedule" },
         { id: 6, name: "Cancel" },
+        { id: 7, name: "Unidentified" },
       ],
       Status: null,
       selectdateCompare: null,
@@ -995,10 +997,11 @@ export default {
               value: "Address",
               width: "150px",
             },
-            { text: "Source", getColumn: 23, value: "Source", width: "100px" },
+            { text: "Note", getColumn: 23, value: "Note", width: "150px" },
+            { text: "Source", getColumn: 24, value: "Source", width: "100px" },
             {
               text: "Source Data",
-              getColumn: 24,
+              getColumn: 25,
               value: "SourceData",
               width: "150px",
             },
@@ -1012,7 +1015,7 @@ export default {
           sortable: false,
           align: "center",
           children: [
-            { text: "Action", getColumn: 25, value: "action", width: "100px" },
+            { text: "Action", getColumn: 26, value: "action", width: "100px" },
             // ... other payment-related headers
           ],
         },

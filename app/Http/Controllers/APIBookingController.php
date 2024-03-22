@@ -10,9 +10,11 @@ use App\Models\Service;
 use App\Models\ArtistLevel;
 use App\Models\ShowroomSchedule;
 use App\Models\Artists;
+use App\Models\Price;
 use App\Models\Booking;
 use App\Models\Employee;
 use App\Models\Get;
+use App\Models\Admin;
 use App\Models\WorkingHour;
 use Carbon\Carbon;
 
@@ -55,24 +57,33 @@ class APIBookingController extends Controller
     {
         $serviceShowrooms = ServiceShowroom::with(['groupservice' => function ($query) {
             $query->with(['services' => function ($query) {
-                $query->where('status', 'published');
+                $query->where('status', 'published')->orderBy('Name', 'asc'); // Sắp xếp services theo tên từ a đến z
             }]);
         }])->where('showroom_id', $showroomId)->get();
-
+    
         $groupServiceData = [];
-
+    
         foreach ($serviceShowrooms as $serviceShowroom) {
             $groupService = $serviceShowroom->groupservice;
-
+    
             if ($groupService) {
+                // Sắp xếp mảng services trong groupService theo tên từ a đến z
+                $groupService->services = $groupService->services->sortBy('Name')->values()->all();
+    
                 $groupServiceData[] = [
                     'groupService' => $groupService,
                 ];
             }
         }
-
+    
+        // Sắp xếp mảng $groupServiceData theo tên của mỗi groupService từ a đến z
+        usort($groupServiceData, function ($a, $b) {
+            return strcmp($a['groupService']->Name, $b['groupService']->Name);
+        });
+    
         return response()->json($groupServiceData);
     }
+    
 
     public function ShowroomSchedule($showroomId)
     {
@@ -99,6 +110,8 @@ class APIBookingController extends Controller
     }
 
 
+
+
     /*     public function getGroupServices($showroomId)
     {
         $groupServices = Showroom::find($showroomId)->groupServices;
@@ -109,6 +122,21 @@ class APIBookingController extends Controller
     {
         $services = Service::where('status', 'published')->get();
         return response()->json($services);
+    }
+
+    public function Services()
+    {
+        try {
+            $services = Service::with('groupService:id,name')
+                ->get()
+                ->sortBy(function ($service) {
+                    return $service->groupService->name;
+                });
+    
+            return response()->json($services->values()->all());
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
 
@@ -131,6 +159,19 @@ class APIBookingController extends Controller
         $Get = Get::get();
         return response()->json($Get);
     }
+
+    public function Parner()
+    {
+            $OP = Admin::select('id', 'name')
+                ->where('status', 'published')
+                ->where('manage_supers', 4)
+                ->get();
+        
+            return response()->json($OP);
+   
+    }
+
+    
 
 
 
@@ -193,6 +234,12 @@ class APIBookingController extends Controller
         })
         ->orderBy('created_at', 'desc') // Sắp xếp theo thứ tự mới nhất dựa trên created_at
             ->get();
+
+        $bookings->transform(function ($booking) {
+                $booking->time = Carbon::parse($booking->time)->format('h:i A');
+                $booking->time_end = Carbon::parse($booking->time_end)->format('h:i A');
+                return $booking;
+            });
         
         return response()->json($bookings); 
         
@@ -344,7 +391,7 @@ class APIBookingController extends Controller
         return response()->json($result);
     }
 
-    public function getAllfullcalendar($startDate, $endDate, $showroom)
+/*     public function getAllfullcalendar($startDate, $endDate, $showroom)
     {
         // Chuyển định dạng ngày về Y-m-d nếu chưa được chuyển đổi
         $startDate = date('Y-m-d', strtotime($startDate));
@@ -359,86 +406,324 @@ class APIBookingController extends Controller
         // Tạo vòng lặp qua mỗi ngày trong khoảng thời gian
         $currentDate = $startDate;
 
+        if($showroom !== 0) {
+            while ($currentDate <= $endDate) {
+                // Tạo mảng chứa dữ liệu cho mỗi showroom
+                $showroomData = [];
+    
+                // Lặp qua từng 
+                // Lấy dữ liệu cho ngày hiện tại và showroom hiện tại
+                $dailyData = ShowroomSchedule::where('showroom_id', $showroom)
+                    ->where('day', date('l', strtotime($currentDate)))
+                    ->first();
+    
+                // Kiểm tra xem có dữ liệu không
+                if ($dailyData) {
+                    // Lấy dữ liệu cho ngày hiện tại
+                    
+                    $bookingData = Booking::select('id', 'ArtistID', 'GetID', 'ShowroomID', 'status', 'action', 'time', 'time_end', 'date', 'source_name','price_id')
+                        ->with([
+                            'artist:id,name',
+                            'showroom:id,Name',
+                            'services:id,Name',
+                            'get:id,name',
+                            'price',
+                        ])
+                        ->where('date', $currentDate)
+                        ->where('ShowroomID',  $showroom)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+    
+    
+                    // Kiểm tra và cập nhật trường 'active' trong dailyData
+                    $workingHour = WorkingHour::where('showroom_schedule_id', $dailyData->showroom_id)
+                        ->where('date', $currentDate)
+                        ->first();
+    
+                    if ($workingHour) {
+                        $dailyData->active = $workingHour->active;
+                    }
+    
+                    // Thêm trường dayOfWeek cho mỗi mục
+                    // Thêm dữ liệu vào mảng showroomData
+                    $showroomData[$showroom] = [
+                        'dailyData' => $dailyData,
+                        'bookingData' => $bookingData,
+                    ];
+                }
+    
+                // Thêm dữ liệu vào mảng kết quả
+                $result[$currentDate] = $showroomData;
+    
+                // Di chuyển tới ngày tiếp theo
+                $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+            }
+        } else {
+
+            while ($currentDate <= $endDate) {
+                // Tạo mảng chứa dữ liệu cho mỗi showroom
+                $showroomData = [];
+
+                foreach (    $showrooms as $showroom ) {
+    
+                // Lặp qua từng 
+                // Lấy dữ liệu cho ngày hiện tại và showroom hiện tại
+                $dailyData = ShowroomSchedule::where('showroom_id', $showroom->id)
+                    ->where('day', date('l', strtotime($currentDate)))
+                    ->first();
+    
+                // Kiểm tra xem có dữ liệu không
+                if ($dailyData) {
+                    // Lấy dữ liệu cho ngày hiện tại
+                    
+                    $bookingData = Booking::select('id', 'ArtistID', 'GetID', 'ShowroomID', 'status', 'action', 'time', 'time_end', 'date', 'source_name','price_id')
+                        ->with([
+                            'artist:id,name',
+                            'showroom:id,Name',
+                            'services:id,Name',
+                            'get:id,name',
+                            'price',
+                        ])
+                        ->where('date', $currentDate)
+                        ->where('ShowroomID',   $showroom->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+    
+    
+                    // Kiểm tra và cập nhật trường 'active' trong dailyData
+                    $workingHour = WorkingHour::where('showroom_schedule_id', $dailyData->showroom_id)
+                        ->where('date', $currentDate)
+                        ->first();
+    
+                    if ($workingHour) {
+                        $dailyData->active = $workingHour->active;
+                    }
+    
+                    // Thêm trường dayOfWeek cho mỗi mục
+                    // Thêm dữ liệu vào mảng showroomData
+                    $showroomData[$showroom] = [
+                        'dailyData' => $dailyData,
+                        'bookingData' => $bookingData,
+                    ];
+                }
+    
+                // Thêm dữ liệu vào mảng kết quả
+                $result[$currentDate] = $showroomData;
+    
+                // Di chuyển tới ngày tiếp theo
+                $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+            }
+  
+                
+            }
+
+        }
+    
+
+        return response()->json($result);
+    } 
+ */
+
+
+ public function getAllfullcalendar($startDate, $endDate, $showroom , $artist)
+{
+    // Chuyển định dạng ngày về 'Y-m-d' nếu chưa được chuyển đổi
+    $startDate = date('Y-m-d', strtotime($startDate));
+    $endDate = date('Y-m-d', strtotime($endDate));
+
+    // Lấy danh sách tất cả showroom
+    $showrooms = Showroom::all();
+
+    // Khởi tạo mảng kết quả
+    $result = [];
+
+    // Thiết lập ngày hiện tại là ngày bắt đầu
+    $currentDate = $startDate;
+
+
+    // Xử lý trường hợp nếu showroom được chỉ định
+    if ($showroom != 0) {
+        // Lặp qua mỗi ngày trong khoảng thời gian
         while ($currentDate <= $endDate) {
-            // Tạo mảng chứa dữ liệu cho mỗi showroom
+            // Khởi tạo mảng dữ liệu cho showroom hiện tại
             $showroomData = [];
 
-            // Lặp qua từng 
-            // Lấy dữ liệu cho ngày hiện tại và showroom hiện tại
-            $dailyData = ShowroomSchedule::where('showroom_id', $showroom)
-                ->where('day', date('l', strtotime($currentDate)))
-                ->first();
+            // Lấy dữ liệu cho ngày hiện tại và showroom chỉ định
+            $dailyData = $this->getShowroomData($currentDate, $showroom);
 
-            // Kiểm tra xem có dữ liệu không
+            // Nếu có dữ liệu cho ngày và showroom
             if ($dailyData) {
-                // Lấy dữ liệu cho ngày hiện tại
-                $bookingData = Booking::select('id', 'ArtistID', 'GetID', 'ShowroomID', 'status', 'action', 'time', 'time_end', 'date', 'source_name')
-                    ->with([
-                        'artist:id',
-                        'showroom:id,Name',
-                        'services:id,Name',
-                        'get:id,name',
-                    ])
-                    ->where('date', $currentDate)
-                    ->where('ShowroomID',  $showroom)
-                    ->orderBy('created_at', 'desc')
-                    ->get();
+                // Lấy dữ liệu đặt chỗ cho ngày hiện tại và showroom chỉ định
+                $bookingData = $this->getBookingData($currentDate, $showroom);
+
+
+                $workingHourNoneArtist = WorkingHour::where('showroom_schedule_id', $showroom)
+                ->where('date', $currentDate)
+                ->where('artist_id', 0)
+                ->first();
+        
+        
+                if ($workingHourNoneArtist) {
+                    $dailyData->active = $workingHourNoneArtist->active;
+                }  
+
 
                 // Kiểm tra và cập nhật trường 'active' trong dailyData
-                $workingHour = WorkingHour::where('showroom_schedule_id', $dailyData->showroom_id)
-                    ->where('date', $currentDate)
-                    ->first();
-
+                $workingHour = WorkingHour::where('showroom_schedule_id', $showroom)
+                ->where('date', $currentDate)
+                ->where('artist_id', $artist)
+                ->first();
+        
+        
                 if ($workingHour) {
                     $dailyData->active = $workingHour->active;
-                }
+                } 
 
-                // Thêm trường dayOfWeek cho mỗi mục
-                // Thêm dữ liệu vào mảng showroomData
+                // Thêm dữ liệu của ngày và showroom vào mảng showroomData
                 $showroomData[$showroom] = [
                     'dailyData' => $dailyData,
                     'bookingData' => $bookingData,
                 ];
             }
 
-            // Thêm dữ liệu vào mảng kết quả
+            // Thêm dữ liệu của showroom vào mảng kết quả
             $result[$currentDate] = $showroomData;
 
             // Di chuyển tới ngày tiếp theo
             $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
         }
+    } else { // Xử lý trường hợp nếu không có showroom được chỉ định
+        while ($currentDate <= $endDate) {
+            // Khởi tạo mảng dữ liệu cho từng showroom
+            $showroomData = [];
 
-        return response()->json($result);
+            // Lặp qua từng showroom
+            foreach ($showrooms as $showroomid) {
+                // Lấy dữ liệu cho ngày hiện tại và showroom hiện tại
+                $dailyData = $this->getShowroomData($currentDate, $showroomid->id);
+
+                // Nếu có dữ liệu cho ngày và showroom
+                if ($dailyData) {
+                    // Lấy dữ liệu đặt chỗ cho ngày hiện tại và showroom hiện tại
+                $bookingData = $this->getBookingData($currentDate, $showroomid->id);
+
+                $dailyData -> active = 1 ;
+                    // Kiểm tra và cập nhật trường 'active' trong dailyData
+                 
+
+                    // Thêm dữ liệu của ngày và showroom vào mảng showroomData
+                    $showroomData[$showroomid->id] = [
+                        'dailyData' => $dailyData,
+                        'bookingData' => $bookingData,
+                    ];
+                }
+            }
+
+            // Thêm dữ liệu của showroom vào mảng kết quả
+            $result[$currentDate] = $showroomData;
+
+            // Di chuyển tới ngày tiếp theo
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
+        }
     }
 
+    // Trả về kết quả dưới dạng JSON
+    return response()->json($result);
+}
 
-    public function DateActive($Date, $showroom)
+// Phương thức để lấy dữ liệu showroom cho một ngày và showroom chỉ định
+private function getShowroomData($date, $showroomId)
+{
+    return ShowroomSchedule::where('showroom_id', $showroomId)
+        ->where('day', date('l', strtotime($date)))
+        ->first();
+}
+
+// Phương thức để lấy dữ liệu đặt chỗ cho một ngày và showroom chỉ định
+private function getBookingData($date, $showroomId)
+{
+    return Booking::select('id', 'ArtistID', 'GetID', 'ShowroomID', 'status', 'action', 'time', 'time_end', 'date', 'source_name', 'price_id')
+        ->with([
+            'artist:id,name',
+            'showroom:id,Name',
+            'services:id,Name',
+            'get:id,name',
+            'price',
+        ])
+        ->where('date', $date)
+        ->where('ShowroomID', $showroomId)
+        ->orderBy('created_at', 'desc')
+        ->get();
+}
+
+// Phương thức để cập nhật trường 'active' trong dailyData
+private function updateActiveField($dailyData ,$artist)
+{
+    $workingHour = WorkingHour::where('showroom_schedule_id', $dailyData->showroom_id)
+        ->where('date', $dailyData->date)
+        ->where('artist_id', $artist)
+        ->first();
+
+
+    if ($workingHour) {
+        $dailyData->active = $workingHour->active;
+    } 
+}
+
+
+    public function DateActive($Date, $showroom ,$artist_id)
     {
+        // Query the status of the day of the week ($Date)
         $dayOfWeekActive = ShowroomSchedule::where('showroom_id', $showroom)
             ->where('day', date('l', strtotime($Date)))
             ->first();
 
+     
+
+
+        if($dayOfWeekActive != null){
+            $active =   $dayOfWeekActive -> active;
+        } 
+
+
+    
+        // Query the status for the specific date ($Date)
+        $dayActiveNone = WorkingHour::where('showroom_schedule_id', $showroom)
+        ->where('date', $Date)
+        ->where('artist_id', 0)
+        ->first();
+
+
+
         $dayActive = WorkingHour::where('showroom_schedule_id', $showroom)
             ->where('date', $Date)
+            ->where('artist_id', $artist_id)
             ->first();
-
-        // Kiểm tra nếu $dayOfWeekActive không null và có trạng thái "active"
-        $dayOfWeekActiveActive = $dayOfWeekActive && $dayOfWeekActive->active !== null ? $dayOfWeekActive->active : null;
-
-        // Kiểm tra nếu $dayActive không null và có trạng thái "active"
-        $dayActiveActive = $dayActive && $dayActive->active !== null ? $dayActive->active : null;
+        
+        if($dayActiveNone != null){
+            $active =  $dayActiveNone -> active;
+        } 
 
 
-        // Kiểm tra điều kiện để xác định giá trị cuối cùng
-        // Nếu cả hai đều active hoặc $dayActive không có kết quả, thì mới coi là active
-        // Hoặc nếu $dayOfWeekActiveActive là 0 và $dayActiveActive là 1
-        $isActive = ($dayOfWeekActiveActive == 1 && ($dayActiveActive == 1 ||  $dayActiveActive == null)) || ($dayOfWeekActiveActive == 0 && $dayActiveActive == 1);
-
+        if($dayActive != null){
+            $active =  $dayActive -> active;
+          } 
+    
+        // Initialize $isActive to true
+    
+        // If $dayActive is null, meaning no specific entry for the date
+        if ($active == 1) {
+            // Check if $dayOfWeekActive is active
+            $isActive = true;
+        } else {
+            // If $dayActive is not null, consider both $dayActive and $dayOfWeekActive status
+            $isActive = false;
+        }
+    
+        // Return the JSON response with the final isActive status
         return response()->json(['active' => $isActive]);
     }
-
-
-
+    
 
 
     public function getDataShowroom($startDate, $endDate)
@@ -1805,6 +2090,10 @@ class APIBookingController extends Controller
             'percent_refund' => 0,
             'percent_cancel' => 0,
             'length_real' => 0,
+            'percent_Pratial_Done' => 0,
+            'percent_Reschedule' => 0,
+            'percent_Unidentified' =>0,
+            'Operation_KPI' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -1827,10 +2116,14 @@ class APIBookingController extends Controller
                 $summarizedData['percent_refund'] += 1;
                 $summarizedData['Actual_B_Value'] -= $booking->price->servies_price ;
             } else if ($booking->status == "Partial Done") {
-                $summarizedData['percent_done'] += 1;
                 $summarizedData['Actual_B_Value'] -= $booking->price->Remaining_price ;
+                $summarizedData['percent_Pratial_Done'] += 1;
             } else if ($booking->status == "Waiting") {
                 $summarizedData['percent_waiting'] += 1;
+            } else if ($booking->status == "Reschedule"){      
+                $summarizedData['percent_Reschedule'] += 1;
+            } else if ($booking->status == "Unidentified"){
+                $summarizedData['percent_Unidentified'] += 1;
             }
             if ($booking->price->servies_price != 0) {
                 $summarizedData['length_real'] += 1;
@@ -1860,6 +2153,7 @@ class APIBookingController extends Controller
         foreach ($bookingupdates as $bookingupdate) {
 
             $summarizedData['Upsell'] += $bookingupdate->price->upsale;
+            $summarizedData['Operation_KPI'] += $bookingupdate->price->op_kpi;
 
             if($bookingupdate->status == "Done"){
                 $summarizedData['Initial_Revenue'] += $bookingupdate->price->Total_price - $bookingupdate->price->Deposit_price;

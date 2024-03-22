@@ -7,10 +7,9 @@ new Vue({
         FullcalendarAdmin,
     },
     data: {
-        adminId: document.getElementById('doashboard').getAttribute('data-admin-id'),
-        artistId: document.getElementById('doashboard').getAttribute('data-artist-id'),
-        employeeId: document.getElementById('doashboard').getAttribute('data-employee-id'),
-        manage_supers:  document.getElementById('doashboard').getAttribute('manage_supers')
-    },
-
+        adminId: document.getElementById('fullcalendar').getAttribute('data-admin-id'),
+        artistId: document.getElementById('fullcalendar').getAttribute('data-artist-id'),
+        employeeId: document.getElementById('fullcalendar').getAttribute('data-employee-id'),
+        manage_supers:  document.getElementById('fullcalendar').getAttribute('manage_supers')
+    }
 });

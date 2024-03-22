@@ -43,8 +43,15 @@
                                                 <td class="p-1"><input type="checkbox" name="check[]"
                                                         value="{{ $row->id }}" id="">
                                                     {{ $stt++ }}</td>
-                                                <td> <img src="{{ asset($row->avatar) }}" alt="" height="60px"
-                                                        width="60px"></td>
+                                                <td>
+                                                    @if ($row->avatar =='')
+                                                    <img src="{{ asset("public/storage/photos/1/user.jpeg") }}" alt="" height="60px"
+                                                    width="60px"></td>
+                                                    @else
+                                                    <img src="{{ asset($row->avatar) }}" alt="" height="60px"
+                                                    width="60px"></td>   
+                                                    @endif
+                                
                                                 <td>{{ $row->fullname }}</td>
                                                 <td>{{ $row->email }}</td>
                                                 <td>{{ $row->phone }}</td>
@@ -65,14 +72,9 @@
 
                                                 <td style="text-align: center">
 
-                                                   
-                                                    <button class="bg-none">
-                                                        <a href="{{ route('employee.show', $row->id) }}"><i class="fa-solid fa-binoculars"></i></a>
-                                                    </button>
-
                                                     <button class="bg-none">
                                                         <a href="{{ route('employee.edit', $row->id) }}">
-                                                            <i class="fa-sharp fa-solid fa-pen-to-square"></i>
+                                                            <i class="fa-solid fa-user-pen" style="color: #74C0FC;"></i>
                                                         </a>
                                                     </button>
                                                     <form method="POST" action="{{ route('employee.destroy', $row->id) }}"
@@ -80,8 +82,9 @@
                                                         style="display: inline;">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button class="bg-none" type="submit"><i
-                                                                class="fa-solid fa-trash"></i></button>
+                                                        <button class="bg-none" type="submit">
+                                                            <i class="fa-solid fa-trash" style="color: #ff0000;"></i>
+                                                        </button>
                                                     </form>
                                                 </td>
                                             </tr>

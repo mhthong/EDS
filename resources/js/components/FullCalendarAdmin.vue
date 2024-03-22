@@ -24,7 +24,7 @@
         id="showroomSelect"
         v-model="selectedArtist"
         @change="runFullcalendar"
-        :disabled="artistId !== null || this.selectedShowroom === 0"
+        :disabled="artistId !== null"
       >
         <option :value="0" selected>Artists</option>
         <option v-for="artist in artists" :key="artist.id" :value="artist.id">
@@ -43,9 +43,11 @@
         <option value="None">Status</option>
         <option value="Waiting">Waiting</option>
         <option value="Partial Done">Partial Done</option>
+        <option value="Reschedule">Reschedule</option>
         <option value="Done">Done</option>
         <option value="Cancel">Cancel</option>
         <option value="Refund">Refund</option>
+        <option value="Unidentified">Unidentified</option>
       </select>
     </div>
 
@@ -58,45 +60,178 @@
 
       <div v-if="popupVisible" class="popup">
         <div class="popup-content col-8 col-md-6">
-          <div class="header text-center pb-4">
-            <h5>Customize daily activity status</h5>
-          </div>
-          <select
-            class="form-control mb-3"
-            id="showroomSelect"
-            v-model="selectedShowroom"
-            @change="runFullcalendar"
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              gap: 1rem;
+              margin-bottom: 1rem;
+            "
           >
-            <option
-              v-for="showroom in showrooms"
-              :key="showroom.id"
-              :value="showroom.id"
+            <button
+              class="custom-btn bnt-16"
+              type="button"
+              @click="toggleStatus"
+              :class="{ active: popupnone === 'active' }"
             >
-              {{ showroom.Name }}
-            </option>
-          </select>
+              Status
+            </button>
+            <button
+              class="custom-btn bnt-16"
+              type="button"
+              @click="toggleApproval"
+              :class="{ approved: popupnone === 'Approved' }"
+            >
+              Approved
+            </button>
+          </div>
 
-          <select
-        class="form-control mb-3"
-        id="activeSelect"
-        v-model="selectedActive"
-      >
-        <option value="none">Select active status</option>
-        <option value="1">Active</option>
-        <option value="0">None Active</option>
-      </select>
+          <template v-if="popupnone === 'active'">
+            <div class="header text-center pb-4">
+              <h5>Customize daily activity status</h5>
+            </div>
 
+            <select
+              class="form-control mb-3"
+              id="showroomSelect"
+              v-model="selectedShowroomPopup"
+            >
+              <option :value="0" selected>Showroom</option>
 
-          <input
-            class="form-control mb-3"
-            type="date"
-            v-model="popupInputData"
-            placeholder="Enter data"
-          />
-          <button class="custom-btn bnt-16" type="submit" @click="saveData" :disabled="this.selectedActive == 'none' || this.selectedShowroom == 0 || this.adminId === null ">
-            Save
-          </button>
-          <button class="custom-btn bnt-16" @click="closePopup">Cancel</button>
+              <option
+                v-for="showroom in showrooms"
+                :key="showroom.id"
+                :value="showroom.id"
+              >
+                {{ showroom.Name }}
+              </option>
+            </select>
+
+            <div class="mb-3" style="display: flex; flex-wrap: wrap; gap: 1rem">
+              <div style="flex: 1">
+                <label class="label m-0">
+                  <input
+                    type="checkbox"
+                    :value="0"
+                    :checked="allSelected"
+                    @change="toggleAllSelection"
+                  />
+                  <div class="radio-header radio-text">All</div>
+                </label>
+              </div>
+
+              <div style="flex: 1" v-for="artist in artists" :key="artist.id">
+                <label class="label m-0" :for="'artist_' + artist.id">
+                  <input
+                    type="checkbox"
+                    :value="artist.id"
+                    :id="'artist_' + artist.id"
+                    v-model="selectedStatusArtist"
+                  />
+                  <div class="radio-header radio-text">{{ artist.name }}</div>
+                </label>
+              </div>
+            </div>
+
+            <select
+              class="form-control mb-3"
+              id="activeSelect"
+              v-model="selectedActive"
+            >
+              <option value="none">Select active status</option>
+              <option value="1">Active</option>
+              <option value="0">None Active</option>
+            </select>
+
+            <input
+              class="form-control mb-3"
+              type="date"
+              v-model="popupInputData"
+              placeholder="Enter data"
+            />
+            <button
+              class="custom-btn bnt-16"
+              type="submit"
+              @click="saveData"
+              :disabled="
+                this.selectedActive == 'none' ||
+                this.selectedShowroomPopup == 0 ||
+                this.adminId === null
+              "
+            >
+              Save
+            </button>
+            <button class="custom-btn bnt-16" @click="closePopup">
+              Cancel
+            </button>
+          </template>
+
+          <template v-if="popupnone === 'Approved'">
+            <div class="header text-center pb-4">
+              <h5>Approved daily</h5>
+            </div>
+            <select
+              class="form-control mb-3"
+              id="showroomSelect"
+              v-model="selectedShowroomPopup"
+            >
+              <option :value="0" selected>Showroom</option>
+              <option
+                v-for="showroom in showrooms"
+                :key="showroom.id"
+                :value="showroom.id"
+              >
+                {{ showroom.Name }}
+              </option>
+            </select>
+
+            <select
+              class="form-control mb-3"
+              id="showroomSelect"
+              v-model="selectedApprovedArtist"
+              @change="runFullcalendar"
+              :disabled="artistId !== null || this.selectedShowroomPopup == 0"
+            >
+              <option :value="0" selected>Artists</option>
+              <option
+                v-for="artist in artists"
+                :key="artist.id"
+                :value="artist.id"
+              >
+                {{ artist.name }}
+              </option>
+            </select>
+
+            <select
+              class="form-control mb-3"
+              id="activeSelect"
+              v-model="selectedApproved"
+            >
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+            </select>
+
+            <input
+              class="form-control mb-3"
+              type="date"
+              v-model="popupInputData"
+              placeholder="Enter data"
+            />
+            <button
+              class="custom-btn bnt-16"
+              type="submit"
+              @click="saveDataApproved"
+              :disabled="
+                this.selectedShowroomPopup == 0 || this.adminId === null
+              "
+            >
+              Save
+            </button>
+            <button class="custom-btn bnt-16" @click="closePopup">
+              Cancel
+            </button>
+          </template>
         </div>
       </div>
     </div>
@@ -120,6 +255,7 @@ import FullCalendar from "@fullcalendar/vue";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import moment from "moment";
 
 export default {
   components: {
@@ -131,13 +267,15 @@ export default {
       adminId: null,
       artistId: null,
       employeeId: null,
-      manage_supers:null,
+      manage_supers: null,
       selectedArtist: 0,
       showroomschedule: [],
       showrooms: [],
+      selectedStatusArtist: [],
       selectedShowroom: 0,
+      selectedShowroomPopup: 0,
       selectedActive: "none",
-      step: "none",
+      step: "FullCalendar",
       selectedStatus: "None",
       data: [],
       calendarOptions: {
@@ -159,13 +297,18 @@ export default {
         displayEventTime: false, // Optionally hide event times
         dateClick: (info) => {
           // Kiểm tra nếu adminId là null
-          if (this.adminId !== null && (this.manage_supers == 0 || this.manage_supers == 1 || this.manage_supers == 4)) {
-                  this.popupInputData = info.dateStr;
-                  this.openPopup();
-              } else {
-                  // Nếu adminId là null, có thể hiển thị một thông báo hoặc không làm gì cả
-                
-              }
+          if (
+            this.adminId !== null &&
+            (this.manage_supers == 0 ||
+              this.manage_supers == 1 ||
+              this.manage_supers == 4)
+          ) {
+            console.log(123);
+            this.popupInputData = info.dateStr;
+            this.openPopup();
+          } else {
+            // Nếu adminId là null, có thể hiển thị một thông báo hoặc không làm gì cả
+          }
         },
         datesSet: (info) => {
           const newViewStart = moment(info.view.currentStart)
@@ -187,7 +330,7 @@ export default {
             this.runFullcalendar();
           }
         },
-
+        dayCellContent: this.customDayHeaderContent,
         eventContent: this.customEventContent,
       },
 
@@ -198,37 +341,194 @@ export default {
       currentViewStart: null,
       currentViewEnd: null,
       activeDays: [],
-      calendarOptionsNone: {
-        plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-        initialView: "dayGridMonth",
-        weekends: true,
-        events: [],
-        eventTimeFormat: {
-          hour: "numeric",
-          minute: "2-digit",
-          separator: " - ",
-          meridiem: "short",
-        },
-        headerToolbar: {
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
-        },
-        selectable: true,
-        select: this.handleDateSelect,
-        eventClick: this.handleEventClick,
-        eventContent: this.customEventContent,
-        dayRender: this.handleDayRender,
-      },
+      popupnone: "active",
+      selectedApproved: "pending",
+      selectedApprovedArtist: 0,
     };
   },
 
   methods: {
+    toggleAllSelection() {
+      // Khi checkbox "All" được nhấp, cập nhật tất cả các checkbox nghệ sĩ
+      this.allSelected = !this.allSelected;
+    },
+
+    customDayHeaderContent(arg) {
+ 
+      const date = moment(arg.date).format("YYYY-MM-DD");
+      const day = arg.date.getDate();
+
+
+      if(this.artistId !== null){
+        return {
+        html: `<div class="custom-day-header">
+          <div>${day}</div>
+          </div>`,
+      };
+      }
+
+      // Lọc dữ liệu của bạn để chỉ lấy các sự kiện xảy ra trong ngày hiện tại
+      const eventsForCurrentDate = Object.keys(this.data[date] || {}).flatMap(
+        (showroomId) =>
+          this.data[date][showroomId].bookingData.map((booking) => ({
+            ...booking,
+            showroomId: showroomId,
+          }))
+      );
+
+      const totalPriceByArtistsId = {};
+      const Action = {};
+
+      eventsForCurrentDate.forEach((event) => {
+        const key = `${event.ArtistID}_${event.showroomId}`; // Generate a unique key based on showroomId and ArtistID
+
+        // Kiểm tra xem showroomId và ArtistID của sự kiện có khớp với showroom và artist được chọn không
+        if (
+          (parseInt(this.selectedShowroom) === parseInt(event.showroomId) ||
+            parseInt(this.selectedShowroom) === 0) &&
+          (parseInt(this.selectedArtist) === parseInt(event.ArtistID) ||
+            parseInt(this.selectedArtist) === 0)
+        ) {
+          // Thêm giá của sự kiện vào tổng giá của showroom tương ứng
+          if (event.status == "Waiting" || event.status == "Done") {
+            totalPriceByArtistsId[key] =
+              (totalPriceByArtistsId[key] || 0) +
+              parseInt(event.price.servies_price);
+          } else if (event.status == "Cancel") {
+            totalPriceByArtistsId[key] =
+              (totalPriceByArtistsId[key] || 0) +
+              parseInt(event.price.Deposit_price);
+          } else if (
+            event.status == "Partial Done" ||
+            event.status == "Refund"
+          ) {
+            totalPriceByArtistsId[key] =
+              (totalPriceByArtistsId[key] || 0) +
+              parseInt(event.price.Total_price);
+          }
+
+          // Xác định trường 'action' dựa trên giá trị của event.action
+          Action[key] = event.action === "pending" ? "pending" : "approved";
+        }
+      });
+
+      // Tạo một chuỗi HTML từ các tổng giá của showroom
+      let eventsHtml = "";
+
+      console.log("Object", Object.keys(totalPriceByArtistsId));
+
+      console.log("Action", Object.keys(Action));
+
+      Object.keys(totalPriceByArtistsId).forEach((Id) => {
+        const artistName = this.getArtistNameById(Id); // Thay thế getArtistNameById bằng hàm thích hợp trong ứng dụng của bạn
+
+        const showroomName = this.getshowroomNameById(Id);
+        console.log(parseInt(totalPriceByArtistsId[Id]) >= 1200);
+
+        console.log("Actionsss", Action[Id]);
+
+        // Kiểm tra giá trị của Action[Id]
+        const action = Action[Id] || ""; // Tránh lỗi nếu không có giá trị action
+
+        // Tạo chuỗi HTML dựa trên giá trị của Action[Id]
+        let iconHtml = "";
+        if (action === "approved") {
+          iconHtml = `<i class="fa-solid fa-circle-check approved_icon" style="color: #0400eb;"></i>`;
+        } else {
+          iconHtml = `<i class="fa-solid fa-circle-xmark pending_icon" style="color: #ff0000;"></i>`;
+        }
+
+        if (parseInt(totalPriceByArtistsId[Id]) >= 1200) {
+          eventsHtml += `<div class="date-revenue-price-info revenue-true" style="background: #c4ebfa;   padding: 1rem; border-radius: 10px; margin-bottom: 5px; position: relative;">
+           <div class="icon-revenue" style="  position: absolute;  right: 0.15rem; top: 0.1rem;">${iconHtml}</div>
+             <p> Artist : <b class="none_text">${artistName}</b>
+            </br> 
+            Location : <b class="none_text">${showroomName}</b>
+            </br> 
+            Revenue : <b class="none_text">${totalPriceByArtistsId[Id]}</b></p></div>`;
+        } else if (parseInt(totalPriceByArtistsId[Id]) >= 1000) {
+          eventsHtml += `<div class="date-revenue-price-info revenue-true" style="background: #c4fad7;   padding: 1rem; border-radius: 10px; margin-bottom: 5px; position: relative;">
+            <div class="icon-revenue" style="  position: absolute;  right: 0.15rem; top: 0.1rem;">${iconHtml}</div>
+   
+            <p> Artist : <b class="none_text">${artistName}</b>
+            </br> 
+            Location : <b class="none_text">${showroomName}</b>
+            </br> 
+            Revenue : <b class="none_text">${totalPriceByArtistsId[Id]}</b></p></div>`;
+        } else {
+          eventsHtml += `<div class="date-revenue-price-info revenue-false" style="background: #fac4c4;   padding: 1rem; border-radius: 10px; margin-bottom: 5px; position: relative;">
+            <div class="icon-revenue" style="  position: absolute;  right: 0.15rem; top: 0.1rem;">${iconHtml}</div>
+            <p> Artist : <b class="none_text">${artistName}</b>
+            </br> 
+            Location : <b class="none_text">${showroomName}</b>
+            </br> 
+            Revenue : <b class="none_text">${totalPriceByArtistsId[Id]}</b></p></div>`;
+        }
+      });
+
+      // Trả về nội dung đã được tạo ra
+      return {
+        html: `<div class="custom-day-header">
+          <div>${day}</div>
+          <div class="date-revenue-price" ${eventsHtml}<div>
+          </div>`,
+      };
+    },
+
+    getshowroomNameById(showroom) {
+      const showroomid = showroom.split("_")[1];
+      // Get the part after the underscore
+      // Lấy thông tin về nghệ sĩ từ nguồn dữ liệu của bạn
+      // Đây chỉ là một ví dụ, bạn cần điều chỉnh mã này để phù hợp với cách bạn lưu trữ dữ liệu
+      const showroomName = this.showrooms.find(
+        (artist) => parseInt(artist.id) === parseInt(showroomid)
+      );
+
+      // Kiểm tra xem nghệ sĩ có tồn tại hay không
+      if (showroomName) {
+        return showroomName.Name; // Trả về tên của nghệ sĩ
+      } else {
+        return "Unknown"; // Trả về "Unknown" nếu không tìm thấy nghệ sĩ
+      }
+    },
+
+    getArtistNameById(artistId) {
+      console.log("adsad", artistId, this.artists);
+
+      const numberPart = artistId.split("_")[1];
+      // Get the part after the underscore
+      // Lấy thông tin về nghệ sĩ từ nguồn dữ liệu của bạn
+      // Đây chỉ là một ví dụ, bạn cần điều chỉnh mã này để phù hợp với cách bạn lưu trữ dữ liệu
+      const artist = this.artists.find(
+        (artist) => parseInt(artist.id) === parseInt(artistId)
+      );
+
+      // Kiểm tra xem nghệ sĩ có tồn tại hay không
+      if (artist) {
+        return artist.name; // Trả về tên của nghệ sĩ
+      } else {
+        return "Unknown"; // Trả về "Unknown" nếu không tìm thấy nghệ sĩ
+      }
+    },
+
     openPopup() {
       this.popupVisible = true;
     },
     closePopup() {
       this.popupVisible = false;
+    },
+
+    toggleStatus() {
+      if (this.popupnone !== "active") {
+        console.log(this.popupnone);
+        this.popupnone = "active"; // Use assignment operator to update the variable
+      }
+    },
+    toggleApproval() {
+      if (this.popupnone !== "Approved") {
+        console.log(this.popupnone);
+        this.popupnone = "Approved"; // Use assignment operator to update the variable
+      }
     },
 
     handleViewRender(view) {
@@ -246,24 +546,52 @@ export default {
     saveData() {
       // Tạo một đối tượng dữ liệu để gửi lên server
       const postData = {
-        showroomId: this.selectedShowroom,
+        showroomId: this.selectedShowroomPopup,
         activeStatus: this.selectedActive,
         inputData: this.popupInputData,
+        artistId: this.selectedStatusArtist,
       };
 
+      console.log(postData);
       // Gửi yêu cầu POST đến API để lưu dữ liệu
-      axios.post('/api/save-data', postData)
-        .then(response => {
-  
+      axios
+        .post("/api/save-data", postData)
+        .then((response) => {
           // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
-         
+
           this.selectedActive = "none";
           this.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
           this.closePopup(); // Đóng popup sau khi lưu thành công
+          console.log(postData);
         })
-        .catch(error => {
-     
-          console.error('Error saving data:', error);
+        .catch((error) => {
+          console.error("Error saving data:", error);
+          console.log(postData);
+          // Xử lý lỗi nếu có
+        });
+    },
+    saveDataApproved() {
+      // Tạo một đối tượng dữ liệu để gửi lên server
+      const postData = {
+        showroomId: this.selectedShowroomPopup,
+        Approved: this.selectedApproved,
+        inputData: this.popupInputData,
+        artistId: this.selectedApprovedArtist,
+      };
+
+      // Gửi yêu cầu POST đến API để lưu dữ liệu
+      axios
+        .post("/api/save-data-approved", postData)
+        .then((response) => {
+          // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+
+          this.selectedApproved = "pending";
+          this.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
+          this.closePopup(); // Đóng popup sau khi lưu thành công
+          console.log(postData);
+        })
+        .catch((error) => {
+          console.error("Error saving data:", error);
           // Xử lý lỗi nếu có
         });
     },
@@ -271,9 +599,11 @@ export default {
     async fetchData() {
       try {
         const response = await axios.get(
-          `/api/fullcalendar/${this.currentViewStart}/${this.currentViewEnd}/${this.selectedShowroom}`
+          `/api/fullcalendar/${this.currentViewStart}/${this.currentViewEnd}/${this.selectedShowroom}/${this.selectedArtist}`
         );
         this.data = response.data;
+
+        console.log("    this.data ",    this.data );
       } catch (error) {
         console.error("Error fetching API data:", error);
       }
@@ -285,8 +615,7 @@ export default {
         this.selectedShowroom == 0 &&
         this.selectedStatus == "None"
       ) {
-        this.step = "none";
-        return;
+        this.step = "FullCalendar";
       } else {
         this.step = "FullCalendar";
       }
@@ -342,24 +671,8 @@ export default {
     },
 
     loadEvents() {
-      if (this.artistId !== null) {
-        this.selectedArtist = this.$root.artistId;
-      }
 
-      if (
-        this.selectedArtist == 0 &&
-        this.selectedShowroom == 0 &&
-        this.selectedStatus == "None"
-      ) {
-        this.step = "none";
-        return;
-      } else {
-        this.step = "FullCalendar";
-      }
-
-      if (this.selectedShowroom !== 0) {
-        this.fetchShowroomschedule();
-      }
+      this.fetchShowroomschedule();
 
       // Flatten the nested structure into a flat array of events
       const flatEvents = Object.keys(this.data).flatMap((date) =>
@@ -390,7 +703,7 @@ export default {
       const filteredEvents = flatEvents.filter((event) => {
         const artistMatch =
           this.selectedArtist === 0 ||
-          parseInt(event.ArtistID) === this.selectedArtist;
+          parseInt(event.ArtistID) === parseInt(this.selectedArtist);
         const statusMatch =
           this.selectedStatus === "None" ||
           event.status === this.selectedStatus;
@@ -403,6 +716,7 @@ export default {
         return artistMatch && statusMatch && actionMatch;
       });
 
+      console.log("filteredEvents", filteredEvents);
       // Map the filtered events to FullCalendar format
       const filteredEventsRef = filteredEvents.map((event) => {
         const startTime = new Date(event.date + "T" + event.time);
@@ -421,6 +735,7 @@ export default {
             artist: event.artist.name,
             source: event.source_name,
             get: event.get.name,
+            action: event.action,
             showroom: event.showroom.Name,
             services: serviceNames,
             startTime: moment(startTime).format("hh:mm A"),
@@ -451,11 +766,13 @@ export default {
             title: "active_none",
             start: startTime,
             end: endTime,
+
             extendedProps: {
               title: "active_none",
               artist: "none",
               source: "none",
               get: "none",
+              action: "none",
               showroom: "none",
               services: "none",
               startTime: "none",
@@ -473,6 +790,13 @@ export default {
     },
 
     customEventContent(arg) {
+
+
+
+      if (parseInt(this.selectedShowroom) === 0 && (parseInt(this.selectedArtist) === 0)) {
+        return;
+      }
+
       const startTime = arg.event.start.toLocaleTimeString([], {
         hour: "numeric",
         minute: "2-digit",
@@ -493,6 +817,7 @@ export default {
             <span class="fc-status">Client : ${arg.event.extendedProps.get} </span><br>
             <span class="fc-status">${arg.event.extendedProps.showroom} </span><br>
             <span class="fc-status">${arg.event.extendedProps.services} </span><br>
+            <span class="fc-status">${arg.event.extendedProps.action} </span><br>
             <span class="fc-status"> ${arg.event.title}</span><br>
             <span class="fc-time">${startTime} - ${endTime}</span>
             </div>
@@ -502,26 +827,56 @@ export default {
       };
     },
   },
+  
+
+  computed: {
+    allSelected: {
+      get() {
+        // Kiểm tra xem tất cả các nghệ sĩ đã được chọn hay không
+        return this.selectedStatusArtist.length === this.artists.length;
+      },
+      set(value) {
+        // Khi checkbox "All" được thay đổi, cập nhật tất cả các checkbox nghệ sĩ
+        if (value) {
+          const allArtistIds = this.artists.map((artist) => artist.id);
+          this.selectedStatusArtist = allArtistIds;
+        } else {
+          this.selectedStatusArtist = [];
+        }
+      },
+    },
+  },
 
   created() {
     this.activeDays = this.getActiveDays();
   },
+  watch: {
+    popupnone(newValue, oldValue) {
+      // Log when the value of popupnone changes
+      console.log("popupnone changed from", oldValue, "to", newValue);
+    },
+  },
 
   mounted() {
+
+// Chuyển đổi chuỗi sang số nguyên
     this.adminId = this.$root.adminId;
 
     this.artistId = this.$root.artistId;
 
     this.employeeId = this.$root.employeeId;
 
-    this.manage_supers = this.$root.manage_supers;
-
+    this.manage_supers = this.$root.manage_supers; 
 
     if (this.artistId !== null) {
       this.selectedArtist = this.artistId;
     }
+    console.log("selectedShowroom",parseInt(this.selectedShowroom) === 0 ,this.selectedArtist === 0 , this.selectedArtist , parseInt(this.selectedShowroom) === 0 && parseInt(this.selectedArtist) === 0);
+
     this.fetchShowrooms();
     this.fetchArtists();
+
+    this.runFullcalendar();
   },
 };
 </script>
@@ -553,7 +908,6 @@ export default {
   padding: 20px;
   border-radius: 8px;
 }
-
 
 .custom-btn {
   width: 130px;
@@ -604,6 +958,41 @@ export default {
   top: 2px;
 }
 
+.Unidentified {
+  background-color: #9f9fa7 !important;
+  color: #ffffff;
+}
 
+.date-revenue-price {
+  padding: 0.5rem;
+  color: black;
+}
 
+.revenue-false {
+  background: #fac4c4;
+}
+.fc-daygrid-day-top a {
+  width: 100%;
+  padding: 0.5rem;
+}
+
+.fc-daygrid-day-number {
+  width: 100% !important;
+  padding: 0.5rem;
+}
+
+.approved {
+  background-color: green;
+  color: white;
+}
+
+.active {
+  background-color: green;
+  color: white;
+}
+.icon-revenue {
+  position: absolute;
+  right: 0.15rem;
+  top: 0.1rem;
+}
 </style>

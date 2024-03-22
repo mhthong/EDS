@@ -13,6 +13,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -58,7 +61,7 @@ __webpack_require__.r(__webpack_exports__);
       jsonData: "",
       bookingData: "",
       selectedDiscountPrice: 0,
-      selectedDepositPrice: 100,
+      selectedDepositPrice: 0,
       maxDepositPrice: 0,
       maxDiscountPrice: 0,
       minDepositPrice: 0,
@@ -74,7 +77,8 @@ __webpack_require__.r(__webpack_exports__);
       ImageDeposit: [],
       adminId: null,
       artistId: null,
-      employeeId: null
+      employeeId: null,
+      ArrayPricedService: []
       /*   selectedOption: "option1", */
     };
   },
@@ -148,6 +152,10 @@ __webpack_require__.r(__webpack_exports__);
   },
 
   methods: {
+    updateImageDeposit: function updateImageDeposit(selectedService, newValue) {
+      selectedService.ImageDeposit = newValue;
+      console.log(this.selectedServices);
+    },
     formatTime: function formatTime(time) {
       // Chuyển đổi thời gian từ chuỗi "HH:mm:ss" sang đối tượng Date
       var timeParts = time.split(":");
@@ -169,16 +177,18 @@ __webpack_require__.r(__webpack_exports__);
         console.error("Error fetching showrooms:", error);
       });
     },
-    ImageDepositSelected: function ImageDepositSelected() {
+    ImageDepositSelected: function ImageDepositSelected(value, index) {
+      var route_prefix = "";
       if (this.employeeId !== null) {
-        var route_prefix = "/employee/laravel-filemanager";
+        route_prefix = "/employee/laravel-filemanager";
+      } else if (this.artistId !== null) {
+        route_prefix = "/artists/laravel-filemanager";
+      } else if (this.adminId !== null) {
+        route_prefix = "/admin/laravel-filemanager";
       }
-      if (this.artistId !== null) {
-        var route_prefix = "/artists/laravel-filemanager";
-      }
-      if (this.adminId !== null) {
-        var route_prefix = "/admin/laravel-filemanager";
-      }
+      $("#" + value).filemanager("image", {
+        prefix: route_prefix
+      });
       $("#image_manager").filemanager("image", {
         prefix: route_prefix
       });
@@ -232,21 +242,23 @@ __webpack_require__.r(__webpack_exports__);
     : [];
     console.log( this.filteredDays);
     }, */
-    filterActiveDays: function filterActiveDays() {
+    filterActiveDays: function filterActiveDays(DateTreament, index, artistId) {
       var _this10 = this;
-      if (!this.selectedDate || !this.selectedShowroom) return;
+      var InforData = this.selectedServices[index];
+      if (!DateTreament || !this.selectedShowroom) return;
 
       // Gửi yêu cầu API để lấy dữ liệu
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(this.selectedDate, "/").concat(this.selectedShowroom)).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(DateTreament, "/").concat(this.selectedShowroom, "/").concat(artistId)).then(function (response) {
         // Lấy giá trị active từ API
-        _this10.isActive = response.data.active;
+        InforData.dateActive = response.data.active;
+        console.log("      InforData.dateActive", InforData.dateActive, _this10.selectedShowroom, artistId);
 
         // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
       })["catch"](function (error) {
         console.error("Error fetching data:", error);
       });
-      this.filteredDays = this.apiData.filter(function (schedule) {
-        return schedule.date === _this10.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this10.selectedArtist);
+      InforData.filteredDays = this.apiData.filter(function (schedule) {
+        return schedule.date === DateTreament && parseInt(schedule.ArtistID) === parseInt(InforData.Artist);
       });
     },
     selectedDateToDay: function selectedDateToDay(dateString) {
@@ -266,19 +278,21 @@ __webpack_require__.r(__webpack_exports__);
 
       return matchingApiData && matchingApiData.ArtistID !== this.selectedShowroom;
     },
-    checkTimeConflict: function checkTimeConflict() {
-      if (!this.startTime || !this.endTime) {
-        this.isTimeConflict = false;
+    checkTimeConflict: function checkTimeConflict(index) {
+      var InforData = this.selectedServices[index];
+      if (!InforData.StartTime || !InforData.EndTime) {
+        InforData.isTimeConflict = false;
         return;
       }
-      var selectedStartTime = new Date("1970-01-01T".concat(this.startTime));
-      var selectedEndTime = new Date("1970-01-01T".concat(this.endTime));
+      var selectedStartTime = new Date("1970-01-01T".concat(InforData.StartTime));
+      var selectedEndTime = new Date("1970-01-01T".concat(InforData.EndTime));
       // ...
       // Kiểm tra xem thời gian bắt đầu và kết thúc nằm trong khoảng từ 8AM đến 8PM
       var isStartTimeValid = selectedStartTime.getHours() >= 8 && selectedStartTime.getHours() < 20;
       var isEndTimeValid = selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
       // Kiểm tra xung đột thời gian cho cả startTime và endTime
-      var conflict = this.filteredDays.some(function (schedule) {
+
+      var conflict = InforData.filteredDays.some(function (schedule) {
         var startTime = new Date("1970-01-01T".concat(schedule.time));
         var endTime = new Date("1970-01-01T".concat(schedule.time_end));
         // ...
@@ -286,19 +300,19 @@ __webpack_require__.r(__webpack_exports__);
         return selectedStartTime >= startTime && selectedStartTime < endTime || selectedEndTime > startTime && selectedEndTime <= endTime;
       });
       if (conflict || selectedStartTime >= selectedEndTime || !isStartTimeValid || !isEndTimeValid) {
-        this.isTimeConflict = true;
-        this.showAlert = true;
-        this.startTime = null;
-        this.endTime = null;
+        InforData.isTimeConflict = true;
+        InforData.showAlert = true;
+        InforData.StartTime = null;
+        InforData.EndTime = null;
       } else {
-        this.isTimeConflict = false;
-        this.showAlert = false;
+        InforData.isTimeConflict = false;
+        InforData.showAlert = false;
       }
     },
-    checkSelectedDate: function checkSelectedDate() {
+    checkSelectedDate: function checkSelectedDate(DateTreament) {
       // Xử lý sự kiện khi ngày được chọn thay đổi
       var currentDate = new Date();
-      var selectedDate = new Date(this.selectedDate);
+      var selectedDate = new Date(DateTreament);
       this.isLabelActive = true;
 
       // Tính số mili giây giữa ngày hiện tại và ngày đã chọn
@@ -359,8 +373,8 @@ __webpack_require__.r(__webpack_exports__);
     },
     getSelectedServicePrice: function getSelectedServicePrice() {
       var _this14 = this;
-      return this.selectedServices.map(function (id) {
-        return _this14.getServicePrice(id);
+      return this.selectedServices.map(function (service) {
+        return _this14.getServicePrice(service);
       }).join(", ");
     },
     getServicePrice: function getServicePrice(id) {
@@ -383,8 +397,19 @@ __webpack_require__.r(__webpack_exports__);
       }
       return 0;
     },
-    checkInputValue: function checkInputValue() {
-      if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
+    checkInputValue: function checkInputValue(index) {
+      var TotalDeposit = 0;
+      var TotalRemainingPrice = 0;
+      this.selectedServices.map(function (Service) {
+        var DepositPrice = parseFloat(Service.Deposit);
+        var RemainingPrice = parseFloat(Service.RemainingPrice);
+
+        // Add the effective price to the total
+        TotalDeposit += parseFloat(DepositPrice);
+        TotalRemainingPrice += parseFloat(RemainingPrice);
+      });
+      var InforData = this.selectedServices[index];
+      if (InforData.Deposit > this.maxDepositPrice || InforData.Deposit < this.minDepositPrice || InforData.Deposit === "" || TotalDeposit > this.maxDepositPrice) {
         this.inputError = true;
       } else {
         this.inputError = false;
@@ -398,29 +423,74 @@ __webpack_require__.r(__webpack_exports__);
         this.inputError_01 = false;
       }
     },
+    SelectedServicesPrice: function SelectedServicesPrice() {
+      var totalPrice = 0;
+
+      // Loop through selected services to calculate total price
+      var _iterator = _createForOfIteratorHelper(this.selectedServices),
+        _step;
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var service = _step.value;
+          totalPrice += service.price;
+        }
+
+        // Now, totalPrice contains the total price of all selected services
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+      console.log("Total price of selected services:", totalPrice);
+    },
+    checkPrice: function checkPrice() {
+      var RemainingPriceTotalPrice = 0;
+      this.selectedServices.map(function (Service) {
+        var RemainingPrice = parseFloat(Service.RemainingPrice);
+
+        // Add the effective price to the total
+        RemainingPriceTotalPrice += parseFloat(RemainingPrice);
+      });
+      var checkRemanining = this.calculateTotalSelectedServicesPrice();
+      if (parseInt(RemainingPriceTotalPrice) === parseInt(checkRemanining)) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    checkButton: function checkButton() {
+      return this.selectedServices.every(function (Service) {
+        console.log(Service.StartTime, Service.EndTime, Service.DateTreament, Service.DateTreament == "", Service.EndTime == null);
+        return Service.StartTime !== null && Service.EndTime !== null && Service.DateTreament !== "";
+      });
+    },
     calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
-      var _this15 = this;
       var serviceTotalPrice = 0;
+      var depositTotalPrice = 0;
+      this.checkButton();
 
       // Check if selectedServices is not null and is an array
       if (this.selectedServices !== null && Array.isArray(this.selectedServices)) {
         // Loop through each selected service
-        this.selectedServices.map(function (id) {
-          var servicePrice = _this15.getServicePrice(id);
-          var serviceSalePrice = _this15.getServiceSalePrice(id);
+        this.selectedServices.map(function (Service) {
+          var servicePrice = parseFloat(Service.price);
+          var serviceSalePrice = parseFloat(Service.salePrice);
+          var depositPrice = parseFloat(Service.Deposit);
           // Calculate the effective price (considering sale price if available)
           var effectivePrice = serviceSalePrice !== null ? serviceSalePrice : 0;
 
           // Add the effective price to the total
           serviceTotalPrice += parseFloat(effectivePrice) + parseFloat(servicePrice);
+          depositTotalPrice += parseFloat(depositPrice);
         });
       }
+      this.selectedDepositPrice = depositTotalPrice;
 
       // Now serviceTotalPrice contains the total price of selected services
       this.maxDepositPrice = serviceTotalPrice;
       this.maxDiscountPrice = serviceTotalPrice;
-      if (this.selectedDepositPrice !== "" || this.selectedDiscountPrice !== "") {
-        var selectedDepositPrice = this.selectedDepositPrice;
+      if (this.selectedDiscountPrice !== "") {
+        var selectedDepositPrice = depositTotalPrice;
         var selectedDiscountPrice = this.selectedDiscountPrice;
         return serviceTotalPrice + this.totalLevelPrice * this.selectedServices.length - parseFloat(selectedDepositPrice) - parseFloat(selectedDiscountPrice);
       } else {
@@ -443,31 +513,24 @@ __webpack_require__.r(__webpack_exports__);
       } else if (this.step === "artistlevels") {
         if (this.selectedShowroom) {
           this.fetchShowroomSchedule();
-          this.step = "showroomschedule";
-          this.ImageDeposit = this.$refs.inputDeposit.value;
-        }
-      } else if (this.step === "showroomschedule") {
-        this.fetchArtists();
-        if (this.selectedDate && !this.isTimeConflict) {
+          this.selectedServices.map(function (Service) {
+            var _document$getElementB;
+            var inputId = 'Deposit_' + Service.id;
+            var inputValue = (_document$getElementB = document.getElementById(inputId)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.value;
+            if (inputValue !== undefined) {
+              Service.ImageDeposit = inputValue;
+            }
+          });
           this.step = "getShow";
+          this.fetchArtists();
           var bookingDatavalue = {
             showroomId: this.selectedShowroom,
-            groupServiceId: this.selectedGroupService,
             serviceIds: this.selectedServices,
-            Artist_levelID: this.selectedArtistlevel,
-            ArtistID: this.selectedArtist,
             Level_price: this.totalLevelPrice,
-            Remaining_price: this.calculateTotalSelectedServicesPrice(),
-            Deposit_price: this.selectedDepositPrice,
-            Total_price: parseFloat(this.calculateTotalSelectedServicesPrice()) + parseFloat(this.selectedDepositPrice),
-            Date: this.selectedDate,
-            workingHour: this.startTime,
-            WorkingHour_end_time: this.endTime,
-            Status: this.selectedStatus,
-            PaymentType: this.selectedPaymentType,
-            ImageDeposit: this.ImageDeposit
+            Artist_levelID: this.selectedArtistlevel
           };
           this.bookingData = JSON.stringify(bookingDatavalue);
+          console.log(this.bookingData);
         }
       }
     },
@@ -478,7 +541,7 @@ __webpack_require__.r(__webpack_exports__);
       if (this.step === "groupService") {
         this.step = "showroom";
         this.selectedGroupService = null;
-        this.selectedServices = null;
+        this.selectedServices = [];
         this.selectedArtistlevel = [];
         this.totalSelectedServicesPrice = 0;
         // Xóa dữ liệu đã chọn
@@ -486,19 +549,8 @@ __webpack_require__.r(__webpack_exports__);
         this.step = "groupService";
         this.selectedArtistlevel = [];
         this.totalSelectedServicesPrice = 0;
-      } else if (this.step === "showroomschedule") {
-        this.step = "artistlevels";
-        this.selectedshowroomschedule = [];
-        this.selectedDate = "";
-        this.selectedWorkingHour = "";
       } else if (this.step === "getShow") {
-        this.step = "showroomschedule";
-        this.formData = "";
-        this.selectedshowroomschedule = [];
-        this.selectedDate = "";
-        this.selectedArtist = "";
-        this.selectedWorkingHour = "";
-        this.bookingDatavalue = "";
+        this.step = "artistlevels";
       }
     },
     isNameValid: function isNameValid(name) {
@@ -978,12 +1030,12 @@ var render = function render() {
     return _c("p", {
       key: _vm.selectedServices.id,
       staticClass: "radio-text"
-    }, [_vm._v("\n             " + _vm._s(_vm.getServiceName(selectedService)) + " --   " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(selectedService))) + "\n                ")]);
+    }, [_vm._v("\n                  " + _vm._s(_vm.getServiceName(selectedService.id)) + " --\n                  " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(selectedService.id))) + "\n                ")]);
   }), 0) : _c("div", _vm._l(_vm.selectedServices, function (selectedService) {
     return _c("p", {
       key: _vm.selectedServices.id,
       staticClass: "radio-text"
-    }, [_vm._v("\n                    " + _vm._s(_vm.getServiceName(selectedService)) + " -- Price:\n                    " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(selectedService))) + "\n\n                  ")]);
+    }, [_vm._v("\n                  " + _vm._s(_vm.getServiceName(selectedService)) + " -- Price:\n                  " + _vm._s(_vm.formatCurrency(_vm.getServicePrice(selectedService))) + "\n                ")]);
   }), 0)])]), _vm._v(" "), _vm.selectedArtistlevelDetails ? _c("div", [_c("div", {}, [_c("p", [_c("i", {
     staticClass: "fa-solid fa-user",
     staticStyle: {
@@ -991,15 +1043,13 @@ var render = function render() {
     }
   }), _vm._v(" "), _c("span", {
     staticClass: "radio-header radio-text"
-  }, [_vm._v(_vm._s(_vm.selectedArtistlevelDetails.Name))])]), _vm._v(" "), _c("ul", [_c("li", [_c("p", {
-    staticClass: "radio-text"
-  }, [_c("i", [_vm._v(_vm._s(_vm.formatCurrency(_vm.selectedArtistlevelDetails.Level_price)))])]), _vm._v(" "), _c("p", {
-    staticClass: "radio-text"
-  }, [_vm._v("\n                    Level Price: " + _vm._s(_vm.formatCurrency(_vm.totalLevelPrice)) + "\n                  ")])])])])]) : _c("p", {
+  }, [_vm._v(_vm._s(_vm.selectedArtistlevelDetails.Name))])])])]) : _c("p", {
     staticClass: "radio-text"
   }, [_vm._v("No selected level")]), _vm._v(" "), _c("p", {
     staticClass: "radio-header radio-text"
-  }, [_vm._v("\n            Remaining Price:\n            " + _vm._s(_vm.formatCurrency(_vm.calculateTotalSelectedServicesPrice())) + "\n          ")])])]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _vm.step === "showroom" ? [_c("div", {
+  }, [_vm._v("\n            Remaining Price:\n            " + _vm._s(_vm.formatCurrency(_vm.calculateTotalSelectedServicesPrice())) + "\n          ")]), _vm._v(" "), _c("p", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("\n            Deposit Price:\n            " + _vm._s(_vm.formatCurrency(this.selectedDepositPrice)) + "\n          ")])])]) : _vm._e()])]) : _vm._e(), _vm._v(" "), _vm.step === "showroom" ? [_c("div", {
     staticClass: "radio-section"
   }, _vm._l(_vm.showrooms, function (showroom) {
     return _c("div", {
@@ -1074,8 +1124,42 @@ var render = function render() {
           type: "checkbox"
         },
         domProps: {
-          value: service.id,
-          checked: Array.isArray(_vm.selectedServices) ? _vm._i(_vm.selectedServices, service.id) > -1 : _vm.selectedServices
+          value: {
+            id: service.id,
+            price: service.Price,
+            salePrice: service.Sale_Price,
+            Deposit: 0,
+            RemainingPrice: 0,
+            ImageDeposit: "",
+            DateTreament: "",
+            Artist: 0,
+            filteredDays: [],
+            StartTime: null,
+            EndTime: null,
+            dateActive: null,
+            isTimeConflict: false,
+            showAlert: false,
+            Status: "Waiting",
+            PaymentType: "Bank transfer"
+          },
+          checked: Array.isArray(_vm.selectedServices) ? _vm._i(_vm.selectedServices, {
+            id: service.id,
+            price: service.Price,
+            salePrice: service.Sale_Price,
+            Deposit: 0,
+            RemainingPrice: 0,
+            ImageDeposit: "",
+            DateTreament: "",
+            Artist: 0,
+            filteredDays: [],
+            StartTime: null,
+            EndTime: null,
+            dateActive: null,
+            isTimeConflict: false,
+            showAlert: false,
+            Status: "Waiting",
+            PaymentType: "Bank transfer"
+          }) > -1 : _vm.selectedServices
         },
         on: {
           change: [function ($event) {
@@ -1083,7 +1167,24 @@ var render = function render() {
               $$el = $event.target,
               $$c = $$el.checked ? true : false;
             if (Array.isArray($$a)) {
-              var $$v = service.id,
+              var $$v = {
+                  id: service.id,
+                  price: service.Price,
+                  salePrice: service.Sale_Price,
+                  Deposit: 0,
+                  RemainingPrice: 0,
+                  ImageDeposit: "",
+                  DateTreament: "",
+                  Artist: 0,
+                  filteredDays: [],
+                  StartTime: null,
+                  EndTime: null,
+                  dateActive: null,
+                  isTimeConflict: false,
+                  showAlert: false,
+                  Status: "Waiting",
+                  PaymentType: "Bank transfer"
+                },
                 $$i = _vm._i($$a, $$v);
               if ($$el.checked) {
                 $$i < 0 && (_vm.selectedServices = $$a.concat([$$v]));
@@ -1099,7 +1200,7 @@ var render = function render() {
         }
       }), _vm._v(" "), _c("div", {
         staticClass: "radio-header radio-text"
-      }, [_vm._v("\n              " + _vm._s(service.Name) + " -- Sale_PricepriceString: " + _vm._s(_vm.formatCurrency(service.Price)) + "\n            ")])])]);
+      }, [_vm._v("\n              " + _vm._s(service.Name) + " -- Sale_PricepriceString:\n              " + _vm._s(_vm.formatCurrency(service.Price)) + "\n            ")])])]);
     }), 0) : _vm._e()]);
   }), _vm._v(" "), _c("button", {
     staticClass: "custom-btn btn-16",
@@ -1118,109 +1219,365 @@ var render = function render() {
     on: {
       click: _vm.nextStep
     }
-  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "artistlevels" ? [_c("ul", [_c("li", {
-    staticClass: "mt-3 mb-3"
-  }, [_c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Deposit Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDepositPrice,
-      expression: "selectedDepositPrice"
-    }],
-    staticClass: "deposit",
-    attrs: {
-      type: "number",
-      max: _vm.maxDepositPrice,
-      min: _vm.minDepositPrice
-    },
-    domProps: {
-      value: _vm.selectedDepositPrice
-    },
-    on: {
-      change: _vm.calculateTotalSelectedServicesPrice,
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDepositPrice = $event.target.value;
-      }, _vm.checkInputValue]
-    }
-  }), _vm._v(" "), _vm.inputError ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v("\n          Value exceeds limit min 100.\n        ")]) : _vm._e()]), _vm._v(" "), _c("li", [_c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Payment Deposit Image")]), _vm._v(" "), _c("div", {
-    staticClass: "form-group mt-4"
-  }, [_c("div", {
-    staticClass: "holder image-category",
-    attrs: {
-      id: "image-category",
-      value: ""
-    }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "-space-y-px mb-4"
-  }, [_c("div", {
-    staticClass: "containerInput input-group"
-  }, [_c("div", {
-    staticClass: "main__body__box-info"
-  }), _vm._v(" "), _c("span", {
-    staticClass: "input-group-btn"
-  }, [_c("a", {
-    staticClass: "radio-header radio-text",
-    attrs: {
-      id: "image_manager",
-      "data-input": "Deposit",
-      "data-preview": "image-category"
-    },
-    on: {
-      click: _vm.ImageDepositSelected
-    }
-  }, [_c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button"
-    }
-  }, [_vm._v("\n                  Choose\n                ")])])]), _vm._v(" "), _c("input", {
-    ref: "inputDeposit",
-    staticClass: "form-control",
-    staticStyle: {
-      display: "none"
-    },
-    attrs: {
-      id: "Deposit",
-      type: "text",
-      name: "Deposit"
-    }
-  })])])])]), _vm._v(" "), _c("li", {
-    staticClass: "mt-3 mb-3"
-  }, [_c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("Discount Price")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDiscountPrice,
-      expression: "selectedDiscountPrice"
-    }],
-    staticClass: "deposit",
-    attrs: {
-      type: "number",
-      max: _vm.maxDiscountPrice,
-      min: _vm.minDiscountPrice
-    },
-    domProps: {
-      value: _vm.selectedDiscountPrice
-    },
-    on: {
-      change: _vm.calculateTotalSelectedServicesPrice,
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDiscountPrice = $event.target.value;
-      }, _vm.checkInputValueDiscount]
-    }
-  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v("Value exceeds limit.")]) : _vm._e()]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "artistlevels" ? [_c("ul", {
+    staticClass: "ps-0 ul_bookingg"
+  }, [_c("li", [this.selectedServices !== null ? _c("div", [_c("div", [_vm.selectedServices.length > 0 ? _c("div", _vm._l(_vm.selectedServices, function (selectedService, index) {
+    return _c("div", {
+      key: selectedService.id,
+      staticClass: "radio-text form-control mb-3"
+    }, [_c("div", {
+      staticClass: "radio-header radio-text"
+    }, [_vm._v("\n                  " + _vm._s(_vm.getServiceName(selectedService.id)) + "\n                ")]), _vm._v(" "), _c("div", {
+      staticClass: "form-price"
+    }, [_c("div", [_vm._v("\n                    Booking Value\n                    "), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.price,
+        expression: "selectedService.price"
+      }],
+      staticClass: "deposit",
+      attrs: {
+        type: "number",
+        max: _vm.getServicePrice(selectedService.id)
+      },
+      domProps: {
+        value: selectedService.price
+      },
+      on: {
+        change: _vm.calculateTotalSelectedServicesPrice,
+        min: function min($event) {
+          0;
+        },
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(selectedService, "price", $event.target.value);
+        }
+      }
+    })]), _vm._v(" "), _c("div", [_vm._v("\n                    Deposit Price\n                    "), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.Deposit,
+        expression: "selectedService.Deposit"
+      }],
+      staticClass: "deposit",
+      attrs: {
+        type: "number",
+        max: _vm.maxDepositPrice,
+        min: _vm.minDepositPrice
+      },
+      domProps: {
+        value: selectedService.Deposit
+      },
+      on: {
+        change: _vm.calculateTotalSelectedServicesPrice,
+        input: [function ($event) {
+          if ($event.target.composing) return;
+          _vm.$set(selectedService, "Deposit", $event.target.value);
+        }, function ($event) {
+          return _vm.checkInputValue(index);
+        }]
+      }
+    })]), _vm._v(" "), _c("div", [_vm._v("\n                    Remaining Price\n                    "), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.RemainingPrice,
+        expression: "selectedService.RemainingPrice"
+      }],
+      staticClass: "deposit",
+      attrs: {
+        type: "number",
+        max: _vm.maxDepositPrice,
+        min: _vm.minDepositPrice
+      },
+      domProps: {
+        value: selectedService.RemainingPrice
+      },
+      on: {
+        change: _vm.calculateTotalSelectedServicesPrice,
+        input: [function ($event) {
+          if ($event.target.composing) return;
+          _vm.$set(selectedService, "RemainingPrice", $event.target.value);
+        }, function ($event) {
+          return _vm.checkInputValue(index);
+        }]
+      }
+    })])]), _vm._v(" "), _vm.inputError ? _c("p", {
+      staticClass: "error-message"
+    }, [_vm._v("\n                  Please check the Remaining Price and Deposit price values\n                  above\n                ")]) : _vm._e(), _vm._v(" "), selectedService.Deposit > 0 ? _c("div", {
+      staticClass: "form-group mt-4",
+      staticStyle: {
+        display: "flex",
+        "flex-direction": "row-reverse",
+        "align-items": "end"
+      }
+    }, [_c("div", {
+      staticClass: "holder image-category",
+      attrs: {
+        id: "image-category_" + selectedService.id,
+        value: ""
+      }
+    }), _vm._v(" "), _c("div", {
+      staticClass: "-space-y-px mb-4"
+    }, [_c("div", {
+      staticClass: "containerInput input-group"
+    }, [_c("div", {
+      staticClass: "main__body__box-info"
+    }), _vm._v(" "), _c("span", {
+      staticClass: "input-group-btn"
+    }, [_c("a", {
+      staticClass: "radio-header radio-text",
+      attrs: {
+        id: "image_manager_" + selectedService.id,
+        "data-input": "Deposit_" + selectedService.id,
+        "data-preview": "image-category_" + selectedService.id
+      },
+      on: {
+        click: function click($event) {
+          return _vm.ImageDepositSelected("image_manager_" + selectedService.id, index);
+        }
+      }
+    }, [_c("button", {
+      staticClass: "custom-btn btn-16 mt-0",
+      attrs: {
+        type: "button"
+      }
+    }, [_vm._v("\n                            Choose\n                          ")])])]), _vm._v(" "), _c("input", {
+      staticClass: "form-control",
+      staticStyle: {
+        display: "none"
+      },
+      attrs: {
+        id: "Deposit_" + selectedService.id,
+        type: "text",
+        name: "Deposit_" + selectedService.id
+      },
+      on: {
+        input: function input($event) {
+          return _vm.updateImageDeposit(selectedService, $event.target.value);
+        }
+      }
+    })])])]) : _vm._e(), _vm._v(" "), _c("div", {
+      staticClass: "container"
+    }, [_c("div", {
+      staticClass: "row"
+    }, [_c("div", {
+      staticClass: "controls col"
+    }, [_vm._v("\n                      Artist\n\n                      "), _c("select", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.Artist,
+        expression: "selectedService.Artist"
+      }],
+      staticClass: "floatLabel",
+      attrs: {
+        id: "artistSelect"
+      },
+      on: {
+        input: _vm.checkselectedArtist,
+        change: [function ($event) {
+          var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+            return o.selected;
+          }).map(function (o) {
+            var val = "_value" in o ? o._value : o.value;
+            return val;
+          });
+          _vm.$set(selectedService, "Artist", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        }, function ($event) {
+          return _vm.filterActiveDays(selectedService.DateTreament, index, selectedService.Artist);
+        }]
+      }
+    }, _vm._l(_vm.artists, function (artist) {
+      return _c("option", {
+        key: artist.id,
+        domProps: {
+          value: artist.id
+        }
+      }, [_vm._v("\n                          " + _vm._s(artist.name) + "\n                        ")]);
+    }), 0)]), _vm._v(" "), _c("div", {
+      staticClass: "controls col"
+    }, [_vm._v("\n                      Treament Date\n                      "), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.DateTreament,
+        expression: "selectedService.DateTreament"
+      }],
+      staticClass: "floatLabel",
+      attrs: _defineProperty({
+        id: "depart",
+        type: "date"
+      }, "id", "Date" + selectedService.DateTreament),
+      domProps: {
+        value: selectedService.DateTreament
+      },
+      on: {
+        change: function change($event) {
+          return _vm.filterActiveDays(selectedService.DateTreament, index, selectedService.Artist);
+        },
+        input: [function ($event) {
+          if ($event.target.composing) return;
+          _vm.$set(selectedService, "DateTreament", $event.target.value);
+        }, function ($event) {
+          return _vm.checkSelectedDate(selectedService.DateTreament);
+        }]
+      }
+    }), _vm._v(" "), selectedService.dateActive === false && selectedService.DateTreament !== "" ? _c("div", {
+      staticClass: "error-message"
+    }, [_vm._v("\n                        This day is inactive .\n                      ")]) : _vm._e(), _vm._v(" "), _vm.showWarning ? _c("div", {
+      staticClass: "error-message"
+    }, [_vm._v("\n                        Please select a date more today.\n                      ")]) : _vm._e()]), _vm._v(" "), _c("div", {
+      staticClass: "controls col"
+    }, [_vm._v("\n                      Status\n                      "), _c("i", {
+      staticClass: "fa fa-sort"
+    }), _vm._v(" "), _c("select", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.Status,
+        expression: "selectedService.Status"
+      }],
+      on: {
+        change: function change($event) {
+          var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+            return o.selected;
+          }).map(function (o) {
+            var val = "_value" in o ? o._value : o.value;
+            return val;
+          });
+          _vm.$set(selectedService, "Status", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        }
+      }
+    }, [_c("option", {
+      attrs: {
+        value: "Waiting",
+        selected: ""
+      }
+    }, [_vm._v("Waiting")])])]), _vm._v(" "), _c("div", {
+      staticClass: "controls col"
+    }, [_vm._v("\n                      Payment Type\n                      "), _c("i", {
+      staticClass: "fa fa-sort"
+    }), _vm._v(" "), _c("select", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.PaymentType,
+        expression: "selectedService.PaymentType"
+      }],
+      on: {
+        change: function change($event) {
+          var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+            return o.selected;
+          }).map(function (o) {
+            var val = "_value" in o ? o._value : o.value;
+            return val;
+          });
+          _vm.$set(selectedService, "PaymentType", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
+        }
+      }
+    }, [_c("option", {
+      attrs: {
+        value: "Bank transfer"
+      }
+    }, [_vm._v("Bank transfer")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "After Pay"
+      }
+    }, [_vm._v("After Pay")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "Cash"
+      }
+    }, [_vm._v("Cash")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "Card"
+      }
+    }, [_vm._v("Card")])])]), _vm._v(" "), _c("div", {
+      staticClass: "col-12"
+    }, [selectedService.filteredDays.length > 0 ? _c("div", [_c("span", {
+      staticClass: "radio-text"
+    }, [_vm._v("Spot exists")]), _vm._v(" "), _vm._l(selectedService.filteredDays, function (schedule, index) {
+      return _c("div", {
+        key: index
+      }, [_c("div", {
+        staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
+      }, [_c("label", {
+        staticClass: "label label-schedule m-0"
+      }, [_c("span", {
+        staticClass: "radio-header radio-text"
+      }, [_vm._v("Spot " + _vm._s(index + 1) + " (\n                                " + _vm._s(_vm.formatTime(schedule.time)) + " -\n                                " + _vm._s(_vm.formatTime(schedule.time_end)) + " )")])])])]);
+    })], 2) : _vm._e(), _vm._v(" "), selectedService.filteredDays.length < 1 ? _c("div", [_c("span", {
+      staticClass: "radio-text"
+    }, [_vm._v("None spot exists .")])]) : _vm._e(), _vm._v(" "), _c("div", [_c("div", {
+      staticClass: "col-12"
+    }, [_c("span", {
+      staticClass: "radio-text col-12 mb-3 mt-1"
+    }, [_vm._v("Please choose a time that does not coincide with\n                            the Spot's existence .")]), _vm._v(" "), _c("div", {
+      staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2",
+      staticStyle: {
+        "margin-right": "1rem"
+      }
+    }, [_c("div", {
+      staticClass: "controls"
+    }, [_vm._v("\n                              Start Time\n                              "), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.StartTime,
+        expression: "selectedService.StartTime"
+      }],
+      staticClass: "floatLabe",
+      attrs: {
+        type: "time",
+        id: selectedService.StartTime,
+        step: "1800"
+      },
+      domProps: {
+        value: selectedService.StartTime
+      },
+      on: {
+        change: function change($event) {
+          return _vm.checkTimeConflict(index);
+        },
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(selectedService, "StartTime", $event.target.value);
+        }
+      }
+    })])]), _vm._v(" "), _c("div", {
+      staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
+    }, [_c("div", {
+      staticClass: "controls"
+    }, [_vm._v("\n                              End Time\n                              "), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: selectedService.EndTime,
+        expression: "selectedService.EndTime"
+      }],
+      staticClass: "floatLabel",
+      attrs: {
+        type: "time",
+        step: "1800"
+      },
+      domProps: {
+        value: selectedService.EndTime
+      },
+      on: {
+        change: function change($event) {
+          return _vm.checkTimeConflict(index);
+        },
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(selectedService, "EndTime", $event.target.value);
+        }
+      }
+    })])]), _vm._v(" "), selectedService.showAlert ? _c("div", {
+      staticClass: "alert col-12 draft"
+    }, [_c("i", [_vm._v("The selected time conflicts or is invalid.")])]) : _vm._e()])])])])])]);
+  }), 0) : _vm._e()])]) : _vm._e()]), _vm._v(" "), _c("div", {
     staticClass: "radio-header radio-text"
   }, [_vm._v("Select Level Artist")]), _vm._v(" "), _vm._l(_vm.artistlevels, function (artistLevel) {
     return _c("li", {
@@ -1252,7 +1609,9 @@ var render = function render() {
     }, [_vm._v(_vm._s(artistLevel.Name))]), _vm._v(" "), _c("i", {
       staticClass: "radio-text"
     }, [_vm._v(_vm._s(_vm.formatCurrency(artistLevel.Level_price)))])])]);
-  })], 2), _vm._v(" "), _c("button", {
+  })], 2), _vm._v(" "), !_vm.checkPrice() ? _c("div", {
+    staticClass: "error-message"
+  }, [_vm._v("\n      Please check the total Remaining Price and Deposit price values above .\n    ")]) : _vm._e(), _vm._v(" "), _c("button", {
     staticClass: "custom-btn btn-16",
     attrs: {
       type: "button"
@@ -1263,266 +1622,11 @@ var render = function render() {
   }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
     staticClass: "custom-btn btn-16",
     attrs: {
-      disabled: _vm.isNextButtonDisabled,
+      disabled: _vm.isNextButtonDisabled || !_vm.checkPrice() || !_vm.checkButton(),
       type: "button"
     },
     on: {
       click: _vm.nextStep
-    }
-  }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "showroomschedule" ? [_c("div", {
-    staticClass: "col-12"
-  }, [_c("div", {
-    staticClass: "col-12 col-sm-12 col-lg-12 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedDate,
-      expression: "selectedDate"
-    }],
-    staticClass: "floatLabel",
-    attrs: _defineProperty({
-      id: "depart",
-      type: "date"
-    }, "id", _vm.selectedDate),
-    domProps: {
-      value: _vm.selectedDate
-    },
-    on: {
-      change: _vm.filterActiveDays,
-      input: [function ($event) {
-        if ($event.target.composing) return;
-        _vm.selectedDate = $event.target.value;
-      }, _vm.checkSelectedDate]
-    }
-  }), _vm._v(" "), _c("label", {
-    staticClass: "label-date",
-    "class": {
-      active: _vm.isLabelActive
-    },
-    attrs: {
-      "for": "selectedDate",
-      id: _vm.selectedDate
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-calendar"
-  }), _vm._v("  Date")]), _vm._v(" "), this.isActive === false && _vm.selectedDate ? _c("div", {
-    staticClass: "error-message"
-  }, [_vm._v("\n            This day is inactive .\n          ")]) : _vm._e(), _vm._v(" "), _vm.showWarning ? _c("div", {
-    staticClass: "error-message"
-  }, [_vm._v("\n            Please select a date more today.\n          ")]) : _vm._e()])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12"
-  }, [_c("div", {
-    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("i", {
-    staticClass: "fa fa-sort"
-  }), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedArtist,
-      expression: "selectedArtist"
-    }],
-    staticClass: "floatLabel",
-    attrs: {
-      id: "artistSelect"
-    },
-    on: {
-      input: _vm.checkselectedArtist,
-      change: [function ($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedArtist = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.filterActiveDays]
-    }
-  }, _vm._l(_vm.artists, function (artist) {
-    return _c("option", {
-      key: artist.id,
-      domProps: {
-        value: artist.id
-      }
-    }, [_vm._v("\n              " + _vm._s(artist.name) + "\n            ")]);
-  }), 0), _vm._v(" "), _vm._m(1)])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("i", {
-    staticClass: "fa fa-sort"
-  }), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedStatus,
-      expression: "selectedStatus"
-    }],
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedStatus = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Waiting",
-      selected: ""
-    }
-  }, [_vm._v("Waiting")])]), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_vm._v("  Status")])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12 col-sm-4 col-lg-4 p-2 mb-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("i", {
-    staticClass: "fa fa-sort"
-  }), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedPaymentType,
-      expression: "selectedPaymentType"
-    }],
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedPaymentType = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "Bank transfer"
-    }
-  }, [_vm._v("Bank transfer")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "After Pay"
-    }
-  }, [_vm._v("After Pay")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Cash"
-    }
-  }, [_vm._v("Cash")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "Card"
-    }
-  }, [_vm._v("Card")])]), _vm._v(" "), _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "selectedPaymentType"
-    }
-  }, [_vm._v("  Payment Type")])])])]), _vm._v(" "), _c("div", {
-    staticClass: "col-12"
-  }, [_vm.filteredDays.length > 0 ? _c("div", [_c("span", {
-    staticClass: "radio-text"
-  }, [_vm._v("Spot exists")]), _vm._v(" "), _vm._l(_vm.filteredDays, function (schedule, index) {
-    return _c("div", {
-      key: index
-    }, [_c("div", {
-      staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
-    }, [_c("label", {
-      staticClass: "label label-schedule m-0"
-    }, [_c("span", {
-      staticClass: "radio-header radio-text"
-    }, [_vm._v("Spot " + _vm._s(index + 1) + " ( " + _vm._s(_vm.formatTime(schedule.time)) + " -\n                " + _vm._s(_vm.formatTime(schedule.time_end)) + " )")])])])]);
-  })], 2) : _vm._e(), _vm._v(" "), _vm.filteredDays.length < 1 ? _c("div", [_c("span", {
-    staticClass: "radio-text"
-  }, [_vm._v("None spot exists .")])]) : _vm._e(), _vm._v(" "), _c("div", [_c("div", {
-    staticClass: "col-12"
-  }, [_c("span", {
-    staticClass: "radio-text col-12 mb-3 mt-1"
-  }, [_vm._v("Please choose a time that does not coincide with the Spot's\n            existence .")]), _vm._v(" "), _c("div", {
-    staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.startTime,
-      expression: "startTime"
-    }],
-    staticClass: "floatLabe",
-    attrs: {
-      type: "time",
-      id: _vm.startTime,
-      step: "1800"
-    },
-    domProps: {
-      value: _vm.startTime
-    },
-    on: {
-      change: _vm.checkTimeConflict,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.startTime = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _vm._m(2)])]), _vm._v(" "), _c("div", {
-    staticClass: "radio-section col-12 col-sm-6 col-lg-3 p-2"
-  }, [_c("div", {
-    staticClass: "controls"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.endTime,
-      expression: "endTime"
-    }],
-    staticClass: "floatLabel",
-    attrs: {
-      type: "time",
-      step: "1800"
-    },
-    domProps: {
-      value: _vm.endTime
-    },
-    on: {
-      change: _vm.checkTimeConflict,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.endTime = $event.target.value;
-      }
-    }
-  }), _vm._v(" "), _vm._m(3)])]), _vm._v(" "), _vm.showAlert ? _c("div", {
-    staticClass: "alert col-12 draft"
-  }, [_c("i", [_vm._v("The selected time conflicts or is invalid.")])]) : _vm._e()])])]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button"
-    },
-    on: {
-      click: _vm.prevStep
-    }
-  }, [_vm._v("\n      Back\n    ")]), _vm._v(" "), _c("button", {
-    staticClass: "custom-btn btn-16",
-    attrs: {
-      type: "button",
-      disabled: !_vm.startTime || !_vm.endTime || !_vm.selectedArtist || !_vm.selectedDate || this.isActive === false
-    },
-    on: {
-      click: function click($event) {
-        $event.preventDefault();
-        return _vm.nextStep.apply(null, arguments);
-      }
     }
   }, [_vm._v("\n      Next\n    ")])] : _vm._e(), _vm._v(" "), _vm.step === "getShow" ? [_c("input", {
     staticClass: "form-control",
@@ -1713,9 +1817,9 @@ var render = function render() {
     }
   }, [_vm._v("Tiktok")]), _vm._v(" "), _c("option", {
     attrs: {
-      value: "Orther"
+      value: "Other"
     }
-  }, [_vm._v("Orther")])]), _vm._v(" "), _c("label", {
+  }, [_vm._v("Other")])]), _vm._v(" "), _c("label", {
     staticClass: "label-date active",
     attrs: {
       "for": "name"
@@ -1808,39 +1912,6 @@ var staticRenderFns = [function () {
   }), _vm._v(" "), _c("span", {
     staticClass: "radio-header radio-text"
   }, [_vm._v("Selected Services:")])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa fa-male"
-  }), _vm._v("  Artist")]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa-regular fa-clock"
-  }), _vm._v("  Start\n                Time")]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("label", {
-    staticClass: "label-date active",
-    attrs: {
-      "for": "artistSelect"
-    }
-  }, [_c("i", {
-    staticClass: "fa-regular fa-clock"
-  }), _vm._v("  End\n                Time")]);
 }];
 render._withStripped = true;
 
@@ -4112,7 +4183,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\ninput [type=\"checkbox\"] {\n  border-radius: 10rem;\n}\n.img_body,\n.holder {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.img_body img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.holder img {\n  width: 150px !important;\n  padding: 1rem;\n  margin: 1rem;\n  border-radius: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n  border: solid 1px #8abef6;\n}\n.image-popup {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(48, 42, 42, 0.686);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 5%;\n}\n.image-popup  img {\n}\n/* Style the close button */\n.close-button {\n  position: absolute;\n  top: 10px;\n  right: 20px;\n  font-size: 40px;\n  color: #fff;\n  cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.ul_bookingg {\n  padding-left: 0rem !important;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 150px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\ninput [type=\"checkbox\"] {\n  border-radius: 10rem;\n}\n.img_body,\n.holder {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.img_body img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.holder img {\n  width: 150px !important;\n  padding: 1rem;\n  margin: 1rem;\n  border-radius: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n  border: solid 1px #8abef6;\n}\n.image-popup {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(48, 42, 42, 0.686);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 5%;\n}\n.image-popup img {\n}\n/* Style the close button */\n.close-button {\n  position: absolute;\n  top: 10px;\n  right: 20px;\n  font-size: 40px;\n  color: #fff;\n  cursor: pointer;\n}\n.form-price {\n  display: flex;\n  justify-content: flex-start;\n  align-items: flex-start;\n  flex-wrap: wrap;\n  margin: 1rem 0;\n}\n.form-info {\n  display: flex;\n  align-items: flex-start;\n  justify-content: space-between;\n  flex-wrap: wrap;\n  align-content: center;\n}\n.controls {\n  min-width: 175px;\n}\n.controls .fa-sort {\n  position: absolute;\n  right: 20px;\n  top: 53px;\n  color: #999;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

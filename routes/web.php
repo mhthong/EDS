@@ -83,6 +83,11 @@ Route::get('/booking-form', function () {
     return view('booking-form'); // Tên của view bạn muốn hiển thị
 });
 
+Route::get('/html', function () {
+    return view('homecopy'); // Tên của view bạn muốn hiển thị
+});
+
+
 
 
 

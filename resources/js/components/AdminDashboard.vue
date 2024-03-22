@@ -42,6 +42,7 @@
           <option :value="null" selected>Position</option>
           <option value="Saler" selected>Saler</option>
           <option value="Artist" selected>Artist</option>
+          <option value="Parner" selected>Parner / Operation</option>
         </select>
       </label>
 
@@ -83,6 +84,27 @@
             :value="Aritst.id"
           >
             {{ Aritst.name }}
+          </option>
+        </select>
+      </label>
+
+      <label v-if="this.title === 'Parner' && this.employeeId === null && this.artistId === null">
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedParner"
+          @change="selectedShowroomPrice()"
+          :disabled="this.title == null"
+          style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Name</option>
+
+          <option
+            v-for="parner in apiDataParner"
+            :key="parner.id"
+            :value="parner.id"
+          >
+            {{ parner.name }}
           </option>
         </select>
       </label>
@@ -148,12 +170,7 @@
           <h6>Total Booking</h6>
           <h4>{{ parseFloat(this.Total_Booking) }}</h4>
         </li>
-      </ul>
 
-      <ul
-        class="main__body__box-info admin_dashboard"
-        :class="{ fade: isTransitioning }"
-      >
         <li class="Price">
           <h6>%Done</h6>
           <h4>
@@ -161,14 +178,25 @@
           </h4>
         </li>
         <li class="Price">
+          <h6>%Pratial Done</h6>
+          <h4>
+            {{ calculatePercentage(this.percent_Pratial_Done, this.Total_Booking) }} %
+          </h4>
+        </li>
+        <li class="Price">
           <h6>%Waiting</h6>
           <h4>
-            {{
-              calculatePercentage(this.percent_waiting, this.Total_Booking)
-            }}
+            {{ calculatePercentage(this.percent_waiting, this.Total_Booking) }}
             %
           </h4>
         </li>
+        <li class="Price">
+          <h6>%Reschedule</h6>
+          <h4>
+            {{ calculatePercentage(this.percent_Reschedule, this.Total_Booking) }} %
+          </h4>
+        </li>
+
         <li class="Price">
           <h6>%Cancel</h6>
           <h4>
@@ -181,6 +209,13 @@
             {{ calculatePercentage(this.percent_refund, this.Total_Booking) }} %
           </h4>
         </li>
+        <li class="Price">
+          <h6>%Unidentified</h6>
+          <h4>
+            {{ calculatePercentage(this.percent_Unidentified, this.Total_Booking) }} %
+          </h4>
+        </li>
+
         <li
           class="Price"
           v-if="
@@ -192,9 +227,7 @@
           <h6>Total KPI | % Completed</h6>
           <h4>
             ${{ this.Booking_Value }} / ${{ parseFloat(this.kpi) }} Completed
-            {{
-              calculatePercentage(this.Booking_Value, parseFloat(this.kpi))
-            }}
+            {{ calculatePercentage(this.Booking_Value, parseFloat(this.kpi)) }}
             %
           </h4>
         </li>
@@ -236,6 +269,7 @@ export default {
       kpi: "",
       /*       upsale: "", */
       adminId: null,
+      manage_supers:null,
       employeeId: null,
       artistId: null,
       isTransitioning: false,
@@ -247,6 +281,7 @@ export default {
       filteredDataDone: null,
       filteredDataRefund: null,
       selectedEmployee: null,
+      selectedParner: null,
       title: null,
       apiDataAritst: null,
       apiDataEmployee: null,
@@ -269,6 +304,10 @@ export default {
       percent_waiting: 0,
       percent_refund: 0,
       percent_cancel: 0,
+      percent_Pratial_Done: 0,
+      percent_Reschedule: 0,
+      percent_Unidentified: 0,
+      Operation_KPI: 0,
     };
   },
 
@@ -319,7 +358,9 @@ export default {
           });
       } else if (this.employeeId !== null) {
         axios
-          .get(`/api/Dashboard/${start}/${end}/${this.employeeId}/${this.title}`)
+          .get(
+            `/api/Dashboard/${start}/${end}/${this.employeeId}/${this.title}`
+          )
           .then((response) => {
             this.apiData_id = response.data;
             this.fetchKpis(
@@ -355,6 +396,18 @@ export default {
         .get("/api/artist")
         .then((response) => {
           this.apiDataAritst = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching artist::", error);
+        });
+    },
+
+
+    fetchapiDataParner() {
+      axios
+        .get("/api/parner")
+        .then((response) => {
+          this.apiDataParner = response.data;
         })
         .catch((error) => {
           console.error("Error fetching artist::", error);
@@ -418,9 +471,9 @@ export default {
     totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       const totals = {};
-      console.log('Data in totalByName:', data);
-  
-  // Your existing code...
+      console.log("Data in totalByName:", data);
+
+      // Your existing code...
 
       // Lặp qua các ngày trong dữ liệu của bạn
       for (const date in data) {
@@ -446,6 +499,10 @@ export default {
               percent_waiting: 0,
               percent_refund: 0,
               percent_cancel: 0,
+              percent_Pratial_Done: 0,
+              percent_Reschedule: 0,
+              percent_Unidentified: 0,
+              Operation_KPI: 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -464,6 +521,10 @@ export default {
           totals[Name].percent_waiting += fillerData.percent_waiting;
           totals[Name].percent_refund += fillerData.percent_refund;
           totals[Name].percent_cancel += fillerData.percent_cancel;
+          totals[Name].percent_Pratial_Done += fillerData.percent_Pratial_Done;
+          totals[Name].percent_Reschedule += fillerData.percent_Reschedule;
+          totals[Name].percent_Unidentified += fillerData.percent_Unidentified;
+          totals[Name].Operation_KPI += fillerData.Operation_KPI;
         }
       }
 
@@ -520,37 +581,43 @@ export default {
       this.percent_waiting = 0;
       this.percent_refund = 0;
       this.percent_cancel = 0;
-      
-        if (this.selectedShowroom !== null) {
-          this.resuft = this.filterDataById(
-            this.apiData_id,
-            this.selectedShowroom
-          );
+      this.percent_Pratial_Done = 0;
+      this.percent_Reschedule = 0;
+      this.percent_Unidentified = 0;
+      this.Operation_KPI = 0;
 
-        } else {
-          this.resuft = this.apiData_id;
-        }
+      if (this.selectedShowroom !== null) {
+        this.resuft = this.filterDataById(
+          this.apiData_id,
+          this.selectedShowroom
+        );
+      } else {
+        this.resuft = this.apiData_id;
+      }
 
-        const data = this.totalByName(this.resuft);
+      const data = this.totalByName(this.resuft);
 
-        data.forEach((item) => {
-          this.Booking_Value += parseFloat(item.Booking_Value);
-          this.Actual_B_Value += parseFloat(item.Actual_B_Value);
-          this.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
-          this.Initial_Revenue += parseFloat(item.Initial_Revenue);
-          this.Refund += parseFloat(item.Refund);
-          this.B_Refund_Value += parseFloat(item.B_Refund_Value);
-          this.Deposit += parseFloat(item.Deposit);
-          this.Remaining += parseFloat(item.Remaining);
-          this.Upsell += parseFloat(item.Upsell);
-          this.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
-          this.Total_Booking += parseFloat(item.Total_Booking);
-          this.percent_done += parseFloat(item.percent_done);
-          this.percent_waiting += parseFloat(item.percent_waiting);
-          this.percent_refund += parseFloat(item.percent_refund);
-          this.percent_cancel += parseFloat(item.percent_cancel);
-        });
-      
+      data.forEach((item) => {
+        this.Booking_Value += parseFloat(item.Booking_Value);
+        this.Actual_B_Value += parseFloat(item.Actual_B_Value);
+        this.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
+        this.Initial_Revenue += parseFloat(item.Initial_Revenue);
+        this.Refund += parseFloat(item.Refund);
+        this.B_Refund_Value += parseFloat(item.B_Refund_Value);
+        this.Deposit += parseFloat(item.Deposit);
+        this.Remaining += parseFloat(item.Remaining);
+        this.Upsell += parseFloat(item.Upsell);
+        this.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
+        this.Total_Booking += parseFloat(item.Total_Booking);
+        this.percent_done += parseFloat(item.percent_done);
+        this.percent_waiting += parseFloat(item.percent_waiting);
+        this.percent_refund += parseFloat(item.percent_refund);
+        this.percent_cancel += parseFloat(item.percent_cancel);
+        this.percent_Pratial_Done  += parseFloat(item.percent_Pratial_Done);
+        this.percent_Reschedule  += parseFloat(item.percent_Reschedule);
+        this.percent_Unidentified  += parseFloat(item.percent_Unidentified);
+        this.Operation_KPI  += parseFloat(item.Operation_KPI);
+      });
 
       // Lặp qua danh sách dữ liệu và tính tổng
     },
@@ -567,15 +634,24 @@ export default {
 
     this.employeeId = this.$root.employeeId;
 
+    this.manage_supers =this.$root.manage_supers;
+
     if (this.employeeId !== null) {
       this.selectedEmployee = this.employeeId;
-      this.title = "Saler"
+      this.title = "Saler";
     }
 
     if (this.artistId !== null) {
       this.selectedEmployee = this.artistId;
-      this.title = "Artist"
+      this.title = "Artist";
     }
+
+    if (this.adminId !== null && parseInt(this.manage_supers) === 4) {
+      
+      this.selectedParner = this.adminId;
+      this.title = "Parner"
+    }
+
 
     const currentDate = new Date();
     this.currentMonth = currentDate.getMonth() + 1;
@@ -593,6 +669,7 @@ export default {
     this.fetchShowrooms();
     this.fetchapiDataEmployee();
     this.fetchArtist();
+    this.fetchapiDataParner();
     this.fetchapiData_id(
       this.dateRange.start,
       this.dateRange.end,

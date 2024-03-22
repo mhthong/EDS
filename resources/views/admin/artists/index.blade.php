@@ -109,8 +109,15 @@
                                                 <td class="p-1"><input type="checkbox" name="check[]"
                                                         value="{{ $row->id }}" id="">
                                                     {{ $stt++ }}</td>
-                                                <td> <img src="{{ asset($row->avatar) }}" alt="" height="60px"
-                                                        width="60px"></td>
+                                                <td> 
+                                                    @if ($row->avatar != '')
+                                                    <img src="{{ asset($row->avatar) }}" alt="" height="60px"
+                                                    width="60px">
+                                                    @else
+                                                    <img src="{{ asset('storage/photos/1/user.jpeg') }}"  alt="" height="60px"
+                                                    width="60px">
+                                                    @endif
+                                                   </td>
                                                 <td>{{ $row->fullname }}</td>
                                                 <td>{{ $row->email }}</td>
                                                 <td>{{ $row->phone }}</td>

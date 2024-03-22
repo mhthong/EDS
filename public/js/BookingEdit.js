@@ -43,6 +43,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       selectedServices: null,
       selectedServicesName: null,
       totalPrice: 0,
+      valueOP: 0,
       selectedDate: "",
       showWarning: false,
       // Ngày tối thiểu cho trường input
@@ -54,6 +55,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       showfilteredDays: false,
       selectedWorkingHour: "",
       selectedWorkingHour_end_time: "",
+      popupVisible: false,
+      dialogEdit: false,
       apiData: [],
       artists: [],
       formData: {
@@ -91,7 +94,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       currentURL: "",
       apiData_id: [],
       GetID: []
-    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _defineProperty(_ref, "payment_deposits", []), _defineProperty(_ref, "payment_remaindings", []), _defineProperty(_ref, "After_imgs", []), _defineProperty(_ref, "Before_imgs", []), _defineProperty(_ref, "showImagePopup", false), _defineProperty(_ref, "selectedImageUrl", null), _defineProperty(_ref, "group_service", null), _ref;
+    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _defineProperty(_ref, "payment_deposits", []), _defineProperty(_ref, "payment_remaindings", []), _defineProperty(_ref, "After_imgs", []), _defineProperty(_ref, "Before_imgs", []), _defineProperty(_ref, "showImagePopup", false), _defineProperty(_ref, "selectedImageUrl", null), _defineProperty(_ref, "group_service", null), _defineProperty(_ref, "approved", "pending"), _defineProperty(_ref, "employeeId", null), _defineProperty(_ref, "artistId", null), _defineProperty(_ref, "adminId", null), _defineProperty(_ref, "manage_supers", null), _defineProperty(_ref, "selectedStaff", "Employee"), _defineProperty(_ref, "apiDataAritst", []), _defineProperty(_ref, "apiDataParner", []), _defineProperty(_ref, "apiDataEmployee", []), _defineProperty(_ref, "input", []), _defineProperty(_ref, "id", 0), _ref;
   },
   created: function created() {
     // Lấy URL hiện tại và gán cho biến currentURL
@@ -176,6 +179,33 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     }
   },
   methods: {
+    changeInput: function changeInput() {
+      this.input = [];
+    },
+    fetchArtist: function fetchArtist() {
+      var _this4 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
+        _this4.apiDataAritst = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching artist::", error);
+      });
+    },
+    fetchapiDataParner: function fetchapiDataParner() {
+      var _this5 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/parner").then(function (response) {
+        _this5.apiDataParner = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching artist::", error);
+      });
+    },
+    fetchapiDataEmployee: function fetchapiDataEmployee() {
+      var _this6 = this;
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/employee").then(function (response) {
+        _this6.apiDataEmployee = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching API data:", error);
+      });
+    },
     openImagePopup: function openImagePopup(url) {
       this.selectedImageUrl = url;
       this.showImagePopup = true;
@@ -183,6 +213,44 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     closeImagePopup: function closeImagePopup() {
       this.showImagePopup = false;
       this.selectedImageUrl = null;
+    },
+    openPopup: function openPopup() {
+      var _this7 = this;
+      if (this.dialogEdit == true) {
+        Promise.all([]).then(function () {
+          _this7.popupVisible = true;
+        });
+      } else {
+        this.popupVisible = true;
+      }
+    },
+    closePopup: function closePopup() {
+      this.popupVisible = false;
+      this.dialogEdit = false;
+    },
+    Change: function Change() {
+      this.openPopup();
+    },
+    saveData: function saveData() {
+      var _this8 = this;
+      // Tạo một đối tượng dữ liệu để gửi lên server
+      var postData = {
+        Staff: this.selectedStaff,
+        input: this.input,
+        id: this.id
+      };
+      console.log(this.selectedStaff, this.input, this.id);
+
+      // Gửi yêu cầu POST đến API để lưu dữ liệu
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].post("/api/changeStaff", postData).then(function (response) {
+        // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+        _this8.closePopup(); // Đóng popup sau khi lưu thành công
+        _this8.fetchapiData_id();
+      })["catch"](function (error) {
+        console.log(postData);
+        console.error("Error saving data:", error);
+        // Xử lý lỗi nếu có
+      });
     },
     closeImagePopupOutside: function closeImagePopupOutside(event) {
       // Close the popup if the click is outside of the image
@@ -238,84 +306,87 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       }
     },
     fetchapiData_id: function fetchapiData_id() {
-      var _this4 = this;
+      var _this9 = this;
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/data-bookings/".concat(this.id)).then(function (response) {
-        _this4.apiData_id = response.data;
-        _this4.selectedShowroom = _this4.apiData_id[0].ShowroomID;
-        _this4.Staff = _this4.apiData_id[0].source_name;
-        _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
-        _this4.GetID = _this4.apiData_id[0].GetID;
-        _this4.selectedStatus = _this4.apiData_id[0].status;
-        _this4.StatusPresent = _this4.apiData_id[0].status;
-        _this4.selectedDate = _this4.apiData_id[0].date;
-        _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
-        _this4.startTime = _this4.apiData_id[0].time;
-        _this4.endTime = _this4.apiData_id[0].time_end;
-        _this4.selectedServices = _this4.apiData_id[0].services[0].id;
-        _this4.selectedServicesName = _this4.apiData_id[0].services[0].Name;
-        _this4.group_service = _this4.apiData_id[0].services[0].group_service.name;
-        _this4.content = _this4.apiData_id[0].content;
-        _this4.upsale = _this4.apiData_id[0].price.upsale;
-        _this4.Refund = _this4.apiData_id[0].price.Deposit_price - _this4.apiData_id[0].price.Total_price;
-        _this4.maxPartial_Done = _this4.apiData_id[0].price.Remaining_price;
-        _this4.Partial_Done = _this4.apiData_id[0].price.Total_price - _this4.apiData_id[0].price.Deposit_price;
-        _this4.Cancel = _this4.apiData_id[0].content;
-        _this4.maxRefund = _this4.apiData_id[0].price.Deposit_price;
-        _this4.selectedDepositPrice = _this4.apiData_id[0].price.Deposit_price;
-        if (_this4.apiData_id[0].ArtistID === 7) {
-          _this4.selectedArtist = 0;
+        _this9.apiData_id = response.data;
+        _this9.id = _this9.apiData_id[0].id;
+        _this9.selectedShowroom = _this9.apiData_id[0].ShowroomID;
+        _this9.Staff = _this9.apiData_id[0].source_name;
+        _this9.selectedArtist = _this9.apiData_id[0].ArtistID;
+        _this9.GetID = _this9.apiData_id[0].GetID;
+        _this9.selectedStatus = _this9.apiData_id[0].status;
+        _this9.StatusPresent = _this9.apiData_id[0].status;
+        _this9.selectedDate = _this9.apiData_id[0].date;
+        _this9.selectedArtist = _this9.apiData_id[0].ArtistID;
+        _this9.startTime = _this9.apiData_id[0].time;
+        _this9.endTime = _this9.apiData_id[0].time_end;
+        _this9.selectedServices = _this9.apiData_id[0].services[0].id;
+        _this9.selectedServicesName = _this9.apiData_id[0].services[0].Name;
+        _this9.group_service = _this9.apiData_id[0].services[0].group_service.name;
+        _this9.content = _this9.apiData_id[0].content;
+        _this9.approved = _this9.apiData_id[0].action;
+        _this9.upsale = _this9.apiData_id[0].price.upsale;
+        _this9.Refund = _this9.apiData_id[0].price.Deposit_price - _this9.apiData_id[0].price.Total_price;
+        _this9.maxPartial_Done = _this9.apiData_id[0].price.Remaining_price;
+        _this9.Partial_Done = _this9.apiData_id[0].price.Total_price - _this9.apiData_id[0].price.Deposit_price;
+        _this9.valueOP = _this9.apiData_id[0].price.op_kpi;
+        _this9.Cancel = _this9.apiData_id[0].content;
+        _this9.maxRefund = _this9.apiData_id[0].price.Deposit_price;
+        _this9.selectedDepositPrice = _this9.apiData_id[0].price.Deposit_price;
+        if (_this9.apiData_id[0].ArtistID === 7) {
+          _this9.selectedArtist = 0;
         } else {
-          _this4.selectedArtist = _this4.apiData_id[0].ArtistID;
+          _this9.selectedArtist = _this9.apiData_id[0].ArtistID;
         }
         // Check if the payment object exists in the data
-        if (_this4.apiData_id[0] && _this4.apiData_id[0].payment) {
+        if (_this9.apiData_id[0] && _this9.apiData_id[0].payment) {
           // Set this.selectedPaymentType to the value of payment_type
-          _this4.selectedPaymentType = _this4.apiData_id[0].payment.payment_type;
-          _this4.selectedPaymentRemainingType = _this4.apiData_id[0].payment.payment_type_remainding;
+          _this9.selectedPaymentType = _this9.apiData_id[0].payment.payment_type;
+          _this9.selectedPaymentRemainingType = _this9.apiData_id[0].payment.payment_type_remainding;
         } else {
           // Handle the case where payment data is not available
-          _this4.selectedPaymentType = "N/A";
+          _this9.selectedPaymentType = "N/A";
         }
-        _this4.action = _this4.apiData_id[0].action;
-        _this4.formData = {
-          name: _this4.apiData_id[0].get.Name,
-          email: _this4.apiData_id[0].get.Email,
-          address: _this4.apiData_id[0].get.Address,
-          phone: _this4.apiData_id[0].get.Phone,
-          source: _this4.apiData_id[0].get.Source,
-          source_data: _this4.apiData_id[0].get.source_data,
-          note: _this4.apiData_id[0].get.Note
+        _this9.action = _this9.apiData_id[0].action;
+        _this9.formData = {
+          name: _this9.apiData_id[0].get.Name,
+          email: _this9.apiData_id[0].get.Email,
+          address: _this9.apiData_id[0].get.Address,
+          phone: _this9.apiData_id[0].get.Phone,
+          source: _this9.apiData_id[0].get.Source,
+          source_data: _this9.apiData_id[0].get.source_data,
+          note: _this9.apiData_id[0].get.Note
         };
-        _this4.payment_deposits = _this4.apiData_id[0].payment.payment_deposit ? _this4.apiData_id[0].payment.payment_deposit.split(",") : [];
-        _this4.payment_remaindings = _this4.apiData_id[0].payment.payment_remainding ? _this4.apiData_id[0].payment.payment_remainding.split(",") : [];
-        _this4.After_imgs = _this4.apiData_id[0].get.After_img ? _this4.apiData_id[0].get.After_img.split(",") : [];
-        _this4.Before_imgs = _this4.apiData_id[0].get.Before_img ? _this4.apiData_id[0].get.Before_img.split(",") : [];
-        _this4.fetchApiData();
-        _this4.fetchShowroomSchedule();
-        _this4.calculateTotalSelectedServicesPrice();
+        _this9.payment_deposits = _this9.apiData_id[0].payment.payment_deposit ? _this9.apiData_id[0].payment.payment_deposit.split(",") : [];
+        _this9.payment_remaindings = _this9.apiData_id[0].payment.payment_remainding ? _this9.apiData_id[0].payment.payment_remainding.split(",") : [];
+        _this9.After_imgs = _this9.apiData_id[0].get.After_img ? _this9.apiData_id[0].get.After_img.split(",") : [];
+        _this9.Before_imgs = _this9.apiData_id[0].get.Before_img ? _this9.apiData_id[0].get.Before_img.split(",") : [];
+        _this9.fetchApiData();
+        _this9.fetchShowroomSchedule();
+        _this9.calculateTotalSelectedServicesPrice();
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
     fetchShowrooms: function fetchShowrooms() {
-      var _this5 = this;
+      var _this10 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showrooms").then(function (response) {
-        _this5.showrooms = response.data;
+        _this10.showrooms = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
     fetchGroupServices: function fetchGroupServices() {
-      var _this6 = this;
+      var _this11 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/group-services/".concat(this.selectedShowroom)).then(function (response) {
-        _this6.groupServices = response.data;
+        _this11.groupServices = response.data;
       })["catch"](function (error) {
         console.error("Error fetching group services:", error);
       });
     },
     fetchApiData: function fetchApiData() {
-      var _this7 = this;
+      var _this12 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         var response;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -323,10 +394,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
             case 0:
               _context.prev = 0;
               _context.next = 3;
-              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(_this7.selectedShowroom));
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(_this12.selectedShowroom));
             case 3:
               response = _context.sent;
-              _this7.apiData = response.data;
+              _this12.apiData = response.data;
               _context.next = 10;
               break;
             case 7:
@@ -341,36 +412,37 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       }))();
     },
     changeSelectedShowroom: function changeSelectedShowroom() {
-      var _this8 = this;
+      var _this13 = this;
       Promise.all([this.fetchApiData()]).then(function () {
-        _this8.filterActiveDays();
+        _this13.filterActiveDays();
       });
     },
     fetchArtists: function fetchArtists() {
-      var _this9 = this;
+      var _this14 = this;
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
-        _this9.artists = response.data;
+        _this14.artists = response.data;
       })["catch"](function (error) {
         console.error("Error fetching API data:", error);
       });
     },
     fetchShowroomSchedule: function fetchShowroomSchedule() {
-      var _this10 = this;
+      var _this15 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
-        _this10.showroomSchedules = response.data;
+        _this15.showroomSchedules = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showroomschedule:", error);
       });
     },
     filterActiveDays: function filterActiveDays() {
-      var _this11 = this;
+      var _this16 = this;
       if (!this.selectedDate || !this.selectedShowroom) return;
 
       // Gửi yêu cầu API để lấy dữ liệu
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(this.selectedDate, "/").concat(this.selectedShowroom)).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(this.selectedDate, "/").concat(this.selectedShowroom, "/").concat(this.selectedArtist)).then(function (response) {
         // Lấy giá trị active từ API
-        _this11.isActive = response.data.active;
+        _this16.isActive = response.data.active;
+        console.log(_this16.selectedDate, _this16.selectedShowroom, _this16.selectedArtist, _this16.isActive);
 
         // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
       })["catch"](function (error) {
@@ -378,7 +450,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       });
       this.showfilteredDays = true;
       this.filteredDays = this.apiData.filter(function (schedule) {
-        return schedule.date === _this11.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this11.selectedArtist) && parseInt(schedule.id) !== parseInt(_this11.id);
+        return schedule.date === _this16.selectedDate && parseInt(schedule.ArtistID) === parseInt(_this16.selectedArtist) && parseInt(schedule.id) !== parseInt(_this16.id);
       });
     },
     formatTime: function formatTime(time) {
@@ -464,17 +536,17 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       }
     },
     fetchServices: function fetchServices() {
-      var _this12 = this;
+      var _this17 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
-        _this12.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+        _this17.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
       })["catch"](function (error) {
         console.error("Error fetching services:", error);
       });
     },
     fetchArtistlevels: function fetchArtistlevels() {
-      var _this13 = this;
+      var _this18 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
-        _this13.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+        _this18.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
       })["catch"](function (error) {
         console.error("Error fetching artist levels:", error);
       });
@@ -647,6 +719,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.artistId = this.$root.artistId;
     this.employeeId = this.$root.employeeId;
     this.manage_supers = this.$root.manage_supers;
+    console.log(this.adminId, this.artistId, this.employeeId, this.manage_supers);
     this.fetchApiData();
     this.fetchShowrooms();
     this.fetchServices();
@@ -655,6 +728,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.fetchArtists();
     this.fetchapiData_id();
     this.fetchGroupServices();
+    this.fetchapiDataEmployee();
+    this.fetchArtist();
+    this.fetchapiDataParner();
   }
 });
 
@@ -747,14 +823,25 @@ var render = function render() {
   }, [_c("div", {
     staticClass: "col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9"
   }, [_c("div", [_c("h4", {
-    staticClass: "col-12"
+    staticClass: "col-6"
   }, [_c("p", {
     staticClass: "radio-header radio-text"
   }, [_vm._v("Staff : " + _vm._s(this.Staff))]), _vm._v(" "), _c("p", {
     staticClass: "radio-header radio-text"
   }, [_vm._v("\n          Service : " + _vm._s(_vm.selectedServicesName) + "\n        ")]), _vm._v(" "), _c("p", {
     staticClass: "radio-header radio-text"
-  }, [_vm._v("\n         Group Service : " + _vm._s(this.group_service) + "\n        ")])]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n          Group Service : " + _vm._s(this.group_service) + "\n        ")])]), _vm._v(" "), _c("div", {
+    staticClass: "col-6 text-end"
+  }, [_c("button", {
+    staticClass: "input-group-btn custom-btn btn-16 text-center",
+    attrs: {
+      type: "button",
+      disabled: this.adminId === null
+    },
+    on: {
+      click: _vm.Change
+    }
+  }, [_vm._v("\n          Change Staff\n        ")])]), _vm._v(" "), _c("div", {
     staticClass: "col-12"
   }, [_c("div", {
     staticClass: "col-12 col-sm-12 col-lg-12 p-2 mb-2"
@@ -1328,7 +1415,7 @@ var render = function render() {
       type: "submit",
       name: "submit",
       value: "save",
-      disabled: _vm.submitted || this.isActive === false
+      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null
     },
     on: {
       click: _vm.SubmitEvent
@@ -1341,7 +1428,7 @@ var render = function render() {
       type: "submit",
       name: "submit",
       value: "apply",
-      disabled: _vm.submitted || this.isActive === false
+      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null
     },
     on: {
       click: _vm.SubmitEvent
@@ -1405,7 +1492,11 @@ var render = function render() {
     attrs: {
       value: "Refund"
     }
-  }, [_vm._v("Refund")])]), _vm._v(" "), _vm.selectedStatus === "Cancel" ? _c("div", {
+  }, [_vm._v("Refund")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Unidentified"
+    }
+  }, [_vm._v("Unidentified")])]), _vm._v(" "), _vm.selectedStatus === "Cancel" ? _c("div", {
     staticClass: "form-group"
   }, [_c("label", {
     attrs: {
@@ -1544,6 +1635,37 @@ var render = function render() {
     staticClass: "widget-body p-3"
   }, [_c("div", {
     staticClass: "ui-select-wrapper form-group"
+  }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.valueOP,
+      expression: "valueOP"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      type: "number",
+      name: "valueOP",
+      min: "0",
+      required: ""
+    },
+    domProps: {
+      value: _vm.valueOP
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.valueOP = $event.target.value;
+      }
+    }
+  })])])])]), _vm._v(" "), _c("div", {
+    staticClass: "bg-ad-form right-sidebar mt-3"
+  }, [_c("div", {
+    staticClass: "widget meta-boxes"
+  }, [_vm._m(6), _vm._v(" "), _c("div", {
+    staticClass: "widget-body p-3"
+  }, [_c("div", {
+    staticClass: "ui-select-wrapper form-group"
   }, [_c("div", [_c("select", {
     directives: [{
       name: "model",
@@ -1587,7 +1709,7 @@ var render = function render() {
     staticClass: "bg-ad-form right-sidebar mt-3"
   }, [_c("div", {
     staticClass: "widget meta-boxes"
-  }, [_vm._m(6), _vm._v(" "), _c("div", {
+  }, [_vm._m(7), _vm._v(" "), _c("div", {
     staticClass: "widget-body p-3"
   }, [_c("div", {
     staticClass: "ui-select-wrapper form-group"
@@ -1637,7 +1759,7 @@ var render = function render() {
     staticClass: "bg-ad-form right-sidebar mt-3"
   }, [_c("div", {
     staticClass: "widget meta-boxes"
-  }, [_vm._m(7), _vm._v(" "), _c("div", {
+  }, [_vm._m(8), _vm._v(" "), _c("div", {
     staticClass: "widget-body p-3"
   }, [_c("div", {
     staticClass: "ui-select-wrapper form-group"
@@ -1719,7 +1841,7 @@ var render = function render() {
     staticClass: "main__body__box-info"
   }, [_c("li", [_c("p", [_vm._v("Payment Deposit Image")]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-4"
-  }, [_vm._m(8), _vm._v(" "), _c("div", {
+  }, [_vm._m(9), _vm._v(" "), _c("div", {
     staticClass: "-space-y-px mb-4"
   }, [_c("div", {
     staticClass: "containerInput input-group"
@@ -1747,7 +1869,7 @@ var render = function render() {
       "data-input": "Deposit",
       "data-preview": "image-category"
     }
-  }, [_c("btn", {
+  }, [_c("button", {
     staticClass: "input-group-btn custom-btn btn-16 text-center",
     attrs: {
       type: "button"
@@ -1757,7 +1879,7 @@ var render = function render() {
         return _vm.ImageSelected();
       }
     }
-  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+  }, [_vm._v("\n                  Upload\n                ")])]), _vm._v(" "), _c("input", {
     staticClass: "form-control",
     staticStyle: {
       display: "none"
@@ -1804,7 +1926,7 @@ var render = function render() {
       "data-input": "Remaining",
       "data-preview": "PaymentRemainingImage"
     }
-  }, [_c("btn", {
+  }, [_c("button", {
     staticClass: "input-group-btn custom-btn btn-16 text-center",
     attrs: {
       type: "button"
@@ -1814,7 +1936,7 @@ var render = function render() {
         return _vm.ImageSelected();
       }
     }
-  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+  }, [_vm._v("\n                  Upload\n                ")])]), _vm._v(" "), _c("input", {
     staticClass: "form-control",
     staticStyle: {
       display: "none"
@@ -1861,7 +1983,7 @@ var render = function render() {
       "data-input": "Before",
       "data-preview": "BeforeImage"
     }
-  }, [_c("btn", {
+  }, [_c("button", {
     staticClass: "input-group-btn custom-btn btn-16 text-center",
     attrs: {
       type: "button"
@@ -1871,7 +1993,7 @@ var render = function render() {
         return _vm.ImageSelected();
       }
     }
-  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+  }, [_vm._v("\n                  Upload\n                ")])]), _vm._v(" "), _c("input", {
     staticClass: "form-control",
     staticStyle: {
       display: "none"
@@ -1918,7 +2040,7 @@ var render = function render() {
       "data-input": "After",
       "data-preview": "AfterImage"
     }
-  }, [_c("btn", {
+  }, [_c("button", {
     staticClass: "input-group-btn custom-btn btn-16 text-center",
     attrs: {
       type: "button"
@@ -1928,7 +2050,7 @@ var render = function render() {
         return _vm.ImageSelected();
       }
     }
-  }, [_vm._v("\n                  Upload\n                ")])], 1), _vm._v(" "), _c("input", {
+  }, [_vm._v("\n                  Upload\n                ")])]), _vm._v(" "), _c("input", {
     staticClass: "form-control",
     staticStyle: {
       display: "none"
@@ -1954,7 +2076,194 @@ var render = function render() {
       src: _vm.selectedImageUrl,
       alt: "Enlarged Image"
     }
-  })]) : _vm._e()])])]);
+  })]) : _vm._e()])]), _vm._v(" "), _vm.popupVisible ? _c("div", {
+    staticClass: "popup"
+  }, [_c("div", {
+    staticClass: "popup-content col-8 col-md-6"
+  }, [_vm._m(10), _vm._v(" "), _c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedStaff,
+      expression: "selectedStaff"
+    }],
+    staticClass: "form-control pointer-events-p mb-2",
+    attrs: {
+      name: "status"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedStaff = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.changeInput();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      value: "Employee",
+      selected: ""
+    }
+  }, [_vm._v("Employee")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Parner_Operation"
+    }
+  }, [_vm._v("Parner/Operation")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Artists"
+    }
+  }, [_vm._v("Artists")])]), _vm._v(" "), this.selectedStaff === "Employee" && this.employeeId === null ? _c("div", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.input,
+      expression: "input"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.input = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: []
+    }
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataEmployee, function (employee) {
+    return _c("option", {
+      key: employee.id,
+      domProps: {
+        value: {
+          id: employee.id,
+          name: employee.name
+        }
+      }
+    }, [_vm._v("\n              " + _vm._s(employee.name) + "\n            ")]);
+  })], 2)]) : _vm._e(), _vm._v(" "), this.selectedStaff === "Artists" && this.artistId === null ? _c("div", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.input,
+      expression: "input"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.input = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: []
+    }
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataAritst, function (Aritst) {
+    return _c("option", {
+      key: Aritst.id,
+      domProps: {
+        value: {
+          id: Aritst.id,
+          name: Aritst.name
+        }
+      }
+    }, [_vm._v("\n              " + _vm._s(Aritst.name) + "\n            ")]);
+  })], 2)]) : _vm._e(), _vm._v(" "), this.selectedStaff === "Parner_Operation" && this.employeeId === null && this.artistId === null ? _c("div", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.input,
+      expression: "input"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: function change($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.input = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: []
+    }
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataParner, function (parner) {
+    return _c("option", {
+      key: parner.id,
+      domProps: {
+        value: {
+          id: parner.id,
+          name: parner.name
+        }
+      }
+    }, [_vm._v("\n              " + _vm._s(parner.name) + "\n            ")]);
+  })], 2)]) : _vm._e(), _vm._v(" "), _c("div", [_c("button", {
+    staticClass: "input-group-btn custom-btn btn-16 text-center",
+    attrs: {
+      type: "button",
+      disabled: this.adminId === null || this.input.length < 1
+    },
+    on: {
+      click: _vm.saveData
+    }
+  }, [_vm._v("\n          Save\n        ")]), _vm._v(" "), _c("button", {
+    staticClass: "input-group-btn custom-btn btn-16 text-center",
+    on: {
+      click: _vm.closePopup
+    }
+  }, [_vm._v("\n          Cancel\n        ")])])])]) : _vm._e()]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -2018,6 +2327,18 @@ var staticRenderFns = [function () {
       "for": "status",
       "aria-required": "true"
     }
+  }, [_vm._v("Value Booking")])])]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "widget-title"
+  }, [_c("h4", [_c("label", {
+    staticClass: "m-0 control-label required",
+    attrs: {
+      "for": "status",
+      "aria-required": "true"
+    }
   }, [_vm._v("Payment Type")])])]);
 }, function () {
   var _vm = this,
@@ -2055,6 +2376,12 @@ var staticRenderFns = [function () {
       value: ""
     }
   })]);
+}, function () {
+  var _vm = this,
+    _c = _vm._self._c;
+  return _c("div", {
+    staticClass: "header text-center pb-4"
+  }, [_c("h5", [_vm._v("Change Staff")])]);
 }];
 render._withStripped = true;
 
@@ -4214,7 +4541,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.img_body,\n.holder {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.img_body img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.holder img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n  border: solid 1px #8abef6;\n}\n.image-popup {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(48, 42, 42, 0.686);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 5%;\n}\n.image-popup  img {\n}\n/* Style the close button */\n.close-button {\n  position: absolute;\n  top: 10px;\n  right: 20px;\n  font-size: 40px;\n  color: #fff;\n  cursor: pointer;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.popup {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 1;\n}\n.popup-content {\n  background: white;\n  padding: 20px;\n  border-radius: 8px;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label-schedule {\n  justify-content: center;\n  background-color: rgb(255 112 158 / 25%);\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 170px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.img_body,\n.holder {\n  width: 100%;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.img_body img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.holder img {\n  width: 50% !important;\n  padding: 1rem;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n  border: solid 1px #8abef6;\n}\n.image-popup {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(48, 42, 42, 0.686);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  z-index: 1000;\n  padding: 5%;\n}\n.image-popup img {\n}\n/* Style the close button */\n.close-button {\n  position: absolute;\n  top: 10px;\n  right: 20px;\n  font-size: 40px;\n  color: #fff;\n  cursor: pointer;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

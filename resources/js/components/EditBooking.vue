@@ -5,17 +5,26 @@
   >
     <div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9 col-xxl-9">
       <div>
-        <h4 class="col-12">
+        <h4 class="col-6">
           <p class="radio-header radio-text">Staff : {{ this.Staff }}</p>
           <p class="radio-header radio-text">
             Service : {{ selectedServicesName }}
           </p>
 
           <p class="radio-header radio-text">
-           Group Service : {{ this.group_service }}
+            Group Service : {{ this.group_service }}
           </p>
-          
         </h4>
+        <div class="col-6 text-end">
+          <button
+            class="input-group-btn custom-btn btn-16 text-center"
+            type="button"
+            @click="Change"
+            :disabled="this.adminId === null"
+          >
+            Change Staff
+          </button>
+        </div>
         <div class="col-12">
           <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
             <select
@@ -376,7 +385,11 @@
                 value="save"
                 class="btn btn-info"
                 @click="SubmitEvent"
-                :disabled="submitted || this.isActive === false"
+                :disabled="
+                  submitted ||
+                  this.isActive === false ||
+                  (this.approved == 'approved' && this.employeeId !== null)
+                "
               >
                 <i class="fa fa-save"></i> Save
               </button>
@@ -387,7 +400,11 @@
                 value="apply"
                 class="btn btn-success"
                 @click="SubmitEvent"
-                :disabled="submitted || this.isActive === false"
+                :disabled="
+                  submitted ||
+                  this.isActive === false ||
+                  (this.approved == 'approved' && this.employeeId !== null)
+                "
               >
                 <i class="fa fa-check-circle"></i> Save &amp; Exit
               </button>
@@ -425,6 +442,7 @@
                 <option value="Reschedule">Reschedule</option>
                 <option value="Cancel">Cancel</option>
                 <option value="Refund">Refund</option>
+                <option value="Unidentified">Unidentified</option>
               </select>
 
               <div class="form-group" v-if="selectedStatus === 'Cancel'">
@@ -434,9 +452,8 @@
                   class="form-control pointer-events-p"
                   v-model="Cancel"
                   name="Cancel"
-                  
                 >
-                <option value="" selected>Select</option>
+                  <option value="" selected>Select</option>
                   <option value="Clients" selected>Clients</option>
                   <option value="Operation">Operation</option>
                 </select>
@@ -486,6 +503,33 @@
                   required
                 />
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-ad-form right-sidebar mt-3">
+        <div class="widget meta-boxes">
+          <div class="widget-title">
+            <h4>
+              <label
+                for="status"
+                class="m-0 control-label required"
+                aria-required="true"
+                >Value Booking</label
+              >
+            </h4>
+          </div>
+          <div class="widget-body p-3">
+            <div class="ui-select-wrapper form-group">
+              <input
+                type="number"
+                class="form-control"
+                name="valueOP"
+                v-model="valueOP"
+                min="0"
+                required
+              />
             </div>
           </div>
         </div>
@@ -647,13 +691,13 @@
                   data-input="Deposit"
                   data-preview="image-category"
                 >
-                  <btn
+                  <button
                     class="input-group-btn custom-btn btn-16 text-center"
                     type="button"
                     @click="ImageSelected()"
                   >
                     Upload
-                  </btn>
+                  </button>
                 </a>
 
                 <input
@@ -699,13 +743,13 @@
                   data-input="Remaining"
                   data-preview="PaymentRemainingImage"
                 >
-                  <btn
+                  <button
                     class="input-group-btn custom-btn btn-16 text-center"
                     type="button"
                     @click="ImageSelected()"
                   >
                     Upload
-                  </btn>
+                  </button>
                 </a>
 
                 <input
@@ -747,13 +791,13 @@
                   data-input="Before"
                   data-preview="BeforeImage"
                 >
-                  <btn
+                  <button
                     class="input-group-btn custom-btn btn-16 text-center"
                     type="button"
                     @click="ImageSelected()"
                   >
                     Upload
-                  </btn>
+                  </button>
                 </a>
 
                 <input
@@ -794,13 +838,13 @@
                   data-input="After"
                   data-preview="AfterImage"
                 >
-                  <btn
+                  <button
                     class="input-group-btn custom-btn btn-16 text-center"
                     type="button"
                     @click="ImageSelected()"
                   >
                     Upload
-                  </btn>
+                  </button>
                 </a>
 
                 <input
@@ -825,6 +869,122 @@
           <img :src="selectedImageUrl" alt="Enlarged Image" />
         </div>
       </ul>
+    </div>
+
+    <div v-if="popupVisible" class="popup">
+      <div class="popup-content col-8 col-md-6">
+        <div class="header text-center pb-4">
+          <h5>Change Staff</h5>
+        </div>
+
+          <select
+            class="form-control pointer-events-p mb-2"
+            v-model="selectedStaff"
+            name="status"
+            @change="changeInput()"
+          >
+            <option value="Employee" selected>Employee</option>
+            <option value="Parner_Operation">Parner/Operation</option>
+            <option value="Artists">Artists</option>
+          </select>
+    
+
+
+          <div
+            v-if="this.selectedStaff === 'Employee' && this.employeeId === null"
+          >
+            <select
+              class="form-control"
+              id="showroomSelect"
+              v-model="input"
+              style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+            >
+              <option :value="[]" selected>Name</option>
+
+              <option
+                v-for="employee in apiDataEmployee"
+                :key="employee.id"
+                :value="{
+                  id: employee.id,
+                  name: employee.name,
+                }"
+              >
+                {{ employee.name }}
+              </option>
+            </select>
+          </div>
+
+          <div
+            v-if="this.selectedStaff === 'Artists' && this.artistId === null"
+          >
+            <select
+              class="form-control"
+              id="showroomSelect"
+              v-model="input"
+              style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+            >
+              <option :value="[]" selected>Name</option>
+
+              <option
+                v-for="Aritst in apiDataAritst"
+                :key="Aritst.id"
+                :value="{
+                  id: Aritst.id,
+                  name: Aritst.name,
+                }"
+              >
+                {{ Aritst.name }}
+              </option>
+            </select>
+          </div>
+
+          <div
+            v-if="
+              this.selectedStaff === 'Parner_Operation' &&
+              this.employeeId === null &&
+              this.artistId === null
+            "
+          >
+            <select
+              class="form-control"
+              id="showroomSelect"
+              v-model="input"
+              style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+            >
+              <option :value="[]" selected>Name</option>
+
+              <option
+                v-for="parner in apiDataParner"
+                :key="parner.id"
+                :value="{
+                  id: parner.id,
+                  name: parner.name,
+                }"
+
+              >
+                {{ parner.name }}
+              </option>
+            </select>
+          </div>
+
+
+        <div>
+          <button
+            class="input-group-btn custom-btn btn-16 text-center"
+            type="button"
+            @click="saveData"
+            :disabled="this.adminId === null || this.input.length < 1"
+          >
+            Save
+          </button>
+          <button
+            class="input-group-btn custom-btn btn-16 text-center"
+            @click="closePopup"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
 
     <!--      -->
@@ -855,6 +1015,7 @@ export default {
       selectedServices: null,
       selectedServicesName: null,
       totalPrice: 0,
+      valueOP: 0,
       selectedDate: "",
       showWarning: false, // Ngày tối thiểu cho trường input
       filteredDays: [],
@@ -865,6 +1026,8 @@ export default {
       showfilteredDays: false,
       selectedWorkingHour: "",
       selectedWorkingHour_end_time: "",
+      popupVisible: false,
+      dialogEdit: false,
       apiData: [],
       artists: [],
       formData: {
@@ -919,7 +1082,18 @@ export default {
       Before_imgs: [],
       showImagePopup: false,
       selectedImageUrl: null,
-      group_service:null,
+      group_service: null,
+      approved: "pending",
+      employeeId: null,
+      artistId: null,
+      adminId: null,
+      manage_supers: null,
+      selectedStaff: "Employee",
+      apiDataAritst: [],
+      apiDataParner: [],
+      apiDataEmployee: [],
+      input: [],
+      id:0,
       /*   selectedOption: "option1", */
     };
   },
@@ -1011,6 +1185,43 @@ export default {
   },
 
   methods: {
+    changeInput() {
+      this.input = [];
+    },
+
+    fetchArtist() {
+      axios
+        .get("/api/artist")
+        .then((response) => {
+          this.apiDataAritst = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching artist::", error);
+        });
+    },
+
+    fetchapiDataParner() {
+      axios
+        .get("/api/parner")
+        .then((response) => {
+          this.apiDataParner = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching artist::", error);
+        });
+    },
+
+    fetchapiDataEmployee() {
+      axios
+        .get(`/api/employee`)
+        .then((response) => {
+          this.apiDataEmployee = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
     openImagePopup(url) {
       this.selectedImageUrl = url;
       this.showImagePopup = true;
@@ -1018,6 +1229,51 @@ export default {
     closeImagePopup() {
       this.showImagePopup = false;
       this.selectedImageUrl = null;
+    },
+
+    openPopup() {
+      if (this.dialogEdit == true) {
+        Promise.all([]).then(() => {
+          this.popupVisible = true;
+        });
+      } else {
+        this.popupVisible = true;
+      }
+    },
+    closePopup() {
+      this.popupVisible = false;
+      this.dialogEdit = false;
+    },
+
+    Change() {
+      this.openPopup();
+    },
+
+    saveData() {
+
+      // Tạo một đối tượng dữ liệu để gửi lên server
+      const postData = {
+        Staff: this.selectedStaff,
+        input: this.input,
+        id:this.id,
+      };
+
+      console.log(this.selectedStaff ,  this.input , this.id);
+
+      // Gửi yêu cầu POST đến API để lưu dữ liệu
+      axios
+        .post("/api/changeStaff", postData)
+        .then((response) => {
+          // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+          this.closePopup(); // Đóng popup sau khi lưu thành công
+          this.fetchapiData_id();
+
+        })
+        .catch((error) => {
+          console.log(postData);
+          console.error("Error saving data:", error);
+          // Xử lý lỗi nếu có
+        });
     },
 
     closeImagePopupOutside(event) {
@@ -1028,11 +1284,10 @@ export default {
     },
 
     ImageSelected() {
-
       if (this.employeeId !== null) {
         var route_prefix = "/employee/laravel-filemanager";
         $("#image_PaymentRemainingImage").filemanager("image", {
-        prefix: route_prefix,
+          prefix: route_prefix,
         });
         $("#image_manager").filemanager("image", {
           prefix: route_prefix,
@@ -1048,35 +1303,34 @@ export default {
       if (this.artistId !== null) {
         var route_prefix = "/artists/laravel-filemanager";
         $("#image_PaymentRemainingImage").filemanager("image", {
-        prefix: route_prefix,
-      });
-      $("#image_manager").filemanager("image", {
-        prefix: route_prefix,
-      });
-      $("#image_AfterImage").filemanager("image", {
-        prefix: route_prefix,
-      });
-      $("#image_BeforeImage").filemanager("image", {
-        prefix: route_prefix,
-      });
+          prefix: route_prefix,
+        });
+        $("#image_manager").filemanager("image", {
+          prefix: route_prefix,
+        });
+        $("#image_AfterImage").filemanager("image", {
+          prefix: route_prefix,
+        });
+        $("#image_BeforeImage").filemanager("image", {
+          prefix: route_prefix,
+        });
       }
 
       if (this.adminId !== null) {
         var route_prefix = "/admin/laravel-filemanager";
         $("#image_PaymentRemainingImage").filemanager("image", {
-        prefix: route_prefix,
-      });
-      $("#image_manager").filemanager("image", {
-        prefix: route_prefix,
-      });
-      $("#image_AfterImage").filemanager("image", {
-        prefix: route_prefix,
-      });
-      $("#image_BeforeImage").filemanager("image", {
-        prefix: route_prefix,
-      });
+          prefix: route_prefix,
+        });
+        $("#image_manager").filemanager("image", {
+          prefix: route_prefix,
+        });
+        $("#image_AfterImage").filemanager("image", {
+          prefix: route_prefix,
+        });
+        $("#image_BeforeImage").filemanager("image", {
+          prefix: route_prefix,
+        });
       }
-
     },
 
     fetchapiData_id() {
@@ -1085,6 +1339,7 @@ export default {
         .get(`/api/data-bookings/${this.id}`)
         .then((response) => {
           this.apiData_id = response.data;
+          this.id = this.apiData_id[0].id;
           this.selectedShowroom = this.apiData_id[0].ShowroomID;
           this.Staff = this.apiData_id[0].source_name;
           this.selectedArtist = this.apiData_id[0].ArtistID;
@@ -1097,8 +1352,10 @@ export default {
           this.endTime = this.apiData_id[0].time_end;
           this.selectedServices = this.apiData_id[0].services[0].id;
           this.selectedServicesName = this.apiData_id[0].services[0].Name;
-          this.group_service  =  this.apiData_id[0].services[0].group_service.name;
+          this.group_service =
+            this.apiData_id[0].services[0].group_service.name;
           this.content = this.apiData_id[0].content;
+          this.approved = this.apiData_id[0].action;
           this.upsale = this.apiData_id[0].price.upsale;
           this.Refund =
             this.apiData_id[0].price.Deposit_price -
@@ -1107,7 +1364,7 @@ export default {
           this.Partial_Done =
             this.apiData_id[0].price.Total_price -
             this.apiData_id[0].price.Deposit_price;
-
+          this.valueOP = this.apiData_id[0].price.op_kpi;
 
           this.Cancel = this.apiData_id[0].content;
           this.maxRefund = this.apiData_id[0].price.Deposit_price;
@@ -1226,10 +1483,19 @@ export default {
 
       // Gửi yêu cầu API để lấy dữ liệu
       axios
-        .get(`/api/date-active/${this.selectedDate}/${this.selectedShowroom}`)
+        .get(
+          `/api/date-active/${this.selectedDate}/${this.selectedShowroom}/${this.selectedArtist}`
+        )
         .then((response) => {
           // Lấy giá trị active từ API
           this.isActive = response.data.active;
+
+          console.log(
+            this.selectedDate,
+            this.selectedShowroom,
+            this.selectedArtist,
+            this.isActive
+          );
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
@@ -1591,13 +1857,22 @@ export default {
   },
 
   mounted() {
-      this.adminId = this.$root.adminId;
+    this.adminId = this.$root.adminId;
 
-      this.artistId = this.$root.artistId;
+    this.artistId = this.$root.artistId;
 
-      this.employeeId = this.$root.employeeId;
+    this.employeeId = this.$root.employeeId;
 
-      this.manage_supers = this.$root.manage_supers;
+    this.manage_supers = this.$root.manage_supers;
+
+    
+
+    console.log(
+      this.adminId,
+      this.artistId,
+      this.employeeId,
+      this.manage_supers,
+    );
 
     this.fetchApiData();
     this.fetchShowrooms();
@@ -1607,10 +1882,32 @@ export default {
     this.fetchArtists();
     this.fetchapiData_id();
     this.fetchGroupServices();
+    this.fetchapiDataEmployee();
+    this.fetchArtist();
+    this.fetchapiDataParner();
   },
 };
 </script>
 <style>
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
 .label {
   width: 100%;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
@@ -1671,7 +1968,7 @@ export default {
 }
 
 .custom-btn {
-  width: 130px;
+  width: 170px;
   height: 40px;
   color: #fff;
   border-radius: 5px;
@@ -1759,7 +2056,6 @@ export default {
   color: #ff6666;
 }
 
-
 .img_body,
 .holder {
   width: 100%;
@@ -1779,7 +2075,6 @@ export default {
   padding: 1rem;
   box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);
   border: solid 1px #8abef6;
-
 }
 
 .image-popup {
@@ -1794,10 +2089,8 @@ export default {
   align-items: center;
   z-index: 1000;
   padding: 5%;
-  
 }
-.image-popup  img {
-
+.image-popup img {
 }
 /* Style the close button */
 .close-button {

@@ -36,9 +36,15 @@ Route::get('/group-services/{showroomId}', [APIBookingController::class, 'getGro
 Route::get('/showroomschedule/{showroomId}', [APIBookingController::class, 'ShowroomSchedule']);
 Route::get('/workingHours/{showroomId}', [APIBookingController::class, 'workingHours']);
 Route::get('/services', [APIBookingController::class, 'getServices']);
+Route::get('/allservices', [APIBookingController::class, 'Services']);
+
 Route::get('/artist-levels', [APIBookingController::class, 'ArtistLevel']);
 Route::get('/artist', [APIBookingController::class, 'Artist']);
 Route::get('/get', [APIBookingController::class, 'Get']);
+
+
+Route::get('/parner', [APIBookingController::class, 'Parner']);
+
 
 
 Route::get('all-data', [APIBookingController::class, 'getAllData']);
@@ -46,7 +52,7 @@ Route::get('getAllDataTable/{start}/{end}/{type}', [APIBookingController::class,
 
 
 
-Route::get('fullcalendar/{start}/{end}/{showroom}', [APIBookingController::class, 'getAllfullcalendar']);
+Route::get('fullcalendar/{start}/{end}/{showroom}/{artist}', [APIBookingController::class, 'getAllfullcalendar']);
 
 Route::get('getDataSourceLocation/{start}/{end}/{showroom}', [APIBookingController::class, 'getDataSourceLocation']);
 Route::get('getDataServiceLocation/{start}/{end}/{showroom}/{employee}', [APIBookingController::class, 'getDataServiceLocation']);
@@ -54,7 +60,7 @@ Route::get('getDataArtistLocation/{start}/{end}/{showroom}', [APIBookingControll
 Route::get('getDataEmployeeLocation/{start}/{end}/{showroom}', [APIBookingController::class, 'getDataEmployeeLocation']);
 
 
-Route::get('date-active/{date}/{showroom}', [APIBookingController::class, 'DateActive']);
+Route::get('date-active/{date}/{showroom}/{artist_id}', [APIBookingController::class, 'DateActive']);
 
 Route::get('getDataShowroom/{start}/{end}', [APIBookingController::class, 'getDataShowroom']);
 
@@ -98,6 +104,11 @@ Route::get('Dashboard/{start}/{end}/{employee}/{title}', [APIBookingController::
 
 
 Route::post('/save-data', [ApiPostController::class, 'saveDataActiveDate']);
+
+Route::post('/save-data-approved', [ApiPostController::class, 'saveDataApprovedDate']);
+
+Route::post('/changeStaff', [ApiPostController::class, 'changeStaff']);
+
 
 
 Route::post('/kpi-store', [ApiPostController::class, 'saveDataKPI']);

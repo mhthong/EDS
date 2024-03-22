@@ -26,6 +26,7 @@
     <link href="/css/vendor.css" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
     <script src="/js/vendor.js"></script>
+    
     @stack('styles')
     @yield('head')
     
