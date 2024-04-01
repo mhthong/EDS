@@ -172,7 +172,7 @@ export default {
     openPopup() {
       if (this.dialogEdit == true) {
         Promise.all([
-          console.log(  this.editedItem),
+      
           (this.popupInputData = this.editedItem.name),
 
         ]).then(() => {
@@ -215,7 +215,7 @@ export default {
           this.fetchSource();
         })
         .catch((error) => {
-          console.log(postData);
+    
           console.error("Error saving data:", error);
           // Xử lý lỗi nếu có
         });
@@ -228,7 +228,7 @@ export default {
         name: this.popupInputData, // Thêm ngày là 01
       };
 
-      console.log(postData);
+
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios
         .put("/api/source-update/", postData)
@@ -238,7 +238,7 @@ export default {
           this.fetchSource();
         })
         .catch((error) => {
-          console.log(postData);
+
           console.error("Error saving data:", error);
           // Xử lý lỗi nếu có
         });
@@ -277,7 +277,7 @@ export default {
       this.editedItem = this.filteredSources.find(
         (item) => parseInt(item.id) === parseInt(resultItem.id)
       );
-      console.log(  this.editedItem);
+   
       this.dialogEdit = true;
       this.openPopup();
     },
@@ -302,7 +302,7 @@ export default {
       axios
         .delete(`/api/kpis/${this.DeletedItem}`)
         .then((response) => {
-          console.log(response.data.message);
+   
           this.closeDelete();
           this.fetchSource();
         })

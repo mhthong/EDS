@@ -147,6 +147,11 @@
         </div>
       </div>
     </v-app>
+
+
+    <div v-if="showNotification" class="notificationinfo">{{ notificationMessage }}</div>
+
+
   </div>
 </template>
 
@@ -215,6 +220,8 @@ export default {
 
       dialogDelete: false, // To control the visibility of the delete confirmation popup
       dialogEdit: false,
+      showNotification: false, // Control the visibility of the notification
+      notificationMessage: "", // Store the content of the notification
     };
   },
 
@@ -226,12 +233,8 @@ export default {
           (this.kpi = this.editedItem.number_of_kpi),
           (this.selectedShowroom = this.editedItem.kpi_showroom),
           (this.selectedEmployee = this.editedItem.kpi_employee),
-          console.log(
-            this.inputData,
-            this.kpi,
-            this.selectedShowroom,
-            this.selectedEmployee
-          ),
+
+
         ]).then(() => {
           this.popupVisible = true;
         });
@@ -276,15 +279,24 @@ export default {
         .post("/api/kpi-store", postData)
         .then((response) => {
           // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+          this.notificationMessage = response.data.message;
+          this.showNotification = true; // Show the notification
+
+     
           this.closePopup(); // Đóng popup sau khi lưu thành công
           this.fetchKpis();
         
         })
         .catch((error) => {
-          console.log(postData);
+          this.notificationMessage = response.data.message;
+          this.showNotification = true; // Show the notification
           console.error("Error saving data:", error);
           // Xử lý lỗi nếu có
         });
+
+        setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     },
 
     saveDataChanges(){
@@ -297,21 +309,26 @@ export default {
         kpi_employee: this.selectedEmployee,
       };
 
-      console.log(postData);
+
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios
         .put("/api/kpi-update/", postData)
         .then((response) => {
           // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+          this.notificationMessage = response.data.message;
+          this.showNotification = true; // Show the notification
           this.closePopup(); // Đóng popup sau khi lưu thành công
           this.fetchKpis();
         })
         .catch((error) => {
-          console.log(postData);
+          this.notificationMessage = response.data.message;
+          this.showNotification = true; // Show the notification
           console.error("Error saving data:", error);
           // Xử lý lỗi nếu có
         });
-
+        setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     },
 
     AddNew() {
@@ -434,13 +451,21 @@ export default {
       axios
         .delete(`/api/kpis/${this.DeletedItem}`)
         .then(response => {
-          console.log(response.data.message);
+          this.notificationMessage = response.data.message;
+          this.showNotification = true; // Show the notification
+   
           this.closeDelete();
           this.fetchKpis();
         })
         .catch(error => {
+          this.notificationMessage = "Error deleting: " + error.message;
+          this.showNotification = true; // Show the notification
           console.error('Error deleting KPI:', error);
         }); 
+
+        setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
 },
 
   },

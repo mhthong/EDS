@@ -54,55 +54,69 @@ class AuthAdminController extends Controller
     }
 
     // Store a newly created resource in storage.
-    public function store(Request $request)
-    {
+public function store(Request $request)
+{
+    // Validate the input
+    $request->validate([
+        'name' => 'required',
+        'email' => 'required|email|unique:admins,email',
+        'status' => 'required|in:published,pending,draft',
+        // Add more validation rules as needed
+    ]);
 
-  
-        // Validate the input
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:admins,email',
-            'status' => 'required|in:published,pending,draft',
-            // Add more validation rules as needed
-        ]);
+    // Dump and die to inspect the request data
 
 
-        $data =  $request->all();
+    $data = $request->all();
+    $data['password'] = Hash::make($request->input('password'));
 
-        $data['password'] = Hash::make($request->input('password'));
-
-    
-        if( $data['role'] == "Administrator"){
+    // Set manage_supers and super_user based on the role
+    switch ($data['role']) {
+        case "Administrator":
             $data['manage_supers'] = 1;
             $data['super_user'] = "Administrator";
+            break;
 
-        } elseif ( $data['role'] == "Acoutant"){
+        case "Acoutant":
             $data['manage_supers'] = 5;
             $data['super_user'] = "Acoutant";
-        } elseif ( $data['role'] == "Marketing"){
+            break;
+
+        case "Marketing":
             $data['manage_supers'] = 2;
             $data['super_user'] = "Marketing";
-        } elseif ( $data['role'] == "Saleleader"){
+            break;
+
+        case "Saleleader":
             $data['manage_supers'] = 3;
-            $data['super_user'] == "Saleleader";
-        }  elseif ( $data['role'] == "Operation"){
+            $data['super_user'] = "Saleleader";
+            break;
+
+        case "Operation":
             $data['manage_supers'] = 4;
             $data['super_user'] = "Operation";
-        }
+            break;
 
-
-        // Create a new admin
-
-        $createdAdmin = Admin::create($data);
-        if ($createdAdmin) {
-            // If the artist was successfully created, redirect with success message
-            return redirect()->route('auth-admin.index')->with('success', 'User created successfully.');
-        } else {
-            // If the artist creation failed, redirect back with an error message
-            return redirect()->back()->with('failed', 'Failed to create user.');
-        }
-
+        default:
+            // Handle any other roles or set default values
+            $data['manage_supers'] = 0; // Change this to the appropriate default value
+            $data['super_user'] = "Other"; // Change this to the appropriate default value
+            break;
     }
+
+    // Create a new admin
+    $createdAdmin = Admin::create($data);
+
+    if ($createdAdmin) {
+        // If the admin was successfully created, redirect with success message
+        return redirect()->route('auth-admin.index')->with('success', 'User created successfully.');
+    } else {
+        // If the admin creation failed, redirect back with an error message
+        return redirect()->back()->with('failed', 'Failed to create user.');
+    }
+}
+
+
 
     // Show the form for editing the specified resource.
     public function edit(Admin $auth_admin)
@@ -134,23 +148,39 @@ class AuthAdminController extends Controller
             $data['password'] = Hash::make($request->input('password'));
         }
 
-        if( $data['role'] == "Administrator"){
-            $data['manage_supers'] = 0;
-            $data['super_user'] = "Administrator";
-
-        } elseif ( $data['role'] == "Acoutant"){
+    // Set manage_supers and super_user based on the role
+    switch ($data['role']) {
+        case "Administrator":
             $data['manage_supers'] = 1;
+            $data['super_user'] = "Administrator";
+            break;
+
+        case "Acoutant":
+            $data['manage_supers'] = 5;
             $data['super_user'] = "Acoutant";
-        } elseif ( $data['role'] == "Marketing"){
+            break;
+
+        case "Marketing":
             $data['manage_supers'] = 2;
             $data['super_user'] = "Marketing";
-        } elseif ( $data['role'] == "Saleleader"){
+            break;
+
+        case "Saleleader":
             $data['manage_supers'] = 3;
-            $data['super_user'] == "Saleleader";
-        }  elseif ( $data['role'] == "Operation"){
+            $data['super_user'] = "Saleleader";
+            break;
+
+        case "Operation":
             $data['manage_supers'] = 4;
             $data['super_user'] = "Operation";
-        }
+            break;
+
+        default:
+            // Handle any other roles or set default values
+            $data['manage_supers'] = 0; // Change this to the appropriate default value
+            $data['super_user'] = "Other"; // Change this to the appropriate default value
+            break;
+    }
 
 
             // Validate the inpu
@@ -162,7 +192,7 @@ class AuthAdminController extends Controller
                 return redirect()->route('auth-admin.index')->with('success', 'User update successfully.');
             } else {
                 // If the artist creation failed, redirect back with an error message
-                return redirect()->back()->with('failed', 'Failed to update user.');
+                return redirect()->route('auth-admin.index')->with('failed', 'Failed to update user.');
             }
    
         

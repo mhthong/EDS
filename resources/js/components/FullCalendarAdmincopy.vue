@@ -322,7 +322,7 @@ export default {
       });
     },
 
-/*     customEventContent(arg) {
+customEventContent(arg) {
       const startTime = arg.event.start.toLocaleTimeString([], {
         hour: "numeric",
         minute: "2-digit",
@@ -351,8 +351,7 @@ export default {
   
    
         `,
-      };
-    }, */
+      }
   },
 
   created() {

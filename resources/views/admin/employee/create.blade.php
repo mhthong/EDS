@@ -109,7 +109,7 @@
                                                         &nbsp;
                                                         <button type="submit" name="submit" value="apply"
                                                             class="btn btn-success">
-                                                            <i class="fa fa-check-circle"></i> Save &amp; Edit
+                                                            <i class="fa fa-check-circle"></i> Save &amp; Exit
                                                         </button>
                                                     </div>
                                                 </div>

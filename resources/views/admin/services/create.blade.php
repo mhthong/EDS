@@ -67,8 +67,20 @@
                                                 <textarea type="number" class="form-control" id="Sale_Price" name="Sale_Price"></textarea>
                                             </div>
                                             <div class="form-group">
-                                                <label for="Time">Work Time </label>
-                                                <textarea type ="time" class="form-control" id="Time" name="Time"></textarea>
+                                                <label for="Time">Work Time </label> 
+                                                <select class="form-control" id="Time" name="Time">
+                                                    <option value="0.0">0:00</option>
+                                                    <option value="0.5">0:30</option>
+                                                    <option value="1.0">1:00</option>
+                                                    <option value="1.5">1:30</option>
+                                                    <option value="2.0">2:00</option>
+                                                    <option value="2.5">2:30</option>
+                                                    <option value="3.0">3:00</option>
+                                                    <option value="3.5">3:30</option>
+                                                    <option value="4.0">4:00</option>
+                                                    <option value="4.5">4:30</option>
+                                                    <option value="5.0">5:00</option>
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label for="group_service_id">Group</label>
@@ -103,7 +115,7 @@
                                                         &nbsp;
                                                         <button type="submit" name="submit" value="apply"
                                                             class="btn btn-success">
-                                                            <i class="fa fa-check-circle"></i> Save &amp; Edit
+                                                            <i class="fa fa-check-circle"></i> Save &amp; Exit
                                                         </button>
                                                     </div>
                                                 </div>

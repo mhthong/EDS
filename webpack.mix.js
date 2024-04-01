@@ -60,3 +60,15 @@ mix.js('resources/js/Source.js', 'public/js');
 mix.js('resources/js/BookingTable.js', 'public/js');
 
 mix.js('resources/js/FullCalendarAdmin.js', 'public/js');
+
+mix.js('resources/js/ArtistTable.js', 'public/js');
+
+mix.js('resources/js/ServiceTable.js', 'public/js');
+
+mix.js('resources/js/EmployeeTable.js', 'public/js');
+
+mix.js('resources/js/ShowroomTable.js', 'public/js');
+
+
+
+

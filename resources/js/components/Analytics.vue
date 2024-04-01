@@ -1107,7 +1107,7 @@ export default {
       const ctxSource = this.$refs.myChartSource.getContext("2d");
 
       const SourceDataMap = {};
-      console.log(SourceDataMap);
+
       this.apiDataGet.forEach((Source) => {
         SourceDataMap[Source.source_data] = Source;
       }); 

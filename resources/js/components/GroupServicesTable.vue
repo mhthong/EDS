@@ -147,6 +147,8 @@
         </div>
       </div>
     </v-app>
+    <div v-if="showNotification" class="notificationinfo">{{ notificationMessage }}</div>
+
   </div>
 </template>
 
@@ -226,12 +228,7 @@ export default {
           (this.kpi = this.editedItem.number_of_kpi),
           (this.selectedShowroom = this.editedItem.kpi_showroom),
           (this.selectedEmployee = this.editedItem.kpi_employee),
-          console.log(
-            this.inputData,
-            this.kpi,
-            this.selectedShowroom,
-            this.selectedEmployee
-          ),
+ 
         ]).then(() => {
           this.popupVisible = true;
         });
@@ -297,7 +294,6 @@ export default {
         kpi_employee: this.selectedEmployee,
       };
 
-      console.log(postData);
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios
         .put("/api/kpi-update/", postData)
@@ -434,7 +430,7 @@ export default {
       axios
         .delete(`/api/kpis/${this.DeletedItem}`)
         .then(response => {
-          console.log(response.data.message);
+
           this.closeDelete();
           this.fetchKpis();
         })

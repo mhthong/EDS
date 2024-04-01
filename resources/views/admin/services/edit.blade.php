@@ -70,13 +70,25 @@
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="Sale_Price">Sale Price</label>
-                                                    <textarea type="number" class="form-control" id="Sale_Price" name="Sale_Price">{{ $service->Sale_Price}}</textarea>
+                                                    <input type="number" class="form-control" id="Sale_Price" name="Sale_Price" value="{{ $service->Sale_Price}}"></input>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="Time">Work Time </label>
-                                                    <textarea type ="time" class="form-control" id="Time" name="Time">{{ $service->Time}}</textarea>
+                                                    <select class="form-control" id="Time" name="Time">
+                                                        <option value="0.0" {{ $service->Time == '0.0' ? 'selected':'' }} >0:00</option>
+                                                        <option value="0.5" {{ $service->Time == '0.5' ? 'selected':'' }} >0:30</option>
+                                                        <option value="1.0" {{ $service->Time == '1.0' ? 'selected':'' }} >1:00</option>
+                                                        <option value="1.5" {{ $service->Time == '1.5' ? 'selected':'' }} >1:30</option>
+                                                        <option value="2.0" {{ $service->Time == '2.0' ? 'selected':'' }} >2:00</option>
+                                                        <option value="2.5" {{ $service->Time == '2.5' ? 'selected':'' }} >2:30</option>
+                                                        <option value="3.0" {{ $service->Time == '3.0' ? 'selected':'' }} >3:00</option>
+                                                        <option value="3.5" {{ $service->Time == '3.5' ? 'selected':'' }} >3:30</option>
+                                                        <option value="4.0" {{ $service->Time == '4.0' ? 'selected':'' }} >4:00</option>
+                                                        <option value="4.5" {{ $service->Time == '4.5' ? 'selected':'' }} >4:30</option>
+                                                        <option value="5.0" {{ $service->Time == '5.0' ? 'selected':'' }} >5:00</option>
+                                                    </select>
                                                 </div>
-                                           
+                                                
                                                 <div class="form-group">
 
                                                     <label for="group_service_id">Group</label>
@@ -110,7 +122,7 @@
                                                             &nbsp;
                                                             <button type="submit" name="submit" value="apply"
                                                                 class="btn btn-success">
-                                                                <i class="fa fa-check-circle"></i> Save &amp; Edit
+                                                                <i class="fa fa-check-circle"></i> Save &amp; Exit
                                                             </button>
                                                         </div>
                                                     </div>

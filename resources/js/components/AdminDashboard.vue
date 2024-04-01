@@ -88,11 +88,17 @@
         </select>
       </label>
 
-      <label v-if="this.title === 'Parner' && this.employeeId === null && this.artistId === null">
+      <label
+        v-if="
+          this.title === 'Parner' &&
+          this.employeeId === null &&
+          this.artistId === null
+        "
+      >
         <select
           class="form-control"
           id="showroomSelect"
-          v-model="selectedParner"
+          v-model="selectedEmployee"
           @change="selectedShowroomPrice()"
           :disabled="this.title == null"
           style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
@@ -121,19 +127,19 @@
           <h6>Booking Value</h6>
           <h4>${{ parseFloat(this.Booking_Value) }}</h4>
         </li>
-        <li class="Price Total_Booking_Price">
+        <li class="Price Total_Booking_Price" :class="{ None: isNone }">
           <h6>Actual B.Value</h6>
           <h4>${{ parseFloat(this.Actual_B_Value) }}</h4>
         </li>
-        <li class="Price Revenue_price">
+        <li class="Price Revenue_price" :class="{ None: isNone }">
           <h6>Total Revenue(est)</h6>
           <h4>${{ this.Initial_P_Revenue + this.Initial_Revenue }}</h4>
         </li>
-        <li class="Price Revenue_price">
+        <li class="Price Revenue_price" :class="{ None: isNone }">
           <h6>Initial P. Revenue</h6>
           <h4>${{ this.Initial_P_Revenue }}</h4>
         </li>
-        <li class="Price Revenue_price">
+        <li class="Price Revenue_price" :class="{ None: isNone }">
           <h6>Initial Revenue</h6>
           <h4>${{ this.Initial_Revenue }}</h4>
         </li>
@@ -156,7 +162,7 @@
           <h6>Remaining</h6>
           <h4>${{ parseFloat(this.Remaining) }}</h4>
         </li>
-        <li class="Price Refund_price">
+        <li class="Price Refund_price" :class="{ None: isNone }">
           <h6>Upsell ( Artist )</h6>
           <h4>${{ parseFloat(this.Upsell) }}</h4>
         </li>
@@ -180,7 +186,10 @@
         <li class="Price">
           <h6>%Pratial Done</h6>
           <h4>
-            {{ calculatePercentage(this.percent_Pratial_Done, this.Total_Booking) }} %
+            {{
+              calculatePercentage(this.percent_Pratial_Done, this.Total_Booking)
+            }}
+            %
           </h4>
         </li>
         <li class="Price">
@@ -193,7 +202,10 @@
         <li class="Price">
           <h6>%Reschedule</h6>
           <h4>
-            {{ calculatePercentage(this.percent_Reschedule, this.Total_Booking) }} %
+            {{
+              calculatePercentage(this.percent_Reschedule, this.Total_Booking)
+            }}
+            %
           </h4>
         </li>
 
@@ -212,7 +224,10 @@
         <li class="Price">
           <h6>%Unidentified</h6>
           <h4>
-            {{ calculatePercentage(this.percent_Unidentified, this.Total_Booking) }} %
+            {{
+              calculatePercentage(this.percent_Unidentified, this.Total_Booking)
+            }}
+            %
           </h4>
         </li>
 
@@ -230,6 +245,58 @@
             {{ calculatePercentage(this.Booking_Value, parseFloat(this.kpi)) }}
             %
           </h4>
+        </li>
+
+        <li class="Price" v-if="isArtistSelected && isArtistPayZero">
+          <h6>Total Day</h6>
+          <h4>{{ this.day }}</h4>
+        </li>
+        <li
+          class="Price"
+          v-if="isArtistSelected && isArtistPayZero"
+          style="color: white"
+        >
+          <h6>Daily wages</h6>
+          <input
+            type="number"
+            name="dailyWage"
+            id="dailyWage"
+            class="inputWages"
+            v-model="dailyWage"
+            @change="updateDailyWage"
+            min="0"
+          />
+          $
+        </li>
+        <li class="Price" v-if="isArtistSelected && isArtistPayZero">
+          <h6>Total Wage</h6>
+          <h4>{{ totalWage(parseFloat(this.day)) }} $</h4>
+        </li>
+
+        <li class="Price" v-if="isArtistSelected && isArtistPayOne">
+          <h6>Total Hour</h6>
+          <h4>{{ this.hour }}</h4>
+        </li>
+        <li
+          class="Price"
+          v-if="isArtistSelected && isArtistPayOne"
+          style="color: white"
+        >
+          <h6>Hourly salary</h6>
+          <input
+            type="number"
+            name="hourlyWage"
+            id="hourlyWage"
+            class="inputWages"
+            v-model="hourlyWage"
+            @change="updateHourlyWage"
+            min="0"
+          />
+          $
+        </li>
+        <li class="Price" v-if="isArtistSelected && isArtistPayOne">
+          <h6>Total Wage</h6>
+          <h4>{{ totalWage(parseFloat(this.hour)) }} $</h4>
         </li>
       </ul>
     </div>
@@ -269,7 +336,7 @@ export default {
       kpi: "",
       /*       upsale: "", */
       adminId: null,
-      manage_supers:null,
+      manage_supers: null,
       employeeId: null,
       artistId: null,
       isTransitioning: false,
@@ -308,6 +375,11 @@ export default {
       percent_Reschedule: 0,
       percent_Unidentified: 0,
       Operation_KPI: 0,
+      isNone: false,
+      day: 0,
+      hour: 0,
+      dailyWage: 0,
+      hourlyWage: 0,
     };
   },
 
@@ -330,16 +402,76 @@ export default {
       },
       deep: true, // Theo dõi các sự thay đổi sâu trong object
     },
+
+    selectedEmployee(newValue, oldValue) {
+      if (newValue !== null && this.title === "") {
+        this.title = "Artist";
+      }
+    },
   },
 
+
   computed: {
+    isEmployeeSelected() {
+      return this.selectedEmployee !== null;
+    },
     totalBookings() {
       // Trả về tổng số booking bằng cách sử dụng thuộc tính length của mảng filteredData
       return this.filteredData.length;
     },
+
+    isArtistSelected() {
+      return this.artistId !== null || this.title === "Artist";
+    },
+    isArtistPayZero() {
+      return parseInt(this.getArtistPayById(this.selectedEmployee)) === 0;
+    },
+    isArtistPayOne() {
+      return parseInt(this.getArtistPayById(this.selectedEmployee)) === 1;
+    },
   },
 
   methods: {
+    updateDailyWage() {
+      this.dailyWage = parseFloat(this.day);
+    },
+    updateHourlyWage() {
+      this.hourlyWage = parseFloat(this.hour);
+    },
+    totalWage(time) {
+      // Choose the appropriate wage based on the context (daily or hourly)
+      const wage =
+        this.title === "Artist" &&
+        parseInt(this.getArtistPayById(this.selectedEmployee)) === 0
+          ? this.dailyWage
+          : this.hourlyWage;
+
+ 
+      return parseFloat(wage) * parseFloat(time);
+    },
+
+    getArtistPayById(artistId) {
+ 
+          if (this.apiDataAritst) {
+            const artist = this.apiDataAritst.find(
+              (artist) => parseInt(artist.id) === parseInt(artistId)
+            );
+            // Kiểm tra xem nghệ sĩ có tồn tại hay không
+            if (artist) {
+              if (parseInt(artist.artist_pay) === 0) {
+                return 0;
+              } else {
+                return 1;
+              }
+            } else {
+              return false; // Trả về "Unknown" nếu không tìm thấy nghệ sĩ
+            }
+          } else {
+            return false; // Handle the case where apiDataAritst is null
+          }
+          },
+
+
     fetchapiData_id(start, end, selectedShowroom, employee, title) {
       if (this.artistId !== null) {
         axios
@@ -396,12 +528,12 @@ export default {
         .get("/api/artist")
         .then((response) => {
           this.apiDataAritst = response.data;
+   
         })
         .catch((error) => {
           console.error("Error fetching artist::", error);
         });
     },
-
 
     fetchapiDataParner() {
       axios
@@ -471,8 +603,7 @@ export default {
     totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       const totals = {};
-      console.log("Data in totalByName:", data);
-
+    
       // Your existing code...
 
       // Lặp qua các ngày trong dữ liệu của bạn
@@ -503,6 +634,8 @@ export default {
               percent_Reschedule: 0,
               percent_Unidentified: 0,
               Operation_KPI: 0,
+              day: 0,
+              hour: 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -525,6 +658,8 @@ export default {
           totals[Name].percent_Reschedule += fillerData.percent_Reschedule;
           totals[Name].percent_Unidentified += fillerData.percent_Unidentified;
           totals[Name].Operation_KPI += fillerData.Operation_KPI;
+          totals[Name].hour += fillerData.hour;
+          totals[Name].day += fillerData.day;
         }
       }
 
@@ -585,6 +720,8 @@ export default {
       this.percent_Reschedule = 0;
       this.percent_Unidentified = 0;
       this.Operation_KPI = 0;
+      this.day = 0;
+      this.hour = 0;
 
       if (this.selectedShowroom !== null) {
         this.resuft = this.filterDataById(
@@ -613,13 +750,16 @@ export default {
         this.percent_waiting += parseFloat(item.percent_waiting);
         this.percent_refund += parseFloat(item.percent_refund);
         this.percent_cancel += parseFloat(item.percent_cancel);
-        this.percent_Pratial_Done  += parseFloat(item.percent_Pratial_Done);
-        this.percent_Reschedule  += parseFloat(item.percent_Reschedule);
-        this.percent_Unidentified  += parseFloat(item.percent_Unidentified);
-        this.Operation_KPI  += parseFloat(item.Operation_KPI);
+        this.percent_Pratial_Done += parseFloat(item.percent_Pratial_Done);
+        this.percent_Reschedule += parseFloat(item.percent_Reschedule);
+        this.percent_Unidentified += parseFloat(item.percent_Unidentified);
+        this.Operation_KPI += parseFloat(item.Operation_KPI);
+        this.day += parseFloat(item.day);
+        this.hour += parseFloat(item.hour);
       });
 
-      // Lặp qua danh sách dữ liệu và tính tổng
+      this.hourlyWage = 0;
+      this.dailyWage = 0;
     },
 
     selectedEmployeeAPi() {
@@ -634,7 +774,16 @@ export default {
 
     this.employeeId = this.$root.employeeId;
 
-    this.manage_supers =this.$root.manage_supers;
+    this.manage_supers = this.$root.manage_supers;
+
+
+    if (
+      (this.adminId !== null && parseInt(this.manage_supers) === 3) ||
+      this.artistId !== null ||
+      this.employeeId !== null
+    ) {
+      this.isNone = true;
+    }
 
     if (this.employeeId !== null) {
       this.selectedEmployee = this.employeeId;
@@ -647,11 +796,9 @@ export default {
     }
 
     if (this.adminId !== null && parseInt(this.manage_supers) === 4) {
-      
       this.selectedParner = this.adminId;
-      this.title = "Parner"
+      this.title = "Parner";
     }
-
 
     const currentDate = new Date();
     this.currentMonth = currentDate.getMonth() + 1;
@@ -890,5 +1037,11 @@ h4 {
   display: flex;
   grid-gap: 1.25rem;
   flex-wrap: wrap;
+}
+.inputWages {
+  background: #ffffff00;
+  border: 0;
+  border-bottom: solid 1px wheat;
+  color: white;
 }
 </style>

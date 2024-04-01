@@ -56,7 +56,13 @@ class EmployeeController extends Controller
     
         if ($createdEmployee) {
             // If the artist was successfully created, redirect with success message
-            return redirect()->route('employee.index')->with('success', 'Employee created successfully.');
+
+            if ($request->input('submit') == 'apply') {
+
+                return redirect()->route('employee.index')->with('success', 'Employee created successfully!');
+            } else {
+                return redirect()->back()->with('success', 'Employee created successfully!');
+            }
         } else {
             // If the artist creation failed, redirect back with an error message
             return redirect()->back()->with('failed', 'Failed to create employee.');
@@ -146,7 +152,13 @@ class EmployeeController extends Controller
         
             if ($updateEmployee) {
                 // If the artist was successfully update, redirect with success message
-                return redirect()->route('employee.index')->with('success', 'Employee update successfully.');
+
+                if ($request->input('submit') == 'apply') {
+
+                    return redirect()->route('employee.index')->with('success', 'Employee updated successfully!');
+                } else {
+                    return redirect()->back()->with('success', 'Employee updated successfully!');
+                }
             } else {
                 // If the artist creation failed, redirect back with an error message
                 return redirect()->back()->with('failed', 'Failed to update employee.');

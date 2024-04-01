@@ -56,7 +56,7 @@
 
                                     </div>
 
-                                    <form action="{{ route('bookings.store') }}" method="post">
+                                    <form id="bookingForm" action="{{ route('bookings.store') }}" method="post">
 
                                         @csrf
                                         <div class="modal-body">
@@ -84,7 +84,7 @@
 
                                     </div>
 
-                                    <form action="{{ route('employee.bookings.store') }}" method="post">
+                                    <form id="bookingForm" action="{{ route('employee.bookings.store') }}" method="post">
 
                                         @csrf
                                         <div class="modal-body">

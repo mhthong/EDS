@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Kpi;
 use App\Models\Price;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\ServiceBooking;
 
 
 class ApiPostController extends Controller
@@ -218,7 +218,7 @@ class ApiPostController extends Controller
 
             return response()->json(['message' => 'Data created successfully']);
         } else {
-            return redirect()->back()->with("failed", "You do not have access !");
+            return redirect()->back()->with("message", "You do not have access !");
         }
     }
 
@@ -333,6 +333,162 @@ class ApiPostController extends Controller
             return response()->json(['message' => 'Error deleting data', 'error' => $e->getMessage()], 500);
         }
     }
+
+
+    public function deleteArtist($id)
+    {
+        $check = $this->CheckAuthLeader();
+
+        if (!$check) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+
+
+        $Booking = Booking::where('ArtistID', $id)->first();
+
+
+        if (!$Booking) {
+        
+            try {
+                $Artists = Artists::find($id);
+    
+                if (!$Artists) {
+                    return response()->json(['message' => 'Artists not found'], 404);
+                }
+    
+                $Artists->delete();
+    
+                return response()->json(['message' => 'Data deleted successfully']);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Error deleting data', 'error' => $e->getMessage()], 500);
+            }
+
+        } else {
+            return response()->json(['message' => 'Data deleted failed']);
+        }
+
+   
+    }
+
+
+    public function deleteShowroom($id)
+    {
+        $check = $this->CheckAuthLeader();
+
+        if (!$check) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+
+
+        $Booking = Booking::where('ShowroomID', $id)->first();
+
+
+        if (!$Booking) {
+        
+            try {
+                $Showroom = Showroom::find($id);
+    
+                if (!$Showroom) {
+                    return response()->json(['message' => 'Artists not found'], 404);
+                }
+    
+                $Showroom->delete();
+    
+                return response()->json(['message' => 'Data deleted successfully']);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Error deleting data', 'error' => $e->getMessage()], 500);
+            }
+
+        } else {
+            return response()->json(['message' => 'Data deleted failed']);
+        }
+
+   
+    }
+
+
+    
+
+    public function deleteEmployee($id)
+    {
+        $check = $this->CheckAuthLeader();
+
+        if (!$check) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+
+
+        $Booking = Booking::where('source_id', $id)->where('source_type', 'App\Models\Employee')->first();
+
+        if (!$Booking) {
+        
+            try {
+                $Employee = Employee::find($id);
+    
+                if (!$Employee) {
+                    return response()->json(['message' => 'Employee not found'], 404);
+                }
+    
+                $Employee->delete();
+    
+                return response()->json(['message' => 'Data deleted successfully']);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Error deleting data', 'error' => $e->getMessage()], 500);
+            }
+
+        } else {
+            return response()->json(['message' => 'Data deleted failed']);
+        }
+
+   
+    }
+
+
+
+    
+
+
+    public function deleteService($id)
+    {
+        $check = $this->CheckAuthLeader();
+
+        if (!$check) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $ServiceBooking = ServiceBooking::where('service_id', $id)->first();
+
+
+        if (!$ServiceBooking) {
+
+            try {
+                $Service = Service::find($id);
+    
+                if (!$Service) {
+                    return response()->json(['message' => 'Service not found'], 404);
+                }
+    
+                $Service->delete();
+    
+                return response()->json(['message' => 'Data deleted successfully']);
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Error deleting data', 'error' => $e->getMessage()], 500);
+            }
+        } else {
+            return response()->json(['message' => 'Data deleted failed']);
+        }
+
+
+    }
+
+
+
+
+
+    
     
         public function deleteBooking($id)
     {

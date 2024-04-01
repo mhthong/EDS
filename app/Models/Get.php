@@ -9,7 +9,7 @@ class Get extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['Name', 'Email', 'Address', 'Phone' ,'source_data','Source' , 'Note','After_img','Before_img'];
+    protected $fillable = ['Name', 'Email', 'Address', 'Phone' ,'source_data','Source' ,'Note','After_img','Before_img'];
 
     public function bookings()
     {

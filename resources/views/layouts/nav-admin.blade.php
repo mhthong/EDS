@@ -84,7 +84,7 @@
                 </li>
                 <li>
                     <a href="#" class=""><i class="fa-solid fa-house"></i></a>
-                    <ul class="sidebar__submenu">
+                    <ul class="sidebar__submenu">   
                         <li class="title">Dashboard</li>
                         <li><a href="{{ route('sale-admin') }}">Sales</a></li>
                         <li><a href="{{ route('analytics-admin') }}">Analytics</a></li>

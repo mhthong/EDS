@@ -38,7 +38,6 @@
         class="form-control"
         v-model="selectedStatus"
         @change="runFullcalendar"
-        :disabled="this.selectedShowroom === 0"
       >
         <option value="None">Status</option>
         <option value="Waiting">Waiting</option>
@@ -303,7 +302,6 @@ export default {
               this.manage_supers == 1 ||
               this.manage_supers == 4)
           ) {
-            console.log(123);
             this.popupInputData = info.dateStr;
             this.openPopup();
           } else {
@@ -354,17 +352,19 @@ export default {
     },
 
     customDayHeaderContent(arg) {
- 
       const date = moment(arg.date).format("YYYY-MM-DD");
       const day = arg.date.getDate();
 
-
-      if(this.artistId !== null){
+      if (
+        this.artistId !== null ||
+        (this.adminId !== null && parseInt(this.manage_supers) === 3) ||
+        this.employeeId !== null
+      ) {
         return {
-        html: `<div class="custom-day-header">
+          html: `<div class="custom-day-header">
           <div>${day}</div>
           </div>`,
-      };
+        };
       }
 
       // Lọc dữ liệu của bạn để chỉ lấy các sự kiện xảy ra trong ngày hiện tại
@@ -415,17 +415,12 @@ export default {
       // Tạo một chuỗi HTML từ các tổng giá của showroom
       let eventsHtml = "";
 
-      console.log("Object", Object.keys(totalPriceByArtistsId));
-
-      console.log("Action", Object.keys(Action));
-
       Object.keys(totalPriceByArtistsId).forEach((Id) => {
         const artistName = this.getArtistNameById(Id); // Thay thế getArtistNameById bằng hàm thích hợp trong ứng dụng của bạn
 
-        const showroomName = this.getshowroomNameById(Id);
-        console.log(parseInt(totalPriceByArtistsId[Id]) >= 1200);
+        const artist_pay = this.getArtistPayById(Id); // Thay thế getArtistNameById bằng hàm thích hợp trong ứng dụng của bạn
 
-        console.log("Actionsss", Action[Id]);
+        const showroomName = this.getshowroomNameById(Id);
 
         // Kiểm tra giá trị của Action[Id]
         const action = Action[Id] || ""; // Tránh lỗi nếu không có giá trị action
@@ -441,7 +436,7 @@ export default {
         if (parseInt(totalPriceByArtistsId[Id]) >= 1200) {
           eventsHtml += `<div class="date-revenue-price-info revenue-true" style="background: #c4ebfa;   padding: 1rem; border-radius: 10px; margin-bottom: 5px; position: relative;">
            <div class="icon-revenue" style="  position: absolute;  right: 0.15rem; top: 0.1rem;">${iconHtml}</div>
-             <p> Artist : <b class="none_text">${artistName}</b>
+             <p> Artist : <b class="none_text artist_pay_${artist_pay}">${artistName}</b>
             </br> 
             Location : <b class="none_text">${showroomName}</b>
             </br> 
@@ -450,7 +445,7 @@ export default {
           eventsHtml += `<div class="date-revenue-price-info revenue-true" style="background: #c4fad7;   padding: 1rem; border-radius: 10px; margin-bottom: 5px; position: relative;">
             <div class="icon-revenue" style="  position: absolute;  right: 0.15rem; top: 0.1rem;">${iconHtml}</div>
    
-            <p> Artist : <b class="none_text">${artistName}</b>
+            <p> Artist : <b class="none_text artist_pay_${artist_pay}">${artistName}</b>
             </br> 
             Location : <b class="none_text">${showroomName}</b>
             </br> 
@@ -458,7 +453,7 @@ export default {
         } else {
           eventsHtml += `<div class="date-revenue-price-info revenue-false" style="background: #fac4c4;   padding: 1rem; border-radius: 10px; margin-bottom: 5px; position: relative;">
             <div class="icon-revenue" style="  position: absolute;  right: 0.15rem; top: 0.1rem;">${iconHtml}</div>
-            <p> Artist : <b class="none_text">${artistName}</b>
+            <p> Artist : <b class="none_text artist_pay_${artist_pay}">${artistName}</b>
             </br> 
             Location : <b class="none_text">${showroomName}</b>
             </br> 
@@ -493,8 +488,6 @@ export default {
     },
 
     getArtistNameById(artistId) {
-      console.log("adsad", artistId, this.artists);
-
       const numberPart = artistId.split("_")[1];
       // Get the part after the underscore
       // Lấy thông tin về nghệ sĩ từ nguồn dữ liệu của bạn
@@ -511,6 +504,23 @@ export default {
       }
     },
 
+    getArtistPayById(artistId) {
+      const numberPart = artistId.split("_")[1];
+      // Get the part after the underscore
+      // Lấy thông tin về nghệ sĩ từ nguồn dữ liệu của bạn
+      // Đây chỉ là một ví dụ, bạn cần điều chỉnh mã này để phù hợp với cách bạn lưu trữ dữ liệu
+      const artist = this.artists.find(
+        (artist) => parseInt(artist.id) === parseInt(artistId)
+      );
+
+      // Kiểm tra xem nghệ sĩ có tồn tại hay không
+      if (artist) {
+        return artist.artist_pay; // Trả về tên của nghệ sĩ
+      } else {
+        return "Unknown"; // Trả về "Unknown" nếu không tìm thấy nghệ sĩ
+      }
+    },
+
     openPopup() {
       this.popupVisible = true;
     },
@@ -520,13 +530,11 @@ export default {
 
     toggleStatus() {
       if (this.popupnone !== "active") {
-        console.log(this.popupnone);
         this.popupnone = "active"; // Use assignment operator to update the variable
       }
     },
     toggleApproval() {
       if (this.popupnone !== "Approved") {
-        console.log(this.popupnone);
         this.popupnone = "Approved"; // Use assignment operator to update the variable
       }
     },
@@ -552,7 +560,6 @@ export default {
         artistId: this.selectedStatusArtist,
       };
 
-      console.log(postData);
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios
         .post("/api/save-data", postData)
@@ -560,13 +567,12 @@ export default {
           // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
 
           this.selectedActive = "none";
+          this.selectedStatusArtist = [];
           this.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
           this.closePopup(); // Đóng popup sau khi lưu thành công
-          console.log(postData);
         })
         .catch((error) => {
           console.error("Error saving data:", error);
-          console.log(postData);
           // Xử lý lỗi nếu có
         });
     },
@@ -586,9 +592,9 @@ export default {
           // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
 
           this.selectedApproved = "pending";
+          this.selectedApprovedArtist = [];
           this.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
           this.closePopup(); // Đóng popup sau khi lưu thành công
-          console.log(postData);
         })
         .catch((error) => {
           console.error("Error saving data:", error);
@@ -602,11 +608,7 @@ export default {
           `/api/fullcalendar/${this.currentViewStart}/${this.currentViewEnd}/${this.selectedShowroom}/${this.selectedArtist}`
         );
         this.data = response.data;
-
-        console.log("    this.data ",    this.data );
-      } catch (error) {
-        console.error("Error fetching API data:", error);
-      }
+      } catch (error) {}
     },
 
     async runFullcalendar() {
@@ -671,7 +673,6 @@ export default {
     },
 
     loadEvents() {
-
       this.fetchShowroomschedule();
 
       // Flatten the nested structure into a flat array of events
@@ -716,7 +717,6 @@ export default {
         return artistMatch && statusMatch && actionMatch;
       });
 
-      console.log("filteredEvents", filteredEvents);
       // Map the filtered events to FullCalendar format
       const filteredEventsRef = filteredEvents.map((event) => {
         const startTime = new Date(event.date + "T" + event.time);
@@ -790,10 +790,12 @@ export default {
     },
 
     customEventContent(arg) {
-
-
-
-      if (parseInt(this.selectedShowroom) === 0 && (parseInt(this.selectedArtist) === 0)) {
+      if (
+        parseInt(this.selectedShowroom) === 0 &&
+        parseInt(this.selectedArtist) === 0 &&
+        this.adminId !== null &&
+        parseInt(this.manage_supers) === 4
+      ) {
         return;
       }
 
@@ -811,7 +813,7 @@ export default {
       return {
         html: `
           <div class="fc-content ${arg.event.title}">
-            <a href="${currentUrl}/books/${arg.event.id}/edit" style="color: white">
+            <a href="${currentUrl}/books/${arg.event.id}/edit" style="color: white" target="_blank">
             <div class="fc-content-main">
             <span class="fc-status">Booking person : ${arg.event.extendedProps.source} </span><br>
             <span class="fc-status">Client : ${arg.event.extendedProps.get} </span><br>
@@ -827,7 +829,6 @@ export default {
       };
     },
   },
-  
 
   computed: {
     allSelected: {
@@ -838,8 +839,8 @@ export default {
       set(value) {
         // Khi checkbox "All" được thay đổi, cập nhật tất cả các checkbox nghệ sĩ
         if (value) {
-          const allArtistIds = this.artists.map((artist) => artist.id);
-          this.selectedStatusArtist = allArtistIds;
+          const allArtistIds = [...this.artists.map((artist) => artist.id), 0];
+            this.selectedStatusArtist = allArtistIds;
         } else {
           this.selectedStatusArtist = [];
         }
@@ -853,25 +854,22 @@ export default {
   watch: {
     popupnone(newValue, oldValue) {
       // Log when the value of popupnone changes
-      console.log("popupnone changed from", oldValue, "to", newValue);
     },
   },
 
   mounted() {
-
-// Chuyển đổi chuỗi sang số nguyên
+    // Chuyển đổi chuỗi sang số nguyên
     this.adminId = this.$root.adminId;
 
     this.artistId = this.$root.artistId;
 
     this.employeeId = this.$root.employeeId;
 
-    this.manage_supers = this.$root.manage_supers; 
+    this.manage_supers = this.$root.manage_supers;
 
     if (this.artistId !== null) {
       this.selectedArtist = this.artistId;
     }
-    console.log("selectedShowroom",parseInt(this.selectedShowroom) === 0 ,this.selectedArtist === 0 , this.selectedArtist , parseInt(this.selectedShowroom) === 0 && parseInt(this.selectedArtist) === 0);
 
     this.fetchShowrooms();
     this.fetchArtists();

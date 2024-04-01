@@ -842,7 +842,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       // Sắp xếp các labels theo thứ tự tăng dần
       var ctxSource = this.$refs.myChartSource.getContext("2d");
       var SourceDataMap = {};
-      console.log(SourceDataMap);
       this.apiDataGet.forEach(function (Source) {
         SourceDataMap[Source.source_data] = Source;
       });

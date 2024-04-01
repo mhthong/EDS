@@ -78,6 +78,7 @@
               id="showroomSelect"
               v-model="selectedAritst"
               style="padding: 5px; min-width: 170px; max-width: 170px"
+              :disabled="this.artistId!==null"
             >
               <option :value="null" selected>Select Artist</option>
               <option
@@ -157,11 +158,11 @@
             </thead>
           </template>
           <template v-slot:item="{ item }">
-            <tr>
+            <tr v-if="parseInt(manage_supers) !== 4">
               <td @click="redirectToEditPage(item.id)">{{ item.id }}</td>
               <td @click="redirectToEditPage(item.id)">{{ item.Staff }}</td>
               <td @click="redirectToEditPage(item.id)">{{ item.Location }}</td>
-              <td @click="redirectToEditPage(item.id)">{{ item.Artist }}</td>
+              <td @click="redirectToEditPage(item.id)" :class="{'artist_pay_0': parseInt(item.Artist_Pay) === 0, 'artist_pay_1': parseInt(item.Artist_Pay) === 1}">{{ item.Artist }}</td>
               <td @click="redirectToEditPage(item.id)">{{ item.Client }}</td>
               <td @click="redirectToEditPage(item.id)">
                 {{ item.BookingDateCreate }}
@@ -275,6 +276,127 @@
                 <v-icon @click="deleteItem(item.id)">mdi-delete</v-icon>
               </td>
             </tr>
+            <tr v-if="parseInt(manage_supers) === 4">
+              <td @click="redirectToEditPage(item.id)">{{ item.id }}</td>
+              <td @click="redirectToEditPage(item.id)">
+                {{ item.BookingDateCreate }}
+              </td>
+              <td @click="redirectToEditPage(item.id)">{{ item.Staff }}</td>
+              <td @click="redirectToEditPage(item.id)">{{ item.Location }}</td>
+              <td @click="redirectToEditPage(item.id)" :class="{'artist_pay_0': parseInt(item.Artist_Pay) === 0, 'artist_pay_1': parseInt(item.Artist_Pay) === 1}">{{ item.Artist }}</td>
+              <td @click="redirectToEditPage(item.id)">
+                <div
+                  class="status"
+                  :class="item.Status.toLowerCase().replace(/[^a-z0-9]/g, '-')"
+                >
+                  {{ item.Status }}
+                </div>
+              </td>
+              <td @click="redirectToEditPage(item.id)">
+                {{ item.TreatmentDate }}
+              </td>
+              <td @click="redirectToEditPage(item.id)">{{ item.StartTime }}
+              </td>
+              <td @click="redirectToEditPage(item.id)">{{ item.EndTime }}
+              </td>
+              <td @click="redirectToEditPage(item.id)">{{ item.Client }}</td>
+  
+ 
+              <td @click="redirectToEditPage(item.id)">
+                <div class="clamp-text">{{ item.Services }}</div>
+              </td>
+              <td @click="redirectToEditPage(item.id)">
+                <div class="clamp-text">{{ item.Note }}</div>
+              </td>
+              <td @click="redirectToEditPage(item.id)">{{ item.Price }}</td>
+              <td @click="redirectToEditPage(item.id)">{{ item.Deposit }}</td>
+              <td @click="redirectToEditPage(item.id)">
+                {{ item.PaymentType }}
+              </td>
+              <td>
+                <label class="switch bookingcheck" :id="item.paymentID">
+                  <input
+                    type="hidden"
+                    :id="'1stchecknone_' + item.paymentID"
+                    name="1stcheck"
+                    value="0"
+                    :checked="parseInt(item.stCheck) === 1 ? false : true"
+                  />
+                  <input
+                    type="checkbox"
+                    name="1stcheck"
+                    :id="'1stcheck_' + item.paymentID"
+                    class="onoffswitch-checkbox"
+                    value="1"
+                    :checked="parseInt(item.stCheck) === 1 ? true : false"
+                    @click="
+                      updatePaymentStatus(
+                        item.stCheck,
+                        '1stcheck',
+                        item.paymentID
+                      )
+                    "
+                  />
+                  <span class="slider"></span>
+                </label>
+              </td>
+
+              <td @click="redirectToEditPage(item.id)">{{ item.Remaining }}</td>
+              <td @click="redirectToEditPage(item.id)">
+                {{ item.PaymentTypeSecond }}
+              </td>
+              <td>
+                <label class="switch bookingcheck" :id="item.paymentID">
+                  <input
+                    type="hidden"
+                    :id="'2ndchecknone_' + item.paymentID"
+                    name="2ndcheck"
+                    value="0"
+                    :checked="parseInt(item.ndCheck) === 1 ? false : true"
+                  />
+                  <input
+                    type="checkbox"
+                    name="2ndcheck"
+                    :id="'2ndcheck_' + item.paymentID"
+                    class="onoffswitch-checkbox"
+                    value="1"
+                    :checked="parseInt(item.ndCheck) === 1 ? true : false"
+                    @click="
+                      updatePaymentStatus(
+                        item.ndCheck,
+                        '2ndcheck',
+                        item.paymentID
+                      )
+                    "
+                  />
+                  <span class="slider"></span>
+                </label>
+              </td>
+              <td @click="redirectToEditPage(item.id)">
+                {{ item.TotalRevenue }}
+              </td>
+              <td @click="redirectToEditPage(item.id)">{{ item.Phone }}</td>
+              <td @click="redirectToEditPage(item.id)">
+                <div class="clamp-text">  {{ item.Email }}</div>
+              
+              </td>
+              <td @click="redirectToEditPage(item.id)">
+                <div class="clamp-text">{{ item.Address }}</div>
+              </td>
+
+             
+              <td @click="redirectToEditPage(item.id)">
+                
+                <div class="clamp-text">  {{ item.Source }}</div>
+               </td>
+              <td @click="redirectToEditPage(item.id)">
+                <div class="clamp-text">       {{ item.SourceData }}</div>
+         
+              </td>
+              <td>
+                <v-icon @click="deleteItem(item.id)">mdi-delete</v-icon>
+              </td>
+            </tr>
           </template>
         </v-data-table>
         <div v-else>
@@ -296,7 +418,6 @@
             v-model="selectedShowroom"
           >
             <option value="0">All Showroom</option>
-
             <option
               v-for="showroom in showrooms"
               :key="showroom.id"
@@ -389,6 +510,9 @@
         </div>
       </div>
     </v-app>
+    <div v-if="showNotification" class="notificationinfo">{{ notificationMessage }}</div>
+
+
   </div>
 </template>
 
@@ -434,7 +558,7 @@ export default {
       employeeSelect: "defaultSelectValue",
       dateRange: {
         type: Object,
-        required: true, // Nếu cần
+        required: true, // Nếu cần 
       },
 
       oldstart: null,
@@ -483,6 +607,8 @@ export default {
 
       dialogDelete: false, // To control the visibility of the delete confirmation popup
       dialogEdit: false,
+      showNotification: false, // Control the visibility of the notification
+      notificationMessage: "", // Store the content of the notification
     };
   },
 
@@ -501,7 +627,7 @@ export default {
       // Lấy dữ liệu từ DataTable (thay bằng DataTable của bạn)
       const data = this.generateTableData();
 
-      console.log("data", data);
+   
       // Tạo các header cho bảng Excel
 
       const headers = this.dynamicHeaders();
@@ -525,7 +651,7 @@ export default {
         headers.forEach((header) => {
           if (header.children) {
             header.children.forEach((childHeader) => {
-              console.log("headers", childHeader.value);
+     
 
               const value = row[childHeader.value];
               newRow[childHeader.value] = value !== undefined ? value : ""; // Đảm bảo giá trị không phải là undefined
@@ -567,20 +693,6 @@ export default {
     handleButtonClickFillter() {
       // Log khi dateRange thay đổi
       const filteredData = this.filteredDataTable;
-      console.log("Filtered Data:", filteredData, this.selectedShowroom);
-
-      console.log(
-        this.dateRange.start,
-        this.oldstart,
-        this.dateRange.end,
-        this.oldend,
-        this.OldselectdateCompare,
-        this.selectdateCompare,
-        this.dateRange.start != this.oldstart,
-        this.dateRange.end != this.oldend,
-        this.OldselectdateCompare != this.selectdateCompare
-      );
-
       if (
         this.dateRange.start != this.oldstart ||
         this.dateRange.end != this.oldend ||
@@ -599,7 +711,7 @@ export default {
     updatePaymentStatus(isChecked, checkboxName, paymentId) {
       let status = parseInt(isChecked) === 0 ? 1 : 0;
 
-      console.log(isChecked ,status , isChecked == status );
+
 
 
       if (
@@ -610,7 +722,7 @@ export default {
       ) {
         alert("You do not have rights");
       } else {
-        console.log(status, checkboxName, paymentId);
+
         axios
           .post("/api/update-payment-status", {
             isChecked: status,
@@ -618,7 +730,7 @@ export default {
             paymentId: paymentId, // Replace with the actual payment ID
           })
           .then((response) => {
-            console.log(response.data.message);
+
             this.fetchBookingTable(
               this.dateRange.start,
               this.dateRange.end,
@@ -638,12 +750,7 @@ export default {
           (this.kpi = this.editedItem.number_of_kpi),
           (this.selectedShowroom = this.editedItem.kpi_showroom),
           (this.selectedEmployee = this.editedItem.kpi_employee),
-          console.log(
-            this.inputData,
-            this.kpi,
-            this.selectedShowroom,
-            this.selectedEmployee
-          ),
+
         ]).then(() => {
           this.popupVisible = true;
         });
@@ -672,58 +779,8 @@ export default {
       const currentYear = info.view.currentStart.getFullYear();
     },
 
-    /*     saveData() {
-      // Tạo một đối tượng dữ liệu để gửi lên server
-      const postData = {
-        date: `${this.popupInputData}-01`, // Thêm ngày là 01
-        number_of_kpi: this.kpi,
-        kpi_showroom: this.selectedShowroom,
-        kpi_employee: this.selectedEmployee,
-      };
-
-      // Gửi yêu cầu POST đến API để lưu dữ liệu
-      axios
-        .post("/api/kpi-store", postData)
-        .then((response) => {
-          // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
-          this.closePopup(); // Đóng popup sau khi lưu thành công
-          this.fetchBookingTable(this.dateRange.start,this.dateRange.end,this.selectdateCompare);
-        })
-        .catch((error) => {
-          console.log(postData);
-          console.error("Error saving data:", error);
-          // Xử lý lỗi nếu có
-        });
-    },
-
-    saveDataChanges() {
-      // Tạo một đối tượng dữ liệu để gửi lên server
-      const postData = {
-        id: this.editedItem.id,
-        date: `${this.popupInputData}-01`, // Thêm ngày là 01
-        number_of_kpi: this.kpi,
-        kpi_showroom: this.selectedShowroom,
-        kpi_employee: this.selectedEmployee,
-      };
-
-      console.log(postData);
-      // Gửi yêu cầu POST đến API để lưu dữ liệu
-      axios
-        .put("/api/kpi-update/", postData)
-        .then((response) => {
-          // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
-          this.closePopup(); // Đóng popup sau khi lưu thành công
-          this.fetchBookingTable(this.dateRange.start,this.dateRange.end,this.selectdateCompare);
-        })
-        .catch((error) => {
-          console.log(postData);
-          console.error("Error saving data:", error);
-          // Xử lý lỗi nếu có
-        });
-    }, */
-
-    fetchShowrooms() {
-      axios
+   async fetchShowrooms() {
+      await  axios
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
@@ -733,8 +790,8 @@ export default {
         });
     },
 
-    fetchapiDataEmployee() {
-      axios
+   async fetchapiDataEmployee() {
+    await axios
         .get(`/api/employee`)
         .then((response) => {
           this.Employees = response.data;
@@ -744,8 +801,8 @@ export default {
         });
     },
 
-    fetchArtist() {
-      axios
+   async fetchArtist() {
+      await  axios
         .get("/api/artist")
         .then((response) => {
           this.apiDataAritst = response.data;
@@ -782,12 +839,12 @@ export default {
       return employee ? employee.name : "All Employee";
     },
 
-    fetchBookingTable(start, end, type) {
-      axios
+   async fetchBookingTable(start, end, type) {
+    await  axios
         .get(`/api/getAllDataTable/${start}/${end}/${type}`)
         .then((response) => {
           this.DataTables = response.data;
-          console.log(this.DataTables);
+   
           this.OldselectdateCompare = this.selectdateCompare;
         })
         .catch((error) => {
@@ -836,8 +893,7 @@ export default {
     // Confirm delete
     deleteItemConfirm() {
 
-      console.log('adminId',this.adminId,
-        'manage_supers',this.manage_supers );
+
       if (
         this.adminId !== null &&
         ( parseInt(this.manage_supers) === 1 || parseInt(this.manage_supers) === 0)
@@ -845,7 +901,9 @@ export default {
         axios
           .delete(`/api/deleteBooking/${this.DeletedItem}`)
           .then((response) => {
-            console.log(response.data.message);
+            this.notificationMessage = response.data.message;
+          this.showNotification = true; // Show the notification
+
             this.closeDelete();
             this.fetchBookingTable(
               this.dateRange.start,
@@ -854,19 +912,28 @@ export default {
             );
           })
           .catch((error) => {
+            this.notificationMessage = "Error deleting: " + error.message;
+          this.showNotification = true; // Show the notification
             console.error("Error deleting Booking:", error);
           });
       } else {
         alert("You do not have rights !!!");
       }
+
+
+      setTimeout(() => {
+        this.showNotification = false;
+      }, 3000);
     },
 
     generateTableData() {
+
       return this.filteredDataTable.map((item) => ({
         id: item.id,
         Staff: item.source_name,
         Location: item.showroom.Name, // Dynamically set the showroomName property
         Artist: item.artist.name,
+        Artist_Pay: item.artist.artist_pay,
         Client: item.get.Name,
         BookingDateCreate: moment(item.created_at).format("DD-MM-YYYY"),
         TreatmentDate: moment(item.date).format("DD-MM-YYYY"),
@@ -874,7 +941,7 @@ export default {
         EndTime: item.time_end,
         Status: item.status,
         Services: item.services[0].Name,
-        Source: item.get.source_data,
+        Source: item.source_data !== null ? item.source_data : item.get.source_data,
         Price: item.price.servies_price,
         Deposit: item.price.Deposit_price,
         PaymentType: item.payment.payment_type,
@@ -886,19 +953,24 @@ export default {
         Email: item.get.Email,
         Address: item.get.Address,
         Phone: item.get.Phone,
-        Note: item.get.Note,
-        SourceData: item.get.Source,
+        Note: item.Note !== null ? item.Note : item.get.Note,
+        SourceData: item.Source !== null ? item.Source : item.get.Source,
         Approved: item.content,
         action: item.action,
         paymentID: item.payment.id,
       }));
+
     },
 
-    dynamicHeaders() {
+  dynamicHeaders() {
+
+      if(parseInt(this.manage_supers) !== 4) {
+        
+
       return [
         {
           text: "Main",
-          align: "center",
+          align: "center",  
           children: [
             { text: "ID", getColumn: 1, value: "id", width: "75px" },
             { text: "Staff", getColumn: 2, value: "Staff", width: "100px" },
@@ -908,7 +980,7 @@ export default {
               value: "Location",
               width: "150px",
             },
-            { text: "Artist", getColumn: 4, value: "Artist", width: "100px" },
+            { text: "Artist", getColumn: 4, value: "Artist", width: "100px" },  
             { text: "Client", getColumn: 5, value: "Client", width: "150px" },
           ],
         },
@@ -1020,22 +1092,148 @@ export default {
           ],
         },
       ];
-    },
 
-    redirectToEditPage(bookId) {
-      // Assuming you're using Vue Router
-      if (this.adminId != null) {
-        const editUrl = `/admin/books/${bookId}/edit`;
-        window.location.href = editUrl;
-      } else if (this.employeeId != null) {
-        const editUrl = `/employee/books/${bookId}/edit`;
-        window.location.href = editUrl;
-      } else {
-        const editUrl = `/artist/books/${bookId}/edit`;
-        window.location.href = editUrl;
+        } else {
+          
+      return [
+        {
+          text: "Booking Details",
+          align: "center",
+          children: [
+            { text: "ID", getColumn: 1, value: "id", width: "75px" },
+            {
+              text: "C.Date",
+              getColumn: 2,
+              value: "BookingDateCreate",
+              width: "150px",
+            },
+            { text: "Staff", getColumn: 3, value: "Staff", width: "150px" },
+            {
+              text: "Location",
+              getColumn: 4,
+              value: "Location",
+              width: "200px",
+            },
+            { text: "Artist", getColumn: 5, value: "Artist", width: "200px" },  
+            { text: "Status", getColumn: 6, value: "Status", width: "150px" },
+            {
+              text: "T.Date",
+              getColumn: 7,
+              value: "TreatmentDate",
+              width: "150px",
+            },
+            {
+              text: "S.Time",
+              getColumn: 8,
+              value: "StartTime",
+              width: "150px",
+            },
+            { text: "E.Time", getColumn: 9, value: "EndTime", width: "150px" },
+            { text: "Client", getColumn: 10, value: "Client", width: "150px" },
+            {
+              text: "Services",
+              getColumn: 11,
+              value: "Services",
+              width: "300px",
+            },
+            { text: "Note", getColumn: 12, value: "Note", width: "300px" },
+          ],
+        },
+        {
+          text: "Payment Details",
+          align: "center",
+          children: [
+            { text: "Price", getColumn: 13, value: "Price", width: "100px" },
+            {
+              text: "Deposit",
+              getColumn: 14,
+              value: "Deposit",
+              width: "100px",
+            },
+            {
+              text: "P.Type",
+              getColumn: 15,
+              value: "PaymentType",
+              width: "150px",
+            },
+            { text: "1st.C", getColumn: 16, value: "stCheck", width: "100px" },
+            {
+              text: "Remaining",
+              getColumn: 17,
+              value: "Remaining",
+              width: "150px",
+            },
+            {
+              text: "P.Type 2nd",
+              getColumn: 18,
+              value: "PaymentTypeSecond",
+              width: "150px",
+            },
+            { text: "2nd.C", getColumn: 19, value: "ndCheck", width: "100px" },
+            {
+              text: "T.Revenue",
+              getColumn: 20,
+              value: "TotalRevenue",
+              width: "150px",
+            },
+            // ... other payment-related headers
+          ],
+        },
+
+        {
+          text: "Client Details",
+          align: "center",
+          children: [
+            { text: "Phone", getColumn: 21, value: "Phone", width: "100px" },
+            { text: "Email", getColumn: 22, value: "Email", width: "100px" },
+            {
+              text: "Address",
+              getColumn: 23,
+              value: "Address",
+              width: "150px",
+            },
+            { text: "Source", getColumn: 24, value: "Source", width: "100px" },
+            {
+              text: "Source Data",
+              getColumn: 25,
+              value: "SourceData",
+              width: "150px",
+            },
+            // ... other payment-related headers
+          ],
+        },
+        // ... other headers
+        {
+          text: "",
+          value: "action",
+          sortable: false,
+          align: "center",
+          children: [
+            { text: "Action", getColumn: 26, value: "action", width: "100px" },
+            // ... other payment-related headers
+          ],
+        },
+      ];
+        }
+
+
+    }, 
+
+          redirectToEditPage(bookId) {
+        let editUrl = '';
+
+        if (this.adminId != null) {
+          editUrl = `/admin/books/${bookId}/edit`;
+        } else if (this.employeeId != null) {
+          editUrl = `/employee/books/${bookId}/edit`;
+        } else {
+          editUrl = `/artists/books/${bookId}/edit`;
+        }
+
+        // Open the edit URL in a new tab
+        window.open(editUrl, '_blank');
       }
-      // Perform the redirection
-    },
+
   },
 
   watch: {
@@ -1050,7 +1248,8 @@ export default {
         this.oldstart = moment(oldDateRange.start).format("YYYY-MM-DD");
         this.oldend = moment(oldDateRange.end).format("YYYY-MM-DD");
 
-        console.log(newDateRange, oldDateRange, this.oldstart, this.oldend);
+      
+
       },
       deep: true, // Theo dõi các sự thay đổi sâu trong object
     },
@@ -1069,16 +1268,14 @@ export default {
 
     this.manage_supers = this.$root.manage_supers;
 
-    console.log(
-      this.adminId,
-      this.artistId,
-      this.employeeId,
-      this.manage_supers
-    );
+
 
     if (this.artistId !== null) {
-      this.selectedArtist = this.artistId;
+      this.selectedAritst = parseInt(this.artistId);
     }
+
+
+
 
     const currentDate = new Date();
     this.currentMonth = currentDate.getMonth() + 1;
@@ -1182,18 +1379,27 @@ export default {
         // Add more filters as needed
       ];
 
+      if (this.artistId !== null) {
+            filters.push({
+              condition: (item) =>
+                item.action.toString().includes('approved'),
+              key: "selectedAritst",
+            });
+          }
+
       filters.forEach(({ condition, key }) => {
         if (this[key] !== null) {
           filtered = filtered.filter(condition);
         }
       });
 
-      console.log(filtered);
+
       return filtered;
     },
   },
 };
 </script>
+
 
 <style>
 .event-info {
@@ -1378,4 +1584,7 @@ export default {
     transform: translate(-50%);
   }
 }
+
+
+
 </style>

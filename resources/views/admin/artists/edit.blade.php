@@ -106,6 +106,19 @@
                                                 </div>
 
 
+                                                <div class="form-group">
+                                                    <label for="artist_pay">Artist Pay Per :</label>
+                                                    <select name="artist_pay" id="artist_pay" class="form-control">
+
+                                                        <option value="0"
+                                                            {{ $artist->artist_pay == '0' ? 'selected' : '' }}>Day</option>
+                                                        <option value="1"
+                                                            {{ $artist->artist_pay == '1' ? 'selected' : '' }}>Treament
+                                                        </option>
+                                                    </select>
+                                                </div>
+
+
                                             </div>
 
                                         </div>
@@ -127,7 +140,7 @@
                                                             &nbsp;
                                                             <button type="submit" name="submit" value="apply"
                                                                 class="btn btn-success">
-                                                                <i class="fa fa-check-circle"></i> Save &amp; Edit
+                                                                <i class="fa fa-check-circle"></i> Save &amp; Exit
                                                             </button>
                                                         </div>
                                                     </div>
@@ -183,7 +196,8 @@
                                                                     </span>
 
                                                                     <input class="form-control" id="image"
-                                                                        style="display: none" type="text" name="avatar" value="{{ $artist->avatar}}">
+                                                                        style="display: none" type="text" name="avatar"
+                                                                        value="{{ $artist->avatar }}">
                                                                 </div>
 
                                                             </div>

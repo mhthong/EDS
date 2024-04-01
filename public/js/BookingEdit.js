@@ -80,6 +80,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       minDepositPrice: 0,
       minDiscountPrice: 0,
       selectedDiscountPrice: 0,
+      Remainingvalue: 0,
       inputError: false,
       selectedStatus: "Waiting",
       selectedPaymentType: "N/A",
@@ -94,7 +95,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       currentURL: "",
       apiData_id: [],
       GetID: []
-    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _defineProperty(_ref, "payment_deposits", []), _defineProperty(_ref, "payment_remaindings", []), _defineProperty(_ref, "After_imgs", []), _defineProperty(_ref, "Before_imgs", []), _defineProperty(_ref, "showImagePopup", false), _defineProperty(_ref, "selectedImageUrl", null), _defineProperty(_ref, "group_service", null), _defineProperty(_ref, "approved", "pending"), _defineProperty(_ref, "employeeId", null), _defineProperty(_ref, "artistId", null), _defineProperty(_ref, "adminId", null), _defineProperty(_ref, "manage_supers", null), _defineProperty(_ref, "selectedStaff", "Employee"), _defineProperty(_ref, "apiDataAritst", []), _defineProperty(_ref, "apiDataParner", []), _defineProperty(_ref, "apiDataEmployee", []), _defineProperty(_ref, "input", []), _defineProperty(_ref, "id", 0), _ref;
+    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _defineProperty(_ref, "payment_deposits", []), _defineProperty(_ref, "payment_remaindings", []), _defineProperty(_ref, "After_imgs", []), _defineProperty(_ref, "Before_imgs", []), _defineProperty(_ref, "showImagePopup", false), _defineProperty(_ref, "selectedImageUrl", null), _defineProperty(_ref, "group_service", null), _defineProperty(_ref, "approved", "pending"), _defineProperty(_ref, "employeeId", null), _defineProperty(_ref, "artistId", null), _defineProperty(_ref, "adminId", null), _defineProperty(_ref, "manage_supers", null), _defineProperty(_ref, "selectedStaff", "Employee"), _defineProperty(_ref, "apiDataAritst", []), _defineProperty(_ref, "apiDataParner", []), _defineProperty(_ref, "apiDataEmployee", []), _defineProperty(_ref, "input", []), _defineProperty(_ref, "id", 0), _defineProperty(_ref, "bookingvalue", 0), _defineProperty(_ref, "selectedStatusNone", null), _defineProperty(_ref, "isactiveselectedStatusNone", false), _ref;
   },
   created: function created() {
     // Lấy URL hiện tại và gán cho biến currentURL
@@ -128,6 +129,23 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         this.selectedStartTime = "";
         this.selectedEndTime = "";
       }
+    },
+    bookingvalue: function bookingvalue(newValue, oldValue) {
+      // Update Remainingvalue whenever bookingvalue changes
+      this.updateRemainingValue();
+    },
+    selectedDepositPrice: function selectedDepositPrice(newValue, oldValue) {
+      // Update Remainingvalue whenever selectedDepositPrice changes
+      this.updateRemainingValue();
+    },
+    selectedStatus: function selectedStatus(newValue, oldValue) {
+      this.checkisactiveselectedStatus();
+    },
+    selectedStatusNone: function selectedStatusNone(newValue, oldValue) {
+      this.checkisactiveselectedStatus();
+    },
+    step: function step(newValue, oldValue) {
+      this.checkstep();
     }
   },
   computed: {
@@ -179,6 +197,21 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     }
   },
   methods: {
+    checkisactiveselectedStatus: function checkisactiveselectedStatus() {
+      if (this.step === "groupService" && this.selectedStatus !== this.selectedStatusNone && this.selectedStatusNone !== "Waiting") {
+        this.step = "showroom";
+        this.isactiveselectedStatusNone = true;
+      }
+    },
+    checkstep: function checkstep() {
+      if (this.isactiveselectedStatusNone == true) {
+        this.isactiveselectedStatusNone = false;
+      }
+    },
+    updateRemainingValue: function updateRemainingValue() {
+      // Update Remainingvalue based on bookingvalue and selectedDepositPrice
+      this.Remainingvalue = this.bookingvalue - this.selectedDepositPrice;
+    },
     changeInput: function changeInput() {
       this.input = [];
     },
@@ -239,7 +272,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         input: this.input,
         id: this.id
       };
-      console.log(this.selectedStaff, this.input, this.id);
 
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].post("/api/changeStaff", postData).then(function (response) {
@@ -316,6 +348,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         _this9.selectedArtist = _this9.apiData_id[0].ArtistID;
         _this9.GetID = _this9.apiData_id[0].GetID;
         _this9.selectedStatus = _this9.apiData_id[0].status;
+        _this9.selectedStatusNone = _this9.apiData_id[0].status;
         _this9.StatusPresent = _this9.apiData_id[0].status;
         _this9.selectedDate = _this9.apiData_id[0].date;
         _this9.selectedArtist = _this9.apiData_id[0].ArtistID;
@@ -354,14 +387,14 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           email: _this9.apiData_id[0].get.Email,
           address: _this9.apiData_id[0].get.Address,
           phone: _this9.apiData_id[0].get.Phone,
-          source: _this9.apiData_id[0].get.Source,
-          source_data: _this9.apiData_id[0].get.source_data,
-          note: _this9.apiData_id[0].get.Note
+          source: _this9.apiData_id[0].Source !== null ? _this9.apiData_id[0].Source : _this9.apiData_id[0].get.Source,
+          source_data: _this9.apiData_id[0].source_data !== null ? _this9.apiData_id[0].source_data : _this9.apiData_id[0].get.source_data,
+          note: _this9.apiData_id[0].Note !== null ? _this9.apiData_id[0].Note : _this9.apiData_id[0].get.Note
         };
         _this9.payment_deposits = _this9.apiData_id[0].payment.payment_deposit ? _this9.apiData_id[0].payment.payment_deposit.split(",") : [];
         _this9.payment_remaindings = _this9.apiData_id[0].payment.payment_remainding ? _this9.apiData_id[0].payment.payment_remainding.split(",") : [];
-        _this9.After_imgs = _this9.apiData_id[0].get.After_img ? _this9.apiData_id[0].get.After_img.split(",") : [];
-        _this9.Before_imgs = _this9.apiData_id[0].get.Before_img ? _this9.apiData_id[0].get.Before_img.split(",") : [];
+        _this9.After_imgs = _this9.apiData_id[0].After_img !== null && _this9.apiData_id[0].After_img !== undefined && _this9.apiData_id[0].After_img !== "" ? _this9.apiData_id[0].After_img.split(",") : _this9.apiData_id[0].get.After_img !== null && _this9.apiData_id[0].get.After_img !== undefined && _this9.apiData_id[0].get.After_img !== "" ? _this9.apiData_id[0].get.After_img.split(",") : [];
+        _this9.Before_imgs = _this9.apiData_id[0].Before_img !== null && _this9.apiData_id[0].Before_img !== undefined && _this9.apiData_id[0].Before_img !== "" ? _this9.apiData_id[0].Before_img.split(",") : _this9.apiData_id[0].get.Before_img !== null && _this9.apiData_id[0].get.Before_img !== undefined && _this9.apiData_id[0].get.Before_img !== "" ? _this9.apiData_id[0].get.Before_img.split(",") : [];
         _this9.fetchApiData();
         _this9.fetchShowroomSchedule();
         _this9.calculateTotalSelectedServicesPrice();
@@ -442,7 +475,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(this.selectedDate, "/").concat(this.selectedShowroom, "/").concat(this.selectedArtist)).then(function (response) {
         // Lấy giá trị active từ API
         _this16.isActive = response.data.active;
-        console.log(_this16.selectedDate, _this16.selectedShowroom, _this16.selectedArtist, _this16.isActive);
 
         // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
       })["catch"](function (error) {
@@ -588,18 +620,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       return 0;
     },
     checkInputValue: function checkInputValue() {
-      if (this.selectedDepositPrice > this.maxDepositPrice || this.selectedDepositPrice < this.minDepositPrice || this.selectedDepositPrice === "") {
+      if (this.selectedDepositPrice < 0 || this.selectedDepositPrice > this.bookingvalue || this.selectedDepositPrice === "") {
         this.inputError = true;
       } else {
         this.inputError = false;
-      }
-    },
-    checkInputValueDiscount: function checkInputValueDiscount() {
-      var max = this.maxDiscountPrice - this.selectedDepositPrice;
-      if (this.selectedDiscountPrice > max || this.selectedDiscountPrice < this.minDiscountPrice || this.selectedDiscountPrice === "") {
-        this.inputError_01 = true;
-      } else {
-        this.inputError_01 = false;
       }
     },
     calculateTotalSelectedServicesPrice: function calculateTotalSelectedServicesPrice() {
@@ -611,7 +635,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         serviceTotalPrice = parseFloat(servicePrice);
       }
       this.maxDepositPrice = serviceTotalPrice;
-      this.maxDiscountPrice = serviceTotalPrice;
+      this.bookingvalue = serviceTotalPrice;
+      this.checkInputValue();
       if (this.selectedDepositPrice !== "") {
         var selectedDepositPrice = this.selectedDepositPrice;
         return serviceTotalPrice + this.totalLevelPrice - parseFloat(selectedDepositPrice);
@@ -625,7 +650,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           this.fetchArtistlevels();
           this.fetchGroupServices();
           this.fetchApiData();
-          this.selectedServices = null;
+          this.updateRemainingValue();
           this.step = "groupService";
         }
       }
@@ -719,7 +744,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.artistId = this.$root.artistId;
     this.employeeId = this.$root.employeeId;
     this.manage_supers = this.$root.manage_supers;
-    console.log(this.adminId, this.artistId, this.employeeId, this.manage_supers);
     this.fetchApiData();
     this.fetchShowrooms();
     this.fetchServices();
@@ -1337,6 +1361,33 @@ var render = function render() {
     staticClass: "mt-3 mb-3"
   }, [_c("div", {
     staticClass: "radio-header radio-text"
+  }, [_vm._v("Booking Value")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.bookingvalue,
+      expression: "bookingvalue"
+    }],
+    staticClass: "deposit",
+    attrs: {
+      name: "booking_value",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.bookingvalue
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.bookingvalue = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
+    staticClass: "error-message"
+  }, [_vm._v("\n              Value exceeds limit.\n            ")]) : _vm._e()]), _vm._v(" "), _c("li", {
+    staticClass: "mt-3 mb-3"
+  }, [_c("div", {
+    staticClass: "radio-header radio-text"
   }, [_vm._v("Deposit Price")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
@@ -1366,32 +1417,28 @@ var render = function render() {
     staticClass: "mt-3 mb-3"
   }, [_c("div", {
     staticClass: "radio-header radio-text"
-  }, [_vm._v("Discount Price")]), _vm._v(" "), _c("input", {
+  }, [_vm._v("Remaining Value")]), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
-      value: _vm.selectedDiscountPrice,
-      expression: "selectedDiscountPrice"
+      value: _vm.Remainingvalue,
+      expression: "Remainingvalue"
     }],
     staticClass: "deposit",
     attrs: {
-      name: "discount",
-      type: "number",
-      max: _vm.maxDiscountPrice,
-      min: _vm.minDiscountPrice
+      name: "Remainingvalue",
+      type: "number"
     },
     domProps: {
-      value: _vm.selectedDiscountPrice
+      value: _vm.Remainingvalue
     },
     on: {
-      input: [function ($event) {
+      input: function input($event) {
         if ($event.target.composing) return;
-        _vm.selectedDiscountPrice = $event.target.value;
-      }, _vm.checkInputValueDiscount]
+        _vm.Remainingvalue = $event.target.value;
+      }
     }
-  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
-    staticClass: "error-message"
-  }, [_vm._v("\n              Value exceeds limit.\n            ")]) : _vm._e()])]), _vm._v(" "), _c("button", {
+  })])]), _vm._v(" "), _c("button", {
     staticClass: "custom-btn btn-16",
     attrs: {
       type: "button"
@@ -1415,7 +1462,7 @@ var render = function render() {
       type: "submit",
       name: "submit",
       value: "save",
-      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null
+      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null || this.inputError == true
     },
     on: {
       click: _vm.SubmitEvent
@@ -1428,7 +1475,7 @@ var render = function render() {
       type: "submit",
       name: "submit",
       value: "apply",
-      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null
+      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null || this.inputError == true
     },
     on: {
       click: _vm.SubmitEvent
@@ -1496,7 +1543,90 @@ var render = function render() {
     attrs: {
       value: "Unidentified"
     }
-  }, [_vm._v("Unidentified")])]), _vm._v(" "), _vm.selectedStatus === "Cancel" ? _c("div", {
+  }, [_vm._v("Unidentified")])]), _vm._v(" "), _vm.selectedStatus === "Waiting" && _vm.selectedStatusNone !== "Waiting" ? _c("div", {
+    staticClass: "form-group"
+  }, [_c("ul", [_c("li", {
+    staticClass: "mt-3 mb-3"
+  }, [_c("div", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Booking Value")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.bookingvalue,
+      expression: "bookingvalue"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "booking_value",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.bookingvalue
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.bookingvalue = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
+    staticClass: "error-message"
+  }, [_vm._v("\n                    Value exceeds limit.\n                  ")]) : _vm._e()]), _vm._v(" "), _c("li", {
+    staticClass: "mt-3 mb-3"
+  }, [_c("div", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Deposit Price")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedDepositPrice,
+      expression: "selectedDepositPrice"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "deposit",
+      type: "number",
+      max: _vm.maxDepositPrice,
+      min: _vm.minDepositPrice
+    },
+    domProps: {
+      value: _vm.selectedDepositPrice
+    },
+    on: {
+      input: [function ($event) {
+        if ($event.target.composing) return;
+        _vm.selectedDepositPrice = $event.target.value;
+      }, _vm.checkInputValue]
+    }
+  }), _vm._v(" "), _vm.inputError ? _c("p", {
+    staticClass: "error-message"
+  }, [_vm._v("\n                    Value exceeds limit.\n                  ")]) : _vm._e()]), _vm._v(" "), _c("li", {
+    staticClass: "mt-3 mb-3"
+  }, [_c("div", {
+    staticClass: "radio-header radio-text"
+  }, [_vm._v("Remaining Value")]), _vm._v(" "), _c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.Remainingvalue,
+      expression: "Remainingvalue"
+    }],
+    staticClass: "form-control",
+    attrs: {
+      name: "Remainingvalue",
+      type: "number"
+    },
+    domProps: {
+      value: _vm.Remainingvalue
+    },
+    on: {
+      input: function input($event) {
+        if ($event.target.composing) return;
+        _vm.Remainingvalue = $event.target.value;
+      }
+    }
+  })])])]) : _vm._e(), _vm._v(" "), _vm.selectedStatus === "Cancel" ? _c("div", {
     staticClass: "form-group"
   }, [_c("label", {
     attrs: {
@@ -1635,37 +1765,6 @@ var render = function render() {
     staticClass: "widget-body p-3"
   }, [_c("div", {
     staticClass: "ui-select-wrapper form-group"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.valueOP,
-      expression: "valueOP"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      type: "number",
-      name: "valueOP",
-      min: "0",
-      required: ""
-    },
-    domProps: {
-      value: _vm.valueOP
-    },
-    on: {
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.valueOP = $event.target.value;
-      }
-    }
-  })])])])]), _vm._v(" "), _c("div", {
-    staticClass: "bg-ad-form right-sidebar mt-3"
-  }, [_c("div", {
-    staticClass: "widget meta-boxes"
-  }, [_vm._m(6), _vm._v(" "), _c("div", {
-    staticClass: "widget-body p-3"
-  }, [_c("div", {
-    staticClass: "ui-select-wrapper form-group"
   }, [_c("div", [_c("select", {
     directives: [{
       name: "model",
@@ -1709,7 +1808,7 @@ var render = function render() {
     staticClass: "bg-ad-form right-sidebar mt-3"
   }, [_c("div", {
     staticClass: "widget meta-boxes"
-  }, [_vm._m(7), _vm._v(" "), _c("div", {
+  }, [_vm._m(6), _vm._v(" "), _c("div", {
     staticClass: "widget-body p-3"
   }, [_c("div", {
     staticClass: "ui-select-wrapper form-group"
@@ -1759,7 +1858,7 @@ var render = function render() {
     staticClass: "bg-ad-form right-sidebar mt-3"
   }, [_c("div", {
     staticClass: "widget meta-boxes"
-  }, [_vm._m(8), _vm._v(" "), _c("div", {
+  }, [_vm._m(7), _vm._v(" "), _c("div", {
     staticClass: "widget-body p-3"
   }, [_c("div", {
     staticClass: "ui-select-wrapper form-group"
@@ -1841,7 +1940,7 @@ var render = function render() {
     staticClass: "main__body__box-info"
   }, [_c("li", [_c("p", [_vm._v("Payment Deposit Image")]), _vm._v(" "), _c("div", {
     staticClass: "form-group mt-4"
-  }, [_vm._m(9), _vm._v(" "), _c("div", {
+  }, [_vm._m(8), _vm._v(" "), _c("div", {
     staticClass: "-space-y-px mb-4"
   }, [_c("div", {
     staticClass: "containerInput input-group"
@@ -2080,7 +2179,7 @@ var render = function render() {
     staticClass: "popup"
   }, [_c("div", {
     staticClass: "popup-content col-8 col-md-6"
-  }, [_vm._m(10), _vm._v(" "), _c("select", {
+  }, [_vm._m(9), _vm._v(" "), _c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -2160,7 +2259,7 @@ var render = function render() {
           name: employee.name
         }
       }
-    }, [_vm._v("\n              " + _vm._s(employee.name) + "\n            ")]);
+    }, [_vm._v("\n            " + _vm._s(employee.name) + "\n          ")]);
   })], 2)]) : _vm._e(), _vm._v(" "), this.selectedStaff === "Artists" && this.artistId === null ? _c("div", [_c("select", {
     directives: [{
       name: "model",
@@ -2204,7 +2303,7 @@ var render = function render() {
           name: Aritst.name
         }
       }
-    }, [_vm._v("\n              " + _vm._s(Aritst.name) + "\n            ")]);
+    }, [_vm._v("\n            " + _vm._s(Aritst.name) + "\n          ")]);
   })], 2)]) : _vm._e(), _vm._v(" "), this.selectedStaff === "Parner_Operation" && this.employeeId === null && this.artistId === null ? _c("div", [_c("select", {
     directives: [{
       name: "model",
@@ -2248,7 +2347,7 @@ var render = function render() {
           name: parner.name
         }
       }
-    }, [_vm._v("\n              " + _vm._s(parner.name) + "\n            ")]);
+    }, [_vm._v("\n            " + _vm._s(parner.name) + "\n          ")]);
   })], 2)]) : _vm._e(), _vm._v(" "), _c("div", [_c("button", {
     staticClass: "input-group-btn custom-btn btn-16 text-center",
     attrs: {
@@ -2316,18 +2415,6 @@ var staticRenderFns = [function () {
       "aria-required": "true"
     }
   }, [_vm._v("Status")])])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("div", {
-    staticClass: "widget-title"
-  }, [_c("h4", [_c("label", {
-    staticClass: "m-0 control-label required",
-    attrs: {
-      "for": "status",
-      "aria-required": "true"
-    }
-  }, [_vm._v("Value Booking")])])]);
 }, function () {
   var _vm = this,
     _c = _vm._self._c;

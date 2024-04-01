@@ -647,3 +647,35 @@ padding: 15px;
   .date-revenue-price p {
     margin: 0 !important;
   }
+
+
+  .artist_pay_0 {
+
+    color: #991c1c;
+
+    td {
+        color: #991c1c;
+    }
+
+  }
+
+.notificationinfo {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    color: #0374ff;
+    border: solid 1px #0374ff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 9999;
+  }
+
+  .status{
+    min-width: 120px;
+  }
+
+
+  .None {
+    display: none;
+  }

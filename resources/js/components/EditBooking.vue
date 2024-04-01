@@ -328,6 +328,19 @@
 
           <ul>
             <li class="mt-3 mb-3">
+              <div class="radio-header radio-text">Booking Value</div>
+              <input
+                class="deposit"
+                name="booking_value"
+                type="number"
+                v-model="bookingvalue"
+              />
+              <p v-if="inputError_01" class="error-message">
+                Value exceeds limit.
+              </p>
+            </li>
+
+            <li class="mt-3 mb-3">
               <div class="radio-header radio-text">Deposit Price</div>
               <input
                 class="deposit"
@@ -344,19 +357,13 @@
             </li>
 
             <li class="mt-3 mb-3">
-              <div class="radio-header radio-text">Discount Price</div>
+              <div class="radio-header radio-text">Remaining Value</div>
               <input
                 class="deposit"
-                name="discount"
+                name="Remainingvalue"
                 type="number"
-                v-model="selectedDiscountPrice"
-                :max="maxDiscountPrice"
-                :min="minDiscountPrice"
-                @input="checkInputValueDiscount"
+                v-model="Remainingvalue"
               />
-              <p v-if="inputError_01" class="error-message">
-                Value exceeds limit.
-              </p>
             </li>
           </ul>
 
@@ -388,7 +395,8 @@
                 :disabled="
                   submitted ||
                   this.isActive === false ||
-                  (this.approved == 'approved' && this.employeeId !== null)
+                  (this.approved == 'approved' && this.employeeId !== null) ||
+                  this.inputError == true
                 "
               >
                 <i class="fa fa-save"></i> Save
@@ -403,7 +411,8 @@
                 :disabled="
                   submitted ||
                   this.isActive === false ||
-                  (this.approved == 'approved' && this.employeeId !== null)
+                  (this.approved == 'approved' && this.employeeId !== null) ||
+                  this.inputError == true
                 "
               >
                 <i class="fa fa-check-circle"></i> Save &amp; Exit
@@ -444,6 +453,55 @@
                 <option value="Refund">Refund</option>
                 <option value="Unidentified">Unidentified</option>
               </select>
+
+              <div
+                class="form-group"
+                v-if="
+                  selectedStatus === 'Waiting' &&
+                  selectedStatusNone !== 'Waiting'
+                "
+              >
+                <ul>
+                  <li class="mt-3 mb-3">
+                    <div class="radio-header radio-text">Booking Value</div>
+                    <input
+                      class="form-control"
+                      name="booking_value"
+                      type="number"
+                      v-model="bookingvalue"
+                    />
+                    <p v-if="inputError_01" class="error-message">
+                      Value exceeds limit.
+                    </p>
+                  </li>
+
+                  <li class="mt-3 mb-3">
+                    <div class="radio-header radio-text">Deposit Price</div>
+                    <input
+                      class="form-control"
+                      name="deposit"
+                      type="number"
+                      v-model="selectedDepositPrice"
+                      :max="maxDepositPrice"
+                      :min="minDepositPrice"
+                      @input="checkInputValue"
+                    />
+                    <p v-if="inputError" class="error-message">
+                      Value exceeds limit.
+                    </p>
+                  </li>
+
+                  <li class="mt-3 mb-3">
+                    <div class="radio-header radio-text">Remaining Value</div>
+                    <input
+                      class="form-control"
+                      name="Remainingvalue"
+                      type="number"
+                      v-model="Remainingvalue"
+                    />
+                  </li>
+                </ul>
+              </div>
 
               <div class="form-group" v-if="selectedStatus === 'Cancel'">
                 <label for="">Reason cancel</label>
@@ -503,33 +561,6 @@
                   required
                 />
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-ad-form right-sidebar mt-3">
-        <div class="widget meta-boxes">
-          <div class="widget-title">
-            <h4>
-              <label
-                for="status"
-                class="m-0 control-label required"
-                aria-required="true"
-                >Value Booking</label
-              >
-            </h4>
-          </div>
-          <div class="widget-body p-3">
-            <div class="ui-select-wrapper form-group">
-              <input
-                type="number"
-                class="form-control"
-                name="valueOP"
-                v-model="valueOP"
-                min="0"
-                required
-              />
             </div>
           </div>
         </div>
@@ -877,96 +908,90 @@
           <h5>Change Staff</h5>
         </div>
 
+        <select
+          class="form-control pointer-events-p mb-2"
+          v-model="selectedStaff"
+          name="status"
+          @change="changeInput()"
+        >
+          <option value="Employee" selected>Employee</option>
+          <option value="Parner_Operation">Parner/Operation</option>
+          <option value="Artists">Artists</option>
+        </select>
+
+        <div
+          v-if="this.selectedStaff === 'Employee' && this.employeeId === null"
+        >
           <select
-            class="form-control pointer-events-p mb-2"
-            v-model="selectedStaff"
-            name="status"
-            @change="changeInput()"
+            class="form-control"
+            id="showroomSelect"
+            v-model="input"
+            style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
           >
-            <option value="Employee" selected>Employee</option>
-            <option value="Parner_Operation">Parner/Operation</option>
-            <option value="Artists">Artists</option>
+            <option :value="[]" selected>Name</option>
+
+            <option
+              v-for="employee in apiDataEmployee"
+              :key="employee.id"
+              :value="{
+                id: employee.id,
+                name: employee.name,
+              }"
+            >
+              {{ employee.name }}
+            </option>
           </select>
-    
+        </div>
 
-
-          <div
-            v-if="this.selectedStaff === 'Employee' && this.employeeId === null"
+        <div v-if="this.selectedStaff === 'Artists' && this.artistId === null">
+          <select
+            class="form-control"
+            id="showroomSelect"
+            v-model="input"
+            style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
           >
-            <select
-              class="form-control"
-              id="showroomSelect"
-              v-model="input"
-              style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+            <option :value="[]" selected>Name</option>
+
+            <option
+              v-for="Aritst in apiDataAritst"
+              :key="Aritst.id"
+              :value="{
+                id: Aritst.id,
+                name: Aritst.name,
+              }"
             >
-              <option :value="[]" selected>Name</option>
+              {{ Aritst.name }}
+            </option>
+          </select>
+        </div>
 
-              <option
-                v-for="employee in apiDataEmployee"
-                :key="employee.id"
-                :value="{
-                  id: employee.id,
-                  name: employee.name,
-                }"
-              >
-                {{ employee.name }}
-              </option>
-            </select>
-          </div>
-
-          <div
-            v-if="this.selectedStaff === 'Artists' && this.artistId === null"
+        <div
+          v-if="
+            this.selectedStaff === 'Parner_Operation' &&
+            this.employeeId === null &&
+            this.artistId === null
+          "
+        >
+          <select
+            class="form-control"
+            id="showroomSelect"
+            v-model="input"
+            style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
           >
-            <select
-              class="form-control"
-              id="showroomSelect"
-              v-model="input"
-              style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+            <option :value="[]" selected>Name</option>
+
+            <option
+              v-for="parner in apiDataParner"
+              :key="parner.id"
+              :value="{
+                id: parner.id,
+                name: parner.name,
+              }"
             >
-              <option :value="[]" selected>Name</option>
-
-              <option
-                v-for="Aritst in apiDataAritst"
-                :key="Aritst.id"
-                :value="{
-                  id: Aritst.id,
-                  name: Aritst.name,
-                }"
-              >
-                {{ Aritst.name }}
-              </option>
-            </select>
-          </div>
-
-          <div
-            v-if="
-              this.selectedStaff === 'Parner_Operation' &&
-              this.employeeId === null &&
-              this.artistId === null
-            "
-          >
-            <select
-              class="form-control"
-              id="showroomSelect"
-              v-model="input"
-              style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
-            >
-              <option :value="[]" selected>Name</option>
-
-              <option
-                v-for="parner in apiDataParner"
-                :key="parner.id"
-                :value="{
-                  id: parner.id,
-                  name: parner.name,
-                }"
-
-              >
-                {{ parner.name }}
-              </option>
-            </select>
-          </div>
-
+              {{ parner.name }}
+            </option>
+          </select>
+        </div>
 
         <div>
           <button
@@ -1050,6 +1075,7 @@ export default {
       minDepositPrice: 0,
       minDiscountPrice: 0,
       selectedDiscountPrice: 0,
+      Remainingvalue: 0,
       inputError: false,
       selectedStatus: "Waiting",
       selectedPaymentType: "N/A",
@@ -1093,7 +1119,10 @@ export default {
       apiDataParner: [],
       apiDataEmployee: [],
       input: [],
-      id:0,
+      id: 0,
+      bookingvalue: 0,
+      selectedStatusNone: null,
+      isactiveselectedStatusNone: false,
       /*   selectedOption: "option1", */
     };
   },
@@ -1132,6 +1161,25 @@ export default {
         this.selectedStartTime = "";
         this.selectedEndTime = "";
       }
+    },
+
+    bookingvalue(newValue, oldValue) {
+      // Update Remainingvalue whenever bookingvalue changes
+      this.updateRemainingValue();
+    },
+    selectedDepositPrice(newValue, oldValue) {
+      // Update Remainingvalue whenever selectedDepositPrice changes
+      this.updateRemainingValue();
+    },
+    selectedStatus(newValue, oldValue) {
+      this.checkisactiveselectedStatus();
+    },
+    selectedStatusNone(newValue, oldValue) {
+      this.checkisactiveselectedStatus();
+    },
+
+    step(newValue, oldValue) {
+      this.checkstep();
     },
   },
 
@@ -1185,6 +1233,27 @@ export default {
   },
 
   methods: {
+    checkisactiveselectedStatus() {
+      if (
+        this.step === "groupService" &&
+        this.selectedStatus !== this.selectedStatusNone &&
+        this.selectedStatusNone !== "Waiting"
+      ) {
+        this.step = "showroom";
+        this.isactiveselectedStatusNone = true;
+      }
+    },
+
+    checkstep() {
+      if (this.isactiveselectedStatusNone == true) {
+        this.isactiveselectedStatusNone = false;
+      }
+    },
+
+    updateRemainingValue() {
+      // Update Remainingvalue based on bookingvalue and selectedDepositPrice
+      this.Remainingvalue = this.bookingvalue - this.selectedDepositPrice;
+    },
     changeInput() {
       this.input = [];
     },
@@ -1250,15 +1319,13 @@ export default {
     },
 
     saveData() {
-
       // Tạo một đối tượng dữ liệu để gửi lên server
       const postData = {
         Staff: this.selectedStaff,
         input: this.input,
-        id:this.id,
+        id: this.id,
       };
 
-      console.log(this.selectedStaff ,  this.input , this.id);
 
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios
@@ -1267,7 +1334,6 @@ export default {
           // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
           this.closePopup(); // Đóng popup sau khi lưu thành công
           this.fetchapiData_id();
-
         })
         .catch((error) => {
           console.log(postData);
@@ -1339,12 +1405,14 @@ export default {
         .get(`/api/data-bookings/${this.id}`)
         .then((response) => {
           this.apiData_id = response.data;
+  
           this.id = this.apiData_id[0].id;
           this.selectedShowroom = this.apiData_id[0].ShowroomID;
           this.Staff = this.apiData_id[0].source_name;
           this.selectedArtist = this.apiData_id[0].ArtistID;
           this.GetID = this.apiData_id[0].GetID;
           this.selectedStatus = this.apiData_id[0].status;
+          this.selectedStatusNone = this.apiData_id[0].status;
           this.StatusPresent = this.apiData_id[0].status;
           this.selectedDate = this.apiData_id[0].date;
           this.selectedArtist = this.apiData_id[0].ArtistID;
@@ -1390,9 +1458,18 @@ export default {
             email: this.apiData_id[0].get.Email,
             address: this.apiData_id[0].get.Address,
             phone: this.apiData_id[0].get.Phone,
-            source: this.apiData_id[0].get.Source,
-            source_data: this.apiData_id[0].get.source_data,
-            note: this.apiData_id[0].get.Note,
+            source:
+              this.apiData_id[0].Source !== null
+                ? this.apiData_id[0].Source
+                : this.apiData_id[0].get.Source,
+            source_data:
+              this.apiData_id[0].source_data !== null
+                ? this.apiData_id[0].source_data
+                : this.apiData_id[0].get.source_data,
+            note:
+              this.apiData_id[0].Note !== null
+                ? this.apiData_id[0].Note
+                : this.apiData_id[0].get.Note,
           };
           this.payment_deposits = this.apiData_id[0].payment.payment_deposit
             ? this.apiData_id[0].payment.payment_deposit.split(",")
@@ -1401,15 +1478,31 @@ export default {
             .payment_remainding
             ? this.apiData_id[0].payment.payment_remainding.split(",")
             : [];
-          this.After_imgs = this.apiData_id[0].get.After_img
-            ? this.apiData_id[0].get.After_img.split(",")
-            : [];
-          this.Before_imgs = this.apiData_id[0].get.Before_img
-            ? this.apiData_id[0].get.Before_img.split(",")
-            : [];
+          this.After_imgs =
+            this.apiData_id[0].After_img !== null &&
+            this.apiData_id[0].After_img !== undefined &&
+            this.apiData_id[0].After_img !== ""
+              ? this.apiData_id[0].After_img.split(",")
+              : this.apiData_id[0].get.After_img !== null &&
+                this.apiData_id[0].get.After_img !== undefined &&
+                this.apiData_id[0].get.After_img !== ""
+              ? this.apiData_id[0].get.After_img.split(",")
+              : [];
+
+          this.Before_imgs =
+            this.apiData_id[0].Before_img !== null &&
+            this.apiData_id[0].Before_img !== undefined &&
+            this.apiData_id[0].Before_img !== ""
+              ? this.apiData_id[0].Before_img.split(",")
+              : this.apiData_id[0].get.Before_img !== null &&
+                this.apiData_id[0].get.Before_img !== undefined &&
+                this.apiData_id[0].get.Before_img !== ""
+              ? this.apiData_id[0].get.Before_img.split(",")
+              : [];
           this.fetchApiData();
           this.fetchShowroomSchedule();
           this.calculateTotalSelectedServicesPrice();
+
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);
@@ -1489,13 +1582,6 @@ export default {
         .then((response) => {
           // Lấy giá trị active từ API
           this.isActive = response.data.active;
-
-          console.log(
-            this.selectedDate,
-            this.selectedShowroom,
-            this.selectedArtist,
-            this.isActive
-          );
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
@@ -1692,28 +1778,16 @@ export default {
       }
       return 0;
     },
+
     checkInputValue() {
       if (
-        this.selectedDepositPrice > this.maxDepositPrice ||
-        this.selectedDepositPrice < this.minDepositPrice ||
+        this.selectedDepositPrice < 0 ||
+        this.selectedDepositPrice > this.bookingvalue ||
         this.selectedDepositPrice === ""
       ) {
         this.inputError = true;
       } else {
         this.inputError = false;
-      }
-    },
-
-    checkInputValueDiscount() {
-      const max = this.maxDiscountPrice - this.selectedDepositPrice;
-      if (
-        this.selectedDiscountPrice > max ||
-        this.selectedDiscountPrice < this.minDiscountPrice ||
-        this.selectedDiscountPrice === ""
-      ) {
-        this.inputError_01 = true;
-      } else {
-        this.inputError_01 = false;
       }
     },
 
@@ -1732,7 +1806,8 @@ export default {
 
       this.maxDepositPrice = serviceTotalPrice;
 
-      this.maxDiscountPrice = serviceTotalPrice;
+      this.bookingvalue = serviceTotalPrice;
+      this.checkInputValue();
 
       if (this.selectedDepositPrice !== "") {
         const selectedDepositPrice = this.selectedDepositPrice;
@@ -1752,7 +1827,7 @@ export default {
           this.fetchArtistlevels();
           this.fetchGroupServices();
           this.fetchApiData();
-          this.selectedServices = null;
+          this.updateRemainingValue();
           this.step = "groupService";
         }
       }
@@ -1762,6 +1837,7 @@ export default {
       if (this.step === "groupService") {
         this.step = "showroom";
         this.bookingDatavalue = "";
+
         this.selectedGroupService = null;
         this.selectedServices = this.apiData_id[0].services[0].id;
         this.selectedArtistlevel = [];
@@ -1865,14 +1941,7 @@ export default {
 
     this.manage_supers = this.$root.manage_supers;
 
-    
 
-    console.log(
-      this.adminId,
-      this.artistId,
-      this.employeeId,
-      this.manage_supers,
-    );
 
     this.fetchApiData();
     this.fetchShowrooms();

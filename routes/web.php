@@ -351,7 +351,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
         Route::prefix('source')->group(
             function () {
-                Route::get('/', [SourceController::class, 'view'])->name('kpis.index');
+                Route::get('/', [SourceController::class, 'view'])->name('source.index');
             }
         );
 

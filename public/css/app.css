@@ -4659,6 +4659,33 @@ select.bootstrap-table-filter-control-status option[value="<i>published</i>"] {
   margin: 0 !important;
 }
 
+.artist_pay_0 {
+  color: #991c1c;
+}
+.artist_pay_0 td {
+  color: #991c1c;
+}
+
+.notificationinfo {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffffff;
+  color: #0374ff;
+  border: solid 1px #0374ff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 9999;
+}
+
+.status {
+  min-width: 120px;
+}
+
+.None {
+  display: none;
+}
+
 /*!
  * Bootstrap  v5.3.2 (https://getbootstrap.com/)
  * Copyright 2011-2023 The Bootstrap Authors
@@ -23446,4 +23473,31 @@ select.bootstrap-table-filter-control-status option[value="<i>published</i>"] {
 
 .date-revenue-price p {
   margin: 0 !important;
+}
+
+.artist_pay_0 {
+  color: #991c1c;
+}
+.artist_pay_0 td {
+  color: #991c1c;
+}
+
+.notificationinfo {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #ffffff;
+  color: #0374ff;
+  border: solid 1px #0374ff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 9999;
+}
+
+.status {
+  min-width: 120px;
+}
+
+.None {
+  display: none;
 }

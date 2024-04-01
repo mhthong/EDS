@@ -9,6 +9,7 @@ new Vue({
     data: {
         adminId: document.getElementById('doashboard').getAttribute('data-admin-id'),
         artistId: document.getElementById('doashboard').getAttribute('data-artist-id'),
-        employeeId: document.getElementById('doashboard').getAttribute('data-employee-id')
+        employeeId: document.getElementById('doashboard').getAttribute('data-employee-id'),
+        manage_supers: document.getElementById('doashboard').getAttribute('manage_supers')
     },
 });

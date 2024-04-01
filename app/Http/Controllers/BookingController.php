@@ -120,17 +120,28 @@ class BookingController extends Controller
         }
 
         // Tạo đối tượng Get
-        $get = Get::create([
-            'Name' => $request->name,
-            'Email' => $request->email,
-            'Address' => $request->address,
-            'Phone' => $request->phone,
-            'source_data' => $request->source_data,
-            'Source' => $request->source,
-            'Note' => $request->note,
-            'After_img' => "",
-            'Before_img' => "",
-        ]);
+        $get_isset = Get::where('email', $request->email)
+        ->Where('phone', $request->phone)->Where('name',  $request->name)->first();
+
+        if(isset($get_isset)){
+            $get = $get_isset;
+        } else {
+
+            $get = Get::create([
+                'Name' => $request->name,
+                'Email' => $request->email,
+                'Address' => $request->address,
+                'Phone' => $request->phone,
+                'source_data' => $request->source_data,
+                'Source' => "",
+                'Note' => "",
+                'After_img' => "",
+                'Before_img' => "",
+            ]);
+        }
+
+
+
 
         // Xử lý dữ liệu bookingData
 
@@ -138,8 +149,8 @@ class BookingController extends Controller
         $bookingDatas =  $Data['serviceIds'];
 
         $showroomId = $Data['showroomId'];
-        $Artist_levelID =  $Data['Artist_levelID']; 
-        $Level_price =  $Data['Level_price']; 
+        $Artist_levelID =  $Data['Artist_levelID'];
+        $Level_price =  $Data['Level_price'];
 
         // Bắt đầu giao dịch cơ sở dữ liệu
         DB::beginTransaction();
@@ -170,6 +181,8 @@ class BookingController extends Controller
                     'GetID' => $get->id,
                     'price_id' => $price->id,
                     'content' => "",
+                    'Source' => $request->source,
+                    'Note' => $request->note,
                     'status' => $bookingData['Status'],
                     'action' => "pending",
                     'source_data' => $request->source_data,
@@ -222,7 +235,6 @@ class BookingController extends Controller
     {
 
 
-
         $bookingsData = Booking::with([
             'artist' => function ($query) {
                 $query->select('id', 'name', 'fullname');
@@ -233,6 +245,7 @@ class BookingController extends Controller
             'price',
             'payment'
         ])->where('id', '=', $id)->get();
+
 
         $check = $this->CheckAuthBooking($bookingsData[0]);
 
@@ -251,7 +264,7 @@ class BookingController extends Controller
 
         if (Auth::user() instanceof \App\Models\Artists) {
 
-            if ($Data->ArtistID == Auth::user()->id && $Data->status == "Approved") {
+            if ($Data->ArtistID == Auth::user()->id && $Data->action == "approved") {
 
                 return true;
             } else {
@@ -274,7 +287,7 @@ class BookingController extends Controller
 
         if (Auth::user() instanceof \App\Models\Artists) {
 
-            if ($Data->ArtistID == Auth::user()->id && $Data->action == "Approved") {
+            if ($Data->ArtistID == Auth::user()->id && $Data->action == "approved") {
 
                 return true;
             } else {
@@ -297,8 +310,6 @@ class BookingController extends Controller
 
     public function update(Booking $id, Request $request)
     {
-
-
 
         if (Auth::check()) {
             if (Auth::user() instanceof \App\Models\Artists) {
@@ -326,6 +337,7 @@ class BookingController extends Controller
 
                 $updateEdit_resuft = $this->updateEdit($id, $request->all());
 
+
                 if ($request->submit == "apply") {
 
                     if ($updateEdit_resuft) {
@@ -343,14 +355,16 @@ class BookingController extends Controller
                 }
             } else {
 
+
                 $data = $request->all();
                 $services = $data['service_id'];
                 $deposit = $data['deposit'];
-                $discount = $data['discount'];
+                $booking_value = $data['booking_value'];
 
-                $updateServices_resuft = $this->updateServices($id, $services,  $deposit, $discount);
+                $updateServices_resuft = $this->updateServices($id, $services,  $deposit, $booking_value);
 
                 $updateEdit_resuft = $this->updateEdit($id, $data);
+
 
                 if ($request->submit == "apply") {
 
@@ -370,83 +384,106 @@ class BookingController extends Controller
             }
         }
     }
-
     public function updateEdit($book, $data)
     {
-
-        if ($data['artist'] == 0) {
-            $artists = Artists::where('name', '=', 'N/A')->first();
-            $ArtistID = $artists->id;
-        } else {
-            $ArtistID = $data['artist'];
-        }
-
-        if (isset($data['content'])) {
-            $content = $data['content'];
-        } else {
-            $content = "";
-        }
-
-        $get = Get::where('id', $book->GetID)->first();
-
-        $payment = Payment::where('BookingID', '=', $book->id)->first();
-
-        $Price = Price::where('id', $book->price_id)->first();
-
+        // Get ArtistID
+        $ArtistID = ($data['artist'] == 0) ? Artists::where('name', '=', 'N/A')->first()->id : $data['artist'];
+    
+        // Get content
+        $content = $data['content'] ?? "";
+    
+        // Get related models
+        $get = Get::findOrFail($book->GetID);
+        $payment = Payment::where('BookingID', '=', $book->id)->firstOrFail();
+        $Price = Price::findOrFail($book->price_id);
+    
+        // Initialize variables
         $com = 0;
-        $upsale = 0;
-        $op_kpi = $data['valueOP'];
-
-        if ($data['status'] === "Done") {
-            $Total_price = $Price->Total_price + $Price->Remaining_price;
-
-            $Remaining_price = 0;
-            $upsale = $data['upsale'];
-        } elseif ($data['status'] === "Cancel") {
-
-            $content = $data['Cancel'];
-
-            if ($data['Cancel'] === "Operation") {
-                $Total_price = $Price->Deposit_price;
-                $Remaining_price = 0;
-                $com = $Price->servies_price * 1 / 2 - $Price->Deposit_price;
-            } else {
-                $Total_price = $Price->Deposit_price;
-                $Remaining_price = 0;
+        $upsale = $data['upsale'] ?? 0;
+        $Deposit_price = $Price->Deposit_price;
+        $servies_price = $Price->servies_price;
+    
+        // Calculate Total_price and Remaining_price based on status
+        if ($data['status'] !== $book->status) {
+            switch ($data['status']) {
+                case "Waiting":
+                    $Total_price = $data['deposit'];
+                    $Deposit_price = $data['deposit'];
+                    $servies_price = $data['booking_value'];
+                    $Remaining_price = $data['Remainingvalue'];
+                    break;
+                case "Done":
+                    $Total_price = $Price->Total_price + $Price->Remaining_price;
+                    $Remaining_price = 0;
+                    break;
+                case "Cancel":
+                    $content = $data['Cancel'];
+                    if ($data['Cancel'] === "Operation") {
+                        $Total_price = $Price->Deposit_price;
+                        $Remaining_price = 0;
+                        $com = $Price->servies_price * 1 / 2 - $Price->Deposit_price;
+                    } else {
+                        $Total_price = $Price->Deposit_price;
+                        $Remaining_price = 0;
+                    }
+                    break;
+                case "Refund":
+                    $Total_price = $Price->Deposit_price -  $data['Refund'];
+                    $Remaining_price = 0;
+                    break;
+                case "Partial Done":
+                    $Total_price = $Price->Deposit_price +  $data['Partial_Done'];
+                    $Remaining_price = $Price->Remaining_price - $data['Partial_Done'];
+                    break;
+                default:
+                    $Total_price = $Price->Deposit_price;
+                    $Remaining_price = $Price->Remaining_price;
+                    break;
             }
-        } elseif ($data['status'] === "Refund") {
-
-            $Total_price = $Price->Deposit_price -  $data['Refund'];
-            $Remaining_price = 0;
-        } elseif ($data['status'] === "Partial Done") {
-
-            $Total_price = $Price->Deposit_price +  $data['Partial_Done'];
-            $Remaining_price = $Price->servies_price -  $Total_price;
-            $upsale = $data['upsale'];
-        } elseif ($data['status'] === "Waiting") {
-
-            $Total_price = $Price->Deposit_price;
-            $Remaining_price = $Price->servies_price - $Price->Deposit_price;
         } else {
-            $Total_price = $Price->Deposit_price;
-            $Remaining_price = $Price->Remaining_price;
+            if(isset($data['deposit']) && isset($data['booking_value']) && isset($data['booking_value'])){
+                $Total_price = $data['deposit'];
+                $Deposit_price = $data['deposit'];
+                $servies_price = $data['booking_value'];
+                $Remaining_price = $data['Remainingvalue'];
+            } else {
+                switch ($data['status']) {
+                    case "Waiting":
+                        $Total_price = $Price->Total_price;
+                        $Remaining_price = $Price->Remaining_price;
+                        break;
+                    case "Done":
+                        $Total_price = $Price->Total_price;
+                        $Remaining_price = $Price->Remaining_price;
+                        break;
+                    case "Cancel":
+                        $content = $data['Cancel'];
+                        $Total_price = ($data['Cancel'] === "Operation") ? $Price->Total_price : $Price->Total_price;
+                        $Remaining_price = $Price->Remaining_price;
+                        $com = ($data['Cancel'] === "Operation") ? $Price->com : 0;
+                        break;
+                    case "Refund":
+                        $Total_price = $Price->Total_price;
+                        $Remaining_price = 0;
+                        break;
+                    case "Partial Done":
+                        $Total_price = $Price->Total_price;
+                        $Remaining_price = $Price->Remaining_price;
+                        $upsale = $Price->upsale;
+                        break;
+                    default:
+                        $Total_price = $Price->Deposit_price;
+                        $Remaining_price = $Price->Remaining_price;
+                        break;
+                }
+            }
         }
-
-
-        if (isset($data['start_time'])) {
-            $start_time = $data['start_time'];
-        } else {
-            $start_time = $book->time;
-        }
-
-        if (isset($data['end_time'])) {
-            $end_time = $data['end_time'];
-        } else {
-            $end_time = $book->time_end;
-        }
-
+    
+        // Get start_time and end_time
+        $start_time = $data['start_time'] ?? $book->time;
+        $end_time = $data['end_time'] ?? $book->time_end;
+    
         try {
-
             // Update the service record using the validated data
             $book->update([
                 'ShowroomID' =>  $data['showroomID'],
@@ -458,76 +495,53 @@ class BookingController extends Controller
                 'content' => $content,
                 'source_data' =>  $data['source_data'],
                 'action' => $data['action'],
+                'After_img' => $data['After'] ?? $get->After_img,
+                'Before_img' => $data['Before'] ?? $get->Before_img,
+                'Note' => $data['note'],
+                'Source' => $data['source'],
             ]);
-
+    
+            // Update Get
             $get->update([
                 'Name' => $data['name'],
                 'Email' => $data['email'],
                 'Address' => $data['address'],
                 'Phone' => $data['phone'],
-                'Source' => $data['source'],
                 'source_data' =>  $data['source_data'],
-                'Note' => $data['note'],
             ]);
-
-            // Check and update 'After_img' if $data['After'] is not null
-            if ($data['After'] !== null) {
-                $get->update(['After_img' => $data['After']]);
-            }
-
-            // Check and update 'Before_img' if $data['Before'] is not null
-            if ($data['Before'] !== null) {
-                $get->update(['Before_img' => $data['Before']]);
-            }
-
-
+    
+            // Update payment details
             $payment->update([
                 'payment_type' => $data['payment_type'],
                 'payment_type_remainding' => $data['payment_remaining_type'],
+                'payment_deposit' => $data['Deposit'] ?? $payment->payment_deposit,
+                'payment_remainding' => $data['Remaining'] ?? $payment->payment_remainding,
             ]);
-
-            // Check and update 'After_img' if $data['After'] is not null
-            if ($data['Deposit'] !== null) {
-                $payment->update(['payment_deposit' => $data['Deposit']]);
-            }
-
-            if ($data['Remaining'] !== null) {
-                $payment->update(['payment_remainding' => $data['Remaining']]);
-            }
-            // Check and update 'Before_img' if $data['Before'] is not null
-
-
+    
+            // Update Price details
             $Price->update([
                 'Total_price' => $Total_price,
                 'Remaining_price' => $Remaining_price,
+                'Deposit_price' => $Deposit_price,
+                'servies_price' => $servies_price,
                 'com' => $com,
                 'upsale' => $upsale,
-                'op_kpi' => $op_kpi,
-            ]);
-
-            // Assign the group_service_id separately
-
+            ]); 
+    
+            // Save models
             $book->save();
             $get->save();
             $payment->save();
-
-            /*  
-             */
+            $Price->save();
+    
             return true;
-            // Redirect to the index page or wherever you wish after updating the service
-
         } catch (\Exception $e) {
-
-            // Handle the exception if any error occurs during the update process
-            // You can log the error or display an error message to the user
             return false;
-            /* return redirect()->route('bookings.edit', ['id' => $book->id])->with('failed', 'Failed to update. Please try again.'); */
         }
     }
-
-
-
-    public function updateServices($id, $services, $deposit, $discount)
+    
+    
+    public function updateServices($id, $services, $deposit, $booking_value)
     {
 
         $Price = Price::where('id', $id->price_id)->first();
@@ -550,9 +564,9 @@ class BookingController extends Controller
             $Price->update([
                 'Total_price' =>  $deposit,
                 // Giả sử bạn không có dữ liệu về Deposit Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn
-                'Remaining_price' =>  $servies->Price  - $discount - $deposit,
+                'Remaining_price' => $booking_value - $deposit,
                 // Giả sử bạn không có dữ liệu về Remaining Price, gán là 0 hoặc thay đổi tùy theo yêu cầu của bạn
-                'servies_price' => $servies->Price - $discount,
+                'servies_price' => $booking_value,
                 // Các trường khác của Price ở đây...
                 'Deposit_price' => $deposit,
 

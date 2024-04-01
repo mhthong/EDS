@@ -22,6 +22,15 @@ class ArtistController extends Controller
         return view('admin.artists.index', compact('artists' , 'stt'));
     }
 
+
+
+    public function APIindex()
+    {
+        $artists = Artists::where('name', '!=','N/A' )->get();
+
+        return response()->json($artists);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -55,6 +64,7 @@ class ArtistController extends Controller
             'description' => 'nullable|string',
             'status' => 'required|in:published,pending,draft',
             'artist_levelID' => 'required|exists:artists_levels,id',
+            'artist_pay' => 'required|integer',
         ]);
     
         // Prepare the data for creating the artist
@@ -67,13 +77,24 @@ class ArtistController extends Controller
     
         // Create the artist using the validated and processed data
         $createdArtist = Artists::create($data);
-    
-        if ($createdArtist) {
-            // If the artist was successfully created, redirect with success message
-            return redirect()->route('artist.index')->with('success', 'Artist created successfully.');
+        if($request->input('submit') == 'apply'){
+
+            if ($createdArtist) {
+                // If the artist was successfully update, redirect with success message
+                return redirect()->route('artist.index')->with('success', 'Artist created successfully.');
+            } else {
+                // If the artist creation failed, redirect back with an error message
+                return redirect()->back()->with('failed', 'Failed to created artist.');
+            }
+
         } else {
-            // If the artist creation failed, redirect back with an error message
-            return redirect()->back()->with('failed', 'Failed to create artist.');
+            if ($createdArtist) {
+                // If the artist was successfully update, redirect with success message
+                return redirect()->back()->with('success', 'Artist created successfully.');
+            } else { 
+                // If the artist creation failed, redirect back with an error message
+                return redirect()->back()->with('failed', 'Failed to created artist.');
+            }
         }
     }
 
@@ -128,6 +149,7 @@ class ArtistController extends Controller
                 'description' => 'nullable|string',
                 'status' => 'required|in:published,pending,draft',
                 'artist_levelID' => 'required|exists:artists_levels,id',
+                'artist_pay' => 'required|integer',     
             ]);
     
        
@@ -147,17 +169,34 @@ class ArtistController extends Controller
             $avatarPath = parse_url($request->input('avatar'), PHP_URL_PATH);
             $data['avatar'] = $avatarPath;
           
+            
             // Create the artist using the validated and processed data
             $updateArtist =   $artist->update($data);
     
         
-            if ($updateArtist) {
-                // If the artist was successfully update, redirect with success message
-                return redirect()->route('artist.index')->with('success', 'Artist update successfully.');
+            
+            if($request->input('submit') == 'apply'){
+
+                if ($updateArtist) {
+                    // If the artist was successfully update, redirect with success message
+                    return redirect()->route('artist.index')->with('success', 'Artist update successfully.');
+                } else {
+                    // If the artist creation failed, redirect back with an error message
+                    return redirect()->back()->with('failed', 'Failed to update artist.');
+                }
+
             } else {
-                // If the artist creation failed, redirect back with an error message
-                return redirect()->back()->with('failed', 'Failed to update artist.');
+                if ($updateArtist) {
+                    // If the artist was successfully update, redirect with success message
+                    return redirect()->back()->with('success', 'Artist update successfully.');
+                } else {
+                    // If the artist creation failed, redirect back with an error message
+                    return redirect()->back()->with('failed', 'Failed to update artist.');
+                }
             }
+
+
+            
         }
 
 

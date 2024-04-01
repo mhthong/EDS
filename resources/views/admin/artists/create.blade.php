@@ -100,6 +100,17 @@
                                             </div>
 
 
+                                            <div class="form-group">
+                                                <label for="artist_pay">Artist Pay Per :</label>
+                                                <select name="artist_pay" id="artist_pay" class="form-control">
+
+                                                    <option value="0" class="artist_pay_0">Day</option>
+                                                    <option value="1" class="artist_pay_1">Treament</option>
+                                                </select>
+                                            </div>
+
+
+
                                         </div>
 
                                     </div>
@@ -121,7 +132,7 @@
                                                         &nbsp;
                                                         <button type="submit" name="submit" value="apply"
                                                             class="btn btn-success">
-                                                            <i class="fa fa-check-circle"></i> Save &amp; Edit
+                                                            <i class="fa fa-check-circle"></i> Save &amp; Exit
                                                         </button>
                                                     </div>
                                                 </div>

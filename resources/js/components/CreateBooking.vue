@@ -264,7 +264,7 @@
                           :id="'Deposit_' + selectedService.id"
                           type="text"
                           :name="'Deposit_' + selectedService.id"
-                          style="display: none;"
+                          style="display: none"
                           @input="
                             updateImageDeposit(
                               selectedService,
@@ -287,7 +287,8 @@
                           @change="
                             filterActiveDays(
                               selectedService.DateTreament,
-                              index ,selectedService.Artist
+                              index,
+                              selectedService.Artist
                             )
                           "
                           id="artistSelect"
@@ -312,9 +313,10 @@
                           :id="'Date' + selectedService.DateTreament"
                           v-model="selectedService.DateTreament"
                           @change="
-                          filterActiveDays(
+                            filterActiveDays(
                               selectedService.DateTreament,
-                              index ,selectedService.Artist
+                              index,
+                              selectedService.Artist
                             )
                           "
                           @input="
@@ -340,6 +342,7 @@
                         <i class="fa fa-sort"></i>
                         <select v-model="selectedService.Status">
                           <option value="Waiting" selected>Waiting</option>
+                          <option value="Unidentified">Unidentified</option>
                           <!--<option value="Done" >Done</option>
                     <option value="Cancel">Cancel</option>
                     <option value="Refund">Refund</option> -->
@@ -485,7 +488,7 @@
       <button
         class="custom-btn btn-16"
         @click="nextStep"
-        :disabled="isNextButtonDisabled || !checkPrice() ||  !checkButton()"
+        :disabled="isNextButtonDisabled || !checkPrice() || !checkButton()"
         type="button"
       >
         Next
@@ -514,6 +517,9 @@
         />
         <label for="name" class="label-date active">Name :</label>
       </div>
+      <p v-if="checkformDataName" class="error-message">
+        Customer already exists with name is {{ this.get.Name }}
+      </p>
       <div class="controls mb-4">
         <input
           class="form-control"
@@ -525,6 +531,9 @@
 
         <label for="email" class="label-date active">Email :</label>
       </div>
+      <p v-if="checkformDataEmail" class="error-message">
+        Customer already exists with email is {{ this.get.Email }}
+      </p>
 
       <div class="controls mb-4">
         <label for="address" class="label-date active">Address :</label>
@@ -547,6 +556,9 @@
           v-model="formData.phone"
         />
       </div>
+      <p v-if="checkformDataPhone" class="error-message">
+        Customer already exists with phone number is {{ this.get.Phone }}
+      </p>
 
       <div class="controls mb-4">
         <select
@@ -591,12 +603,16 @@
         <label for="name" class="label-date active">Note :</label>
       </div>
 
-      <p v-if="errorMessage" class="error-message">{{ errorMessage }}</p>
+      <p v-if="checkformData" class="error-message">
+        Please complete all information
+      </p>
 
       <button class="custom-btn btn-16" @click="prevStep" type="button">
         Back
       </button>
-      <button class="custom-btn btn-16" type="submit">Submit</button>
+      <button class="custom-btn btn-16" type="button" @click="checkSubmit">
+        Submit
+      </button>
     </template>
 
     <!--      -->
@@ -622,6 +638,7 @@ export default {
       selectedshowroomschedule: [],
       selectedGroupService: "",
       selectedGroupServiceServices: [],
+
       step: "showroom",
       selectedServices: [],
       totalPrice: 0,
@@ -665,6 +682,11 @@ export default {
       artistId: null,
       employeeId: null,
       ArrayPricedService: [],
+      get: [],
+      checkformData: false,
+      checkformDataName: false,
+      checkformDataPhone: false,
+      checkformDataEmail: false,
       /*   selectedOption: "option1", */
     };
   },
@@ -742,10 +764,57 @@ export default {
   },
 
   methods: {
+    async checkSubmit() {
+
+      if (
+        this.formData.name == "" ||
+        this.formData.phone == "" ||
+        this.formData.email == ""
+      ) {
+        this.checkformData = true;
+      } else {
+        await axios
+          .get(`/api/checkget/${this.formData.email}/${this.formData.phone}`)
+          .then((response) => {
+            this.get = response.data;
+          })
+          .catch((error) => {
+            console.error("Error fetching showrooms:", error);
+          });
+
+        if (
+          this.get.Email == this.formData.email &&
+          this.get.Phone == this.formData.phone &&
+          this.get.Name == this.formData.name
+        ) {
+          // Submit the form if conditions are met
+          document.getElementById("bookingForm").submit();
+        } else {
+          // Handle conditions not met
+          // For example, set flags or display error messages
+          if (this.get.Email != this.formData.email) {
+            this.checkformDataEmail = true;
+          } else {
+            this.checkformDataEmail = false;
+          }
+          if (this.get.Phone != this.formData.phone) {
+            this.checkformDataPhone = true;
+          } else {
+            this.checkformDataPhone = false;
+          }
+          if (this.get.Name != this.formData.name) {
+            this.checkformDataName = true;
+          } else {
+            this.checkformDataName = false;
+          }
+        }
+      }
+    },
+
     updateImageDeposit(selectedService, newValue) {
       selectedService.ImageDeposit = newValue;
 
-      console.log(this.selectedServices);
+ 
     },
 
     formatTime(time) {
@@ -853,19 +922,20 @@ export default {
 
         console.log( this.filteredDays);
     }, */
-    filterActiveDays(DateTreament, index ,artistId) {
+    filterActiveDays(DateTreament, index, artistId) {
       let InforData = this.selectedServices[index];
 
       if (!DateTreament || !this.selectedShowroom) return;
 
       // Gửi yêu cầu API để lấy dữ liệu
       axios
-        .get(`/api/date-active/${DateTreament}/${this.selectedShowroom}/${artistId}`)
+        .get(
+          `/api/date-active/${DateTreament}/${this.selectedShowroom}/${artistId}`
+        )
         .then((response) => {
           // Lấy giá trị active từ API
           InforData.dateActive = response.data.active;
 
-          console.log("      InforData.dateActive",      InforData.dateActive ,this.selectedShowroom,artistId);
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
@@ -954,13 +1024,12 @@ export default {
       ) {
         InforData.isTimeConflict = true;
         InforData.showAlert = true;
-   
+
         InforData.StartTime = null;
         InforData.EndTime = null;
       } else {
         InforData.isTimeConflict = false;
         InforData.showAlert = false;
-
       }
     },
 
@@ -1109,7 +1178,7 @@ export default {
       }
 
       // Now, totalPrice contains the total price of all selected services
-      console.log("Total price of selected services:", totalPrice);
+
     },
 
     checkPrice() {
@@ -1131,13 +1200,16 @@ export default {
       }
     },
 
-
     checkButton() {
-          return this.selectedServices.every(Service => {
-            console.log(Service.StartTime, Service.EndTime, Service.DateTreament, Service.DateTreament == "", Service.EndTime == null);
-            return Service.StartTime !== null && Service.EndTime !== null && Service.DateTreament !== "";
-          });
-        },
+      return this.selectedServices.every((Service) => {
+
+        return (
+          Service.StartTime !== null &&
+          Service.EndTime !== null &&
+          Service.DateTreament !== ""
+        );
+      });
+    },
 
     calculateTotalSelectedServicesPrice() {
       let serviceTotalPrice = 0;
@@ -1202,18 +1274,16 @@ export default {
           this.step = "artistlevels";
         }
       } else if (this.step === "artistlevels") {
-        
         if (this.selectedShowroom) {
           this.fetchShowroomSchedule();
 
           this.selectedServices.map((Service) => {
-            const inputId = 'Deposit_' + Service.id;
+            const inputId = "Deposit_" + Service.id;
             const inputValue = document.getElementById(inputId)?.value;
 
             if (inputValue !== undefined) {
               Service.ImageDeposit = inputValue;
             }
-
           });
 
           this.step = "getShow";
@@ -1227,7 +1297,7 @@ export default {
 
           this.bookingData = JSON.stringify(bookingDatavalue);
 
-          console.log(this.bookingData);
+   
         }
       }
     },
