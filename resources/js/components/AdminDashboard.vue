@@ -249,54 +249,21 @@
 
         <li class="Price" v-if="isArtistSelected && isArtistPayZero">
           <h6>Total Day</h6>
-          <h4>{{ this.day }}</h4>
+          <h4>{{ this.range_time }}</h4>
         </li>
-        <li
-          class="Price"
-          v-if="isArtistSelected && isArtistPayZero"
-          style="color: white"
-        >
-          <h6>Daily wages</h6>
-          <input
-            type="number"
-            name="dailyWage"
-            id="dailyWage"
-            class="inputWages"
-            v-model="dailyWage"
-            @change="updateDailyWage"
-            min="0"
-          />
-          $
-        </li>
+
         <li class="Price" v-if="isArtistSelected && isArtistPayZero">
           <h6>Total Wage</h6>
-          <h4>{{ totalWage(parseFloat(this.day)) }} $</h4>
+          <h4>{{ this.total_wage }} $</h4>
         </li>
 
         <li class="Price" v-if="isArtistSelected && isArtistPayOne">
           <h6>Total Hour</h6>
-          <h4>{{ this.hour }}</h4>
-        </li>
-        <li
-          class="Price"
-          v-if="isArtistSelected && isArtistPayOne"
-          style="color: white"
-        >
-          <h6>Hourly salary</h6>
-          <input
-            type="number"
-            name="hourlyWage"
-            id="hourlyWage"
-            class="inputWages"
-            v-model="hourlyWage"
-            @change="updateHourlyWage"
-            min="0"
-          />
-          $
+          <h4>{{ this.range_time }}</h4>
         </li>
         <li class="Price" v-if="isArtistSelected && isArtistPayOne">
           <h6>Total Wage</h6>
-          <h4>{{ totalWage(parseFloat(this.hour)) }} $</h4>
+          <h4>{{ this.total_wage }} $</h4>
         </li>
       </ul>
     </div>
@@ -376,10 +343,8 @@ export default {
       percent_Unidentified: 0,
       Operation_KPI: 0,
       isNone: false,
-      day: 0,
-      hour: 0,
-      dailyWage: 0,
-      hourlyWage: 0,
+      range_time: 0,
+      total_wage: 0,
     };
   },
 
@@ -432,25 +397,25 @@ export default {
   },
 
   methods: {
-    updateDailyWage() {
-      this.dailyWage = parseFloat(this.day);
+/*     updateDailyWage() {
+      this.dailyWage = parseFloat(this.range_time);
     },
     updateHourlyWage() {
-      this.hourlyWage = parseFloat(this.hour);
+      this.hourlyWage = parseFloat(this.range_time);
     },
     totalWage(time) {
       // Choose the appropriate wage based on the context (daily or hourly)
       const wage =
         this.title === "Artist" &&
         parseInt(this.getArtistPayById(this.selectedEmployee)) === 0
-          ? this.dailyWage
-          : this.hourlyWage;
+          ? this.total_wage
+          : this.total_wage;
 
  
       return parseFloat(wage) * parseFloat(time);
-    },
+    }, */
 
-    getArtistPayById(artistId) {
+  getArtistPayById(artistId) {
  
           if (this.apiDataAritst) {
             const artist = this.apiDataAritst.find(
@@ -469,8 +434,7 @@ export default {
           } else {
             return false; // Handle the case where apiDataAritst is null
           }
-          },
-
+          }, 
 
     fetchapiData_id(start, end, selectedShowroom, employee, title) {
       if (this.artistId !== null) {
@@ -634,8 +598,8 @@ export default {
               percent_Reschedule: 0,
               percent_Unidentified: 0,
               Operation_KPI: 0,
-              day: 0,
-              hour: 0,
+              range_time: 0,
+              total_wage: 0,
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -658,8 +622,8 @@ export default {
           totals[Name].percent_Reschedule += fillerData.percent_Reschedule;
           totals[Name].percent_Unidentified += fillerData.percent_Unidentified;
           totals[Name].Operation_KPI += fillerData.Operation_KPI;
-          totals[Name].hour += fillerData.hour;
-          totals[Name].day += fillerData.day;
+          totals[Name].range_time += fillerData.range_time;
+          totals[Name].total_wage += fillerData.total_wage;
         }
       }
 
@@ -720,8 +684,8 @@ export default {
       this.percent_Reschedule = 0;
       this.percent_Unidentified = 0;
       this.Operation_KPI = 0;
-      this.day = 0;
-      this.hour = 0;
+      this.range_time = 0;
+      this.total_wage = 0;
 
       if (this.selectedShowroom !== null) {
         this.resuft = this.filterDataById(
@@ -754,8 +718,8 @@ export default {
         this.percent_Reschedule += parseFloat(item.percent_Reschedule);
         this.percent_Unidentified += parseFloat(item.percent_Unidentified);
         this.Operation_KPI += parseFloat(item.Operation_KPI);
-        this.day += parseFloat(item.day);
-        this.hour += parseFloat(item.hour);
+        this.range_time += parseFloat(item.range_time);
+        this.total_wage += parseFloat(item.total_wage);
       });
 
       this.hourlyWage = 0;

@@ -182,7 +182,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 console.error("Error fetching showrooms:", error);
               });
             case 6:
-              if (_this5.get.Email == _this5.formData.email && _this5.get.Phone == _this5.formData.phone && _this5.get.Name == _this5.formData.name) {
+              if (_this5.get.Email == _this5.formData.email && _this5.get.Phone == _this5.formData.phone && _this5.get.Name == _this5.formData.name || Object.keys(_this5.get).length === 0) {
                 // Submit the form if conditions are met
                 document.getElementById("bookingForm").submit();
               } else {

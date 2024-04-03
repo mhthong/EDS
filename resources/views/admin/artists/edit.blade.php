@@ -105,6 +105,12 @@
                                                     </select>
                                                 </div>
 
+                                                <div class="form-group">
+                                                    <label for="phone">Wage:</label>
+                                                    <input type="number" name="wage" id="wage" class="form-control"
+                                                        placeholder="wage" value="{{ $artist->wage }}" required>
+                                                </div>
+
 
                                                 <div class="form-group">
                                                     <label for="artist_pay">Artist Pay Per :</label>

@@ -61,6 +61,15 @@
                   {{ item.status.charAt(0).toUpperCase() + item.status.slice(1) }}
                 </div>
               </td>
+              <td @click="redirectToEditPage(item.id)">
+                <div v-if="parseInt(item.artist_pay) === 0 ">
+                  Day
+                </div>
+                <div v-if="parseInt(item.artist_pay) === 1 ">
+                  Hours
+                </div>
+              </td>
+              <td  @click="redirectToEditPage(item.id)">{{ item.wage }}</td>
 
               <td  @click="redirectToEditPage(item.id)">{{ item.phone }}</td>
               <td  @click="redirectToEditPage(item.id)">{{ item.email}}</td>
@@ -154,13 +163,15 @@ export default {
         { text: "Name", value: "name" },
         { text: "Fullname", value: "fullname" },
         { text: "Status", value: "status" },
+        { text: "Pay by", value: "artist_pay" },
+        { text: "Wage", value: "wage" },
         { text: "Phone", value: "phone" },
         { text: "Email", value: "Email" },
         { text: "Action", value: "action", sortable: false },
       ],
       pagination: {
         page: 1,
-        itemsPerPage: 10,
+        itemsPerPage: 20,
       },
       data: [],
       editedItem: {
@@ -235,6 +246,8 @@ export default {
         name: item.name,
         fullname:item.fullname, // Dynamically set the showroomName property
         status:item.status,
+        artist_pay:item.artist_pay,
+        wage:item.wage,
         phone: item.phone,
         email: item.email,
         action: item.action,
@@ -418,6 +431,8 @@ filteredData() {
         { text: "Name", value: "name" },
         { text: "Fullname", value: "fullname" },
         { text: "Status", value: "status" },
+        { text: "Pay by", value: "artist_pay" },
+        { text: "Wage", value: "wage" },
         { text: "Phone", value: "phone" },
         { text: "Email", value: "Email" },
         { text: "Action", value: "action", sortable: false },

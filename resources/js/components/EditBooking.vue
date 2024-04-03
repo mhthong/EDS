@@ -348,10 +348,10 @@
                 type="number"
                 v-model="selectedDepositPrice"
                 :max="maxDepositPrice"
-                :min="minDepositPrice"
-                @input="checkInputValue"
+                :min="0"
+
               />
-              <p v-if="inputError" class="error-message">
+              <p v-if="inputError_01" class="error-message">
                 Value exceeds limit.
               </p>
             </li>
@@ -394,8 +394,8 @@
                 @click="SubmitEvent"
                 :disabled="
                   submitted ||
-                  this.isActive === false ||
-                  (this.approved == 'approved' && this.employeeId !== null) ||
+                  this.isActive === false || 
+        (this.approved == 'approved' && this.adminId == null) ||
                   this.inputError == true
                 "
               >
@@ -410,8 +410,8 @@
                 @click="SubmitEvent"
                 :disabled="
                   submitted ||
-                  this.isActive === false ||
-                  (this.approved == 'approved' && this.employeeId !== null) ||
+                  this.isActive === false  ||
+        (this.approved == 'approved' && this.adminId == null) ||
                   this.inputError == true
                 "
               >
@@ -483,10 +483,10 @@
                       type="number"
                       v-model="selectedDepositPrice"
                       :max="maxDepositPrice"
-                      :min="minDepositPrice"
-                      @input="checkInputValue"
+                      :min="0"
+      
                     />
-                    <p v-if="inputError" class="error-message">
+                    <p v-if="inputError_01" class="error-message">
                       Value exceeds limit.
                     </p>
                   </li>
@@ -1123,6 +1123,7 @@ export default {
       bookingvalue: 0,
       selectedStatusNone: null,
       isactiveselectedStatusNone: false,
+      checkEmployee:false,
       /*   selectedOption: "option1", */
     };
   },
@@ -1954,6 +1955,12 @@ export default {
     this.fetchapiDataEmployee();
     this.fetchArtist();
     this.fetchapiDataParner();
+
+
+    if(this.approved == 'approved' && this.employeeId !== null){
+      this.checkEmployee = true;
+    }
+
   },
 };
 </script>

@@ -115,6 +115,7 @@
                     :value="0"
                     :checked="allSelected"
                     @change="toggleAllSelection"
+                    v-model="selectedStatusArtist"
                   />
                   <div class="radio-header radio-text">All</div>
                 </label>
@@ -553,6 +554,8 @@ export default {
 
     saveData() {
       // Tạo một đối tượng dữ liệu để gửi lên server
+    
+
       const postData = {
         showroomId: this.selectedShowroomPopup,
         activeStatus: this.selectedActive,
@@ -574,7 +577,7 @@ export default {
         .catch((error) => {
           console.error("Error saving data:", error);
           // Xử lý lỗi nếu có
-        });
+        }); 
     },
     saveDataApproved() {
       // Tạo một đối tượng dữ liệu để gửi lên server
@@ -834,7 +837,6 @@ export default {
     allSelected: {
       get() {
         // Kiểm tra xem tất cả các nghệ sĩ đã được chọn hay không
-        return this.selectedStatusArtist.length === this.artists.length;
       },
       set(value) {
         // Khi checkbox "All" được thay đổi, cập nhật tất cả các checkbox nghệ sĩ

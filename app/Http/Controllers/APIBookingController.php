@@ -2127,8 +2127,8 @@ class APIBookingController extends Controller
             'percent_Reschedule' => 0,
             'percent_Unidentified' => 0,
             'Operation_KPI' => 0,
-            'day' => 0,
-            'hour' => 0,
+            'range_time' => 0,
+            'total_wage' => 0,
         ];
 
         foreach ($bookings as $booking) {
@@ -2180,7 +2180,7 @@ class APIBookingController extends Controller
         }
 
         if ($employee !== "null" && $title === "Artist") {
-            $bookingsQuery->where('ArtistID', $employee)->where('action', "approved");
+            $bookingsQueryupdates->where('ArtistID', $employee)->where('action', "approved");
         }
 
 
@@ -2230,14 +2230,16 @@ class APIBookingController extends Controller
                         $summarizedData['hour'][$key] = 0;
                     }
                     // Cộng thời gian vào số giờ */
-                    $summarizedData['hour'] += $bookingupdate->services[0]->Time; 
+                    $summarizedData['range_time'] += $bookingupdate->services[0]->Time; 
+                    $summarizedData['total_wage'] += $bookingupdate->services[0]->Time *  floatval($bookingupdate->artist->wage);
                 } else {
                     // Kiểm tra xem key đã tồn tại trong $summarizedData['day'] chưa
         /*             if (!isset($summarizedData['day'][$key])) {
                         // Nếu chưa, thì tạo key và đặt giá trị bằng 1
                         $summarizedData['day'][$key] = 1;
                     } */
-                    $summarizedData['day'] = 1;
+                    $summarizedData['range_time'] = 1;
+                    $summarizedData['total_wage'] =floatval($bookingupdate->artist->wage);
                 }
             }
             

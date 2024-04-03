@@ -272,6 +272,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     saveData: function saveData() {
       var _this3 = this;
       // Tạo một đối tượng dữ liệu để gửi lên server
+
       var postData = {
         showroomId: this.selectedShowroomPopup,
         activeStatus: this.selectedActive,
@@ -531,7 +532,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     allSelected: {
       get: function get() {
         // Kiểm tra xem tất cả các nghệ sĩ đã được chọn hay không
-        return this.selectedStatusArtist.length === this.artists.length;
       },
       set: function set(value) {
         // Khi checkbox "All" được thay đổi, cập nhật tất cả các checkbox nghệ sĩ
@@ -583,6 +583,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   render: () => (/* binding */ render),
 /* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
 /* harmony export */ });
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
@@ -814,15 +818,36 @@ var render = function render() {
   }, [_c("label", {
     staticClass: "label m-0"
   }, [_c("input", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedStatusArtist,
+      expression: "selectedStatusArtist"
+    }],
     attrs: {
       type: "checkbox"
     },
-    domProps: {
+    domProps: _defineProperty({
       value: 0,
       checked: _vm.allSelected
-    },
+    }, "checked", Array.isArray(_vm.selectedStatusArtist) ? _vm._i(_vm.selectedStatusArtist, 0) > -1 : _vm.selectedStatusArtist),
     on: {
-      change: _vm.toggleAllSelection
+      change: [function ($event) {
+        var $$a = _vm.selectedStatusArtist,
+          $$el = $event.target,
+          $$c = $$el.checked ? true : false;
+        if (Array.isArray($$a)) {
+          var $$v = 0,
+            $$i = _vm._i($$a, $$v);
+          if ($$el.checked) {
+            $$i < 0 && (_vm.selectedStatusArtist = $$a.concat([$$v]));
+          } else {
+            $$i > -1 && (_vm.selectedStatusArtist = $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
+          }
+        } else {
+          _vm.selectedStatusArtist = $$c;
+        }
+      }, _vm.toggleAllSelection]
     }
   }), _vm._v(" "), _c("div", {
     staticClass: "radio-header radio-text"

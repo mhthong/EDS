@@ -95,7 +95,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       currentURL: "",
       apiData_id: [],
       GetID: []
-    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _defineProperty(_ref, "payment_deposits", []), _defineProperty(_ref, "payment_remaindings", []), _defineProperty(_ref, "After_imgs", []), _defineProperty(_ref, "Before_imgs", []), _defineProperty(_ref, "showImagePopup", false), _defineProperty(_ref, "selectedImageUrl", null), _defineProperty(_ref, "group_service", null), _defineProperty(_ref, "approved", "pending"), _defineProperty(_ref, "employeeId", null), _defineProperty(_ref, "artistId", null), _defineProperty(_ref, "adminId", null), _defineProperty(_ref, "manage_supers", null), _defineProperty(_ref, "selectedStaff", "Employee"), _defineProperty(_ref, "apiDataAritst", []), _defineProperty(_ref, "apiDataParner", []), _defineProperty(_ref, "apiDataEmployee", []), _defineProperty(_ref, "input", []), _defineProperty(_ref, "id", 0), _defineProperty(_ref, "bookingvalue", 0), _defineProperty(_ref, "selectedStatusNone", null), _defineProperty(_ref, "isactiveselectedStatusNone", false), _ref;
+    }, _defineProperty(_ref, "startTime", ""), _defineProperty(_ref, "endTime", ""), _defineProperty(_ref, "action", ""), _defineProperty(_ref, "errorMessagesubmitted", ""), _defineProperty(_ref, "submitted", false), _defineProperty(_ref, "groupServiceStates", {}), _defineProperty(_ref, "isLabelActive", false), _defineProperty(_ref, "isIconActive", false), _defineProperty(_ref, "selectedStartTime", ""), _defineProperty(_ref, "selectedEndTime", ""), _defineProperty(_ref, "StatusPresent", ""), _defineProperty(_ref, "selectedPaymentRemainingType", ""), _defineProperty(_ref, "payment_deposits", []), _defineProperty(_ref, "payment_remaindings", []), _defineProperty(_ref, "After_imgs", []), _defineProperty(_ref, "Before_imgs", []), _defineProperty(_ref, "showImagePopup", false), _defineProperty(_ref, "selectedImageUrl", null), _defineProperty(_ref, "group_service", null), _defineProperty(_ref, "approved", "pending"), _defineProperty(_ref, "employeeId", null), _defineProperty(_ref, "artistId", null), _defineProperty(_ref, "adminId", null), _defineProperty(_ref, "manage_supers", null), _defineProperty(_ref, "selectedStaff", "Employee"), _defineProperty(_ref, "apiDataAritst", []), _defineProperty(_ref, "apiDataParner", []), _defineProperty(_ref, "apiDataEmployee", []), _defineProperty(_ref, "input", []), _defineProperty(_ref, "id", 0), _defineProperty(_ref, "bookingvalue", 0), _defineProperty(_ref, "selectedStatusNone", null), _defineProperty(_ref, "isactiveselectedStatusNone", false), _defineProperty(_ref, "checkEmployee", false), _ref;
   },
   created: function created() {
     // Lấy URL hiện tại và gán cho biến currentURL
@@ -755,6 +755,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.fetchapiDataEmployee();
     this.fetchArtist();
     this.fetchapiDataParner();
+    if (this.approved == 'approved' && this.employeeId !== null) {
+      this.checkEmployee = true;
+    }
   }
 });
 
@@ -1400,18 +1403,18 @@ var render = function render() {
       name: "deposit",
       type: "number",
       max: _vm.maxDepositPrice,
-      min: _vm.minDepositPrice
+      min: 0
     },
     domProps: {
       value: _vm.selectedDepositPrice
     },
     on: {
-      input: [function ($event) {
+      input: function input($event) {
         if ($event.target.composing) return;
         _vm.selectedDepositPrice = $event.target.value;
-      }, _vm.checkInputValue]
+      }
     }
-  }), _vm._v(" "), _vm.inputError ? _c("p", {
+  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
     staticClass: "error-message"
   }, [_vm._v("\n              Value exceeds limit.\n            ")]) : _vm._e()]), _vm._v(" "), _c("li", {
     staticClass: "mt-3 mb-3"
@@ -1462,7 +1465,7 @@ var render = function render() {
       type: "submit",
       name: "submit",
       value: "save",
-      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null || this.inputError == true
+      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.adminId == null || this.inputError == true
     },
     on: {
       click: _vm.SubmitEvent
@@ -1475,7 +1478,7 @@ var render = function render() {
       type: "submit",
       name: "submit",
       value: "apply",
-      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.employeeId !== null || this.inputError == true
+      disabled: _vm.submitted || this.isActive === false || this.approved == "approved" && this.adminId == null || this.inputError == true
     },
     on: {
       click: _vm.SubmitEvent
@@ -1588,18 +1591,18 @@ var render = function render() {
       name: "deposit",
       type: "number",
       max: _vm.maxDepositPrice,
-      min: _vm.minDepositPrice
+      min: 0
     },
     domProps: {
       value: _vm.selectedDepositPrice
     },
     on: {
-      input: [function ($event) {
+      input: function input($event) {
         if ($event.target.composing) return;
         _vm.selectedDepositPrice = $event.target.value;
-      }, _vm.checkInputValue]
+      }
     }
-  }), _vm._v(" "), _vm.inputError ? _c("p", {
+  }), _vm._v(" "), _vm.inputError_01 ? _c("p", {
     staticClass: "error-message"
   }, [_vm._v("\n                    Value exceeds limit.\n                  ")]) : _vm._e()]), _vm._v(" "), _c("li", {
     staticClass: "mt-3 mb-3"

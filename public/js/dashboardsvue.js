@@ -72,7 +72,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       apiDataAritst: null,
       apiDataEmployee: null,
       apiDatakpi: []
-    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _defineProperty(_ref, "percent_Pratial_Done", 0), _defineProperty(_ref, "percent_Reschedule", 0), _defineProperty(_ref, "percent_Unidentified", 0), _defineProperty(_ref, "Operation_KPI", 0), _defineProperty(_ref, "isNone", false), _defineProperty(_ref, "day", 0), _defineProperty(_ref, "hour", 0), _defineProperty(_ref, "dailyWage", 0), _defineProperty(_ref, "hourlyWage", 0), _ref;
+    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _defineProperty(_ref, "percent_Pratial_Done", 0), _defineProperty(_ref, "percent_Reschedule", 0), _defineProperty(_ref, "percent_Unidentified", 0), _defineProperty(_ref, "Operation_KPI", 0), _defineProperty(_ref, "isNone", false), _defineProperty(_ref, "range_time", 0), _defineProperty(_ref, "total_wage", 0), _ref;
   },
   watch: {
     dateRange: {
@@ -109,17 +109,23 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     }
   },
   methods: {
-    updateDailyWage: function updateDailyWage() {
-      this.dailyWage = parseFloat(this.day);
-    },
-    updateHourlyWage: function updateHourlyWage() {
-      this.hourlyWage = parseFloat(this.hour);
-    },
-    totalWage: function totalWage(time) {
-      // Choose the appropriate wage based on the context (daily or hourly)
-      var wage = this.title === "Artist" && parseInt(this.getArtistPayById(this.selectedEmployee)) === 0 ? this.dailyWage : this.hourlyWage;
-      return parseFloat(wage) * parseFloat(time);
-    },
+    /*     updateDailyWage() {
+          this.dailyWage = parseFloat(this.range_time);
+        },
+        updateHourlyWage() {
+          this.hourlyWage = parseFloat(this.range_time);
+        },
+        totalWage(time) {
+          // Choose the appropriate wage based on the context (daily or hourly)
+          const wage =
+            this.title === "Artist" &&
+            parseInt(this.getArtistPayById(this.selectedEmployee)) === 0
+              ? this.total_wage
+              : this.total_wage;
+    
+     
+          return parseFloat(wage) * parseFloat(time);
+        }, */
     getArtistPayById: function getArtistPayById(artistId) {
       if (this.apiDataAritst) {
         var artist = this.apiDataAritst.find(function (artist) {
@@ -260,8 +266,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               percent_Reschedule: 0,
               percent_Unidentified: 0,
               Operation_KPI: 0,
-              day: 0,
-              hour: 0
+              range_time: 0,
+              total_wage: 0
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -284,8 +290,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           totals[Name].percent_Reschedule += fillerData.percent_Reschedule;
           totals[Name].percent_Unidentified += fillerData.percent_Unidentified;
           totals[Name].Operation_KPI += fillerData.Operation_KPI;
-          totals[Name].hour += fillerData.hour;
-          totals[Name].day += fillerData.day;
+          totals[Name].range_time += fillerData.range_time;
+          totals[Name].total_wage += fillerData.total_wage;
         }
       }
 
@@ -335,8 +341,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.percent_Reschedule = 0;
       this.percent_Unidentified = 0;
       this.Operation_KPI = 0;
-      this.day = 0;
-      this.hour = 0;
+      this.range_time = 0;
+      this.total_wage = 0;
       if (this.selectedShowroom !== null) {
         this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
       } else {
@@ -363,8 +369,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         _this8.percent_Reschedule += parseFloat(item.percent_Reschedule);
         _this8.percent_Unidentified += parseFloat(item.percent_Unidentified);
         _this8.Operation_KPI += parseFloat(item.Operation_KPI);
-        _this8.day += parseFloat(item.day);
-        _this8.hour += parseFloat(item.hour);
+        _this8.range_time += parseFloat(item.range_time);
+        _this8.total_wage += parseFloat(item.total_wage);
       });
       this.hourlyWage = 0;
       this.dailyWage = 0;
@@ -746,71 +752,13 @@ var render = function render() {
     staticClass: "Price"
   }, [_c("h6", [_vm._v("Total KPI | % Completed")]), _vm._v(" "), _c("h4", [_vm._v("\n          $" + _vm._s(this.Booking_Value) + " / $" + _vm._s(parseFloat(this.kpi)) + " Completed\n          " + _vm._s(_vm.calculatePercentage(this.Booking_Value, parseFloat(this.kpi))) + "\n          %\n        ")])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayZero ? _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("Total Day")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(this.day))])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayZero ? _c("li", {
-    staticClass: "Price",
-    staticStyle: {
-      color: "white"
-    }
-  }, [_c("h6", [_vm._v("Daily wages")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.dailyWage,
-      expression: "dailyWage"
-    }],
-    staticClass: "inputWages",
-    attrs: {
-      type: "number",
-      name: "dailyWage",
-      id: "dailyWage",
-      min: "0"
-    },
-    domProps: {
-      value: _vm.dailyWage
-    },
-    on: {
-      change: _vm.updateDailyWage,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.dailyWage = $event.target.value;
-      }
-    }
-  }), _vm._v("\n        $\n      ")]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayZero ? _c("li", {
+  }, [_c("h6", [_vm._v("Total Day")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(this.range_time))])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayZero ? _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("Total Wage")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(_vm.totalWage(parseFloat(this.day))) + " $")])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayOne ? _c("li", {
+  }, [_c("h6", [_vm._v("Total Wage")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(this.total_wage) + " $")])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayOne ? _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("Total Hour")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(this.hour))])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayOne ? _c("li", {
-    staticClass: "Price",
-    staticStyle: {
-      color: "white"
-    }
-  }, [_c("h6", [_vm._v("Hourly salary")]), _vm._v(" "), _c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.hourlyWage,
-      expression: "hourlyWage"
-    }],
-    staticClass: "inputWages",
-    attrs: {
-      type: "number",
-      name: "hourlyWage",
-      id: "hourlyWage",
-      min: "0"
-    },
-    domProps: {
-      value: _vm.hourlyWage
-    },
-    on: {
-      change: _vm.updateHourlyWage,
-      input: function input($event) {
-        if ($event.target.composing) return;
-        _vm.hourlyWage = $event.target.value;
-      }
-    }
-  }), _vm._v("\n        $\n      ")]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayOne ? _c("li", {
+  }, [_c("h6", [_vm._v("Total Hour")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(this.range_time))])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayOne ? _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("Total Wage")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(_vm.totalWage(parseFloat(this.hour))) + " $")])]) : _vm._e()])])]);
+  }, [_c("h6", [_vm._v("Total Wage")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(this.total_wage) + " $")])]) : _vm._e()])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;

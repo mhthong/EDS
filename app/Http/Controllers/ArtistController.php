@@ -65,6 +65,7 @@ class ArtistController extends Controller
             'status' => 'required|in:published,pending,draft',
             'artist_levelID' => 'required|exists:artists_levels,id',
             'artist_pay' => 'required|integer',
+            'wage' => 'required|numeric|min:0',
         ]);
     
         // Prepare the data for creating the artist
@@ -149,7 +150,8 @@ class ArtistController extends Controller
                 'description' => 'nullable|string',
                 'status' => 'required|in:published,pending,draft',
                 'artist_levelID' => 'required|exists:artists_levels,id',
-                'artist_pay' => 'required|integer',     
+                'artist_pay' => 'required|integer',
+                'wage' => 'required|numeric|min:0',     
             ]);
     
        

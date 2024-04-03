@@ -91,7 +91,32 @@ class ApiPostController extends Controller
                 
                 if ($check == true) {
                     $artistIds =  $request->input('artistId'); // Chuyển chuỗi thành mảng các artistId
+
+                    $artistPersents = Artists::where('status', 'published')->get();
+
+                          
+                    foreach ($artistPersents as $artistPersent) {
+                        // Kiểm tra xem có dữ liệu nào tương ứng với showroomId, inputData và artistId không
+                        $workingHour = WorkingHour::where('showroom_schedule_id', $request->input('showroomId'))
+                            ->where('date', $request->input('inputData'))
+                            ->where('artist_id', $artistPersent->id)
+                            ->first();
                 
+                        // Nếu có, cập nhật activeStatus
+                        if ($workingHour) {
+                            $workingHour->active = ($request->input('activeStatus') == '1');
+                            $workingHour->save();
+                        } else {
+                            // Nếu không có, tạo mới dữ liệu
+                            WorkingHour::create([
+                                'showroom_schedule_id' => $request->input('showroomId'),
+                                'artist_id' => $artistPersent->id,
+                                'date' => $request->input('inputData'),
+                                'active' => 1,
+                            ]);
+                        }
+                    }
+
                     foreach ($artistIds as $artistId) {
                         // Kiểm tra xem có dữ liệu nào tương ứng với showroomId, inputData và artistId không
                         $workingHour = WorkingHour::where('showroom_schedule_id', $request->input('showroomId'))
@@ -118,8 +143,6 @@ class ApiPostController extends Controller
                 } else {
                     return redirect()->back()->with("failed", "You do not have access !");
                 }
-
-
 
 
     }

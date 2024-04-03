@@ -763,7 +763,7 @@ export default {
     },
   },
 
-  methods: {
+  methods: { 
     async checkSubmit() {
 
       if (
@@ -777,16 +777,15 @@ export default {
           .get(`/api/checkget/${this.formData.email}/${this.formData.phone}`)
           .then((response) => {
             this.get = response.data;
+                
           })
           .catch((error) => {
             console.error("Error fetching showrooms:", error);
           });
 
-        if (
-          this.get.Email == this.formData.email &&
+        if ((this.get.Email == this.formData.email &&
           this.get.Phone == this.formData.phone &&
-          this.get.Name == this.formData.name
-        ) {
+          this.get.Name == this.formData.name)  || Object.keys(this.get).length === 0 ) {
           // Submit the form if conditions are met
           document.getElementById("bookingForm").submit();
         } else {
