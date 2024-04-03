@@ -38,7 +38,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       selectedshowroomschedule: [],
       selectedGroupService: "",
       selectedGroupServiceServices: [],
-      step: "getShow",
+      step: "showroom",
       selectedServices: [],
       totalPrice: 0,
       selectedDate: "",
@@ -164,51 +164,45 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     checkSubmit: function checkSubmit() {
       var _this5 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        var response, isFormDataValid;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              if (!(_this5.formData.name == "" || _this5.formData.email == "")) {
-                _context.next = 4;
+              if (!(_this5.formData.name == "" || _this5.formData.phone == "")) {
+                _context.next = 3;
                 break;
               }
               _this5.checkformData = true;
-              _context.next = 7;
-              break;
-            case 4:
+              return _context.abrupt("return");
+            case 3:
+              _context.prev = 3;
               _context.next = 6;
-              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/checkget/".concat(_this5.formData.email, "/").concat(_this5.formData.phone)).then(function (response) {
-                _this5.get = response.data;
-              })["catch"](function (error) {
-                console.error("Error fetching showrooms:", error);
-              });
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/checkget/".concat(_this5.formData.phone));
             case 6:
-              if (_this5.get.Email == _this5.formData.email && _this5.get.Phone == _this5.formData.phone && _this5.get.Name == _this5.formData.name || Object.keys(_this5.get).length === 0) {
-                // Submit the form if conditions are met
+              response = _context.sent;
+              _this5.get = response.data;
+              isFormDataValid = _this5.get && _this5.get.Phone.trim() === _this5.formData.phone.trim() && _this5.get.Name.trim() === _this5.formData.name.trim();
+              if (isFormDataValid || Object.keys(_this5.get).length === 0) {
                 document.getElementById("bookingForm").submit();
               } else {
-                // Handle conditions not met
+                // Han  dle conditions not met
                 // For example, set flags or display error messages
-                if (_this5.get.Email != _this5.formData.email) {
-                  _this5.checkformDataEmail = true;
-                } else {
-                  _this5.checkformDataEmail = false;
-                }
-                if (_this5.get.Phone != _this5.formData.phone) {
-                  _this5.checkformDataPhone = true;
-                } else {
-                  _this5.checkformDataPhone = false;
-                }
-                if (_this5.get.Name != _this5.formData.name) {
-                  _this5.checkformDataName = true;
-                } else {
-                  _this5.checkformDataName = false;
-                }
+                _this5.checkformDataEmail = _this5.get && _this5.get.Email !== _this5.formData.email;
+                _this5.checkformDataPhone = _this5.get && _this5.get.Phone !== _this5.formData.phone;
+                _this5.checkformDataName = _this5.get && _this5.get.Name !== _this5.formData.name;
               }
-            case 7:
+              _context.next = 15;
+              break;
+            case 12:
+              _context.prev = 12;
+              _context.t0 = _context["catch"](3);
+              console.error("Error fetching showrooms:", _context.t0);
+              // Handle error as needed
+            case 15:
             case "end":
               return _context.stop();
           }
-        }, _callee);
+        }, _callee, null, [[3, 12]]);
       }))();
     },
     updateImageDeposit: function updateImageDeposit(selectedService, newValue) {

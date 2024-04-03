@@ -25,11 +25,11 @@ class APIBookingController extends Controller
 
     
 
-    public function checkget($email,$phone)
+    public function checkget($phone)
     {
-        $Get = Get::where('email', $email)
-        ->orWhere('phone', $phone)->first();
+        $Get = Get::Where('phone', $phone)->first();
         return response()->json($Get);
+        
     }
 
     public function getShowrooms()

@@ -85,67 +85,59 @@ class ApiPostController extends Controller
     
     public function saveDataActiveDate(Request $request)
     {
+        $check = $this->CheckAuth();
         
-                $check = $this->CheckAuth();
+        if ($check == true) {
+            $artistIds = $request->input('artistId'); // Chuyển chuỗi thành mảng các artistId
+            $artistPersents = Artists::where('status', 'published')->get();
+    
+            $activeStatusNone = $request->input('activeStatus') == 1 ? 0 : 1; // Cập nhật giá trị activeStatusNone
+            
+            foreach ($artistPersents as $artistPersent) {
+                $workingHour = WorkingHour::where('showroom_schedule_id', $request->input('showroomId'))
+                    ->where('date', $request->input('inputData'))
+                    ->where('artist_id', $artistPersent->id)
+                    ->first();
                 
-                
-                if ($check == true) {
-                    $artistIds =  $request->input('artistId'); // Chuyển chuỗi thành mảng các artistId
-
-                    $artistPersents = Artists::where('status', 'published')->get();
-
-                          
-                    foreach ($artistPersents as $artistPersent) {
-                        // Kiểm tra xem có dữ liệu nào tương ứng với showroomId, inputData và artistId không
-                        $workingHour = WorkingHour::where('showroom_schedule_id', $request->input('showroomId'))
-                            ->where('date', $request->input('inputData'))
-                            ->where('artist_id', $artistPersent->id)
-                            ->first();
-                
-                        // Nếu có, cập nhật activeStatus
-                        if ($workingHour) {
-                            $workingHour->active = ($request->input('activeStatus') == '1');
-                            $workingHour->save();
-                        } else {
-                            // Nếu không có, tạo mới dữ liệu
-                            WorkingHour::create([
-                                'showroom_schedule_id' => $request->input('showroomId'),
-                                'artist_id' => $artistPersent->id,
-                                'date' => $request->input('inputData'),
-                                'active' => 1,
-                            ]);
-                        }
-                    }
-
-                    foreach ($artistIds as $artistId) {
-                        // Kiểm tra xem có dữ liệu nào tương ứng với showroomId, inputData và artistId không
-                        $workingHour = WorkingHour::where('showroom_schedule_id', $request->input('showroomId'))
-                            ->where('date', $request->input('inputData'))
-                            ->where('artist_id', $artistId)
-                            ->first();
-                
-                        // Nếu có, cập nhật activeStatus
-                        if ($workingHour) {
-                            $workingHour->active = ($request->input('activeStatus') == '1');
-                            $workingHour->save();
-                        } else {
-                            // Nếu không có, tạo mới dữ liệu
-                            WorkingHour::create([
-                                'showroom_schedule_id' => $request->input('showroomId'),
-                                'artist_id' => $artistId,
-                                'date' => $request->input('inputData'),
-                                'active' => ($request->input('activeStatus') == '1'),
-                            ]);
-                        }
-                    }
-                
-                    return response()->json(['message' => 'Data updated/created successfully']);
+                if ($workingHour) {
+                    $workingHour->active = $activeStatusNone;
+                    $workingHour->save();
                 } else {
-                    return redirect()->back()->with("failed", "You do not have access !");
+                    WorkingHour::create([
+                        'showroom_schedule_id' => $request->input('showroomId'),
+                        'artist_id' => $artistPersent->id,
+                        'date' => $request->input('inputData'),
+                        'active' => $activeStatusNone,
+                    ]);
                 }
-
-
+            }
+    
+            // Xử lý các artistId từ request
+            foreach ($artistIds as $artistId) {
+                $workingHour = WorkingHour::where('showroom_schedule_id', $request->input('showroomId'))
+                    ->where('date', $request->input('inputData'))
+                    ->where('artist_id', $artistId)
+                    ->first();
+    
+                if ($workingHour) {
+                    $workingHour->active = $request->input('activeStatus');
+                    $workingHour->save();
+                } else {
+                    WorkingHour::create([
+                        'showroom_schedule_id' => $request->input('showroomId'),
+                        'artist_id' => $artistId,
+                        'date' => $request->input('inputData'),
+                        'active' => $request->input('activeStatus'),
+                    ]);
+                }
+            }
+            
+            return response()->json(['message' => 'Data updated/created successfully']);
+        } else {
+            return redirect()->back()->with("failed", "You do not have access !");
+        }
     }
+    
 
 
     public function saveDataApprovedDate(Request $request)

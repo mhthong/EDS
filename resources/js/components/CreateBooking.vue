@@ -639,7 +639,7 @@ export default {
       selectedGroupService: "",
       selectedGroupServiceServices: [],
 
-      step: "getShow",
+      step: "showroom",
       selectedServices: [],
       totalPrice: 0,
       selectedDate: "",
@@ -765,49 +765,37 @@ export default {
 
   methods: { 
     async checkSubmit() {
+  if (this.formData.name == "" || this.formData.phone == "") {
+    this.checkformData = true;
+    return; // Exit early if required fields are not filled
+  }
 
-      if (
-        this.formData.name == "" ||
-        this.formData.email == ""
-      ) {
-        this.checkformData = true;
-      } else {
-        await axios
-          .get(`/api/checkget/${this.formData.email}/${this.formData.phone}`)
-          .then((response) => {
-            this.get = response.data;
-                
-          })
-          .catch((error) => {
-            console.error("Error fetching showrooms:", error);
-          });
+  try {
+    const response = await axios.get(`/api/checkget/${this.formData.phone}`);
+    this.get = response.data;
 
-        if ((this.get.Email == this.formData.email &&
-          this.get.Phone == this.formData.phone &&
-          this.get.Name == this.formData.name)  || Object.keys(this.get).length === 0 ) {
-          // Submit the form if conditions are met
-          document.getElementById("bookingForm").submit();
-        } else {
-          // Handle conditions not met
-          // For example, set flags or display error messages
-          if (this.get.Email != this.formData.email) {
-            this.checkformDataEmail = true;
-          } else {
-            this.checkformDataEmail = false;
-          }
-          if (this.get.Phone != this.formData.phone) {
-            this.checkformDataPhone = true;
-          } else {
-            this.checkformDataPhone = false;
-          }
-          if (this.get.Name != this.formData.name) {
-            this.checkformDataName = true;
-          } else {
-            this.checkformDataName = false;
-          }
-        }
-      }
-    },
+    const isFormDataValid = (
+          this.get &&  
+          this.get.Phone.trim() === this.formData.phone.trim() && 
+          this.get.Name.trim() === this.formData.name.trim()
+    );
+
+
+    if (isFormDataValid || Object.keys(this.get).length === 0 ) {
+      document.getElementById("bookingForm").submit();
+    } else {
+      // Han  dle conditions not met
+      // For example, set flags or display error messages
+      this.checkformDataEmail = (this.get && this.get.Email !== this.formData.email);
+      this.checkformDataPhone = (this.get && this.get.Phone !== this.formData.phone);
+      this.checkformDataName = (this.get && this.get.Name !== this.formData.name);
+    }
+  } catch (error) {
+    console.error("Error fetching showrooms:", error);
+    // Handle error as needed
+  }
+},
+
 
     updateImageDeposit(selectedService, newValue) {
       selectedService.ImageDeposit = newValue;

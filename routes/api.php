@@ -69,7 +69,7 @@ Route::get('/Sources', [SourceController::class, 'getSource']);
 Route::get('/kpis', [KpiController::class, 'getKpis']);
 Route::get('/kpis-data/{showroom}/{employee}/{date}', [KpiController::class, 'getKpisData']);
 Route::get('groupservice', [APIBookingController::class, 'groupservice']);  
-Route::get('checkget/{email}/{phone}', [APIBookingController::class, 'checkget']);
+Route::get('checkget/{phone}', [APIBookingController::class, 'checkget']);
 
 
 /* post */
