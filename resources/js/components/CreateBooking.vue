@@ -639,7 +639,7 @@ export default {
       selectedGroupService: "",
       selectedGroupServiceServices: [],
 
-      step: "showroom",
+      step: "getShow",
       selectedServices: [],
       totalPrice: 0,
       selectedDate: "",
@@ -768,7 +768,6 @@ export default {
 
       if (
         this.formData.name == "" ||
-        this.formData.phone == "" ||
         this.formData.email == ""
       ) {
         this.checkformData = true;

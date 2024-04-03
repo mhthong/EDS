@@ -38,7 +38,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       selectedshowroomschedule: [],
       selectedGroupService: "",
       selectedGroupServiceServices: [],
-      step: "showroom",
+      step: "getShow",
       selectedServices: [],
       totalPrice: 0,
       selectedDate: "",
@@ -167,7 +167,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              if (!(_this5.formData.name == "" || _this5.formData.phone == "" || _this5.formData.email == "")) {
+              if (!(_this5.formData.name == "" || _this5.formData.email == "")) {
                 _context.next = 4;
                 break;
               }
