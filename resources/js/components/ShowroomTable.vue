@@ -53,10 +53,6 @@
               <td  @click="redirectToEditPage(item.id)">{{ item.name }}</td>
 
               <td  @click="redirectToEditPage(item.id)">{{ item.address }}</td>
-        
-
-              <td  @click="redirectToEditPage(item.id)">{{ item.phone }}</td>
-              <td  @click="redirectToEditPage(item.id)">{{ item.description}}</td>
               <td @click="redirectToEditPage(item.id)">
                 <div
                   class="status"
@@ -65,6 +61,10 @@
                   {{ item.status.charAt(0).toUpperCase() + item.status.slice(1) }}
                 </div>
               </td>
+
+              <td  @click="redirectToEditPage(item.id)">{{ item.phone }}</td>
+              <td  @click="redirectToEditPage(item.id)">{{ item.description}}</td>
+        
               <td>
                 <v-icon @click="deleteItem(item.id)">mdi-delete</v-icon>
               </td>
@@ -182,7 +182,7 @@ export default {
     redirectToEditPage(Id) {
       // Assuming you're using Vue Router
       if (this.adminId != null) {
-        const editUrl = `/admin/artist/edit/${Id}`;
+        const editUrl = `/admin/showrooms/${Id}/edit`;
         window.location.href = editUrl;
       } 
       // Perform the redirection

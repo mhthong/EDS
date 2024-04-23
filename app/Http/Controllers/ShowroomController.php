@@ -89,11 +89,13 @@ class ShowroomController extends Controller
 
     public function edit(Showroom $showroom)
     {
+
         $showroom->load('groupservices'); // Load the groupservices relationship
         $selectedGroupServices = $showroom->groupservices->pluck('id')->toArray();
         $allGroupServices = GroupService::all();
         $showroom_schedules = $showroom->showroomSchedules()->with('workingHours')->get();
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
         return view('admin.showrooms.edit', compact('showroom', 'showroom_schedules', 'daysOfWeek', 'allGroupServices', 'selectedGroupServices'));
     }
     

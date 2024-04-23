@@ -4686,6 +4686,10 @@ select.bootstrap-table-filter-control-status option[value="<i>published</i>"] {
   display: none;
 }
 
+.unidentified {
+  background-color: #c3bfc4;
+}
+
 /*!
  * Bootstrap  v5.3.2 (https://getbootstrap.com/)
  * Copyright 2011-2023 The Bootstrap Authors
@@ -23500,4 +23504,8 @@ select.bootstrap-table-filter-control-status option[value="<i>published</i>"] {
 
 .None {
   display: none;
+}
+
+.unidentified {
+  background-color: #c3bfc4;
 }

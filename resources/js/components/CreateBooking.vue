@@ -340,7 +340,10 @@
                       <div class="controls col">
                         Status
                         <i class="fa fa-sort"></i>
-                        <select v-model="selectedService.Status">
+                        <select
+                          v-model="selectedService.Status"
+                          @change="checkTimeConflict(index)"
+                        >
                           <option value="Waiting" selected>Waiting</option>
                           <option value="Unidentified">Unidentified</option>
                           <!--<option value="Done" >Done</option>
@@ -626,6 +629,7 @@ export default {
   data() {
     return {
       showrooms: [],
+      showroomsnone: [],
       showroomspath: "N/A",
       selectedShowroom: null,
       isActive: false, // Kết quả active sẽ được lưu ở đây
@@ -651,6 +655,8 @@ export default {
       showAlert: false,
       apiData: [],
       artists: [],
+      artistsnone: [],
+      artistshowroom: [],
       formData: {
         name: "",
         email: "",
@@ -687,6 +693,7 @@ export default {
       checkformDataName: false,
       checkformDataPhone: false,
       checkformDataEmail: false,
+      formSubmitted: false,
       /*   selectedOption: "option1", */
     };
   },
@@ -704,9 +711,9 @@ export default {
     },
 
     selectedShowroomName() {
-      // Lấy thông tin maps của showroom được chọn
+      // Lấy thông tin maps của showroom được chọnl
       if (this.selectedShowroom) {
-        const selectedShowroom = this.showrooms.find(
+        const selectedShowroom = this.showroomsnone.find(
           (showroom) => showroom.id === this.selectedShowroom
         );
         return selectedShowroom ? selectedShowroom.Name : "";
@@ -763,44 +770,86 @@ export default {
     },
   },
 
-  methods: { 
+  methods: {
+    async fetchArtistsShowrooms() {
+      await axios
+        .get(`/api/artistshowroom`)
+        .then((response) => {
+          this.artistshowroom = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
+    updateArtistshowroom(showroom, artist) {
+      if (parseInt(showroom) !== 0 || showroom !== null) {
+        this.artists = this.artistshowroom
+          .filter(
+            (item) =>
+              parseInt(item.showroom_id) === parseInt(showroom) &&
+              item.artist.status == "published"
+          ) // Lọc ra các dữ liệu có showroom_id là 21
+          .map((item) => item.artist); // Chỉ trích xuất thông tin của artist
+      } else {
+        this.artists = this.artistsnone;
+      }
+
+      if (parseInt(artist) !== 0 || artist !== null) {
+        this.showrooms = this.artistshowroom
+          .filter(
+            (item) =>
+              parseInt(item.artist_id) === parseInt(artist) &&
+              item.showroom.status == "published"
+          ) // Lọc ra các dữ liệu có artist_id là 21
+          .map((item) => item.showroom); // Chỉ trích xuất thông tin của showroom
+      } else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
+
     async checkSubmit() {
-  if (this.formData.name == "" || this.formData.phone == "") {
-    this.checkformData = true;
-    return; // Exit early if required fields are not filled
-  }
+      if (this.formSubmitted) {
+        return; // Exit early if form has already been submitted
+      }
 
-  try {
-    const response = await axios.get(`/api/checkget/${this.formData.phone}`);
-    this.get = response.data;
+      if (this.formData.name === "" || this.formData.phone === "") {
+        this.checkformData = true;
+        return; // Exit early if required fields are not filled
+      }
 
-    const isFormDataValid = (
-          this.get &&  
-          this.get.Phone.trim() === this.formData.phone.trim() && 
-          this.get.Name.trim() === this.formData.name.trim()
-    );
+      try {
+        const response = await axios.get(
+          `/api/checkget/${this.formData.phone}`
+        );
+        this.get = response.data;
 
+        const isFormDataValid =
+          this.get &&
+          this.get.Phone === this.formData.phone &&
+          this.get.Name === this.formData.name;
 
-    if (isFormDataValid || Object.keys(this.get).length === 0 ) {
-      document.getElementById("bookingForm").submit();
-    } else {
-      // Han  dle conditions not met
-      // For example, set flags or display error messages
-      this.checkformDataEmail = (this.get && this.get.Email !== this.formData.email);
-      this.checkformDataPhone = (this.get && this.get.Phone !== this.formData.phone);
-      this.checkformDataName = (this.get && this.get.Name !== this.formData.name);
-    }
-  } catch (error) {
-    console.error("Error fetching showrooms:", error);
-    // Handle error as needed
-  }
-},
-
+        if (isFormDataValid || Object.keys(this.get).length === 0) {
+          this.formSubmitted = true; // Set flag to prevent further submissions
+          document.getElementById("bookingForm").submit();
+        } else {
+          // Handle conditions not met
+          // For example, set flags or display error messages
+          this.checkformDataEmail =
+            this.get && this.get.Email !== this.formData.email;
+          this.checkformDataPhone =
+            this.get && this.get.Phone !== this.formData.phone;
+          this.checkformDataName =
+            this.get && this.get.Name !== this.formData.name;
+        }
+      } catch (error) {
+        console.error("Error fetching showrooms:", error);
+        // Handle error as needed
+      }
+    },
 
     updateImageDeposit(selectedService, newValue) {
       selectedService.ImageDeposit = newValue;
-
- 
     },
 
     formatTime(time) {
@@ -822,6 +871,7 @@ export default {
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
+          this.showroomsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
@@ -848,8 +898,8 @@ export default {
       });
     },
 
-    fetchGroupServices() {
-      axios
+    async fetchGroupServices() {
+      await axios
         .get(`/api/group-services/${this.selectedShowroom}`)
         .then((response) => {
           this.groupServices = response.data;
@@ -859,9 +909,9 @@ export default {
         });
     },
 
-    fetchApiData() {
+    async fetchApiData() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios
+      await axios
         .get(`/api/bookings/showroom/${this.selectedShowroom}`)
         .then((response) => {
           this.apiData = response.data;
@@ -871,9 +921,9 @@ export default {
         });
     },
 
-    fetchArtists() {
+    async fetchArtists() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios
+      await axios
         .get(`/api/artist`)
         .then((response) => {
           this.artists = response.data;
@@ -883,8 +933,8 @@ export default {
         });
     },
 
-    fetchShowroomSchedule() {
-      axios
+    async fetchShowroomSchedule() {
+      await axios
         .get(`/api/showroomschedule/${this.selectedShowroom}`)
         .then((response) => {
           this.showroomSchedules = response.data;
@@ -908,20 +958,20 @@ export default {
 
         console.log( this.filteredDays);
     }, */
-    filterActiveDays(DateTreament, index, artistId) {
+    async filterActiveDays(DateTreament, index, artistId) {
       let InforData = this.selectedServices[index];
 
       if (!DateTreament || !this.selectedShowroom) return;
 
       // Gửi yêu cầu API để lấy dữ liệu
-      axios
+      await axios
         .get(
           `/api/date-active/${DateTreament}/${this.selectedShowroom}/${artistId}`
         )
         .then((response) => {
           // Lấy giá trị active từ API
-          InforData.dateActive = response.data.active;
 
+          InforData.dateActive = response.data.active;
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
@@ -994,15 +1044,37 @@ export default {
       const conflict = InforData.filteredDays.some((schedule) => {
         const startTime = new Date(`1970-01-01T${schedule.time}`);
         const endTime = new Date(`1970-01-01T${schedule.time_end}`);
-        // ...
+
+        // Kiểm tra xem selectedStartTime và selectedEndTime nằm trong khoảng thời gian của lịch trình
+        const isStartTimeInsideSchedule =
+          selectedStartTime >= startTime && selectedStartTime < endTime;
+        const isEndTimeInsideSchedule =
+          selectedEndTime > startTime && selectedEndTime <= endTime;
+
+        // Kiểm tra xem startTime và endTime của lịch trình nằm trong khoảng thời gian của selectedStartTime và selectedEndTime
+        const isScheduleTimeInsideSelected =
+          startTime >= selectedStartTime && endTime <= selectedEndTime;
+
+        // Kiểm tra xem selectedStartTime và selectedEndTime hoặc startTime và endTime của lịch trình có trùng nhau không
+        const isTimeEqual =
+          selectedStartTime.getTime() === startTime.getTime() &&
+          selectedEndTime.getTime() === endTime.getTime();
 
         return (
-          (selectedStartTime >= startTime && selectedStartTime < endTime) ||
-          (selectedEndTime > startTime && selectedEndTime <= endTime)
+          isStartTimeInsideSchedule ||
+          isEndTimeInsideSchedule ||
+          isScheduleTimeInsideSelected ||
+          isTimeEqual
         );
       });
 
       if (
+        InforData.Status == "Unidentified" &&
+        selectedStartTime < selectedEndTime
+      ) {
+        InforData.isTimeConflict = false;
+        InforData.showAlert = false;
+      } else if (
         conflict ||
         selectedStartTime >= selectedEndTime ||
         !isStartTimeValid ||
@@ -1045,8 +1117,8 @@ export default {
       this.paymentImage = this.$refs.fileInput.files[0];
     },
 
-    fetchServices() {
-      axios
+    async fetchServices() {
+      await axios
         .get("/api/services")
         .then((response) => {
           this.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
@@ -1056,8 +1128,8 @@ export default {
         });
     },
 
-    fetchArtistlevels() {
-      axios
+    async fetchArtistlevels() {
+      await axios
         .get("/api/artist-levels")
         .then((response) => {
           this.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
@@ -1164,7 +1236,6 @@ export default {
       }
 
       // Now, totalPrice contains the total price of all selected services
-
     },
 
     checkPrice() {
@@ -1188,7 +1259,6 @@ export default {
 
     checkButton() {
       return this.selectedServices.every((Service) => {
-
         return (
           Service.StartTime !== null &&
           Service.EndTime !== null &&
@@ -1246,11 +1316,12 @@ export default {
       }
     },
 
-    nextStep() {
+    async nextStep() {
       if (this.step === "showroom") {
         if (this.selectedShowroom) {
           this.fetchGroupServices();
           this.fetchApiData();
+          this.updateArtistshowroom(this.selectedShowroom, 0);
           this.selectedGroupService = "";
           this.step = "groupService";
         }
@@ -1282,8 +1353,6 @@ export default {
           };
 
           this.bookingData = JSON.stringify(bookingDatavalue);
-
-   
         }
       }
     },
@@ -1295,6 +1364,7 @@ export default {
     prevStep() {
       if (this.step === "groupService") {
         this.step = "showroom";
+        this.showrooms = this.showroomsnone;
         this.selectedGroupService = null;
         this.selectedServices = [];
         this.selectedArtistlevel = [];
@@ -1349,6 +1419,7 @@ export default {
     this.fetchShowroomSchedule();
     this.fetchApiData();
     this.fetchArtists();
+    this.fetchArtistsShowrooms();
     this.htmlData = this.selectedShowroomMap;
   },
 };

@@ -5,7 +5,7 @@
         class="form-control"
         id="showroomSelect"
         v-model="selectedShowroom"
-        @change="runFullcalendar"
+        @change="onChange(selectedShowroom, selectedArtist)"
       >
         <option :value="0" selected>Showroom</option>
         <option
@@ -23,7 +23,7 @@
         class="form-control"
         id="showroomSelect"
         v-model="selectedArtist"
-        @change="runFullcalendar"
+        @change="onChange(selectedShowroom, selectedArtist)"
         :disabled="artistId !== null"
       >
         <option :value="0" selected>Artists</option>
@@ -95,6 +95,7 @@
               class="form-control mb-3"
               id="showroomSelect"
               v-model="selectedShowroomPopup"
+              @change="updateArtistshowroom(selectedShowroomPopup, 0)"
             >
               <option :value="0" selected>Showroom</option>
 
@@ -107,42 +108,35 @@
               </option>
             </select>
 
-            <div class="mb-3" style="display: flex; flex-wrap: wrap; gap: 1rem">
-              <div style="flex: 1">
-                <label class="label m-0">
+            <div
+              class="mb-3"
+              style="display: flex; flex-wrap: wrap; gap: 1rem"
+              v-if="selectedShowroomPopup !== 0"
+            >
+              <div
+                style="width: 100%"
+                v-for="artist in artists"
+                :key="artist.id"
+              >
+                <label class="label01 m-0" :for="'artist_' + artist.id">
+                  <div style="width: 100%">{{ artist.name }}</div>
+                  <select
+                    class="form-control"
+                    v-model="selectedActive[artist.id]"
+                  >
+                    <option value="undefined" selected>Unidentified</option>
+                    <option value="1">Active</option>
+                    <option value="0">None Active</option>
+                  </select>
                   <input
-                    type="checkbox"
-                    :value="0"
-                    :checked="allSelected"
-                    @change="toggleAllSelection"
-                    v-model="selectedStatusArtist"
+                    type="text"
+                    class="form-control"
+                    v-model="note[artist.id]"
+                    placeholder="Note"
                   />
-                  <div class="radio-header radio-text">All</div>
-                </label>
-              </div>
-
-              <div style="flex: 1" v-for="artist in artists" :key="artist.id">
-                <label class="label m-0" :for="'artist_' + artist.id">
-                  <input
-                    type="checkbox"
-                    :value="artist.id"
-                    :id="'artist_' + artist.id"
-                    v-model="selectedStatusArtist"
-                  />
-                  <div class="radio-header radio-text">{{ artist.name }}</div>
                 </label>
               </div>
             </div>
-
-            <select
-              class="form-control mb-3"
-              id="activeSelect"
-              v-model="selectedActive"
-            >
-              <option value="none">Select active status</option>
-              <option value="1">Active</option>
-              <option value="0">None Active</option>
-            </select>
 
             <input
               class="form-control mb-3"
@@ -175,6 +169,12 @@
               class="form-control mb-3"
               id="showroomSelect"
               v-model="selectedShowroomPopup"
+              @change="
+                updateArtistshowroom(
+                  selectedShowroomPopup,
+                  selectedApprovedArtist
+                )
+              "
             >
               <option :value="0" selected>Showroom</option>
               <option
@@ -264,6 +264,7 @@ export default {
   data() {
     return {
       artists: [],
+      artistsnone: [],
       adminId: null,
       artistId: null,
       employeeId: null,
@@ -271,10 +272,14 @@ export default {
       selectedArtist: 0,
       showroomschedule: [],
       showrooms: [],
+      showroomsnone: [],
       selectedStatusArtist: [],
       selectedShowroom: 0,
       selectedShowroomPopup: 0,
-      selectedActive: "none",
+      // Mảng selectedActive để lưu trạng thái selectedActive của từng artist
+      selectedActive: {},
+      // Mảng note để lưu ghi chú của từng artist
+      note: {},
       step: "FullCalendar",
       selectedStatus: "None",
       data: [],
@@ -343,10 +348,42 @@ export default {
       popupnone: "active",
       selectedApproved: "pending",
       selectedApprovedArtist: 0,
+      artistshowroom: [],
     };
   },
 
   methods: {
+    onChange(showroom, artist) {
+      this.runFullcalendar();
+      this.updateArtistshowroom(showroom, artist);
+    },
+
+    updateArtistshowroom(showroom, artist) {
+      if (parseInt(showroom) !== 0) {
+        this.artists = this.artistshowroom
+          .filter(
+            (item) =>
+              parseInt(item.showroom_id) === parseInt(showroom) &&
+              item.artist.status == "published"
+          ) // Lọc ra các dữ liệu có showroom_id là 21
+          .map((item) => item.artist); // Chỉ trích xuất thông tin của artist
+      } else {
+        this.artists = this.artistsnone;
+      }
+
+      if (parseInt(artist) !== 0) {
+        this.showrooms = this.artistshowroom
+          .filter(
+            (item) =>
+              parseInt(item.artist_id) === parseInt(artist) &&
+              item.showroom.status == "published"
+          ) // Lọc ra các dữ liệu có artist_id là 21
+          .map((item) => item.showroom); // Chỉ trích xuất thông tin của showroom
+      } else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
+
     toggleAllSelection() {
       // Khi checkbox "All" được nhấp, cập nhật tất cả các checkbox nghệ sĩ
       this.allSelected = !this.allSelected;
@@ -537,6 +574,7 @@ export default {
     toggleApproval() {
       if (this.popupnone !== "Approved") {
         this.popupnone = "Approved"; // Use assignment operator to update the variable
+        this.selectedApprovedArtist = 0;
       }
     },
 
@@ -554,30 +592,48 @@ export default {
 
     saveData() {
       // Tạo một đối tượng dữ liệu để gửi lên server
-    
 
-      const postData = {
-        showroomId: this.selectedShowroomPopup,
-        activeStatus: this.selectedActive,
-        inputData: this.popupInputData,
-        artistId: this.selectedStatusArtist,
-      };
+      if (
+        this.adminId !== null &&
+        (this.manage_supers == 0 ||
+          this.manage_supers == 1 ||
+          this.manage_supers == 4)
+      ) {
+        // Tạo một đối tượng dữ liệu để gửi lên server
+        const artistData = this.artists.map((artist) => {
+          return {
+            id: artist.id,
+            selectedActive: this.selectedActive[artist.id],
+            note: this.note[artist.id],
+          };
+        });
 
-      // Gửi yêu cầu POST đến API để lưu dữ liệu
-      axios
-        .post("/api/save-data", postData)
-        .then((response) => {
-          // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+        // Hiển thị mảng artistData trong console
 
-          this.selectedActive = "none";
-          this.selectedStatusArtist = [];
-          this.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
-          this.closePopup(); // Đóng popup sau khi lưu thành công
-        })
-        .catch((error) => {
-          console.error("Error saving data:", error);
-          // Xử lý lỗi nếu có
-        }); 
+        const postData = {
+          showroomId: this.selectedShowroomPopup,
+          inputData: this.popupInputData,
+          artistId: artistData,
+        };
+
+        // Gửi yêu cầu POST đến API để lưu dữ liệu
+        axios
+          .post("/api/save-data", postData)
+          .then((response) => {
+            // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+
+            this.selectedActive = "none";
+            this.selectedStatusArtist = [];
+            this.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
+            this.closePopup(); // Đóng popup sau khi lưu thành công
+          })
+          .catch((error) => {
+            console.error("Error saving data:", error);
+            // Xử lý lỗi nếu có
+          });
+      } else {
+        this.closePopup(); // Đóng popup sau khi lưu thành công
+      }
     },
     saveDataApproved() {
       // Tạo một đối tượng dữ liệu để gửi lên server
@@ -632,30 +688,43 @@ export default {
       }
     },
 
-    fetchShowrooms() {
-      axios
+    async fetchShowrooms() {
+      await axios
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
+          this.showroomsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
         });
     },
 
-    fetchArtists() {
-      axios
+    async fetchArtists() {
+      await axios
         .get(`/api/artist`)
         .then((response) => {
           this.artists = response.data;
+          this.artistsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);
         });
     },
 
-    fetchShowroomschedule() {
-      axios
+    async fetchArtistsShowrooms() {
+      await axios
+        .get(`/api/artistshowroom`)
+        .then((response) => {
+          this.artistshowroom = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
+    async fetchShowroomschedule() {
+      await axios
         .get(`/api/showroomschedule/${this.selectedShowroom}`)
         .then((response) => {
           this.showroomschedule = response.data;
@@ -842,7 +911,7 @@ export default {
         // Khi checkbox "All" được thay đổi, cập nhật tất cả các checkbox nghệ sĩ
         if (value) {
           const allArtistIds = [...this.artists.map((artist) => artist.id), 0];
-            this.selectedStatusArtist = allArtistIds;
+          this.selectedStatusArtist = allArtistIds;
         } else {
           this.selectedStatusArtist = [];
         }
@@ -873,8 +942,11 @@ export default {
       this.selectedArtist = this.artistId;
     }
 
-    this.fetchShowrooms();
     this.fetchArtists();
+
+    this.fetchShowrooms();
+
+    this.fetchArtistsShowrooms();
 
     this.runFullcalendar();
   },
@@ -994,5 +1066,21 @@ export default {
   position: absolute;
   right: 0.15rem;
   top: 0.1rem;
+}
+
+.label01 {
+  width: 100% !important;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;
+  border-radius: 10px !important;
+  padding: 10px 10px !important;
+  margin: 0.5rem 0px !important;
+  background-color: #fff !important;
+  transition: 0.1s !important;
+  position: relative !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  gap: 1rem !important;
+  align-items: center;
 }
 </style>

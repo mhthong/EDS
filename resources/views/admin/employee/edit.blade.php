@@ -91,6 +91,21 @@
                                                     <label for="description">Description:</label>
                                                     <textarea name="description" id="description" class="form-control" placeholder=" Description">{{ $employee->description }}</textarea>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label for="description">Team:</label>
+    
+                                                    @isset($team)
+                                                        <select name="team_id" id="" class="form-control">
+                                                            <option value="null"  selected >Team</option>
+                                                            @foreach ($team as $row)
+                
+                                                                <option value="{{ $row->id }}"  {{ $employee->team_id == $row->id  ? 'selected' : '' }} >{{ $row->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    @endisset
+                                                </div>
+    
                    
 
 

@@ -7,7 +7,7 @@
           alt=""
           srcset=""
         />
-        <h6>Booking Price</h6>
+        <h6>Booking Value</h6>
         <h4>${{ this.servies_price }}</h4>
       </li>
 

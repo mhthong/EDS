@@ -39,6 +39,26 @@
             </select>
           </div>
         </div>
+
+        <div class="col-12">
+          <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
+            <div class="controls">
+              <input
+                id="created_at"
+                class="floatLabel pointer-events-a"
+                type="date"
+                name="created_at"
+                v-model="created_at"
+              />
+              <label
+                for="selectedDate"
+                class="label-date active"
+                :class="{ active: isLabelActive }"
+                ><i class="fa fa-calendar"></i>&nbsp;&nbsp;Create Date</label
+              >
+            </div>
+          </div>
+        </div>
         <div class="col-12">
           <div class="col-12 col-sm-12 col-lg-12 p-2 mb-2">
             <div class="controls">
@@ -347,7 +367,6 @@
                 name="deposit"
                 type="number"
                 v-model="selectedDepositPrice"
-                :max="maxDepositPrice"
                 :min="0"
 
               />
@@ -443,7 +462,8 @@
               <select
                 class="form-control pointer-events-p"
                 v-model="selectedStatus"
-                name="status"
+                name="status"            
+                @change="checkTimeConflict"
               >
                 <option value="Waiting" selected>Waiting</option>
                 <option value="Done">Done</option>
@@ -1018,11 +1038,13 @@
 
 <script>
 import axios, { Axios } from "axios";
+import moment, { locale } from "moment";
 
 export default {
   data() {
     return {
       showrooms: [],
+      showroomsnone: [],
       showroomspath: "N/A",
       selectedShowroom: null,
       Staff: null,
@@ -1055,6 +1077,9 @@ export default {
       dialogEdit: false,
       apiData: [],
       artists: [],
+      artistsnone: [],
+      artistshowroom: [],
+      artistshowroom: [],
       formData: {
         name: "",
         email: "",
@@ -1124,6 +1149,7 @@ export default {
       selectedStatusNone: null,
       isactiveselectedStatusNone: false,
       checkEmployee:false,
+      created_at:null,
       /*   selectedOption: "option1", */
     };
   },
@@ -1234,6 +1260,46 @@ export default {
   },
 
   methods: {
+
+    async fetchArtistsShowrooms() {
+      await axios
+        .get(`/api/artistshowroom`)
+        .then((response) => {
+          this.artistshowroom = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
+      updateArtistshowroom(showroom , artist) {
+        if (showroom !== null ) {
+          this.artists = this.artistshowroom
+            .filter(
+              (item) =>
+                parseInt(item.showroom_id) === parseInt(showroom) && item.artist.status == "published"
+            ) // Lọc ra các dữ liệu có showroom_id là 21
+            .map((item) => item.artist); // Chỉ trích xuất thông tin của artist
+
+            this.selectedAritst = null;
+   
+        } else {
+          this.artists = this.artistsnone;
+        }
+
+        if (artist !== null ) {
+          this.showrooms = this.artistshowroom
+            .filter(
+              (item) => parseInt(item.artist_id) === parseInt(artist) && item.showroom.status == "published"
+            ) // Lọc ra các dữ liệu có artist_id là 21
+            .map((item) => item.showroom); // Chỉ trích xuất thông tin của showroom
+        }else {
+          this.showrooms = this.showroomsnone;
+        }
+
+      },
+
+
     checkisactiveselectedStatus() {
       if (
         this.step === "groupService" &&
@@ -1259,8 +1325,8 @@ export default {
       this.input = [];
     },
 
-    fetchArtist() {
-      axios
+    async fetchArtist() {
+    await  axios
         .get("/api/artist")
         .then((response) => {
           this.apiDataAritst = response.data;
@@ -1270,8 +1336,8 @@ export default {
         });
     },
 
-    fetchapiDataParner() {
-      axios
+    async  fetchapiDataParner() {
+    await  axios
         .get("/api/parner")
         .then((response) => {
           this.apiDataParner = response.data;
@@ -1400,13 +1466,15 @@ export default {
       }
     },
 
-    fetchapiData_id() {
+    async  fetchapiData_id() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios
+    await  axios
         .get(`/api/data-bookings/${this.id}`)
         .then((response) => {
+     
           this.apiData_id = response.data;
-  
+
+          this.created_at = moment(this.apiData_id[0].created_at).format("YYYY-MM-DD");
           this.id = this.apiData_id[0].id;
           this.selectedShowroom = this.apiData_id[0].ShowroomID;
           this.Staff = this.apiData_id[0].source_name;
@@ -1510,19 +1578,20 @@ export default {
         });
     },
 
-    fetchShowrooms() {
-      axios
+    async    fetchShowrooms() {
+   await   axios
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
+          this.showroomsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
         });
     },
 
-    fetchGroupServices() {
-      axios
+    async  fetchGroupServices() {
+   await   axios
         .get(`/api/group-services/${this.selectedShowroom}`)
         .then((response) => {
           this.groupServices = response.data;
@@ -1547,6 +1616,8 @@ export default {
       Promise.all([this.fetchApiData()]).then(() => {
         this.filterActiveDays();
       });
+
+      this.updateArtistshowroom(this.selectedShowroom, null);
     },
 
     fetchArtists() {
@@ -1555,6 +1626,7 @@ export default {
         .get(`/api/artist`)
         .then((response) => {
           this.artists = response.data;
+          this.artistsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);
@@ -1614,6 +1686,11 @@ export default {
     },
 
     checkTimeConflict() {
+
+      this.filterActiveDays();
+
+      this.checkSelectedDate();
+
       if (!this.startTime || !this.endTime) {
         this.isTimeConflict = false;
         return;
@@ -1629,17 +1706,28 @@ export default {
         selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
       // Kiểm tra xung đột thời gian cho cả startTime và endTime
       const conflict = this.filteredDays.some((schedule) => {
-        const startTime = new Date(`1970-01-01T${schedule.time}`);
-        const endTime = new Date(`1970-01-01T${schedule.time_end}`);
-        // ...
+      const startTime = new Date(`1970-01-01T${schedule.time}`);
+      const endTime = new Date(`1970-01-01T${schedule.time_end}`);
 
-        return (
-          (selectedStartTime >= startTime && selectedStartTime < endTime) ||
-          (selectedEndTime > startTime && selectedEndTime <= endTime)
-        );
-      });
+      // Kiểm tra xem selectedStartTime và selectedEndTime nằm trong khoảng thời gian của lịch trình
+      const isStartTimeInsideSchedule = selectedStartTime >= startTime && selectedStartTime < endTime;
+      const isEndTimeInsideSchedule = selectedEndTime > startTime && selectedEndTime <= endTime;
 
-      if (
+      // Kiểm tra xem startTime và endTime của lịch trình nằm trong khoảng thời gian của selectedStartTime và selectedEndTime
+      const isScheduleTimeInsideSelected = startTime >= selectedStartTime && endTime <= selectedEndTime;
+
+      // Kiểm tra xem selectedStartTime và selectedEndTime hoặc startTime và endTime của lịch trình có trùng nhau không
+      const isTimeEqual = selectedStartTime.getTime() === startTime.getTime() && selectedEndTime.getTime() === endTime.getTime();
+
+      return isStartTimeInsideSchedule || isEndTimeInsideSchedule || isScheduleTimeInsideSelected || isTimeEqual;
+  });
+
+
+
+      if(this.selectedStatus == "Unidentified" && selectedStartTime < selectedEndTime ) {
+        this.isTimeConflict = false;
+        this.showAlert = false;
+  } else if (
         conflict ||
         selectedStartTime >= selectedEndTime ||
         !isStartTimeValid ||
@@ -1808,7 +1896,6 @@ export default {
       this.maxDepositPrice = serviceTotalPrice;
 
       this.bookingvalue = serviceTotalPrice;
-      this.checkInputValue();
 
       if (this.selectedDepositPrice !== "") {
         const selectedDepositPrice = this.selectedDepositPrice;
@@ -1955,7 +2042,7 @@ export default {
     this.fetchapiDataEmployee();
     this.fetchArtist();
     this.fetchapiDataParner();
-
+    this.fetchArtistsShowrooms();
 
     if(this.approved == 'approved' && this.employeeId !== null){
       this.checkEmployee = true;

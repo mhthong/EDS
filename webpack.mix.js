@@ -69,6 +69,8 @@ mix.js('resources/js/EmployeeTable.js', 'public/js');
 
 mix.js('resources/js/ShowroomTable.js', 'public/js');
 
+mix.js('resources/js/roster.js', 'public/js');
 
+mix.js('resources/js/Groups.js', 'public/js');
 
 

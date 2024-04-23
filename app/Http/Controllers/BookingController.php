@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-
-
+use DateTime;
+use Carbon\Carbon;
 
 class BookingController extends Controller
 {
@@ -482,9 +482,18 @@ class BookingController extends Controller
         // Get start_time and end_time
         $start_time = $data['start_time'] ?? $book->time;
         $end_time = $data['end_time'] ?? $book->time_end;
+
     
         try {
             // Update the service record using the validated data
+
+                // Chuyển đổi giá trị 'created_at' thành định dạng Carbon
+                $created_at = Carbon::parse($data['created_at'])->toDateTimeString();
+
+                // Kiểm tra xem giá trị 'created_at' sau khi chuyển đổi có đúng định dạng không
+          
+                
+
             $book->update([
                 'ShowroomID' =>  $data['showroomID'],
                 'ArtistID' => $ArtistID,
@@ -499,9 +508,9 @@ class BookingController extends Controller
                 'Before_img' => $data['Before'] ?? $get->Before_img,
                 'Note' => $data['note'],
                 'Source' => $data['source'],
+                'created_at' => $created_at,      
             ]);
-    
-            // Update Get
+            // Update Get   
             $get->update([
                 'Name' => $data['name'],
                 'Email' => $data['email'],

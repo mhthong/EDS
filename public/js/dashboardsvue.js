@@ -19,6 +19,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 /* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _regeneratorRuntime() { "use strict"; /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */ _regeneratorRuntime = function _regeneratorRuntime() { return exports; }; var exports = {}, Op = Object.prototype, hasOwn = Op.hasOwnProperty, defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; }, $Symbol = "function" == typeof Symbol ? Symbol : {}, iteratorSymbol = $Symbol.iterator || "@@iterator", asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator", toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag"; function define(obj, key, value) { return Object.defineProperty(obj, key, { value: value, enumerable: !0, configurable: !0, writable: !0 }), obj[key]; } try { define({}, ""); } catch (err) { define = function define(obj, key, value) { return obj[key] = value; }; } function wrap(innerFn, outerFn, self, tryLocsList) { var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator, generator = Object.create(protoGenerator.prototype), context = new Context(tryLocsList || []); return defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) }), generator; } function tryCatch(fn, obj, arg) { try { return { type: "normal", arg: fn.call(obj, arg) }; } catch (err) { return { type: "throw", arg: err }; } } exports.wrap = wrap; var ContinueSentinel = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} var IteratorPrototype = {}; define(IteratorPrototype, iteratorSymbol, function () { return this; }); var getProto = Object.getPrototypeOf, NativeIteratorPrototype = getProto && getProto(getProto(values([]))); NativeIteratorPrototype && NativeIteratorPrototype !== Op && hasOwn.call(NativeIteratorPrototype, iteratorSymbol) && (IteratorPrototype = NativeIteratorPrototype); var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(IteratorPrototype); function defineIteratorMethods(prototype) { ["next", "throw", "return"].forEach(function (method) { define(prototype, method, function (arg) { return this._invoke(method, arg); }); }); } function AsyncIterator(generator, PromiseImpl) { function invoke(method, arg, resolve, reject) { var record = tryCatch(generator[method], generator, arg); if ("throw" !== record.type) { var result = record.arg, value = result.value; return value && "object" == _typeof(value) && hasOwn.call(value, "__await") ? PromiseImpl.resolve(value.__await).then(function (value) { invoke("next", value, resolve, reject); }, function (err) { invoke("throw", err, resolve, reject); }) : PromiseImpl.resolve(value).then(function (unwrapped) { result.value = unwrapped, resolve(result); }, function (error) { return invoke("throw", error, resolve, reject); }); } reject(record.arg); } var previousPromise; defineProperty(this, "_invoke", { value: function value(method, arg) { function callInvokeWithMethodAndArg() { return new PromiseImpl(function (resolve, reject) { invoke(method, arg, resolve, reject); }); } return previousPromise = previousPromise ? previousPromise.then(callInvokeWithMethodAndArg, callInvokeWithMethodAndArg) : callInvokeWithMethodAndArg(); } }); } function makeInvokeMethod(innerFn, self, context) { var state = "suspendedStart"; return function (method, arg) { if ("executing" === state) throw new Error("Generator is already running"); if ("completed" === state) { if ("throw" === method) throw arg; return { value: void 0, done: !0 }; } for (context.method = method, context.arg = arg;;) { var delegate = context.delegate; if (delegate) { var delegateResult = maybeInvokeDelegate(delegate, context); if (delegateResult) { if (delegateResult === ContinueSentinel) continue; return delegateResult; } } if ("next" === context.method) context.sent = context._sent = context.arg;else if ("throw" === context.method) { if ("suspendedStart" === state) throw state = "completed", context.arg; context.dispatchException(context.arg); } else "return" === context.method && context.abrupt("return", context.arg); state = "executing"; var record = tryCatch(innerFn, self, context); if ("normal" === record.type) { if (state = context.done ? "completed" : "suspendedYield", record.arg === ContinueSentinel) continue; return { value: record.arg, done: context.done }; } "throw" === record.type && (state = "completed", context.method = "throw", context.arg = record.arg); } }; } function maybeInvokeDelegate(delegate, context) { var methodName = context.method, method = delegate.iterator[methodName]; if (undefined === method) return context.delegate = null, "throw" === methodName && delegate.iterator["return"] && (context.method = "return", context.arg = undefined, maybeInvokeDelegate(delegate, context), "throw" === context.method) || "return" !== methodName && (context.method = "throw", context.arg = new TypeError("The iterator does not provide a '" + methodName + "' method")), ContinueSentinel; var record = tryCatch(method, delegate.iterator, context.arg); if ("throw" === record.type) return context.method = "throw", context.arg = record.arg, context.delegate = null, ContinueSentinel; var info = record.arg; return info ? info.done ? (context[delegate.resultName] = info.value, context.next = delegate.nextLoc, "return" !== context.method && (context.method = "next", context.arg = undefined), context.delegate = null, ContinueSentinel) : info : (context.method = "throw", context.arg = new TypeError("iterator result is not an object"), context.delegate = null, ContinueSentinel); } function pushTryEntry(locs) { var entry = { tryLoc: locs[0] }; 1 in locs && (entry.catchLoc = locs[1]), 2 in locs && (entry.finallyLoc = locs[2], entry.afterLoc = locs[3]), this.tryEntries.push(entry); } function resetTryEntry(entry) { var record = entry.completion || {}; record.type = "normal", delete record.arg, entry.completion = record; } function Context(tryLocsList) { this.tryEntries = [{ tryLoc: "root" }], tryLocsList.forEach(pushTryEntry, this), this.reset(!0); } function values(iterable) { if (iterable || "" === iterable) { var iteratorMethod = iterable[iteratorSymbol]; if (iteratorMethod) return iteratorMethod.call(iterable); if ("function" == typeof iterable.next) return iterable; if (!isNaN(iterable.length)) { var i = -1, next = function next() { for (; ++i < iterable.length;) if (hasOwn.call(iterable, i)) return next.value = iterable[i], next.done = !1, next; return next.value = undefined, next.done = !0, next; }; return next.next = next; } } throw new TypeError(_typeof(iterable) + " is not iterable"); } return GeneratorFunction.prototype = GeneratorFunctionPrototype, defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: !0 }), defineProperty(GeneratorFunctionPrototype, "constructor", { value: GeneratorFunction, configurable: !0 }), GeneratorFunction.displayName = define(GeneratorFunctionPrototype, toStringTagSymbol, "GeneratorFunction"), exports.isGeneratorFunction = function (genFun) { var ctor = "function" == typeof genFun && genFun.constructor; return !!ctor && (ctor === GeneratorFunction || "GeneratorFunction" === (ctor.displayName || ctor.name)); }, exports.mark = function (genFun) { return Object.setPrototypeOf ? Object.setPrototypeOf(genFun, GeneratorFunctionPrototype) : (genFun.__proto__ = GeneratorFunctionPrototype, define(genFun, toStringTagSymbol, "GeneratorFunction")), genFun.prototype = Object.create(Gp), genFun; }, exports.awrap = function (arg) { return { __await: arg }; }, defineIteratorMethods(AsyncIterator.prototype), define(AsyncIterator.prototype, asyncIteratorSymbol, function () { return this; }), exports.AsyncIterator = AsyncIterator, exports.async = function (innerFn, outerFn, self, tryLocsList, PromiseImpl) { void 0 === PromiseImpl && (PromiseImpl = Promise); var iter = new AsyncIterator(wrap(innerFn, outerFn, self, tryLocsList), PromiseImpl); return exports.isGeneratorFunction(outerFn) ? iter : iter.next().then(function (result) { return result.done ? result.value : iter.next(); }); }, defineIteratorMethods(Gp), define(Gp, toStringTagSymbol, "Generator"), define(Gp, iteratorSymbol, function () { return this; }), define(Gp, "toString", function () { return "[object Generator]"; }), exports.keys = function (val) { var object = Object(val), keys = []; for (var key in object) keys.push(key); return keys.reverse(), function next() { for (; keys.length;) { var key = keys.pop(); if (key in object) return next.value = key, next.done = !1, next; } return next.done = !0, next; }; }, exports.values = values, Context.prototype = { constructor: Context, reset: function reset(skipTempReset) { if (this.prev = 0, this.next = 0, this.sent = this._sent = undefined, this.done = !1, this.delegate = null, this.method = "next", this.arg = undefined, this.tryEntries.forEach(resetTryEntry), !skipTempReset) for (var name in this) "t" === name.charAt(0) && hasOwn.call(this, name) && !isNaN(+name.slice(1)) && (this[name] = undefined); }, stop: function stop() { this.done = !0; var rootRecord = this.tryEntries[0].completion; if ("throw" === rootRecord.type) throw rootRecord.arg; return this.rval; }, dispatchException: function dispatchException(exception) { if (this.done) throw exception; var context = this; function handle(loc, caught) { return record.type = "throw", record.arg = exception, context.next = loc, caught && (context.method = "next", context.arg = undefined), !!caught; } for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i], record = entry.completion; if ("root" === entry.tryLoc) return handle("end"); if (entry.tryLoc <= this.prev) { var hasCatch = hasOwn.call(entry, "catchLoc"), hasFinally = hasOwn.call(entry, "finallyLoc"); if (hasCatch && hasFinally) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } else if (hasCatch) { if (this.prev < entry.catchLoc) return handle(entry.catchLoc, !0); } else { if (!hasFinally) throw new Error("try statement without catch or finally"); if (this.prev < entry.finallyLoc) return handle(entry.finallyLoc); } } } }, abrupt: function abrupt(type, arg) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc <= this.prev && hasOwn.call(entry, "finallyLoc") && this.prev < entry.finallyLoc) { var finallyEntry = entry; break; } } finallyEntry && ("break" === type || "continue" === type) && finallyEntry.tryLoc <= arg && arg <= finallyEntry.finallyLoc && (finallyEntry = null); var record = finallyEntry ? finallyEntry.completion : {}; return record.type = type, record.arg = arg, finallyEntry ? (this.method = "next", this.next = finallyEntry.finallyLoc, ContinueSentinel) : this.complete(record); }, complete: function complete(record, afterLoc) { if ("throw" === record.type) throw record.arg; return "break" === record.type || "continue" === record.type ? this.next = record.arg : "return" === record.type ? (this.rval = this.arg = record.arg, this.method = "return", this.next = "end") : "normal" === record.type && afterLoc && (this.next = afterLoc), ContinueSentinel; }, finish: function finish(finallyLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.finallyLoc === finallyLoc) return this.complete(entry.completion, entry.afterLoc), resetTryEntry(entry), ContinueSentinel; } }, "catch": function _catch(tryLoc) { for (var i = this.tryEntries.length - 1; i >= 0; --i) { var entry = this.tryEntries[i]; if (entry.tryLoc === tryLoc) { var record = entry.completion; if ("throw" === record.type) { var thrown = record.arg; resetTryEntry(entry); } return thrown; } } throw new Error("illegal catch attempt"); }, delegateYield: function delegateYield(iterable, resultName, nextLoc) { return this.delegate = { iterator: values(iterable), resultName: resultName, nextLoc: nextLoc }, "next" === this.method && (this.arg = undefined), ContinueSentinel; } }, exports; }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
@@ -47,6 +50,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       },
 
       showrooms: [],
+      showroomsnone: [],
+      selectedGroupShowroom: 0,
+      Groupshowrooms: [],
       selectedShowroom: null,
       id: "",
       currentURL: "",
@@ -69,10 +75,12 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       selectedEmployee: null,
       selectedParner: null,
       title: null,
-      apiDataAritst: null,
+      artists: [],
+      artistsnone: [],
       apiDataEmployee: null,
-      apiDatakpi: []
-    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _defineProperty(_ref, "percent_Pratial_Done", 0), _defineProperty(_ref, "percent_Reschedule", 0), _defineProperty(_ref, "percent_Unidentified", 0), _defineProperty(_ref, "Operation_KPI", 0), _defineProperty(_ref, "isNone", false), _defineProperty(_ref, "range_time", 0), _defineProperty(_ref, "total_wage", 0), _ref;
+      apiDatakpi: [],
+      apiDataLeader: []
+    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _defineProperty(_ref, "percent_Pratial_Done", 0), _defineProperty(_ref, "percent_Reschedule", 0), _defineProperty(_ref, "percent_Unidentified", 0), _defineProperty(_ref, "Operation_KPI", 0), _defineProperty(_ref, "isNone", false), _defineProperty(_ref, "range_time", 0), _defineProperty(_ref, "total_wage", 0), _defineProperty(_ref, "artistshowroom", []), _ref;
   },
   watch: {
     dateRange: {
@@ -80,7 +88,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         // Log khi dateRange thay đổi
         this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_2___default()(newDateRange.endDate).format("YYYY-MM-DD");
         this.dateRange.start = moment__WEBPACK_IMPORTED_MODULE_2___default()(newDateRange.startDate).format("YYYY-MM-DD");
-        this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
+        this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedGroupShowroom, this.selectedEmployee, this.title);
       },
       deep: true // Theo dõi các sự thay đổi sâu trong object
     },
@@ -110,25 +118,67 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
   },
   methods: {
     /*     updateDailyWage() {
-          this.dailyWage = parseFloat(this.range_time);
-        },
-        updateHourlyWage() {
-          this.hourlyWage = parseFloat(this.range_time);
-        },
-        totalWage(time) {
-          // Choose the appropriate wage based on the context (daily or hourly)
-          const wage =
-            this.title === "Artist" &&
-            parseInt(this.getArtistPayById(this.selectedEmployee)) === 0
-              ? this.total_wage
-              : this.total_wage;
-    
-     
-          return parseFloat(wage) * parseFloat(time);
-        }, */
+      this.dailyWage = parseFloat(this.range_time);
+    },
+    updateHourlyWage() {
+      this.hourlyWage = parseFloat(this.range_time);
+    },
+    totalWage(time) {
+      // Choose the appropriate wage based on the context (daily or hourly)
+      const wage =
+        this.title === "Artist" &&
+        parseInt(this.getArtistPayById(this.selectedEmployee)) === 0
+          ? this.total_wage
+          : this.total_wage;
+         return parseFloat(wage) * parseFloat(time);
+    }, */
+    onChange: function onChange(showroom, artist) {
+      this.selectedShowroomPrice();
+      this.updateArtistshowroom(showroom, artist);
+    },
+    onChangeGroupShowroom: function onChangeGroupShowroom(selectedGroupShowroom) {
+      this.selectedShowroomPrice();
+      this.updateshowroom(selectedGroupShowroom);
+    },
+    updateshowroom: function updateshowroom(selectedGroupShowroom) {
+      if (parseInt(selectedGroupShowroom) !== 0) {
+        this.showrooms = this.Groupshowrooms.filter(function (item) {
+          return parseInt(item.id) === parseInt(selectedGroupShowroom);
+        }) // Lọc ra các dữ liệu có artist_id là 21
+        .map(function (item) {
+          return item.showrooms;
+        }).flat(); // Convert array of arrays into a single array; // Chỉ trích xuất thông tin của showroom
+      } else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
+    updateArtistshowroom: function updateArtistshowroom(showroom, artist) {
+      if (parseInt(showroom) !== 0) {
+        this.artists = this.artistshowroom.filter(function (item) {
+          return parseInt(item.showroom_id) === parseInt(showroom) && item.artist.status == "published";
+        }) // Lọc ra các dữ liệu có showroom_id là 21
+        .map(function (item) {
+          return item.artist;
+        }); // Chỉ trích xuất thông tin của artist
+      } else {
+        this.artists = this.artistsnone;
+      }
+      if (parseInt(artist) !== 0) {
+        this.showrooms = this.artistshowroom.filter(function (item) {
+          return parseInt(item.artist_id) === parseInt(artist) && item.showroom.status == "published";
+        }) // Lọc ra các dữ liệu có artist_id là 21
+        .map(function (item) {
+          return item.showroom;
+        }); // Chỉ trích xuất thông tin của showroom
+      } else if (parseInt(this.selectedGroupShowroom) !== 0) {
+        this.onChangeGroupShowroom(parseInt(this.selectedGroupShowroom));
+      } else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
     getArtistPayById: function getArtistPayById(artistId) {
-      if (this.apiDataAritst) {
-        var artist = this.apiDataAritst.find(function (artist) {
+      if (this.artists) {
+        var artist = this.artists.find(function (artist) {
           return parseInt(artist.id) === parseInt(artistId);
         });
         // Kiểm tra xem nghệ sĩ có tồn tại hay không
@@ -142,21 +192,21 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           return false; // Trả về "Unknown" nếu không tìm thấy nghệ sĩ
         }
       } else {
-        return false; // Handle the case where apiDataAritst is null
+        return false; // Handle the case where artists is null
       }
     },
-    fetchapiData_id: function fetchapiData_id(start, end, selectedShowroom, employee, title) {
+    fetchapiData_id: function fetchapiData_id(start, end, selectedGroupShowroom, employee, title) {
       var _this = this;
-      if (this.artistId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(this.artistId, "/").concat(this.title)).then(function (response) {
+      if (this.artistId != null) {
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(selectedGroupShowroom, "/").concat(this.artistId, "/").concat(this.title)).then(function (response) {
           _this.apiData_id = response.data;
           _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
         })["catch"](function (error) {
           console.error("Error fetching API data:", error);
         });
-      } else if (this.employeeId !== null) {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(this.employeeId, "/").concat(this.title)).then(function (response) {
+      } else if (this.employeeId != null) {
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(selectedGroupShowroom, "/").concat(this.employeeId, "/").concat(this.title)).then(function (response) {
           _this.apiData_id = response.data;
           _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
@@ -164,7 +214,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           console.error("Error fetching API data:", error);
         });
       } else {
-        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(employee, "/").concat(title)).then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/Dashboard/".concat(start, "/").concat(end, "/").concat(selectedGroupShowroom, "/").concat(employee, "/").concat(title)).then(function (response) {
           _this.apiData_id = response.data;
           _this.fetchKpis(_this.selectedShowroom, _this.selectedEmployee, _this.dateRange.start);
           _this.Price();
@@ -176,7 +226,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     fetchArtist: function fetchArtist() {
       var _this2 = this;
       axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/artist").then(function (response) {
-        _this2.apiDataAritst = response.data;
+        _this2.artists = response.data;
+        _this2.artistsnone = response.data;
       })["catch"](function (error) {
         console.error("Error fetching artist::", error);
       });
@@ -185,6 +236,16 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var _this3 = this;
       axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/parner").then(function (response) {
         _this3.apiDataParner = response.data;
+
+        // Lọc các phần tử có manage_supers là 3
+        _this3.apiDataLeader = response.data.filter(function (admin) {
+          return parseInt(admin.manage_supers) === 3;
+        });
+
+        // Lọc các phần tử có manage_supers là 4
+        _this3.apiDataParner = response.data.filter(function (admin) {
+          return parseInt(admin.manage_supers) === 4;
+        });
       })["catch"](function (error) {
         console.error("Error fetching artist::", error);
       });
@@ -201,17 +262,37 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var _this5 = this;
       axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/showrooms").then(function (response) {
         _this5.showrooms = response.data;
+        _this5.showroomsnone = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
     },
-    fetchKpis: function fetchKpis(showroom, employee, date) {
+    fetchArtistsShowrooms: function fetchArtistsShowrooms() {
       var _this6 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+        return _regeneratorRuntime().wrap(function _callee$(_context) {
+          while (1) switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/artistshowroom").then(function (response) {
+                _this6.artistshowroom = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }, _callee);
+      }))();
+    },
+    fetchKpis: function fetchKpis(showroom, employee, date) {
+      var _this7 = this;
       axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/kpis-data/".concat(showroom, "/").concat(employee, "/").concat(date)).then(function (response) {
-        _this6.apiDatakpi = response.data;
-        _this6.kpi = _this6.apiDatakpi.number_of_kpi;
-        if (_this6.kpi == undefined) {
-          _this6.kpi = 0;
+        _this7.apiDatakpi = response.data;
+        _this7.kpi = _this7.apiDatakpi.number_of_kpi;
+        if (_this7.kpi == undefined) {
+          _this7.kpi = 0;
         }
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
@@ -300,28 +381,28 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       return totalsArray;
     },
     filterDataById: function filterDataById(data, targetId) {
-      var _this7 = this;
+      var _this8 = this;
       var filteredData = {};
       Object.keys(data).forEach(function (date) {
         var dateData = data[date];
         var filteredDateData = {};
         Object.keys(dateData).forEach(function (id) {
           if (dateData[id].id === targetId) {
-            _this7.$set(filteredDateData, id, dateData[id]);
+            _this8.$set(filteredDateData, id, dateData[id]);
           }
         });
         if (Object.keys(filteredDateData).length > 0) {
-          _this7.$set(filteredData, date, filteredDateData);
+          _this8.$set(filteredData, date, filteredDateData);
         }
       });
       return filteredData;
     },
     selectedShowroomPrice: function selectedShowroomPrice() {
       // Gọi hàm fetchapiData_id để cập nhật dữ liệu từ API
-      this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
+      this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedGroupShowroom, this.selectedEmployee, this.title);
     },
     Price: function Price() {
-      var _this8 = this;
+      var _this9 = this;
       this.Booking_Value = 0;
       this.Actual_B_Value = 0;
       this.Initial_P_Revenue = 0;
@@ -350,33 +431,41 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       }
       var data = this.totalByName(this.resuft);
       data.forEach(function (item) {
-        _this8.Booking_Value += parseFloat(item.Booking_Value);
-        _this8.Actual_B_Value += parseFloat(item.Actual_B_Value);
-        _this8.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
-        _this8.Initial_Revenue += parseFloat(item.Initial_Revenue);
-        _this8.Refund += parseFloat(item.Refund);
-        _this8.B_Refund_Value += parseFloat(item.B_Refund_Value);
-        _this8.Deposit += parseFloat(item.Deposit);
-        _this8.Remaining += parseFloat(item.Remaining);
-        _this8.Upsell += parseFloat(item.Upsell);
-        _this8.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
-        _this8.Total_Booking += parseFloat(item.Total_Booking);
-        _this8.percent_done += parseFloat(item.percent_done);
-        _this8.percent_waiting += parseFloat(item.percent_waiting);
-        _this8.percent_refund += parseFloat(item.percent_refund);
-        _this8.percent_cancel += parseFloat(item.percent_cancel);
-        _this8.percent_Pratial_Done += parseFloat(item.percent_Pratial_Done);
-        _this8.percent_Reschedule += parseFloat(item.percent_Reschedule);
-        _this8.percent_Unidentified += parseFloat(item.percent_Unidentified);
-        _this8.Operation_KPI += parseFloat(item.Operation_KPI);
-        _this8.range_time += parseFloat(item.range_time);
-        _this8.total_wage += parseFloat(item.total_wage);
+        _this9.Booking_Value += parseFloat(item.Booking_Value);
+        _this9.Actual_B_Value += parseFloat(item.Actual_B_Value);
+        _this9.Initial_P_Revenue += parseFloat(item.Initial_P_Revenue);
+        _this9.Initial_Revenue += parseFloat(item.Initial_Revenue);
+        _this9.Refund += parseFloat(item.Refund);
+        _this9.B_Refund_Value += parseFloat(item.B_Refund_Value);
+        _this9.Deposit += parseFloat(item.Deposit);
+        _this9.Remaining += parseFloat(item.Remaining);
+        _this9.Upsell += parseFloat(item.Upsell);
+        _this9.Cancel_Booking_Value += parseFloat(item.Cancel_Booking_Value);
+        _this9.Total_Booking += parseFloat(item.Total_Booking);
+        _this9.percent_done += parseFloat(item.percent_done);
+        _this9.percent_waiting += parseFloat(item.percent_waiting);
+        _this9.percent_refund += parseFloat(item.percent_refund);
+        _this9.percent_cancel += parseFloat(item.percent_cancel);
+        _this9.percent_Pratial_Done += parseFloat(item.percent_Pratial_Done);
+        _this9.percent_Reschedule += parseFloat(item.percent_Reschedule);
+        _this9.percent_Unidentified += parseFloat(item.percent_Unidentified);
+        _this9.Operation_KPI += parseFloat(item.Operation_KPI);
+        _this9.range_time += parseFloat(item.range_time);
+        _this9.total_wage += parseFloat(item.total_wage);
       });
       this.hourlyWage = 0;
       this.dailyWage = 0;
     },
     selectedEmployeeAPi: function selectedEmployeeAPi() {
       this.selectedEmployee = null;
+    },
+    fetchGroups: function fetchGroups() {
+      var _this10 = this;
+      axios__WEBPACK_IMPORTED_MODULE_3__["default"].get("/api/groups").then(function (response) {
+        _this10.Groupshowrooms = response.data;
+      })["catch"](function (error) {
+        console.error("Error fetching KPIs:", error);
+      });
     }
   },
   mounted: function mounted() {
@@ -410,10 +499,12 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.dateRange.end = moment__WEBPACK_IMPORTED_MODULE_2___default()(_currentDate).format("YYYY-MM-DD");
     }
     this.fetchShowrooms();
+    this.fetchGroups();
     this.fetchapiDataEmployee();
     this.fetchArtist();
+    this.fetchArtistsShowrooms();
     this.fetchapiDataParner();
-    this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedShowroom, this.selectedEmployee, this.title);
+    this.fetchapiData_id(this.dateRange.start, this.dateRange.end, this.selectedGroupShowroom, this.selectedEmployee, this.title);
     this.fetchKpis(this.selectedShowroom, this.selectedEmployee, this.dateRange.start);
   }
 });
@@ -468,6 +559,49 @@ var render = function render() {
     directives: [{
       name: "model",
       rawName: "v-model",
+      value: _vm.selectedGroupShowroom,
+      expression: "selectedGroupShowroom"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect"
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedGroupShowroom = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.onChangeGroupShowroom(_vm.selectedGroupShowroom);
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: 0
+    }
+  }, [_vm._v("Group Showrooms")]), _vm._v(" "), _vm._l(_vm.Groupshowrooms, function (Groupshowroom) {
+    return _c("option", {
+      key: Groupshowroom.id,
+      domProps: {
+        value: Groupshowroom.id
+      }
+    }, [_vm._v("\n          " + _vm._s(Groupshowroom.name) + "\n        ")]);
+  })], 2)]), _vm._v(" "), _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
       value: _vm.selectedShowroom,
       expression: "selectedShowroom"
     }],
@@ -490,7 +624,7 @@ var render = function render() {
         });
         _vm.selectedShowroom = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
       }, function ($event) {
-        return _vm.selectedShowroomPrice();
+        return _vm.onChange(_vm.selectedShowroom, 0);
       }]
     }
   }, [_c("option", {
@@ -558,7 +692,12 @@ var render = function render() {
       value: "Parner",
       selected: ""
     }
-  }, [_vm._v("Parner / Operation")])])]) : _vm._e(), _vm._v(" "), this.title === "Saler" && this.employeeId === null ? _c("label", [_c("select", {
+  }, [_vm._v("Parner / Operation")]), _vm._v(" "), _c("option", {
+    attrs: {
+      value: "Teams",
+      selected: ""
+    }
+  }, [_vm._v("Teams")])])]) : _vm._e(), _vm._v(" "), this.title === "Saler" && this.employeeId === null ? _c("label", [_c("select", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -639,7 +778,7 @@ var render = function render() {
     domProps: {
       value: null
     }
-  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataAritst, function (Aritst) {
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.artists, function (Aritst) {
     return _c("option", {
       key: Aritst.id,
       domProps: {
@@ -684,6 +823,50 @@ var render = function render() {
       value: null
     }
   }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataParner, function (parner) {
+    return _c("option", {
+      key: parner.id,
+      domProps: {
+        value: parner.id
+      }
+    }, [_vm._v("\n          " + _vm._s(parner.name) + "\n        ")]);
+  })], 2)]) : _vm._e(), _vm._v(" "), this.title === "Teams" && this.employeeId === null && this.artistId === null ? _c("label", [_c("select", {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.selectedEmployee,
+      expression: "selectedEmployee"
+    }],
+    staticClass: "form-control",
+    staticStyle: {
+      padding: "5px",
+      "min-width": "250px",
+      "margin-bottom": "1rem"
+    },
+    attrs: {
+      id: "showroomSelect",
+      disabled: this.title == null
+    },
+    on: {
+      change: [function ($event) {
+        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+          return o.selected;
+        }).map(function (o) {
+          var val = "_value" in o ? o._value : o.value;
+          return val;
+        });
+        _vm.selectedEmployee = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+      }, function ($event) {
+        return _vm.selectedShowroomPrice();
+      }]
+    }
+  }, [_c("option", {
+    attrs: {
+      selected: ""
+    },
+    domProps: {
+      value: null
+    }
+  }, [_vm._v("Name")]), _vm._v(" "), _vm._l(_vm.apiDataLeader, function (parner) {
     return _c("option", {
       key: parner.id,
       domProps: {
@@ -736,21 +919,21 @@ var render = function render() {
     staticClass: "Price Cancel_price"
   }, [_c("h6", [_vm._v("Total Booking")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(parseFloat(this.Total_Booking)))])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Done")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_done, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Done")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(parseInt(this.Total_Booking) !== 0 ? _vm.calculatePercentage(this.percent_done, this.Total_Booking) + "%" : "0%") + "\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Pratial Done")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_Pratial_Done, this.Total_Booking)) + "\n          %\n        ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Pratial Done")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(parseInt(this.Total_Booking) !== 0 ? _vm.calculatePercentage(this.percent_Pratial_Done, this.Total_Booking) + "%" : "0%") + "\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Waiting")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_waiting, this.Total_Booking)) + "\n          %\n        ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Waiting")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(parseInt(this.Total_Booking) !== 0 ? _vm.calculatePercentage(this.percent_waiting, this.Total_Booking) + "%" : "0%") + "\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Reschedule")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_Reschedule, this.Total_Booking)) + "\n          %\n        ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Reschedule")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(parseInt(this.Total_Booking) !== 0 ? _vm.calculatePercentage(this.percent_Reschedule, this.Total_Booking) + "%" : "0%") + "\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Cancel")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_cancel, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Cancel")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(parseInt(this.Total_Booking) !== 0 ? _vm.calculatePercentage(this.percent_cancel, this.Total_Booking) + "%" : "0%") + "\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Refund")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_refund, this.Total_Booking)) + " %\n        ")])]), _vm._v(" "), _c("li", {
+  }, [_c("h6", [_vm._v("%Refund")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(parseInt(this.Total_Booking) !== 0 ? _vm.calculatePercentage(this.percent_refund, this.Total_Booking) + "%" : "0%") + "\n        ")])]), _vm._v(" "), _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("%Unidentified")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(_vm.calculatePercentage(this.percent_Unidentified, this.Total_Booking)) + "\n          %\n        ")])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null && this.kpi != undefined ? _c("li", {
+  }, [_c("h6", [_vm._v("%Unidentified")]), _vm._v(" "), _c("h4", [_vm._v("\n          " + _vm._s(parseInt(this.Total_Booking) !== 0 ? _vm.calculatePercentage(this.percent_Unidentified, this.Total_Booking) + "%" : "0%") + "\n        ")])]), _vm._v(" "), this.title !== "Artist" && this.employeeId === null && this.kpi != undefined ? _c("li", {
     staticClass: "Price"
-  }, [_c("h6", [_vm._v("Total KPI | % Completed")]), _vm._v(" "), _c("h4", [_vm._v("\n          $" + _vm._s(this.Booking_Value) + " / $" + _vm._s(parseFloat(this.kpi)) + " Completed\n          " + _vm._s(_vm.calculatePercentage(this.Booking_Value, parseFloat(this.kpi))) + "\n          %\n        ")])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayZero ? _c("li", {
+  }, [_c("h6", [_vm._v("Total KPI | % Completed")]), _vm._v(" "), _c("h4", [_vm._v("\n          $" + _vm._s(this.Booking_Value) + " / $" + _vm._s(parseFloat(this.kpi)) + " Completed\n\n          " + _vm._s(parseFloat(this.kpi) !== 0 ? _vm.calculatePercentage(this.Booking_Value, parseFloat(this.kpi)) + "%" : "0%") + "\n        ")])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayZero ? _c("li", {
     staticClass: "Price"
   }, [_c("h6", [_vm._v("Total Day")]), _vm._v(" "), _c("h4", [_vm._v(_vm._s(this.range_time))])]) : _vm._e(), _vm._v(" "), _vm.isArtistSelected && _vm.isArtistPayZero ? _c("li", {
     staticClass: "Price"
@@ -2878,7 +3061,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #36b666;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 250px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n#main .main__body .main__body__box-info li {\n  flex: 1 0 160px;\n  background: var(--white);\n  padding: 0.75rem 0.75rem;\n  border-radius: 5px;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n#main .main__body .main__body__box-info li h6,\nh4 {\n  font-size: 14px;\n}\n.persen {\n  flex: 1 0 25%;\n  padding: 0.75rem 0.75rem;\n  border-radius: 5px;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.Persen {\n  flex: 1 0 260px;\n  display: flex;\n  grid-gap: 1.25rem;\n  flex-wrap: wrap;\n}\n.inputWages {\n  background: #ffffff00;\n  border: 0;\n  border-bottom: solid 1px wheat;\n  color: white;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.fade-enter-active,\n.fade-leave-active {\n  transition: opacity 0.5s;\n}\n.fade-enter,\n.fade-leave-to {\n  opacity: 0;\n}\n.label {\n  width: 100%;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);\n  border-radius: 10px;\n  padding: 18px 16px;\n  margin: 1rem 0px;\n  background-color: #fff;\n  transition: 0.1s;\n  position: relative;\n  text-align: left;\n  box-sizing: border-box;\n  display: flex;\n  gap: 1rem;\n}\n.label:hover {\n  cursor: pointer;\n  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgb(255 118 118 / 23%);\n}\n.label-checked {\n  border: 2px solid #86bf9c;\n  background-color: hsl(95, 60%, 90%) !important;\n}\n.radio-header {\n  font-weight: 600;\n}\n.radio-text {\n  color: #777;\n}\n.radio-check {\n  display: none;\n}\n.check-icon {\n  color: #36b666;\n  position: absolute;\n  top: 12px;\n  right: 8px;\n}\n.radio-body {\n  font-size: 24px;\n  font-weight: bold;\n  margin-top: 8px;\n}\n.book_detail {\n  padding: 1rem;\n}\n.custom-btn {\n  width: 130px;\n  height: 40px;\n  color: #fff;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16 {\n  border: none;\n  color: #000;\n}\n.btn-16:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16:hover {\n  color: #000;\n}\n.btn-16:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16:active {\n  top: 2px;\n}\n.groupService {\n  flex-direction: column;\n}\n.groupService ul li {\n  margin: 1rem 0;\n}\n.flex-groupService {\n  display: flex;\n  align-items: center;\n  gap: 1rem;\n}\n.book-title {\n  font-size: 0.9em;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  white-space: nowrap;\n  flex-grow: 1;\n  transition: color 0.3s;\n}\n.deposit {\n  display: block;\n  width: 260px;\n  height: 30px;\n  padding-left: 10px;\n  padding-top: 3px;\n  padding-bottom: 3px;\n  margin: 7px;\n  font-size: 17px;\n  border-radius: 20px;\n  background: rgba(0, 0, 0, 0.05);\n  border: none;\n  transition: background 0.5s;\n}\n.error-message {\n  color: #ff6666;\n}\n.vue-daterange-picker[data-v-1ebd09d2] {\n  min-width: 250px;\n}\n@media (max-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 50% !important;\n    transform: translate(-50%);\n}\n.fc-header-toolbar {\n    gap: 7px;\n    align-items: baseline;\n    flex-direction: column-reverse;\n}\n}\n@media (min-width: 768px) {\n.daterangepicker.openscenter[data-v-1ebd09d2] {\n    right: auto;\n    left: 100% !important;\n    transform: translate(-50%);\n}\n}\n#main .main__body .main__body__box-info li {\n  flex: 1 0 160px;\n  background: var(--white);\n  padding: 0.75rem 0.75rem;\n  border-radius: 5px;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n#main .main__body .main__body__box-info li h6,\nh4 {\n  font-size: 14px;\n}\n.persen {\n  flex: 1 0 25%;\n  padding: 0.75rem 0.75rem;\n  border-radius: 5px;\n  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.05);\n}\n.Persen {\n  flex: 1 0 260px;\n  display: flex;\n  grid-gap: 1.25rem;\n  flex-wrap: wrap;\n}\n.inputWages {\n  background: #ffffff00;\n  border: 0;\n  border-bottom: solid 1px wheat;\n  color: white;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

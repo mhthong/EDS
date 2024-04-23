@@ -17,7 +17,7 @@ class Showroom extends Model
     // Define the relationships
     public function artists()
     {
-        return $this->belongsToMany(Artists::class, 'artist_showroom');
+        return $this->belongsToMany(Artists::class, 'artist_showroom', 'showroom_id', 'artist_id');
     }
 
     public function services()
@@ -36,9 +36,16 @@ class Showroom extends Model
     }
 
     public function groupservices()
-{
-    return $this->belongsToMany(GroupService::class, 'service_showroom', 'showroom_id', 'groupservice_id');
-}
+        {
+            return $this->belongsToMany(GroupService::class, 'service_showroom', 'showroom_id', 'groupservice_id');
+        }
+
+
+        public function group()
+        {
+            return $this->belongsTo(Group::class);
+        }
+
 
 
 }

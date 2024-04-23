@@ -65,4 +65,10 @@ class Admin extends Authenticatable
 
         return $logOptions;
     }
+
+    public function employees()
+    {
+        return $this->hasMany(Employee::class, 'team_id')->where('super_user', 3);
+    }
+
 }

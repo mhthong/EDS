@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artists;
+use App\Models\ArtistShowroom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ArtistLevel;
+use App\Models\Showroom;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
+
 
 class ArtistController extends Controller
 {
@@ -40,8 +44,9 @@ class ArtistController extends Controller
     {
       // Fetch all artist levels from the database
       $artistLevels = ArtistLevel::all();
+      $showrooms = Showroom::Where('status', 'published')->get();
 
-      return view('admin.artists.create', compact('artistLevels'));
+      return view('admin.artists.create', compact('artistLevels', 'showrooms'));
 
     }
 
@@ -53,6 +58,7 @@ class ArtistController extends Controller
      */
     public function store(Request $request)
     {
+
    
         $request->validate([
             'name' => 'required|string|max:255',
@@ -78,6 +84,17 @@ class ArtistController extends Controller
     
         // Create the artist using the validated and processed data
         $createdArtist = Artists::create($data);
+
+
+        $groupshowroom = $request->input('groupshowroom', []);
+        foreach ($groupshowroom as $showroomId) {
+            // Create entry in ArtistShowroom pivot table
+            ArtistShowroom::create([
+                'artist_id' => $createdArtist->id,
+                'showroom_id' => $showroomId,
+            ]);
+        }
+
         if($request->input('submit') == 'apply'){
 
             if ($createdArtist) {
@@ -119,10 +136,18 @@ class ArtistController extends Controller
      */
     public function edit(Artists $artist)
     {
+
       // Fetch all artist levels from the database
       $artistLevels = ArtistLevel::where('name', '!=','N/A' )->get();
 
-      return view('admin.artists.edit', compact('artist', 'artistLevels'));
+      $artistShowroom = ArtistShowroom::with('showroom')
+      ->where('artist_id', $artist->id)->get();
+
+      $showrooms = Showroom::Where('status', 'published')->get();
+      $showroomIds = $artistShowroom->pluck('showroom_id')->toArray();
+
+
+      return view('admin.artists.edit', compact('artist', 'artistLevels','showroomIds','showrooms'));
     }
 
     /**
@@ -174,6 +199,33 @@ class ArtistController extends Controller
             
             // Create the artist using the validated and processed data
             $updateArtist =   $artist->update($data);
+
+            DB::beginTransaction();
+
+
+
+            try {
+                // Xóa tất cả các ArtistShowroom có artist_id tương ứng
+                ArtistShowroom::where('artist_id', $artist->id)->delete();
+
+                // Tạo lại các ArtistShowroom dựa trên vòng lặp
+                $groupshowroom = $request->input('groupshowroom', []);
+                foreach ($groupshowroom as $showroomId) {
+                    // Tạo mới một ArtistShowroom
+                    ArtistShowroom::create([
+                        'artist_id' => $artist->id,
+                        'showroom_id' => $showroomId,
+                    ]);
+                }
+
+                // Commit transaction nếu mọi thứ thành công
+                DB::commit();
+            } catch (\Exception $e) {
+                // Nếu có bất kỳ lỗi nào xảy ra, rollback transaction và xử lý lỗi
+                DB::rollback();
+                // Xử lý lỗi ở đây (ví dụ: logging, thông báo lỗi cho người dùng, v.v.)
+                // Ví dụ: Log::error($e->getMessage());
+            }
     
         
             

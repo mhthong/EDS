@@ -16,6 +16,8 @@ use App\Models\Employee;
 use App\Models\Get;
 use App\Models\Admin;
 use App\Models\WorkingHour;
+use App\Models\ArtistShowroom;
+use App\Models\GroupShowroom;
 use Carbon\Carbon;
 
 
@@ -23,13 +25,22 @@ class APIBookingController extends Controller
 {
     //
 
-    
+
+    public function artistshowroom()
+    {
+        $ArtistShowroom = ArtistShowroom::with('artist:id,name,status', 'showroom:id,Name,status')->orderBy('created_at', 'desc')->get();
+        return response()->json($ArtistShowroom);
+    }
+
+
+
+
+
 
     public function checkget($phone)
     {
         $Get = Get::Where('phone', $phone)->first();
         return response()->json($Get);
-        
     }
 
     public function getShowrooms()
@@ -196,9 +207,10 @@ class APIBookingController extends Controller
 
     public function Parner()
     {
-        $OP = Admin::select('id', 'name')
+        $OP = Admin::select('id', 'name','manage_supers')
             ->where('status', 'published')
             ->where('manage_supers', 4)
+            ->orwhere('manage_supers', 3)
             ->get();
 
         return response()->json($OP);
@@ -232,7 +244,7 @@ class APIBookingController extends Controller
         $startDate = Carbon::parse($startDate)->startOfDay();
         $endDate = Carbon::parse($endDate)->endOfDay();
 
-        $bookings = Booking::select('bookings.id', 'bookings.date', 'bookings.GetID', 'bookings.Source','bookings.source_data','bookings.Note','bookings.time', 'bookings.time_end', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.content', 'bookings.source_name', 'bookings.created_at', 'bookings.price_id')
+        $bookings = Booking::select('bookings.id', 'bookings.date', 'bookings.GetID', 'bookings.Source', 'bookings.source_data', 'bookings.Note', 'bookings.time', 'bookings.time_end', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.content', 'bookings.source_name', 'bookings.created_at', 'bookings.price_id')
             ->with([
                 'artist' => function ($query) {
                     $query->select('id', 'name', 'artist_pay');
@@ -718,27 +730,16 @@ class APIBookingController extends Controller
         }
 
 
-
-        // Query the status for the specific date ($Date)
-        $dayActiveNone = WorkingHour::where('showroom_schedule_id', $showroom)
-            ->where('date', $Date)
-            ->where('artist_id', 0)
-            ->first();
-
-
-
         $dayActive = WorkingHour::where('showroom_schedule_id', $showroom)
             ->where('date', $Date)
             ->where('artist_id', $artist_id)
             ->first();
 
-        if ($dayActiveNone != null) {
-            $active =  $dayActiveNone->active;
-        }
-
 
         if ($dayActive != null) {
             $active =  $dayActive->active;
+        } else {
+            $active = 0;
         }
 
         // Initialize $isActive to true
@@ -2039,7 +2040,7 @@ class APIBookingController extends Controller
 
     /*     Dashboard administration */
 
-    public function Dashboard($startDate, $endDate, $employee, $title)
+    public function Dashboard($startDate, $endDate,$group, $employee, $title)
     {
         // Lấy danh sách các ShowroomID (giả sử ShowroomID là một trường trong bảng Booking)
         $showroomIDs = Showroom::where('status', 'published')->get();
@@ -2057,7 +2058,7 @@ class APIBookingController extends Controller
 
             foreach ($showroomIDs as $showroomID) {
                 // Lấy dữ liệu cho ngày hiện tại và cho từng ShowroomID
-                $dataForDateAndShowroom = $this->getDashboardDataForDate($currentDateStr, $showroomID->id, $employee, $title, $startDate, $endDate);
+                $dataForDateAndShowroom = $this->getDashboardDataForDate($currentDateStr, $showroomID->id, $employee, $title, $startDate, $group);
 
                 // Tổng hợp dữ liệu cho ngày hiện tại và ShowroomID vào mảng tổng hợp
                 if (!isset($summarizedData[$currentDateStr])) {
@@ -2078,7 +2079,7 @@ class APIBookingController extends Controller
     }
 
 
-    public function getDashboardDataForDate($date, $showroomID, $employee, $title, $startDate, $endDate)
+    public function getDashboardDataForDate($date, $showroomID, $employee, $title, $startDate, $group)
     {
 
         $bookingsQuery = Booking::select('id', 'ArtistID', 'ShowroomID', 'status', 'action', 'source_data', 'source_name', 'source_id', 'source_type', 'created_at', 'updated_at', 'price_id', 'date')
@@ -2099,6 +2100,31 @@ class APIBookingController extends Controller
         if ($employee !== "null" && $title === "Parner") {
             $bookingsQuery->where('source_id', $employee)->where('source_type', "App\Models\Amin")->where('source_type', "App\Models\Admin");
         }
+
+        if ($employee !== "null" && $title === "Teams") {
+                    // Bước 1: Tìm tất cả các Employee có team_id là $employee
+            $employees = Employee::where('team_id', $employee)->pluck('id');
+
+            // Bước 2: Lọc bookingsQuery với các điều kiện cần thiết
+            $bookingsQuery->whereIn('source_id', $employees)->where('source_type', "App\Models\Employee");
+            
+        }
+
+
+
+
+        if ($group != 0) {
+            // Bước 1: Tìm tất cả các Employee có team_id là $employee
+                $groups = GroupShowroom::where('group_id', 2)->pluck('showroom_id');
+                // Bước 2: Lọc bookingsQuery với các điều kiện cần thiết
+                $bookingsQuery->whereIn('ShowroomID', $groups);
+                
+            }
+
+
+
+
+
 
         $bookings = $bookingsQuery->orderBy('created_at', 'desc')
             ->get();
@@ -2183,6 +2209,14 @@ class APIBookingController extends Controller
             $bookingsQueryupdates->where('ArtistID', $employee)->where('action', "approved");
         }
 
+        if ($group != 0) {
+            // Bước 1: Tìm tất cả các Employee có team_id là $employee
+                $groups = GroupShowroom::where('group_id', 2)->pluck('showroom_id');
+                // Bước 2: Lọc bookingsQuery với các điều kiện cần thiết
+                $bookingsQueryupdates->whereIn('ShowroomID', $groups);
+                
+            }
+
 
 
         $bookingupdates = $bookingsQueryupdates->orderBy('created_at', 'desc')
@@ -2215,38 +2249,153 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Partial Done") {
             }
 
-            if ($bookingupdate->action == "approved" && ( $bookingupdate->status == "Done" || $bookingupdate->status == "Partial Done" )) { // Kiểm tra action của bookingupdate
+            if ($bookingupdate->action == "approved" && ($bookingupdate->status == "Done" || $bookingupdate->status == "Partial Done")) { // Kiểm tra action của bookingupdate
                 // Lấy ID của artist
                 $artistId = $bookingupdate->artist->id;
-            
+
                 // Tạo key dựa trên artist
                 $key = $artistId;
-            
+
                 // Kiểm tra nếu artist được thanh toán theo giờ
                 if ($bookingupdate->artist->artist_pay == 1) {
-         /*            // Kiểm tra xem phần tử có tồn tại trong mảng $summarizedData['hour'] không
+                    /*            // Kiểm tra xem phần tử có tồn tại trong mảng $summarizedData['hour'] không
                     if (!isset($summarizedData['hour'][$key])) {
                         // Nếu không, khởi tạo nó với giá trị ban đầu là 0
                         $summarizedData['hour'][$key] = 0;
                     }
                     // Cộng thời gian vào số giờ */
-                    $summarizedData['range_time'] += $bookingupdate->services[0]->Time; 
+                    $summarizedData['range_time'] += $bookingupdate->services[0]->Time;
                     $summarizedData['total_wage'] += $bookingupdate->services[0]->Time *  floatval($bookingupdate->artist->wage);
                 } else {
                     // Kiểm tra xem key đã tồn tại trong $summarizedData['day'] chưa
-        /*             if (!isset($summarizedData['day'][$key])) {
+                    /*             if (!isset($summarizedData['day'][$key])) {
                         // Nếu chưa, thì tạo key và đặt giá trị bằng 1
                         $summarizedData['day'][$key] = 1;
                     } */
                     $summarizedData['range_time'] = 1;
-                    $summarizedData['total_wage'] =floatval($bookingupdate->artist->wage);
+                    $summarizedData['total_wage'] = floatval($bookingupdate->artist->wage);
                 }
             }
-            
         }
 
 
         return $summarizedData;
     }
+
+
+    public function artistshowroomRoster()
+    {
+        $ArtistShowrooms = ArtistShowroom::with('artist:id,name,status', 'showroom:id,Name,status')
+            ->whereHas('artist', function ($query) {
+                $query->where('status', 'published');
+            })
+            ->whereHas('showroom', function ($query) {
+                $query->where('status', 'published');
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Khởi tạo mảng chứa dữ liệu tổng hợp
+        $summarizedData = [];
+
+        foreach ($ArtistShowrooms as $ArtistShowroom) {
+
+            $schedules = WorkingHour::where('artist_id', $ArtistShowroom->artist_id)->where('showroom_schedule_id', $ArtistShowroom->showroom_id)->get();
+
+            if (isset($schedules)) {
+                foreach ($schedules as $schedule) {
+                    // Tăng giá trị của Id theo biến đếm
+                    $idCounter = count($summarizedData) + 1;
+
+                    if ($schedule->active == 1) {
+                        // Nếu là active, gán giá trị 'active' cho $action
+                        $action = 'Active';
+                        $color =  '#7373fa';
+                    } else if ($schedule->active == 0) {
+                        // Ngược lại, gán giá trị 'none' cho $action
+                        $action = 'None active';
+                        $color =  '#acacac';
+                    } else {
+                        // Ngược lại, gán giá trị 'none' cho $action
+                        $action = 'Undefined';
+                        $color =  '#b0b7d2cc';
+                    }
+
+
+                    $date = Carbon::parse($schedule->date);
+
+                    // Thiết lập giờ và phút
+                    $date->hour = 13;
+                    $date->minute = 30;
+                    $date->second = 0;
+
+                    // Chuyển đổi sang định dạng ISO 8601
+                    $startTime = $date->toIso8601ZuluString();
+                    $endTime = $date->toIso8601ZuluString();
+
+                    // Chuyển đổi ShowroomId và ArtistId thành chuỗi nhị phân
+                    $showroomIdBinary = decbin($schedule->showroom_schedule_id);
+                    $artistIdBinary = decbin($schedule->artist_id);
+
+                    // Thêm "00" vào giữa hai chuỗi nhị phân
+                    $combinedBinary = $showroomIdBinary . "00" . $artistIdBinary;
+
+                    // Chuyển đổi lại thành số nguyên
+                    $combinedId = bindec($combinedBinary);
+
+                    $note = $schedule->note = "" ? $schedule->note : 'N/A';
+
+
+                    // Tạo một mảng mới chứa dữ liệu của mục hiện tại
+                    $data = [
+                        'Id' => $idCounter,
+                        'Subject' => $action . "\nNote: " .   $note,
+                        'StartTime' =>      $startTime,
+                        'EndTime' =>        $endTime,
+                        'IsAllDay' => true,
+                        'ShowroomId' => $schedule->showroom_schedule_id,
+                        'ArtistId' => $schedule->artist_id,
+                        'Showroom' =>  $ArtistShowroom->showroom->Name,
+                        'Artist' => $ArtistShowroom->artist->name,
+                        'CategoryColor' =>  $color,
+                        'ResourceId' => $idCounter,
+                        'CombinedId' =>  $combinedId,
+                    ];
+
+                    // Thêm mảng mới vào mảng tổng hợp
+                    $summarizedData[] = $data;
+                }
+            }
+        }
+
+        usort($summarizedData, function ($a, $b) {
+            return strcmp($a['Showroom'], $b['Showroom']);
+        });
+
+        return response()->json($summarizedData);
+    }
+
+
+    public function getWithBookingsInCurrentMonth(Request $request)
+    {
+        // Lấy ngày đầu tiên và cuối cùng của tháng hiện tại
+        $startDate = Carbon::now()->startOfMonth();
+        $endDate = Carbon::now()->endOfMonth();
+        $currentDate = Carbon::now()->format('Y-m-d');
+
+        // Lấy dữ liệu của các instance của model Get có booking date hoặc created_at trong tháng này
+        $gets = Get::whereHas('bookings', function ($query) use ($startDate, $endDate) {
+            $query->whereDate('date', '>=', $startDate)
+                  ->whereDate('date', '<=', $endDate);
+        })->orWhere(function ($query) use ($startDate, $endDate) {
+            $query->whereDate('created_at', '>=', $startDate)
+                  ->whereDate('created_at', '<=', $endDate);
+        })->with(['bookings' => function ($query) use ($currentDate) {
+            $query->whereDate('date', '<=', $currentDate)->latest()->take(1);
+        }])->get();
+
+        return response()->json($gets);
+    }
+
 }
 /* neww code */

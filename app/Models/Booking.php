@@ -13,13 +13,13 @@ class Booking extends Model
     use HasFactory,LogsActivity;
 
     // app/Models/Booking.php
-    protected static $logAttributes = ['ArtistID', 'ShowroomID', 'time','time_end', 'date', 'GetID','price_id', 'content','action','status','source_name','source_id','source_type','source_data','Source' , 'Note','After_img','Before_img'];
+    protected static $logAttributes = ['ArtistID', 'ShowroomID', 'time','time_end', 'date', 'GetID','price_id', 'content','action','status','source_name','source_id','source_type','source_data','Source' , 'Note','After_img','Before_img' ,'created_at'];
 
 
       // Define the table associated with the model
     protected $table = 'bookings';
 
-    protected $fillable = ['ArtistID', 'ShowroomID', 'time','time_end', 'date', 'GetID','price_id', 'content','action','status','source_name','source_id','source_type','source_data','Source' , 'Note','After_img','Before_img'];
+    protected $fillable = ['ArtistID', 'ShowroomID', 'time','time_end', 'date', 'GetID','price_id', 'content','action','status','source_name','source_id','source_type','source_data','Source' , 'Note','After_img','Before_img' ,'created_at'];
 
     public function artist()
     {

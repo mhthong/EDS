@@ -9,11 +9,8 @@ use Illuminate\Auth\Authenticatable as AuthenticatableTrait;
 
 class Artists extends Model implements Authenticatable
 {
-    use HasFactory;
+    use HasFactory, AuthenticatableTrait;
 
-    use AuthenticatableTrait;
-
-    // Define the table associated with the model
     protected $table = 'artists';
 
     protected $fillable = ['name', 'fullname', 'password', 'phone', 'email', 'avatar', 'description', 'status', 'artist_levelID' ,'artist_pay','wage'];
@@ -23,7 +20,6 @@ class Artists extends Model implements Authenticatable
         return $this->belongsTo(ArtistLevel::class, 'artist_levelID');
     }
 
-    // Define the relationships
     public function services()
     {
         return $this->belongsToMany(Service::class, 'artist_service');
@@ -31,7 +27,7 @@ class Artists extends Model implements Authenticatable
 
     public function showrooms()
     {
-        return $this->belongsToMany(Showroom::class, 'artist_showroom');
+        return $this->belongsToMany(Showroom::class, 'artist_showroom', 'artist_id', 'showroom_id');
     }
 
     public function bookings()
@@ -39,4 +35,8 @@ class Artists extends Model implements Authenticatable
         return $this->hasMany(Booking::class, 'ArtistID');
     }
 
+    public function artistshowroom()
+    {
+        return $this->belongsToMany(ArtistShowroom::class, 'artist_showroom', 'artist_id', 'showroom_id');
+    }
 }

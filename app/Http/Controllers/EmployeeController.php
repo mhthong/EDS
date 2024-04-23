@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Employee;
+use App\Models\Admin;
 
 class EmployeeController extends Controller
 {
@@ -30,7 +31,6 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-
    
         $request->validate([
             'name' => 'required|string|max:255',
@@ -41,7 +41,10 @@ class EmployeeController extends Controller
             'avatar' => 'nullable|string',
             'description' => 'nullable|string',
             'status' => 'required|in:published,pending,draft',
+            'team_id' => 'required',
         ]);
+
+
     
         // Prepare the data for creating the artist
         $data = $request->all();
@@ -74,7 +77,8 @@ class EmployeeController extends Controller
     {
       // Fetch all artist levels from the database
 
-      return view('admin.employee.create');
+      $team = Admin::select('id','name')->where('manage_supers',3)->get();
+      return view('admin.employee.create' , compact('team'));
 
     }
 
@@ -100,7 +104,9 @@ class EmployeeController extends Controller
     {
       // Fetch all artist levels from the database
 
-      return view('admin.employee.edit', compact('employee'));
+      $team = Admin::select('id','name')->where('manage_supers',3)->get();
+
+      return view('admin.employee.edit', compact('employee' , 'team'));
     }
 
     /**
@@ -127,6 +133,7 @@ class EmployeeController extends Controller
                 'avatar' => 'nullable|string',
                 'description' => 'nullable|string',
                 'status' => 'required|in:published,pending,draft',
+                'team_id' => 'required',
             ]);
     
             $data = $request->all();

@@ -56,6 +56,8 @@ use Unisharp\Laravelfilemanager\controllers\UploadController;
 use App\Http\Controllers\KpiController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\GroupController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -86,8 +88,6 @@ Route::get('/booking-form', function () {
 Route::get('/html', function () {
     return view('homecopy'); // Tên của view bạn muốn hiển thị
 });
-
-
 
 
 
@@ -231,6 +231,9 @@ Route::middleware('auth:employee')->prefix('employee')->group(function () {
         \UniSharp\LaravelFilemanager\Lfm::routes();
     });
 
+    Route::get('/roster', function () {
+        return view('admin.roster');
+    })->name('roster_employee');
     // Route to FileManagerController
     Route::get('filemanager', [App\Http\Controllers\FileManagerController::class, 'index']);
 
@@ -280,6 +283,11 @@ Route::post('email', [EmailConfigurationController::class, 'sendEmail'])->name('
 
 Route::middleware('auth:admin')->prefix('admin')->group(
     function () {
+
+        Route::get('/roster', function () {
+            return view('admin.roster');
+        })->name('roster');
+        
 
         Route::get('/sales', function () {
             return view('layouts.sale'); // Tên của view bạn muốn hiển thị
@@ -477,6 +485,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(
 
                 // Destroy - Remove the specified service from the database
                 Route::delete('/{showroom}', [ShowroomController::class, 'destroy'])->name('showrooms.destroy');
+
+                Route::get('/groups', [GroupController::class, 'view'])->name('showrooms.groups');
             }
         );
 

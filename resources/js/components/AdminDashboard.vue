@@ -12,12 +12,32 @@
           :timePicker="true"
         ></date-range-picker>
       </label>
+
+      <label>
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedGroupShowroom"
+          @change="onChangeGroupShowroom(selectedGroupShowroom)"
+          style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+        >
+          <option :value="0" selected>Group Showrooms</option>
+          <option
+            v-for="Groupshowroom in Groupshowrooms"
+            :key="Groupshowroom.id"
+            :value="Groupshowroom.id"
+          >
+            {{ Groupshowroom.name }}
+          </option>
+        </select>
+      </label>
+
       <label>
         <select
           class="form-control"
           id="showroomSelect"
           v-model="selectedShowroom"
-          @change="selectedShowroomPrice()"
+          @change="onChange(selectedShowroom, 0)"
           style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
         >
           <option :value="null" selected>Showroom</option>
@@ -43,6 +63,7 @@
           <option value="Saler" selected>Saler</option>
           <option value="Artist" selected>Artist</option>
           <option value="Parner" selected>Parner / Operation</option>
+          <option value="Teams" selected>Teams</option>
         </select>
       </label>
 
@@ -78,11 +99,7 @@
         >
           <option :value="null" selected>Name</option>
 
-          <option
-            v-for="Aritst in apiDataAritst"
-            :key="Aritst.id"
-            :value="Aritst.id"
-          >
+          <option v-for="Aritst in artists" :key="Aritst.id" :value="Aritst.id">
             {{ Aritst.name }}
           </option>
         </select>
@@ -107,6 +124,33 @@
 
           <option
             v-for="parner in apiDataParner"
+            :key="parner.id"
+            :value="parner.id"
+          >
+            {{ parner.name }}
+          </option>
+        </select>
+      </label>
+
+      <label
+        v-if="
+          this.title === 'Teams' &&
+          this.employeeId === null &&
+          this.artistId === null
+        "
+      >
+        <select
+          class="form-control"
+          id="showroomSelect"
+          v-model="selectedEmployee"
+          @change="selectedShowroomPrice()"
+          :disabled="this.title == null"
+          style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+        >
+          <option :value="null" selected>Name</option>
+
+          <option
+            v-for="parner in apiDataLeader"
             :key="parner.id"
             :value="parner.id"
           >
@@ -180,54 +224,87 @@
         <li class="Price">
           <h6>%Done</h6>
           <h4>
-            {{ calculatePercentage(this.percent_done, this.Total_Booking) }} %
+            {{
+              parseInt(this.Total_Booking) !== 0
+                ? calculatePercentage(this.percent_done, this.Total_Booking) +
+                  "%"
+                : "0%"
+            }}
           </h4>
         </li>
         <li class="Price">
           <h6>%Pratial Done</h6>
           <h4>
             {{
-              calculatePercentage(this.percent_Pratial_Done, this.Total_Booking)
+              parseInt(this.Total_Booking) !== 0
+                ? calculatePercentage(
+                    this.percent_Pratial_Done,
+                    this.Total_Booking
+                  ) + "%"
+                : "0%"
             }}
-            %
           </h4>
         </li>
         <li class="Price">
           <h6>%Waiting</h6>
           <h4>
-            {{ calculatePercentage(this.percent_waiting, this.Total_Booking) }}
-            %
+            {{
+              parseInt(this.Total_Booking) !== 0
+                ? calculatePercentage(
+                    this.percent_waiting,
+                    this.Total_Booking
+                  ) + "%"
+                : "0%"
+            }}
           </h4>
         </li>
         <li class="Price">
           <h6>%Reschedule</h6>
           <h4>
             {{
-              calculatePercentage(this.percent_Reschedule, this.Total_Booking)
+              parseInt(this.Total_Booking) !== 0
+                ? calculatePercentage(
+                    this.percent_Reschedule,
+                    this.Total_Booking
+                  ) + "%"
+                : "0%"
             }}
-            %
           </h4>
         </li>
 
         <li class="Price">
           <h6>%Cancel</h6>
           <h4>
-            {{ calculatePercentage(this.percent_cancel, this.Total_Booking) }} %
+            {{
+              parseInt(this.Total_Booking) !== 0
+                ? calculatePercentage(this.percent_cancel, this.Total_Booking) +
+                  "%"
+                : "0%"
+            }}
           </h4>
         </li>
         <li class="Price">
           <h6>%Refund</h6>
           <h4>
-            {{ calculatePercentage(this.percent_refund, this.Total_Booking) }} %
+            {{
+              parseInt(this.Total_Booking) !== 0
+                ? calculatePercentage(this.percent_refund, this.Total_Booking) +
+                  "%"
+                : "0%"
+            }}
           </h4>
         </li>
         <li class="Price">
           <h6>%Unidentified</h6>
           <h4>
             {{
-              calculatePercentage(this.percent_Unidentified, this.Total_Booking)
+              parseInt(this.Total_Booking) !== 0
+                ? calculatePercentage(
+                    this.percent_Unidentified,
+                    this.Total_Booking
+                  ) + "%"
+                : "0%"
             }}
-            %
           </h4>
         </li>
 
@@ -242,8 +319,15 @@
           <h6>Total KPI | % Completed</h6>
           <h4>
             ${{ this.Booking_Value }} / ${{ parseFloat(this.kpi) }} Completed
-            {{ calculatePercentage(this.Booking_Value, parseFloat(this.kpi)) }}
-            %
+
+            {{
+              parseFloat(this.kpi) !== 0
+                ? calculatePercentage(
+                    this.Booking_Value,
+                    parseFloat(this.kpi)
+                  ) + "%"
+                : "0%"
+            }}
           </h4>
         </li>
 
@@ -295,6 +379,9 @@ export default {
         end: null, // Ngày kết thúc
       },
       showrooms: [],
+      showroomsnone: [],
+      selectedGroupShowroom: 0,
+      Groupshowrooms: [],
       selectedShowroom: null,
       id: "",
       currentURL: "",
@@ -317,9 +404,11 @@ export default {
       selectedEmployee: null,
       selectedParner: null,
       title: null,
-      apiDataAritst: null,
+      artists: [],
+      artistsnone: [],
       apiDataEmployee: null,
       apiDatakpi: [],
+      apiDataLeader: [],
       kpi: 0,
       resuft: [],
       Booking_Value: 0,
@@ -345,6 +434,7 @@ export default {
       isNone: false,
       range_time: 0,
       total_wage: 0,
+      artistshowroom: [],
     };
   },
 
@@ -360,7 +450,7 @@ export default {
         this.fetchapiData_id(
           this.dateRange.start,
           this.dateRange.end,
-          this.selectedShowroom,
+          this.selectedGroupShowroom,
           this.selectedEmployee,
           this.title
         );
@@ -374,7 +464,6 @@ export default {
       }
     },
   },
-
 
   computed: {
     isEmployeeSelected() {
@@ -397,7 +486,7 @@ export default {
   },
 
   methods: {
-/*     updateDailyWage() {
+    /*     updateDailyWage() {
       this.dailyWage = parseFloat(this.range_time);
     },
     updateHourlyWage() {
@@ -415,31 +504,80 @@ export default {
       return parseFloat(wage) * parseFloat(time);
     }, */
 
-  getArtistPayById(artistId) {
- 
-          if (this.apiDataAritst) {
-            const artist = this.apiDataAritst.find(
-              (artist) => parseInt(artist.id) === parseInt(artistId)
-            );
-            // Kiểm tra xem nghệ sĩ có tồn tại hay không
-            if (artist) {
-              if (parseInt(artist.artist_pay) === 0) {
-                return 0;
-              } else {
-                return 1;
-              }
-            } else {
-              return false; // Trả về "Unknown" nếu không tìm thấy nghệ sĩ
-            }
-          } else {
-            return false; // Handle the case where apiDataAritst is null
-          }
-          }, 
+    onChange(showroom, artist) {
+      this.selectedShowroomPrice();
+      this.updateArtistshowroom(showroom, artist);
+    },
 
-    fetchapiData_id(start, end, selectedShowroom, employee, title) {
-      if (this.artistId !== null) {
+    onChangeGroupShowroom(selectedGroupShowroom) {
+      this.selectedShowroomPrice();
+      this.updateshowroom(selectedGroupShowroom);
+    },
+
+    updateshowroom(selectedGroupShowroom) {
+      if (parseInt(selectedGroupShowroom) !== 0) {
+        this.showrooms = this.Groupshowrooms.filter(
+          (item) => parseInt(item.id) === parseInt(selectedGroupShowroom)
+        ) // Lọc ra các dữ liệu có artist_id là 21
+          .map((item) => item.showrooms).flat(); // Convert array of arrays into a single array; // Chỉ trích xuất thông tin của showroom
+      }
+      else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
+
+    updateArtistshowroom(showroom, artist) {
+      if (parseInt(showroom) !== 0) {
+        this.artists = this.artistshowroom
+          .filter(
+            (item) =>
+              parseInt(item.showroom_id) === parseInt(showroom) &&
+              item.artist.status == "published"
+          ) // Lọc ra các dữ liệu có showroom_id là 21
+          .map((item) => item.artist); // Chỉ trích xuất thông tin của artist
+      } else {
+        this.artists = this.artistsnone;
+      }
+
+      if (parseInt(artist) !== 0) {
+        this.showrooms = this.artistshowroom
+          .filter(
+            (item) =>
+              parseInt(item.artist_id) === parseInt(artist) &&
+              item.showroom.status == "published"
+          ) // Lọc ra các dữ liệu có artist_id là 21
+          .map((item) => item.showroom); // Chỉ trích xuất thông tin của showroom
+      }  else if(parseInt(this.selectedGroupShowroom) !== 0){
+        this.onChangeGroupShowroom(parseInt(this.selectedGroupShowroom));
+      } else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
+
+    getArtistPayById(artistId) {
+      if (this.artists) {
+        const artist = this.artists.find(
+          (artist) => parseInt(artist.id) === parseInt(artistId)
+        );
+        // Kiểm tra xem nghệ sĩ có tồn tại hay không
+        if (artist) {
+          if (parseInt(artist.artist_pay) === 0) {
+            return 0;
+          } else {
+            return 1;
+          }
+        } else {
+          return false; // Trả về "Unknown" nếu không tìm thấy nghệ sĩ
+        }
+      } else {
+        return false; // Handle the case where artists is null
+      }
+    },
+
+    fetchapiData_id(start, end, selectedGroupShowroom, employee, title) {
+      if (this.artistId != null) {
         axios
-          .get(`/api/Dashboard/${start}/${end}/${this.artistId}/${this.title}`)
+          .get(`/api/Dashboard/${start}/${end}/${selectedGroupShowroom}/${this.artistId}/${this.title}`)
           .then((response) => {
             this.apiData_id = response.data;
             this.fetchKpis(
@@ -452,10 +590,10 @@ export default {
           .catch((error) => {
             console.error("Error fetching API data:", error);
           });
-      } else if (this.employeeId !== null) {
+      } else if (this.employeeId != null) {
         axios
           .get(
-            `/api/Dashboard/${start}/${end}/${this.employeeId}/${this.title}`
+            `/api/Dashboard/${start}/${end}/${selectedGroupShowroom}/${this.employeeId}/${this.title}`
           )
           .then((response) => {
             this.apiData_id = response.data;
@@ -471,7 +609,7 @@ export default {
           });
       } else {
         axios
-          .get(`/api/Dashboard/${start}/${end}/${employee}/${title}`)
+          .get(`/api/Dashboard/${start}/${end}/${selectedGroupShowroom}/${employee}/${title}`)
           .then((response) => {
             this.apiData_id = response.data;
             this.fetchKpis(
@@ -491,8 +629,8 @@ export default {
       axios
         .get("/api/artist")
         .then((response) => {
-          this.apiDataAritst = response.data;
-   
+          this.artists = response.data;
+          this.artistsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching artist::", error);
@@ -504,6 +642,16 @@ export default {
         .get("/api/parner")
         .then((response) => {
           this.apiDataParner = response.data;
+
+          // Lọc các phần tử có manage_supers là 3
+          this.apiDataLeader = response.data.filter(
+            (admin) => parseInt(admin.manage_supers) === 3
+          );
+
+          // Lọc các phần tử có manage_supers là 4
+          this.apiDataParner = response.data.filter(
+            (admin) => parseInt(admin.manage_supers) === 4
+          );
         })
         .catch((error) => {
           console.error("Error fetching artist::", error);
@@ -526,9 +674,21 @@ export default {
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
+          this.showroomsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
+        });
+    },
+
+    async fetchArtistsShowrooms() {
+      await axios
+        .get(`/api/artistshowroom`)
+        .then((response) => {
+          this.artistshowroom = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
         });
     },
 
@@ -567,7 +727,7 @@ export default {
     totalByName(data) {
       // Tạo một đối tượng để lưu trữ tổng số tiền cho từng tên dịch vụ
       const totals = {};
-    
+
       // Your existing code...
 
       // Lặp qua các ngày trong dữ liệu của bạn
@@ -658,7 +818,7 @@ export default {
       this.fetchapiData_id(
         this.dateRange.start,
         this.dateRange.end,
-        this.selectedShowroom,
+        this.selectedGroupShowroom,
         this.selectedEmployee,
         this.title
       );
@@ -692,7 +852,7 @@ export default {
           this.apiData_id,
           this.selectedShowroom
         );
-      } else {
+      }else {
         this.resuft = this.apiData_id;
       }
 
@@ -729,6 +889,20 @@ export default {
     selectedEmployeeAPi() {
       this.selectedEmployee = null;
     },
+
+    fetchGroups() {
+      axios
+        .get("/api/groups")
+        .then((response) => {
+          this.Groupshowrooms = response.data;
+
+        })
+        .catch((error) => {
+          console.error("Error fetching KPIs:", error);
+        });
+    },
+
+
   },
 
   mounted() {
@@ -739,7 +913,6 @@ export default {
     this.employeeId = this.$root.employeeId;
 
     this.manage_supers = this.$root.manage_supers;
-
 
     if (
       (this.adminId !== null && parseInt(this.manage_supers) === 3) ||
@@ -778,13 +951,15 @@ export default {
     }
 
     this.fetchShowrooms();
+    this.fetchGroups();
     this.fetchapiDataEmployee();
     this.fetchArtist();
+    this.fetchArtistsShowrooms();
     this.fetchapiDataParner();
     this.fetchapiData_id(
       this.dateRange.start,
       this.dateRange.end,
-      this.selectedShowroom,
+      this.selectedGroupShowroom,
       this.selectedEmployee,
       this.title
     );
@@ -828,7 +1003,7 @@ export default {
 }
 
 .label-checked {
-  border: 2px solid #36b666;
+  border: 2px solid #86bf9c;
   background-color: hsl(95, 60%, 90%) !important;
 }
 

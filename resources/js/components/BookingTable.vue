@@ -60,6 +60,7 @@
               id="showroomSelect"
               v-model="selectedShowroom"
               style="padding: 5px; min-width: 170px; max-width: 170px"
+              @change="updateArtistshowroom(selectedShowroom, null)"
             >
               <option :value="null" selected>Select Location</option>
               <option
@@ -71,7 +72,7 @@
               </option>
             </select>
           </label>
-
+                           
           <label>
             <select
               class="form-control"
@@ -79,12 +80,14 @@
               v-model="selectedAritst"
               style="padding: 5px; min-width: 170px; max-width: 170px"
               :disabled="this.artistId!==null"
+              @change="updateArtistshowroom(null, selectedAritst)"
             >
               <option :value="null" selected>Select Artist</option>
               <option
-                v-for="Aritst in apiDataAritst"
+                v-for="Aritst in artists"
                 :key="Aritst.id"
                 :value="Aritst.id"
+          
               >
                 {{ Aritst.name }}
               </option>
@@ -405,85 +408,6 @@
         </div>
       </v-card>
 
-      <div v-if="popupVisible" class="popup">
-        <div class="popup-content col-8 col-md-6">
-          <div class="header text-center pb-4">
-            <h5>KPI</h5>
-          </div>
-
-          <label :for="showroomSelect">Selected Showroom</label>
-          <select
-            class="form-control mb-3"
-            :id="showroomSelect"
-            v-model="selectedShowroom"
-          >
-            <option value="0">All Showroom</option>
-            <option
-              v-for="showroom in showrooms"
-              :key="showroom.id"
-              :value="showroom.id"
-            >
-              {{ showroom.Name }}
-            </option>
-          </select>
-
-          <label :for="employeeSelect">Selected Employee</label>
-          <select
-            class="form-control mb-3"
-            :id="employeeSelect"
-            v-model="selectedEmployee"
-          >
-            <option value="0">All Employee</option>
-            <option
-              v-for="Employee in Employees"
-              :key="Employee.id"
-              :value="Employee.id"
-            >
-              {{ Employee.name }}
-            </option>
-          </select>
-
-          <label :for="kpi">KPI</label>
-          <input
-            class="form-control mb-3"
-            type="number"
-            :id="kpi"
-            v-model="kpi"
-            :min="0"
-            placeholder="Enter data"
-          />
-
-          <label :for="popupInputData">Selected Month</label>
-          <input
-            class="form-control mb-3"
-            type="month"
-            :id="popupInputData"
-            v-model="popupInputData"
-            placeholder="Enter data"
-          />
-
-          <button
-            v-if="this.dialogEdit != true"
-            class="custom-btn bnt-16"
-            type="submit"
-            @click="saveData"
-            :disabled="this.popupInputData == ''"
-          >
-            Save
-          </button>
-
-          <button
-            v-if="this.dialogEdit == true"
-            class="custom-btn bnt-16"
-            type="submit"
-            @click="saveDataChanges"
-            :disabled="this.popupInputData == ''"
-          >
-            Save
-          </button>
-          <button class="custom-btn bnt-16" @click="closePopup">Cancel</button>
-        </div>
-      </div>
 
       <div v-if="dialogDelete" max-width="500px" class="popup">
         <div class="">
@@ -546,8 +470,11 @@ export default {
       selectedArtist: 0,
       showroomschedule: [],
       showrooms: [],
+      showroomsnone: [],
       Employees: [],
-      apiDataAritst: [],
+      artists: [],
+      artistsnone: [],
+      artistshowroom: [],
       selectedAritst: null,
       selectedShowroom: null,
       selectedEmployee: null,
@@ -615,6 +542,43 @@ export default {
   methods: {
 
 
+    async fetchArtistsShowrooms() {
+      await axios
+        .get(`/api/artistshowroom`)
+        .then((response) => {
+          this.artistshowroom = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching API data:", error);
+        });
+    },
+
+      updateArtistshowroom(showroom , artist) {
+        if (showroom !== null ) {
+          this.artists = this.artistshowroom
+            .filter(
+              (item) =>
+                parseInt(item.showroom_id) === parseInt(showroom) && item.artist.status == "published"
+            ) // Lọc ra các dữ liệu có showroom_id là 21
+            .map((item) => item.artist); // Chỉ trích xuất thông tin của artist
+
+            this.selectedAritst = null;
+   
+        } else {
+          this.artists = this.artistsnone;
+        }
+
+        if (artist !== null ) {
+          this.showrooms = this.artistshowroom
+            .filter(
+              (item) => parseInt(item.artist_id) === parseInt(artist) && item.showroom.status == "published"
+            ) // Lọc ra các dữ liệu có artist_id là 21
+            .map((item) => item.showroom); // Chỉ trích xuất thông tin của showroom
+        }else {
+          this.showrooms = this.showroomsnone;
+        }
+
+      },
 
     async exportToExcel() {
 
@@ -784,6 +748,7 @@ export default {
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
+          this.showroomsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching showrooms:", error);
@@ -805,7 +770,8 @@ export default {
       await  axios
         .get("/api/artist")
         .then((response) => {
-          this.apiDataAritst = response.data;
+          this.artists = response.data;
+          this.artistsnone = response.data;
         })
         .catch((error) => {
           console.error("Error fetching artist::", error);
@@ -1020,7 +986,7 @@ export default {
           text: "Payment Details",
           align: "center",
           children: [
-            { text: "Price", getColumn: 12, value: "Price", width: "100px" },
+            { text: "Booking Value", getColumn: 12, value: "Price", width: "100px" },
             {
               text: "Deposit",
               getColumn: 13,
@@ -1219,7 +1185,7 @@ export default {
 
     }, 
 
-          redirectToEditPage(bookId) {
+      redirectToEditPage(bookId) {
         let editUrl = '';
 
         if (this.adminId != null) {
@@ -1304,6 +1270,7 @@ export default {
     this.fetchShowrooms();
     this.fetchapiDataEmployee();
     this.fetchArtist();
+    this.fetchArtistsShowrooms();
   },
 
   computed: {

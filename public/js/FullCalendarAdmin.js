@@ -49,6 +49,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     var _this = this;
     return {
       artists: [],
+      artistsnone: [],
       adminId: null,
       artistId: null,
       employeeId: null,
@@ -56,10 +57,14 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       selectedArtist: 0,
       showroomschedule: [],
       showrooms: [],
+      showroomsnone: [],
       selectedStatusArtist: [],
       selectedShowroom: 0,
       selectedShowroomPopup: 0,
-      selectedActive: "none",
+      // Mảng selectedActive để lưu trạng thái selectedActive của từng artist
+      selectedActive: {},
+      // Mảng note để lưu ghi chú của từng artist
+      note: {},
       step: "FullCalendar",
       selectedStatus: "None",
       data: [],
@@ -115,10 +120,37 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       activeDays: [],
       popupnone: "active",
       selectedApproved: "pending",
-      selectedApprovedArtist: 0
+      selectedApprovedArtist: 0,
+      artistshowroom: []
     };
   },
   methods: {
+    onChange: function onChange(showroom, artist) {
+      this.runFullcalendar();
+      this.updateArtistshowroom(showroom, artist);
+    },
+    updateArtistshowroom: function updateArtistshowroom(showroom, artist) {
+      if (parseInt(showroom) !== 0) {
+        this.artists = this.artistshowroom.filter(function (item) {
+          return parseInt(item.showroom_id) === parseInt(showroom) && item.artist.status == "published";
+        }) // Lọc ra các dữ liệu có showroom_id là 21
+        .map(function (item) {
+          return item.artist;
+        }); // Chỉ trích xuất thông tin của artist
+      } else {
+        this.artists = this.artistsnone;
+      }
+      if (parseInt(artist) !== 0) {
+        this.showrooms = this.artistshowroom.filter(function (item) {
+          return parseInt(item.artist_id) === parseInt(artist) && item.showroom.status == "published";
+        }) // Lọc ra các dữ liệu có artist_id là 21
+        .map(function (item) {
+          return item.showroom;
+        }); // Chỉ trích xuất thông tin của showroom
+      } else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
     toggleAllSelection: function toggleAllSelection() {
       // Khi checkbox "All" được nhấp, cập nhật tất cả các checkbox nghệ sĩ
       this.allSelected = !this.allSelected;
@@ -257,6 +289,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     toggleApproval: function toggleApproval() {
       if (this.popupnone !== "Approved") {
         this.popupnone = "Approved"; // Use assignment operator to update the variable
+        this.selectedApprovedArtist = 0;
       }
     },
     handleViewRender: function handleViewRender(view) {
@@ -273,25 +306,39 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       var _this3 = this;
       // Tạo một đối tượng dữ liệu để gửi lên server
 
-      var postData = {
-        showroomId: this.selectedShowroomPopup,
-        activeStatus: this.selectedActive,
-        inputData: this.popupInputData,
-        artistId: this.selectedStatusArtist
-      };
+      if (this.adminId !== null && (this.manage_supers == 0 || this.manage_supers == 1 || this.manage_supers == 4)) {
+        // Tạo một đối tượng dữ liệu để gửi lên server
+        var artistData = this.artists.map(function (artist) {
+          return {
+            id: artist.id,
+            selectedActive: _this3.selectedActive[artist.id],
+            note: _this3.note[artist.id]
+          };
+        });
 
-      // Gửi yêu cầu POST đến API để lưu dữ liệu
-      axios__WEBPACK_IMPORTED_MODULE_5__["default"].post("/api/save-data", postData).then(function (response) {
-        // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+        // Hiển thị mảng artistData trong console
 
-        _this3.selectedActive = "none";
-        _this3.selectedStatusArtist = [];
-        _this3.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
-        _this3.closePopup(); // Đóng popup sau khi lưu thành công
-      })["catch"](function (error) {
-        console.error("Error saving data:", error);
-        // Xử lý lỗi nếu có
-      });
+        var postData = {
+          showroomId: this.selectedShowroomPopup,
+          inputData: this.popupInputData,
+          artistId: artistData
+        };
+
+        // Gửi yêu cầu POST đến API để lưu dữ liệu
+        axios__WEBPACK_IMPORTED_MODULE_5__["default"].post("/api/save-data", postData).then(function (response) {
+          // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+
+          _this3.selectedActive = "none";
+          _this3.selectedStatusArtist = [];
+          _this3.runFullcalendar(); // Sử dụng arrow function để bảo đảm this
+          _this3.closePopup(); // Đóng popup sau khi lưu thành công
+        })["catch"](function (error) {
+          console.error("Error saving data:", error);
+          // Xử lý lỗi nếu có
+        });
+      } else {
+        this.closePopup(); // Đóng popup sau khi lưu thành công
+      }
     },
     saveDataApproved: function saveDataApproved() {
       var _this4 = this;
@@ -374,27 +421,81 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     },
     fetchShowrooms: function fetchShowrooms() {
       var _this7 = this;
-      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/showrooms").then(function (response) {
-        _this7.showrooms = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching showrooms:", error);
-      });
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/showrooms").then(function (response) {
+                _this7.showrooms = response.data;
+                _this7.showroomsnone = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching showrooms:", error);
+              });
+            case 2:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }))();
     },
     fetchArtists: function fetchArtists() {
       var _this8 = this;
-      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/artist").then(function (response) {
-        _this8.artists = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/artist").then(function (response) {
+                _this8.artists = response.data;
+                _this8.artistsnone = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 2:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
+      }))();
+    },
+    fetchArtistsShowrooms: function fetchArtistsShowrooms() {
+      var _this9 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/artistshowroom").then(function (response) {
+                _this9.artistshowroom = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 2:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5);
+      }))();
     },
     fetchShowroomschedule: function fetchShowroomschedule() {
-      var _this9 = this;
-      axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
-        _this9.showroomschedule = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
+      var _this10 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_5__["default"].get("/api/showroomschedule/".concat(_this10.selectedShowroom)).then(function (response) {
+                _this10.showroomschedule = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 2:
+            case "end":
+              return _context6.stop();
+          }
+        }, _callee6);
+      }))();
     },
     handleDateSelect: function handleDateSelect(info) {
       this.selectedDate = info.start;
@@ -407,13 +508,13 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       });
     },
     loadEvents: function loadEvents() {
-      var _this10 = this;
+      var _this11 = this;
       this.fetchShowroomschedule();
 
       // Flatten the nested structure into a flat array of events
       var flatEvents = Object.keys(this.data).flatMap(function (date) {
-        return Object.keys(_this10.data[date]).flatMap(function (showroomId) {
-          return _this10.data[date][showroomId].bookingData.map(function (booking) {
+        return Object.keys(_this11.data[date]).flatMap(function (showroomId) {
+          return _this11.data[date][showroomId].bookingData.map(function (booking) {
             return _objectSpread(_objectSpread({}, booking), {}, {
               date: date,
               // Add the date property to each booking
@@ -424,8 +525,8 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       });
 
       var flatEventsActive = Object.keys(this.data).flatMap(function (date) {
-        return Object.keys(_this10.data[date]).flatMap(function (showroomId) {
-          var dailyData = _this10.data[date][showroomId].dailyData;
+        return Object.keys(_this11.data[date]).flatMap(function (showroomId) {
+          var dailyData = _this11.data[date][showroomId].dailyData;
 
           // Check if dailyData i
           return [_objectSpread(_objectSpread({}, dailyData), {}, {
@@ -436,10 +537,10 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 
       // Filter the flattened events
       var filteredEvents = flatEvents.filter(function (event) {
-        var artistMatch = _this10.selectedArtist === 0 || parseInt(event.ArtistID) === parseInt(_this10.selectedArtist);
-        var statusMatch = _this10.selectedStatus === "None" || event.status === _this10.selectedStatus;
+        var artistMatch = _this11.selectedArtist === 0 || parseInt(event.ArtistID) === parseInt(_this11.selectedArtist);
+        var statusMatch = _this11.selectedStatus === "None" || event.status === _this11.selectedStatus;
         var actionMatch = true;
-        if (_this10.artistId !== null) {
+        if (_this11.artistId !== null) {
           actionMatch = event.action === "approved";
         }
         return artistMatch && statusMatch && actionMatch;
@@ -475,7 +576,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       // Map the background events to FullCalendar format
       // Assuming this.data is your data structure
       var backgroundEvents = Object.keys(this.data).flatMap(function (date) {
-        var dailyData = _this10.data[date];
+        var dailyData = _this11.data[date];
         var isDayActive = Object.values(dailyData).some(function (showroomData) {
           return parseInt(showroomData.dailyData.active) === 0;
         });
@@ -563,8 +664,9 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     if (this.artistId !== null) {
       this.selectedArtist = this.artistId;
     }
-    this.fetchShowrooms();
     this.fetchArtists();
+    this.fetchShowrooms();
+    this.fetchArtistsShowrooms();
     this.runFullcalendar();
   }
 });
@@ -583,10 +685,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   render: () => (/* binding */ render),
 /* harmony export */   staticRenderFns: () => (/* binding */ staticRenderFns)
 /* harmony export */ });
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
@@ -616,7 +714,9 @@ var render = function render() {
           return val;
         });
         _vm.selectedShowroom = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.runFullcalendar]
+      }, function ($event) {
+        return _vm.onChange(_vm.selectedShowroom, _vm.selectedArtist);
+      }]
     }
   }, [_c("option", {
     attrs: {
@@ -655,7 +755,9 @@ var render = function render() {
           return val;
         });
         _vm.selectedArtist = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }, _vm.runFullcalendar]
+      }, function ($event) {
+        return _vm.onChange(_vm.selectedShowroom, _vm.selectedArtist);
+      }]
     }
   }, [_c("option", {
     attrs: {
@@ -780,7 +882,7 @@ var render = function render() {
       id: "showroomSelect"
     },
     on: {
-      change: function change($event) {
+      change: [function ($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
           return o.selected;
         }).map(function (o) {
@@ -788,7 +890,9 @@ var render = function render() {
           return val;
         });
         _vm.selectedShowroomPopup = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
+      }, function ($event) {
+        return _vm.updateArtistshowroom(_vm.selectedShowroomPopup, 0);
+      }]
     }
   }, [_c("option", {
     attrs: {
@@ -804,135 +908,83 @@ var render = function render() {
         value: showroom.id
       }
     }, [_vm._v("\n              " + _vm._s(showroom.Name) + "\n            ")]);
-  })], 2), _vm._v(" "), _c("div", {
+  })], 2), _vm._v(" "), _vm.selectedShowroomPopup !== 0 ? _c("div", {
     staticClass: "mb-3",
     staticStyle: {
       display: "flex",
       "flex-wrap": "wrap",
       gap: "1rem"
     }
-  }, [_c("div", {
-    staticStyle: {
-      flex: "1"
-    }
-  }, [_c("label", {
-    staticClass: "label m-0"
-  }, [_c("input", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedStatusArtist,
-      expression: "selectedStatusArtist"
-    }],
-    attrs: {
-      type: "checkbox"
-    },
-    domProps: _defineProperty({
-      value: 0,
-      checked: _vm.allSelected
-    }, "checked", Array.isArray(_vm.selectedStatusArtist) ? _vm._i(_vm.selectedStatusArtist, 0) > -1 : _vm.selectedStatusArtist),
-    on: {
-      change: [function ($event) {
-        var $$a = _vm.selectedStatusArtist,
-          $$el = $event.target,
-          $$c = $$el.checked ? true : false;
-        if (Array.isArray($$a)) {
-          var $$v = 0,
-            $$i = _vm._i($$a, $$v);
-          if ($$el.checked) {
-            $$i < 0 && (_vm.selectedStatusArtist = $$a.concat([$$v]));
-          } else {
-            $$i > -1 && (_vm.selectedStatusArtist = $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
-          }
-        } else {
-          _vm.selectedStatusArtist = $$c;
-        }
-      }, _vm.toggleAllSelection]
-    }
-  }), _vm._v(" "), _c("div", {
-    staticClass: "radio-header radio-text"
-  }, [_vm._v("All")])])]), _vm._v(" "), _vm._l(_vm.artists, function (artist) {
+  }, _vm._l(_vm.artists, function (artist) {
     return _c("div", {
       key: artist.id,
       staticStyle: {
-        flex: "1"
+        width: "100%"
       }
     }, [_c("label", {
-      staticClass: "label m-0",
+      staticClass: "label01 m-0",
       attrs: {
         "for": "artist_" + artist.id
       }
-    }, [_c("input", {
+    }, [_c("div", {
+      staticStyle: {
+        width: "100%"
+      }
+    }, [_vm._v(_vm._s(artist.name))]), _vm._v(" "), _c("select", {
       directives: [{
         name: "model",
         rawName: "v-model",
-        value: _vm.selectedStatusArtist,
-        expression: "selectedStatusArtist"
+        value: _vm.selectedActive[artist.id],
+        expression: "selectedActive[artist.id]"
       }],
-      attrs: {
-        type: "checkbox",
-        id: "artist_" + artist.id
-      },
-      domProps: {
-        value: artist.id,
-        checked: Array.isArray(_vm.selectedStatusArtist) ? _vm._i(_vm.selectedStatusArtist, artist.id) > -1 : _vm.selectedStatusArtist
-      },
+      staticClass: "form-control",
       on: {
         change: function change($event) {
-          var $$a = _vm.selectedStatusArtist,
-            $$el = $event.target,
-            $$c = $$el.checked ? true : false;
-          if (Array.isArray($$a)) {
-            var $$v = artist.id,
-              $$i = _vm._i($$a, $$v);
-            if ($$el.checked) {
-              $$i < 0 && (_vm.selectedStatusArtist = $$a.concat([$$v]));
-            } else {
-              $$i > -1 && (_vm.selectedStatusArtist = $$a.slice(0, $$i).concat($$a.slice($$i + 1)));
-            }
-          } else {
-            _vm.selectedStatusArtist = $$c;
-          }
+          var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
+            return o.selected;
+          }).map(function (o) {
+            var val = "_value" in o ? o._value : o.value;
+            return val;
+          });
+          _vm.$set(_vm.selectedActive, artist.id, $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
         }
       }
-    }), _vm._v(" "), _c("div", {
-      staticClass: "radio-header radio-text"
-    }, [_vm._v(_vm._s(artist.name))])])]);
-  })], 2), _vm._v(" "), _c("select", {
-    directives: [{
-      name: "model",
-      rawName: "v-model",
-      value: _vm.selectedActive,
-      expression: "selectedActive"
-    }],
-    staticClass: "form-control mb-3",
-    attrs: {
-      id: "activeSelect"
-    },
-    on: {
-      change: function change($event) {
-        var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
-          return o.selected;
-        }).map(function (o) {
-          var val = "_value" in o ? o._value : o.value;
-          return val;
-        });
-        _vm.selectedActive = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
+    }, [_c("option", {
+      attrs: {
+        value: "undefined",
+        selected: ""
       }
-    }
-  }, [_c("option", {
-    attrs: {
-      value: "none"
-    }
-  }, [_vm._v("Select active status")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "1"
-    }
-  }, [_vm._v("Active")]), _vm._v(" "), _c("option", {
-    attrs: {
-      value: "0"
-    }
-  }, [_vm._v("None Active")])]), _vm._v(" "), _c("input", {
+    }, [_vm._v("Unidentified")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "1"
+      }
+    }, [_vm._v("Active")]), _vm._v(" "), _c("option", {
+      attrs: {
+        value: "0"
+      }
+    }, [_vm._v("None Active")])]), _vm._v(" "), _c("input", {
+      directives: [{
+        name: "model",
+        rawName: "v-model",
+        value: _vm.note[artist.id],
+        expression: "note[artist.id]"
+      }],
+      staticClass: "form-control",
+      attrs: {
+        type: "text",
+        placeholder: "Note"
+      },
+      domProps: {
+        value: _vm.note[artist.id]
+      },
+      on: {
+        input: function input($event) {
+          if ($event.target.composing) return;
+          _vm.$set(_vm.note, artist.id, $event.target.value);
+        }
+      }
+    })])]);
+  }), 0) : _vm._e(), _vm._v(" "), _c("input", {
     directives: [{
       name: "model",
       rawName: "v-model",
@@ -979,7 +1031,7 @@ var render = function render() {
       id: "showroomSelect"
     },
     on: {
-      change: function change($event) {
+      change: [function ($event) {
         var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
           return o.selected;
         }).map(function (o) {
@@ -987,7 +1039,9 @@ var render = function render() {
           return val;
         });
         _vm.selectedShowroomPopup = $event.target.multiple ? $$selectedVal : $$selectedVal[0];
-      }
+      }, function ($event) {
+        return _vm.updateArtistshowroom(_vm.selectedShowroomPopup, _vm.selectedApprovedArtist);
+      }]
     }
   }, [_c("option", {
     attrs: {
@@ -3227,7 +3281,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_laravel_mix_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.event-info[data-v-4faee8a7] {\n  position: absolute;\n  background-color: white;\n  border: 1px solid #ccc;\n  padding: 10px;\n  z-index: 999;\n}\n.popup[data-v-4faee8a7] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 1;\n}\n.popup-content[data-v-4faee8a7] {\n  background: white;\n  padding: 20px;\n  border-radius: 8px;\n}\n.custom-btn[data-v-4faee8a7] {\n  width: 130px;\n  height: 40px;\n  color: #000000;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16[data-v-4faee8a7] {\n  border: none;\n  color: #000;\n}\n.btn-16[data-v-4faee8a7]:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16[data-v-4faee8a7]:hover {\n  color: #000;\n}\n.btn-16[data-v-4faee8a7]:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16[data-v-4faee8a7]:active {\n  top: 2px;\n}\n.Unidentified[data-v-4faee8a7] {\n  background-color: #9f9fa7 !important;\n  color: #ffffff;\n}\n.date-revenue-price[data-v-4faee8a7] {\n  padding: 0.5rem;\n  color: black;\n}\n.revenue-false[data-v-4faee8a7] {\n  background: #fac4c4;\n}\n.fc-daygrid-day-top a[data-v-4faee8a7] {\n  width: 100%;\n  padding: 0.5rem;\n}\n.fc-daygrid-day-number[data-v-4faee8a7] {\n  width: 100% !important;\n  padding: 0.5rem;\n}\n.approved[data-v-4faee8a7] {\n  background-color: green;\n  color: white;\n}\n.active[data-v-4faee8a7] {\n  background-color: green;\n  color: white;\n}\n.icon-revenue[data-v-4faee8a7] {\n  position: absolute;\n  right: 0.15rem;\n  top: 0.1rem;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n.event-info[data-v-4faee8a7] {\n  position: absolute;\n  background-color: white;\n  border: 1px solid #ccc;\n  padding: 10px;\n  z-index: 999;\n}\n.popup[data-v-4faee8a7] {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.5);\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  z-index: 1;\n}\n.popup-content[data-v-4faee8a7] {\n  background: white;\n  padding: 20px;\n  border-radius: 8px;\n}\n.custom-btn[data-v-4faee8a7] {\n  width: 130px;\n  height: 40px;\n  color: #000000;\n  border-radius: 5px;\n  padding: 10px 25px;\n  margin-top: 1rem;\n  font-family: \"Lato\", sans-serif;\n  font-weight: 500;\n  background: transparent;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  position: relative;\n  display: inline-block;\n  box-shadow: inset 2px 2px 2px 0px rgba(255, 255, 255, 0.5),\n    7px 7px 20px 0px rgba(0, 0, 0, 0.1), 4px 4px 5px 0px rgba(0, 0, 0, 0.1);\n  outline: none;\n}\n\n/* 16 */\n.btn-16[data-v-4faee8a7] {\n  border: none;\n  color: #000;\n}\n.btn-16[data-v-4faee8a7]:after {\n  position: absolute;\n  content: \"\";\n  width: 0;\n  height: 100%;\n  top: 0;\n  left: 0;\n  direction: rtl;\n  z-index: -1;\n  box-shadow: -7px -7px 20px 0px #fff9, -4px -4px 5px 0px #fff9,\n    7px 7px 20px 0px #0002, 4px 4px 5px 0px #0001;\n  transition: all 0.3s ease;\n}\n.btn-16[data-v-4faee8a7]:hover {\n  color: #000;\n}\n.btn-16[data-v-4faee8a7]:hover:after {\n  left: auto;\n  right: 0;\n  width: 100%;\n}\n.btn-16[data-v-4faee8a7]:active {\n  top: 2px;\n}\n.Unidentified[data-v-4faee8a7] {\n  background-color: #9f9fa7 !important;\n  color: #ffffff;\n}\n.date-revenue-price[data-v-4faee8a7] {\n  padding: 0.5rem;\n  color: black;\n}\n.revenue-false[data-v-4faee8a7] {\n  background: #fac4c4;\n}\n.fc-daygrid-day-top a[data-v-4faee8a7] {\n  width: 100%;\n  padding: 0.5rem;\n}\n.fc-daygrid-day-number[data-v-4faee8a7] {\n  width: 100% !important;\n  padding: 0.5rem;\n}\n.approved[data-v-4faee8a7] {\n  background-color: green;\n  color: white;\n}\n.active[data-v-4faee8a7] {\n  background-color: green;\n  color: white;\n}\n.icon-revenue[data-v-4faee8a7] {\n  position: absolute;\n  right: 0.15rem;\n  top: 0.1rem;\n}\n.label01[data-v-4faee8a7] {\n  width: 100% !important;\n  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23) !important;\n  border-radius: 10px !important;\n  padding: 10px 10px !important;\n  margin: 0.5rem 0px !important;\n  background-color: #fff !important;\n  transition: 0.1s !important;\n  position: relative !important;\n  text-align: left !important;\n  box-sizing: border-box !important;\n  display: flex !important;\n  gap: 1rem !important;\n  align-items: center;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

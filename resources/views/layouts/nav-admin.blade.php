@@ -92,6 +92,9 @@
                 </li>
 
                 <li>
+                    <a href="{{ route('roster') }}"><i class="fa-regular fa-calendar"></i></a>
+                </li>
+                <li>
                     <a href="#"><i class="fa-solid fa-clipboard-user"></i></a>
                     <ul class="sidebar__submenu">
                         <li class="title">Employee</li>
@@ -119,6 +122,7 @@
                             <ul class="sidebar__dropdown-menu">
                                 <li><a href=" {{ route('showrooms.index') }} ">All Showrooms</a></li>
                                 <li><a href="{{ route('showrooms.create') }}">Add New Showrooms </a></li>
+                                <li><a href="{{ route('showrooms.groups') }}">Groups Showrooms </a></li>
                             </ul>
                         </li>
                         <li>
@@ -274,7 +278,11 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('employee.book.index') }}"><i class="fab fa-servicestack"></i></a>
+                    <a href="{{ route('artists.book.index') }}"><i class="fab fa-servicestack"></i></a>
+                </li>
+
+                <li>
+                    <a href="{{ route('roster_employee') }}"><i class="fa-regular fa-calendar"></i></a>
                 </li>
                 <li>
                     <a class="dropdown-item logout" href="{{ route('logout') }}"

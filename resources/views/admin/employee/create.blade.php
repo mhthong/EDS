@@ -27,6 +27,7 @@
         <!-- start: MAIN -->
         <section id="main">
 
+
             <!-- start: MAIN TOP -->
             <div class="main__top">
                 @include('admin.main__top')
@@ -35,8 +36,6 @@
 
             <!-- start: MAIN BODY -->
             <div class="main__body">
-
-
 
                 <div class="main__body__data">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 flexb-c">
@@ -86,6 +85,21 @@
                                                 <label for="description">Description:</label>
                                                 <textarea name="description" id="description" class="form-control" placeholder=" Description"></textarea>
                                             </div>
+
+                                            <div class="form-group">
+                                                <label for="description">Team :</label>
+
+                                                @isset($team)
+                                                    <select name="team_id" id="" class="form-control">
+                                                        <option value="null"  selected >Team</option>
+                                                        @foreach ($team as $row)
+                                                            <option value="{{ $row->id }}">{{ $row->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                @endisset
+                                            </div>
+
+
 
 
                                         </div>
@@ -200,13 +214,11 @@
     </script>
     <script src="/vendor/laravel-filemanager/js/stand-alone-button.js"></script>
     <script>
-  
         var route_prefix = "/admin/laravel-filemanager";
 
         $('#image_manager').filemanager('image', {
             prefix: route_prefix
         });
-
     </script>
 
 

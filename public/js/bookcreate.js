@@ -25,6 +25,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   data: function data() {
     return {
       showrooms: [],
+      showroomsnone: [],
       showroomspath: "N/A",
       selectedShowroom: null,
       isActive: false,
@@ -51,6 +52,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       showAlert: false,
       apiData: [],
       artists: [],
+      artistsnone: [],
+      artistshowroom: [],
       formData: {
         name: "",
         email: "",
@@ -87,7 +90,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       checkformData: false,
       checkformDataName: false,
       checkformDataPhone: false,
-      checkformDataEmail: false
+      checkformDataEmail: false,
+      formSubmitted: false
       /*   selectedOption: "option1", */
     };
   },
@@ -106,9 +110,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     selectedShowroomName: function selectedShowroomName() {
       var _this2 = this;
-      // Lấy thông tin maps của showroom được chọn
+      // Lấy thông tin maps của showroom được chọnl
       if (this.selectedShowroom) {
-        var selectedShowroom = this.showrooms.find(function (showroom) {
+        var selectedShowroom = this.showroomsnone.find(function (showroom) {
           return showroom.id === _this2.selectedShowroom;
         });
         return selectedShowroom ? selectedShowroom.Name : "";
@@ -161,48 +165,96 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
 
   methods: {
-    checkSubmit: function checkSubmit() {
+    fetchArtistsShowrooms: function fetchArtistsShowrooms() {
       var _this5 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var response, isFormDataValid;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
-              if (!(_this5.formData.name == "" || _this5.formData.phone == "")) {
-                _context.next = 3;
-                break;
-              }
-              _this5.checkformData = true;
-              return _context.abrupt("return");
-            case 3:
-              _context.prev = 3;
-              _context.next = 6;
-              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/checkget/".concat(_this5.formData.phone));
-            case 6:
-              response = _context.sent;
-              _this5.get = response.data;
-              isFormDataValid = _this5.get && _this5.get.Phone.trim() === _this5.formData.phone.trim() && _this5.get.Name.trim() === _this5.formData.name.trim();
-              if (isFormDataValid || Object.keys(_this5.get).length === 0) {
-                document.getElementById("bookingForm").submit();
-              } else {
-                // Han  dle conditions not met
-                // For example, set flags or display error messages
-                _this5.checkformDataEmail = _this5.get && _this5.get.Email !== _this5.formData.email;
-                _this5.checkformDataPhone = _this5.get && _this5.get.Phone !== _this5.formData.phone;
-                _this5.checkformDataName = _this5.get && _this5.get.Name !== _this5.formData.name;
-              }
-              _context.next = 15;
-              break;
-            case 12:
-              _context.prev = 12;
-              _context.t0 = _context["catch"](3);
-              console.error("Error fetching showrooms:", _context.t0);
-              // Handle error as needed
-            case 15:
+              _context.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artistshowroom").then(function (response) {
+                _this5.artistshowroom = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 2:
             case "end":
               return _context.stop();
           }
-        }, _callee, null, [[3, 12]]);
+        }, _callee);
+      }))();
+    },
+    updateArtistshowroom: function updateArtistshowroom(showroom, artist) {
+      if (parseInt(showroom) !== 0 || showroom !== null) {
+        this.artists = this.artistshowroom.filter(function (item) {
+          return parseInt(item.showroom_id) === parseInt(showroom) && item.artist.status == "published";
+        }) // Lọc ra các dữ liệu có showroom_id là 21
+        .map(function (item) {
+          return item.artist;
+        }); // Chỉ trích xuất thông tin của artist
+      } else {
+        this.artists = this.artistsnone;
+      }
+      if (parseInt(artist) !== 0 || artist !== null) {
+        this.showrooms = this.artistshowroom.filter(function (item) {
+          return parseInt(item.artist_id) === parseInt(artist) && item.showroom.status == "published";
+        }) // Lọc ra các dữ liệu có artist_id là 21
+        .map(function (item) {
+          return item.showroom;
+        }); // Chỉ trích xuất thông tin của showroom
+      } else {
+        this.showrooms = this.showroomsnone;
+      }
+    },
+    checkSubmit: function checkSubmit() {
+      var _this6 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var response, isFormDataValid;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              if (!_this6.formSubmitted) {
+                _context2.next = 2;
+                break;
+              }
+              return _context2.abrupt("return");
+            case 2:
+              if (!(_this6.formData.name === "" || _this6.formData.phone === "")) {
+                _context2.next = 5;
+                break;
+              }
+              _this6.checkformData = true;
+              return _context2.abrupt("return");
+            case 5:
+              _context2.prev = 5;
+              _context2.next = 8;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/checkget/".concat(_this6.formData.phone));
+            case 8:
+              response = _context2.sent;
+              _this6.get = response.data;
+              isFormDataValid = _this6.get && _this6.get.Phone === _this6.formData.phone && _this6.get.Name === _this6.formData.name;
+              if (isFormDataValid || Object.keys(_this6.get).length === 0) {
+                _this6.formSubmitted = true; // Set flag to prevent further submissions
+                document.getElementById("bookingForm").submit();
+              } else {
+                // Handle conditions not met
+                // For example, set flags or display error messages
+                _this6.checkformDataEmail = _this6.get && _this6.get.Email !== _this6.formData.email;
+                _this6.checkformDataPhone = _this6.get && _this6.get.Phone !== _this6.formData.phone;
+                _this6.checkformDataName = _this6.get && _this6.get.Name !== _this6.formData.name;
+              }
+              _context2.next = 17;
+              break;
+            case 14:
+              _context2.prev = 14;
+              _context2.t0 = _context2["catch"](5);
+              console.error("Error fetching showrooms:", _context2.t0);
+              // Handle error as needed
+            case 17:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2, null, [[5, 14]]);
       }))();
     },
     updateImageDeposit: function updateImageDeposit(selectedService, newValue) {
@@ -222,9 +274,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return "".concat(formattedHours, ":").concat(formattedMinutes);
     },
     fetchShowrooms: function fetchShowrooms() {
-      var _this6 = this;
+      var _this7 = this;
       axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showrooms").then(function (response) {
-        _this6.showrooms = response.data;
+        _this7.showrooms = response.data;
+        _this7.showroomsnone = response.data;
       })["catch"](function (error) {
         console.error("Error fetching showrooms:", error);
       });
@@ -246,38 +299,80 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       });
     },
     fetchGroupServices: function fetchGroupServices() {
-      var _this7 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/group-services/".concat(this.selectedShowroom)).then(function (response) {
-        _this7.groupServices = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching group services:", error);
-      });
+      var _this8 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/group-services/".concat(_this8.selectedShowroom)).then(function (response) {
+                _this8.groupServices = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching group services:", error);
+              });
+            case 2:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }))();
     },
     fetchApiData: function fetchApiData() {
-      var _this8 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(this.selectedShowroom)).then(function (response) {
-        _this8.apiData = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
+      var _this9 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
+        return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+          while (1) switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/bookings/showroom/".concat(_this9.selectedShowroom)).then(function (response) {
+                _this9.apiData = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 2:
+            case "end":
+              return _context4.stop();
+          }
+        }, _callee4);
+      }))();
     },
     fetchArtists: function fetchArtists() {
-      var _this9 = this;
-      // Gọi API và cập nhật biến apiData với dữ liệu từ API
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
-        _this9.artists = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching API data:", error);
-      });
+      var _this10 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+        return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+          while (1) switch (_context5.prev = _context5.next) {
+            case 0:
+              _context5.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist").then(function (response) {
+                _this10.artists = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching API data:", error);
+              });
+            case 2:
+            case "end":
+              return _context5.stop();
+          }
+        }, _callee5);
+      }))();
     },
     fetchShowroomSchedule: function fetchShowroomSchedule() {
-      var _this10 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(this.selectedShowroom)).then(function (response) {
-        _this10.showroomSchedules = response.data;
-      })["catch"](function (error) {
-        console.error("Error fetching showroomschedule:", error);
-      });
+      var _this11 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee6() {
+        return _regeneratorRuntime().wrap(function _callee6$(_context6) {
+          while (1) switch (_context6.prev = _context6.next) {
+            case 0:
+              _context6.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/showroomschedule/".concat(_this11.selectedShowroom)).then(function (response) {
+                _this11.showroomSchedules = response.data;
+              })["catch"](function (error) {
+                console.error("Error fetching showroomschedule:", error);
+              });
+            case 2:
+            case "end":
+              return _context6.stop();
+          }
+        }, _callee6);
+      }))();
     },
     /*    filterActiveDays() {
       if (!this.selectedDate) return;
@@ -295,21 +390,39 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     console.log( this.filteredDays);
     }, */
     filterActiveDays: function filterActiveDays(DateTreament, index, artistId) {
-      var InforData = this.selectedServices[index];
-      if (!DateTreament || !this.selectedShowroom) return;
+      var _this12 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee7() {
+        var InforData;
+        return _regeneratorRuntime().wrap(function _callee7$(_context7) {
+          while (1) switch (_context7.prev = _context7.next) {
+            case 0:
+              InforData = _this12.selectedServices[index];
+              if (!(!DateTreament || !_this12.selectedShowroom)) {
+                _context7.next = 3;
+                break;
+              }
+              return _context7.abrupt("return");
+            case 3:
+              _context7.next = 5;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(DateTreament, "/").concat(_this12.selectedShowroom, "/").concat(artistId)).then(function (response) {
+                // Lấy giá trị active từ API
 
-      // Gửi yêu cầu API để lấy dữ liệu
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(DateTreament, "/").concat(this.selectedShowroom, "/").concat(artistId)).then(function (response) {
-        // Lấy giá trị active từ API
-        InforData.dateActive = response.data.active;
+                InforData.dateActive = response.data.active;
 
-        // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
-      })["catch"](function (error) {
-        console.error("Error fetching data:", error);
-      });
-      InforData.filteredDays = this.apiData.filter(function (schedule) {
-        return schedule.date === DateTreament && parseInt(schedule.ArtistID) === parseInt(InforData.Artist);
-      });
+                // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
+              })["catch"](function (error) {
+                console.error("Error fetching data:", error);
+              });
+            case 5:
+              InforData.filteredDays = _this12.apiData.filter(function (schedule) {
+                return schedule.date === DateTreament && parseInt(schedule.ArtistID) === parseInt(InforData.Artist);
+              });
+            case 6:
+            case "end":
+              return _context7.stop();
+          }
+        }, _callee7);
+      }))();
     },
     selectedDateToDay: function selectedDateToDay(dateString) {
       var date = new Date(dateString);
@@ -345,11 +458,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       var conflict = InforData.filteredDays.some(function (schedule) {
         var startTime = new Date("1970-01-01T".concat(schedule.time));
         var endTime = new Date("1970-01-01T".concat(schedule.time_end));
-        // ...
 
-        return selectedStartTime >= startTime && selectedStartTime < endTime || selectedEndTime > startTime && selectedEndTime <= endTime;
+        // Kiểm tra xem selectedStartTime và selectedEndTime nằm trong khoảng thời gian của lịch trình
+        var isStartTimeInsideSchedule = selectedStartTime >= startTime && selectedStartTime < endTime;
+        var isEndTimeInsideSchedule = selectedEndTime > startTime && selectedEndTime <= endTime;
+
+        // Kiểm tra xem startTime và endTime của lịch trình nằm trong khoảng thời gian của selectedStartTime và selectedEndTime
+        var isScheduleTimeInsideSelected = startTime >= selectedStartTime && endTime <= selectedEndTime;
+
+        // Kiểm tra xem selectedStartTime và selectedEndTime hoặc startTime và endTime của lịch trình có trùng nhau không
+        var isTimeEqual = selectedStartTime.getTime() === startTime.getTime() && selectedEndTime.getTime() === endTime.getTime();
+        return isStartTimeInsideSchedule || isEndTimeInsideSchedule || isScheduleTimeInsideSelected || isTimeEqual;
       });
-      if (conflict || selectedStartTime >= selectedEndTime || !isStartTimeValid || !isEndTimeValid) {
+      if (InforData.Status == "Unidentified" && selectedStartTime < selectedEndTime) {
+        InforData.isTimeConflict = false;
+        InforData.showAlert = false;
+      } else if (conflict || selectedStartTime >= selectedEndTime || !isStartTimeValid || !isEndTimeValid) {
         InforData.isTimeConflict = true;
         InforData.showAlert = true;
         InforData.StartTime = null;
@@ -384,20 +508,42 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.paymentImage = this.$refs.fileInput.files[0];
     },
     fetchServices: function fetchServices() {
-      var _this11 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
-        _this11.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching services:", error);
-      });
+      var _this13 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee8() {
+        return _regeneratorRuntime().wrap(function _callee8$(_context8) {
+          while (1) switch (_context8.prev = _context8.next) {
+            case 0:
+              _context8.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/services").then(function (response) {
+                _this13.services = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+              })["catch"](function (error) {
+                console.error("Error fetching services:", error);
+              });
+            case 2:
+            case "end":
+              return _context8.stop();
+          }
+        }, _callee8);
+      }))();
     },
     fetchArtistlevels: function fetchArtistlevels() {
-      var _this12 = this;
-      axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
-        _this12.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
-      })["catch"](function (error) {
-        console.error("Error fetching artist levels:", error);
-      });
+      var _this14 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
+        return _regeneratorRuntime().wrap(function _callee9$(_context9) {
+          while (1) switch (_context9.prev = _context9.next) {
+            case 0:
+              _context9.next = 2;
+              return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/artist-levels").then(function (response) {
+                _this14.artistlevels = response.data; // Cập nhật biến services với dữ liệu lấy từ server
+              })["catch"](function (error) {
+                console.error("Error fetching artist levels:", error);
+              });
+            case 2:
+            case "end":
+              return _context9.stop();
+          }
+        }, _callee9);
+      }))();
     },
     updateTotalPrice: function updateTotalPrice() {
       this.totalPrice = this.calculateTotalPrice;
@@ -410,9 +556,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return formatter.format(value);
     },
     getSelectedServiceNames: function getSelectedServiceNames() {
-      var _this13 = this;
+      var _this15 = this;
       return this.selectedServices.map(function (id) {
-        return _this13.getServiceName(id);
+        return _this15.getServiceName(id);
       }).join(", ");
     },
     getServiceName: function getServiceName(id) {
@@ -422,9 +568,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return service ? service.Name : "";
     },
     getSelectedServicePrice: function getSelectedServicePrice() {
-      var _this14 = this;
+      var _this16 = this;
       return this.selectedServices.map(function (service) {
-        return _this14.getServicePrice(service);
+        return _this16.getServicePrice(service);
       }).join(", ");
     },
     getServicePrice: function getServicePrice(id) {
@@ -546,40 +692,53 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     nextStep: function nextStep() {
-      if (this.step === "showroom") {
-        if (this.selectedShowroom) {
-          this.fetchGroupServices();
-          this.fetchApiData();
-          this.selectedGroupService = "";
-          this.step = "groupService";
-        }
-      } else if (this.step === "groupService") {
-        if (this.selectedServices) {
-          this.fetchArtistlevels();
-          this.step = "artistlevels";
-        }
-      } else if (this.step === "artistlevels") {
-        if (this.selectedShowroom) {
-          this.fetchShowroomSchedule();
-          this.selectedServices.map(function (Service) {
-            var _document$getElementB;
-            var inputId = "Deposit_" + Service.id;
-            var inputValue = (_document$getElementB = document.getElementById(inputId)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.value;
-            if (inputValue !== undefined) {
-              Service.ImageDeposit = inputValue;
-            }
-          });
-          this.step = "getShow";
-          this.fetchArtists();
-          var bookingDatavalue = {
-            showroomId: this.selectedShowroom,
-            serviceIds: this.selectedServices,
-            Level_price: this.totalLevelPrice,
-            Artist_levelID: this.selectedArtistlevel
-          };
-          this.bookingData = JSON.stringify(bookingDatavalue);
-        }
-      }
+      var _this17 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10() {
+        var bookingDatavalue;
+        return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+          while (1) switch (_context10.prev = _context10.next) {
+            case 0:
+              if (_this17.step === "showroom") {
+                if (_this17.selectedShowroom) {
+                  _this17.fetchGroupServices();
+                  _this17.fetchApiData();
+                  _this17.updateArtistshowroom(_this17.selectedShowroom, 0);
+                  _this17.selectedGroupService = "";
+                  _this17.step = "groupService";
+                }
+              } else if (_this17.step === "groupService") {
+                if (_this17.selectedServices) {
+                  _this17.fetchArtistlevels();
+                  _this17.step = "artistlevels";
+                }
+              } else if (_this17.step === "artistlevels") {
+                if (_this17.selectedShowroom) {
+                  _this17.fetchShowroomSchedule();
+                  _this17.selectedServices.map(function (Service) {
+                    var _document$getElementB;
+                    var inputId = "Deposit_" + Service.id;
+                    var inputValue = (_document$getElementB = document.getElementById(inputId)) === null || _document$getElementB === void 0 ? void 0 : _document$getElementB.value;
+                    if (inputValue !== undefined) {
+                      Service.ImageDeposit = inputValue;
+                    }
+                  });
+                  _this17.step = "getShow";
+                  _this17.fetchArtists();
+                  bookingDatavalue = {
+                    showroomId: _this17.selectedShowroom,
+                    serviceIds: _this17.selectedServices,
+                    Level_price: _this17.totalLevelPrice,
+                    Artist_levelID: _this17.selectedArtistlevel
+                  };
+                  _this17.bookingData = JSON.stringify(bookingDatavalue);
+                }
+              }
+            case 1:
+            case "end":
+              return _context10.stop();
+          }
+        }, _callee10);
+      }))();
     },
     checkselectedArtist: function checkselectedArtist() {
       this.isIconActive = true;
@@ -587,6 +746,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     prevStep: function prevStep() {
       if (this.step === "groupService") {
         this.step = "showroom";
+        this.showrooms = this.showroomsnone;
         this.selectedGroupService = null;
         this.selectedServices = [];
         this.selectedArtistlevel = [];
@@ -631,6 +791,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     this.fetchShowroomSchedule();
     this.fetchApiData();
     this.fetchArtists();
+    this.fetchArtistsShowrooms();
     this.htmlData = this.selectedShowroomMap;
   }
 });
@@ -1488,7 +1649,7 @@ var render = function render() {
         expression: "selectedService.Status"
       }],
       on: {
-        change: function change($event) {
+        change: [function ($event) {
           var $$selectedVal = Array.prototype.filter.call($event.target.options, function (o) {
             return o.selected;
           }).map(function (o) {
@@ -1496,7 +1657,9 @@ var render = function render() {
             return val;
           });
           _vm.$set(selectedService, "Status", $event.target.multiple ? $$selectedVal : $$selectedVal[0]);
-        }
+        }, function ($event) {
+          return _vm.checkTimeConflict(index);
+        }]
       }
     }, [_c("option", {
       attrs: {

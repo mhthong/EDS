@@ -9,6 +9,7 @@ use App\Http\Controllers\KpiController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\GroupController;
 
 
 /*
@@ -64,12 +65,18 @@ Route::get('/bookings/showroom/{showroomId}', [APIBookingController::class, 'get
 Route::get('/employee', [APIBookingController::class, 'getemployeeData']);
 Route::get('/getallemployeeData', [APIBookingController::class, 'getallemployeeData']);
 Route::get('getDataShowroomEmployee/{start}/{end}/{employee}/{title}', [APIBookingController::class, 'getDataShowroomEmployee']);
-Route::get('Dashboard/{start}/{end}/{employee}/{title}', [APIBookingController::class, 'Dashboard']);
+Route::get('Dashboard/{start}/{end}/{group}/{employee}/{title}', [APIBookingController::class, 'Dashboard']);
 Route::get('/Sources', [SourceController::class, 'getSource']);
 Route::get('/kpis', [KpiController::class, 'getKpis']);
+Route::get('/groups', [GroupController::class, 'index']);
 Route::get('/kpis-data/{showroom}/{employee}/{date}', [KpiController::class, 'getKpisData']);
 Route::get('groupservice', [APIBookingController::class, 'groupservice']);  
 Route::get('checkget/{phone}', [APIBookingController::class, 'checkget']);
+Route::get('artistshowroom', [APIBookingController::class, 'artistshowroom']);
+Route::get('artistshowroomRoster', [APIBookingController::class, 'artistshowroomRoster']);
+Route::get('getWithBookingsInCurrentMonth', [APIBookingController::class, 'getWithBookingsInCurrentMFonth']);
+
+
 
 
 /* post */
@@ -79,15 +86,18 @@ Route::post('/save-data', [ApiPostController::class, 'saveDataActiveDate']);
 Route::post('/save-data-approved', [ApiPostController::class, 'saveDataApprovedDate']);
 Route::post('/changeStaff', [ApiPostController::class, 'changeStaff']);
 Route::post('/kpi-store', [ApiPostController::class, 'saveDataKPI']);
+Route::post('/groups-store', [ApiPostController::class, 'saveDataGroup']);
 Route::post('/update-payment-status', [PaymentController::class,'updatePaymentStatus']);
 Route::post('/source-store', [ApiPostController::class, 'saveDataSource']);
 /* put */
 
 Route::put('/kpi-update', [ApiPostController::class, 'updateDataKPI']);
+Route::put('/groups-update', [ApiPostController::class, 'updateDataGroups']);
 Route::put('/source-update', [ApiPostController::class, 'updateDataSource']);
 /* delete */
 
 Route::delete('/kpis/{id}', [ApiPostController::class, 'deleteKpi']);
+Route::delete('/groups/{id}', [ApiPostController::class, 'deleteGroup']);
 Route::delete('/delete_artist/{id}', [ApiPostController::class, 'deleteArtist']);
 Route::delete('/delete_service/{id}', [ApiPostController::class, 'deleteService']);
 Route::delete('/delete_showroom/{id}', [ApiPostController::class, 'deleteShowroom']);

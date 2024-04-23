@@ -212,6 +212,28 @@
                                                 </div>
                                             </div>
 
+
+
+                                        <div class="bg-ad-form right-sidebar mt-3">
+                                            <div class="widget meta-boxes">
+                                                <div class="widget-title">
+                                                    <h4><label for="status" class="m-0 control-label required"
+                                                            aria-required="true">Showroom</label></h4>
+                                                </div>
+
+                                                @isset($showrooms)
+                                                    @foreach ($showrooms as $showroom)
+                                                        <label>
+                                                            <input type="checkbox" name="groupshowroom[]"
+                                                                value="{{ $showroom->id }}"   {{ in_array($showroom->id, $showroomIds) ? 'checked' : '' }}>
+                                                            {{ $showroom->Name }}
+                                                        </label><br>
+                                                    @endforeach
+                                                @endisset
+
+                                            </div>
+                                        </div>
+
                                         </div>
                                     </div>
 

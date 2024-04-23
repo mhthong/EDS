@@ -16,8 +16,12 @@ class Employee extends Model implements Authenticatable
     // Define the table associated with the model
     protected $table = 'employee';
 
-    protected $fillable = ['name', 'fullname', 'password', 'phone', 'email', 'avatar', 'description', 'status'];
-
+    protected $fillable = ['name', 'fullname', 'password', 'phone', 'email', 'avatar', 'description', 'status','team_id'];
     // Define the relationships
 
-}
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class, 'team_id');
+    }
+
+}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
