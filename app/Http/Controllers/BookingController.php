@@ -171,6 +171,19 @@ class BookingController extends Controller
                 // Xác định ArtistID
                 $ArtistID = $bookingData['Artist'] == 0 ? Artists::where('name', '=', 'N/A')->first()->id : $bookingData['Artist'];
 
+                $OT_wage = 0;
+
+                if($bookingData['Artist'] != 0){
+                    $Artist =  Artists::where('id',$bookingData['Artist'])->first();
+
+                    if(  $Artist->artist_pay == 0 ){
+                        $OT_wage = $Artist->wage/8;
+                    } else{
+                        $OT_wage = $Artist->wage;
+                    }
+
+                }
+
                 // Tạo đối tượng Booking
                 $book = Booking::create([
                     'ArtistID' => $ArtistID,
@@ -189,6 +202,7 @@ class BookingController extends Controller
                     'source_name' => $source_name,
                     'source_id' => $source_id,
                     'source_type' => $source_type,
+                    'OT_wage' => $OT_wage ,
                 ]);
 
                 // Xử lý dữ liệu ImageDeposit
@@ -386,12 +400,16 @@ class BookingController extends Controller
     }
     public function updateEdit($book, $data)
     {
+
         // Get ArtistID
         $ArtistID = ($data['artist'] == 0) ? Artists::where('name', '=', 'N/A')->first()->id : $data['artist'];
     
         // Get content
         $content = $data['content'] ?? "";
     
+        $cancel_wage = $data['cancel_wage'] ?? 0;
+
+
         // Get related models
         $get = Get::findOrFail($book->GetID);
         $payment = Payment::where('BookingID', '=', $book->id)->firstOrFail();
@@ -418,6 +436,7 @@ class BookingController extends Controller
                     break;
                 case "Cancel":
                     $content = $data['Cancel'];
+                    $cancel_wage  = $data['cancel_wage'];
                     if ($data['Cancel'] === "Operation") {
                         $Total_price = $Price->Deposit_price;
                         $Remaining_price = 0;
@@ -508,6 +527,8 @@ class BookingController extends Controller
                 'Before_img' => $data['Before'] ?? $get->Before_img,
                 'Note' => $data['note'],
                 'Source' => $data['source'],
+                'OT_wage' => $data['OT_wage'],
+                'cancel_wage' => $cancel_wage,
                 'created_at' => $created_at,      
             ]);
             // Update Get   

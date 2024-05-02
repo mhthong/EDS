@@ -433,6 +433,11 @@ export default {
       Operation_KPI: 0,
       isNone: false,
       range_time: 0,
+      total_ChangeServies_wage : 0,
+      total_Cancel_wage : 0,
+      total_OT_wage : 0,
+      ChangeServies_time : 0,
+      OT_time : 0,
       total_wage: 0,
       artistshowroom: [],
     };
@@ -759,7 +764,13 @@ export default {
               percent_Unidentified: 0,
               Operation_KPI: 0,
               range_time: 0,
+              total_ChangeServies_wage : 0,
+              total_Cancel_wage: 0,
+              total_OT_wage : 0,
+              ChangeServies_time : 0,
+              OT_time : 0,
               total_wage: 0,
+
             };
           }
           // Thêm giá trị của Total_price vào tổng số tiền cho tên dịch vụ
@@ -783,6 +794,11 @@ export default {
           totals[Name].percent_Unidentified += fillerData.percent_Unidentified;
           totals[Name].Operation_KPI += fillerData.Operation_KPI;
           totals[Name].range_time += fillerData.range_time;
+          totals[Name].total_ChangeServies_wage += fillerData.total_ChangeServies_wage;
+          totals[Name].total_Cancel_wage += fillerData.total_Cancel_wage;
+          totals[Name].total_OT_wage += fillerData.total_OT_wage;
+          totals[Name].ChangeServies_time += fillerData.ChangeServies_time;
+          totals[Name].OT_time += fillerData.OT_time;
           totals[Name].total_wage += fillerData.total_wage;
         }
       }
@@ -845,6 +861,11 @@ export default {
       this.percent_Unidentified = 0;
       this.Operation_KPI = 0;
       this.range_time = 0;
+      this.total_ChangeServies_wage = 0;
+      this.total_Cancel_wage = 0;
+      this.total_OT_wage = 0;
+      this.ChangeServies_time = 0;
+      this.OT_time = 0;
       this.total_wage = 0;
 
       if (this.selectedShowroom !== null) {
@@ -879,6 +900,11 @@ export default {
         this.percent_Unidentified += parseFloat(item.percent_Unidentified);
         this.Operation_KPI += parseFloat(item.Operation_KPI);
         this.range_time += parseFloat(item.range_time);
+        this.total_ChangeServies_wage += parseFloat(item.total_ChangeServies_wage);
+        this.total_Cancel_wage += parseFloat(item.total_Cancel_wage);
+        this.total_OT_wage += parseFloat(item.total_OT_wage);
+        this.ChangeServies_time += parseFloat(item.ChangeServies_time);
+        this.OT_time += parseFloat(item.OT_time);
         this.total_wage += parseFloat(item.total_wage);
       });
 

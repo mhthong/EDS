@@ -407,7 +407,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               return axios__WEBPACK_IMPORTED_MODULE_0__["default"].get("/api/date-active/".concat(DateTreament, "/").concat(_this12.selectedShowroom, "/").concat(artistId)).then(function (response) {
                 // Lấy giá trị active từ API
 
-                InforData.dateActive = response.data.active;
+                if (InforData.Status == "Unidentified") {
+                  InforData.dateActive = true;
+                } else {
+                  InforData.dateActive = response.data.active;
+                }
 
                 // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
               })["catch"](function (error) {
@@ -443,6 +447,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     },
     checkTimeConflict: function checkTimeConflict(index) {
       var InforData = this.selectedServices[index];
+      if (InforData.Status == "Unidentified") {
+        InforData.dateActive = true;
+      }
       if (!InforData.StartTime || !InforData.EndTime) {
         InforData.isTimeConflict = false;
         return;

@@ -29,9 +29,48 @@ class ApiPostController extends Controller
 {
     //
 
+    public function changeServices(Request $request)
+    {
+        try {
+            // Log the received data
+            logger()->info('Received data: ' . print_r($request->all(), true));
+    
+            // Check authentication
+            $check = $this->CheckAuth();
+    
+            if (!$check) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+    
+            // Retrieve the booking based on the provided ID
+            $booking = Booking::find($request->input('id'));
+            $ServiceBooking = ServiceBooking::where('booking_id', $request->input('id'))->where('service_id', $request->input('serviceId'))->first();
+    
+            // Check if the booking exists
+            if (!$booking || !$ServiceBooking) {
+                return response()->json(['error' => 'Booking or Service not found'], 404);
+            }
+    
+            // Update values âm nó giảm thời gian làmn , dương thì tăng
+            $booking->change_time_servies =   $request->input('input')['time'] - $request->input('service_time') + $booking->change_time_servies;
 
 
-
+            $booking->change_service_wage = $request->input('change_service_wage');
+            $ServiceBooking->service_id = $request->input('input')['id'];
+    
+            // Save changes
+            $ServiceBooking->save();
+            $booking->save();
+    
+            return response()->json(['message' => 'Data updated successfully']);
+        } catch (\Exception $e) {
+            // Log the error
+            logger()->error('Failed to update data: ' . $e->getMessage());
+    
+            return response()->json(['error' => 'Failed to update data'], 500);
+        }
+    }
+    
 
     public function changeStaff(Request $request)
     {

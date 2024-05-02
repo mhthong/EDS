@@ -871,14 +871,18 @@ export default {
         return;
       }
 
-      const startTime = arg.event.start.toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit",
-      });
-      const endTime = arg.event.end.toLocaleTimeString([], {
-        hour: "numeric",
-        minute: "2-digit",
-      });
+      const startTime = arg.event.start
+        ? arg.event.start.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+          })
+        : "";
+      const endTime = arg.event.end
+        ? arg.event.end.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit",
+          })
+        : "";
 
       const currentUrl = window.location.href;
 

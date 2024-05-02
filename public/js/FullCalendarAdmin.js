@@ -615,14 +615,14 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       if (parseInt(this.selectedShowroom) === 0 && parseInt(this.selectedArtist) === 0 && this.adminId !== null && parseInt(this.manage_supers) === 4) {
         return;
       }
-      var startTime = arg.event.start.toLocaleTimeString([], {
+      var startTime = arg.event.start ? arg.event.start.toLocaleTimeString([], {
         hour: "numeric",
         minute: "2-digit"
-      });
-      var endTime = arg.event.end.toLocaleTimeString([], {
+      }) : "";
+      var endTime = arg.event.end ? arg.event.end.toLocaleTimeString([], {
         hour: "numeric",
         minute: "2-digit"
-      });
+      }) : "";
       var currentUrl = window.location.href;
       return {
         html: "\n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            <a href=\"").concat(currentUrl, "/books/").concat(arg.event.id, "/edit\" style=\"color: white\" target=\"_blank\">\n            <div class=\"fc-content-main\">\n            <span class=\"fc-status\">Booking person : ").concat(arg.event.extendedProps.source, " </span><br>\n            <span class=\"fc-status\">Client : ").concat(arg.event.extendedProps.get, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.action, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n            </a>\n          </div>\n        ")

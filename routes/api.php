@@ -85,6 +85,8 @@ Route::post('/bookings-store', [APIBookingController::class, 'postData']);
 Route::post('/save-data', [ApiPostController::class, 'saveDataActiveDate']);
 Route::post('/save-data-approved', [ApiPostController::class, 'saveDataApprovedDate']);
 Route::post('/changeStaff', [ApiPostController::class, 'changeStaff']);
+Route::post('/changeServices', [ApiPostController::class, 'changeServices']);
+
 Route::post('/kpi-store', [ApiPostController::class, 'saveDataKPI']);
 Route::post('/groups-store', [ApiPostController::class, 'saveDataGroup']);
 Route::post('/update-payment-status', [PaymentController::class,'updatePaymentStatus']);

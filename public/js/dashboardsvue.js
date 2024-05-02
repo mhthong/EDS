@@ -80,7 +80,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       apiDataEmployee: null,
       apiDatakpi: [],
       apiDataLeader: []
-    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _defineProperty(_ref, "percent_Pratial_Done", 0), _defineProperty(_ref, "percent_Reschedule", 0), _defineProperty(_ref, "percent_Unidentified", 0), _defineProperty(_ref, "Operation_KPI", 0), _defineProperty(_ref, "isNone", false), _defineProperty(_ref, "range_time", 0), _defineProperty(_ref, "total_wage", 0), _defineProperty(_ref, "artistshowroom", []), _ref;
+    }, _defineProperty(_ref, "kpi", 0), _defineProperty(_ref, "resuft", []), _defineProperty(_ref, "Booking_Value", 0), _defineProperty(_ref, "Actual_B_Value", 0), _defineProperty(_ref, "Total_Revenue", 0), _defineProperty(_ref, "Initial_P_Revenue", 0), _defineProperty(_ref, "Initial_Revenue", 0), _defineProperty(_ref, "Refund", 0), _defineProperty(_ref, "B_Refund_Value", 0), _defineProperty(_ref, "Deposit", 0), _defineProperty(_ref, "Remaining", 0), _defineProperty(_ref, "Upsell", 0), _defineProperty(_ref, "Cancel_Booking_Value", 0), _defineProperty(_ref, "Total_Booking", 0), _defineProperty(_ref, "percent_done", 0), _defineProperty(_ref, "percent_waiting", 0), _defineProperty(_ref, "percent_refund", 0), _defineProperty(_ref, "percent_cancel", 0), _defineProperty(_ref, "percent_Pratial_Done", 0), _defineProperty(_ref, "percent_Reschedule", 0), _defineProperty(_ref, "percent_Unidentified", 0), _defineProperty(_ref, "Operation_KPI", 0), _defineProperty(_ref, "isNone", false), _defineProperty(_ref, "range_time", 0), _defineProperty(_ref, "total_ChangeServies_wage", 0), _defineProperty(_ref, "total_Cancel_wage", 0), _defineProperty(_ref, "total_OT_wage", 0), _defineProperty(_ref, "ChangeServies_time", 0), _defineProperty(_ref, "OT_time", 0), _defineProperty(_ref, "total_wage", 0), _defineProperty(_ref, "artistshowroom", []), _ref;
   },
   watch: {
     dateRange: {
@@ -348,6 +348,11 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               percent_Unidentified: 0,
               Operation_KPI: 0,
               range_time: 0,
+              total_ChangeServies_wage: 0,
+              total_Cancel_wage: 0,
+              total_OT_wage: 0,
+              ChangeServies_time: 0,
+              OT_time: 0,
               total_wage: 0
             };
           }
@@ -372,6 +377,11 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           totals[Name].percent_Unidentified += fillerData.percent_Unidentified;
           totals[Name].Operation_KPI += fillerData.Operation_KPI;
           totals[Name].range_time += fillerData.range_time;
+          totals[Name].total_ChangeServies_wage += fillerData.total_ChangeServies_wage;
+          totals[Name].total_Cancel_wage += fillerData.total_Cancel_wage;
+          totals[Name].total_OT_wage += fillerData.total_OT_wage;
+          totals[Name].ChangeServies_time += fillerData.ChangeServies_time;
+          totals[Name].OT_time += fillerData.OT_time;
           totals[Name].total_wage += fillerData.total_wage;
         }
       }
@@ -423,6 +433,11 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       this.percent_Unidentified = 0;
       this.Operation_KPI = 0;
       this.range_time = 0;
+      this.total_ChangeServies_wage = 0;
+      this.total_Cancel_wage = 0;
+      this.total_OT_wage = 0;
+      this.ChangeServies_time = 0;
+      this.OT_time = 0;
       this.total_wage = 0;
       if (this.selectedShowroom !== null) {
         this.resuft = this.filterDataById(this.apiData_id, this.selectedShowroom);
@@ -451,6 +466,11 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         _this9.percent_Unidentified += parseFloat(item.percent_Unidentified);
         _this9.Operation_KPI += parseFloat(item.Operation_KPI);
         _this9.range_time += parseFloat(item.range_time);
+        _this9.total_ChangeServies_wage += parseFloat(item.total_ChangeServies_wage);
+        _this9.total_Cancel_wage += parseFloat(item.total_Cancel_wage);
+        _this9.total_OT_wage += parseFloat(item.total_OT_wage);
+        _this9.ChangeServies_time += parseFloat(item.ChangeServies_time);
+        _this9.OT_time += parseFloat(item.OT_time);
         _this9.total_wage += parseFloat(item.total_wage);
       });
       this.hourlyWage = 0;

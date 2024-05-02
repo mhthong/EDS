@@ -971,7 +971,11 @@ export default {
         .then((response) => {
           // Lấy giá trị active từ API
 
-          InforData.dateActive = response.data.active;
+          if (InforData.Status == "Unidentified") {
+            InforData.dateActive = true;
+          } else {
+            InforData.dateActive = response.data.active;
+          }
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
@@ -1025,6 +1029,10 @@ export default {
 
     checkTimeConflict(index) {
       let InforData = this.selectedServices[index];
+
+      if (InforData.Status == "Unidentified") {
+        InforData.dateActive = true;
+      }
 
       if (!InforData.StartTime || !InforData.EndTime) {
         InforData.isTimeConflict = false;

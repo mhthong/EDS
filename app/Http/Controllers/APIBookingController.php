@@ -163,7 +163,7 @@ class APIBookingController extends Controller
 
     public function getServices()
     {
-        $services = Service::where('status', 'published')->get();
+        $services = Service::where('status', 'published')->orderBy('Name', 'asc')->get();
         return response()->json($services);
     }
 
@@ -2123,9 +2123,6 @@ class APIBookingController extends Controller
 
 
 
-
-
-
         $bookings = $bookingsQuery->orderBy('created_at', 'desc')
             ->get();
 
@@ -2154,6 +2151,11 @@ class APIBookingController extends Controller
             'percent_Unidentified' => 0,
             'Operation_KPI' => 0,
             'range_time' => 0,
+            'OT_time' => 0,
+            'ChangeServies_time' => 0,
+            'total_OT_wage' => 0,
+            'total_Cancel_wage' => 0,
+            'total_ChangeServies_wage' => 0,
             'total_wage' => 0,
         ];
 
@@ -2194,7 +2196,7 @@ class APIBookingController extends Controller
 
 
 
-        $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.date', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status', 'bookings.action', 'bookings.source_data', 'bookings.source_name', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
+        $bookingsQueryupdates = Booking::select('bookings.id', 'bookings.date', 'bookings.ArtistID', 'bookings.ShowroomID', 'bookings.status','bookings.change_time_servies','bookings.change_service_wage', 'bookings.action', 'bookings.source_data', 'bookings.source_name' , 'bookings.time' , 'bookings.time_end' , 'bookings.OT_wage' , 'bookings.cancel_wage', 'bookings.source_id', 'bookings.source_type', 'bookings.created_at', 'bookings.updated_at', 'bookings.price_id')
             ->with(['price', 'services:id,Name,Time', 'showroom', 'artist'])
             ->join('prices', 'bookings.price_id', '=', 'prices.id')
             ->whereDate('bookings.date', $date)
@@ -2249,33 +2251,87 @@ class APIBookingController extends Controller
             } else if ($bookingupdate->status == "Partial Done") {
             }
 
-            if ($bookingupdate->action == "approved" && ($bookingupdate->status == "Done" || $bookingupdate->status == "Partial Done")) { // Kiểm tra action của bookingupdate
+
+            if ($bookingupdate->action == "approved") { // Kiểm tra action của bookingupdate
                 // Lấy ID của artist
                 $artistId = $bookingupdate->artist->id;
 
                 // Tạo key dựa trên artist
                 $key = $artistId;
 
+                $OT_wage  = 0;
+
+                $ChangeServies_time = 0;
+                $OT_time = 0;
+
+                $range_end_time = '16:00:00';                     
+                $carbon_range_end_time = Carbon::createFromFormat('H:i:s', $range_end_time);
+
+                $carbon_end_time = Carbon::createFromFormat('H:i:s', $bookingupdate->time_end);
+                $carbon_start_time = Carbon::createFromFormat('H:i:s', $bookingupdate->time);
+
+                // Tính số giờ giữa hai thời điểm
+                $range_time = $carbon_end_time->floatDiffInHours($carbon_range_end_time);
+                $range_start_time = $carbon_start_time->floatDiffInHours($carbon_range_end_time);
+
+                $range_start_end_time = $carbon_end_time->floatDiffInHours($carbon_start_time);
+     
+
+                if($carbon_end_time > $carbon_range_end_time){
+
+                    if ($carbon_start_time > $carbon_range_end_time) {
+                        $OT_wage = $range_start_end_time * $bookingupdate->OT_wage - $bookingupdate->services[0]->Time * floatval($bookingupdate->artist->wage);
+                        $OT_time =  $range_start_end_time ;
+                    } else {
+                        $OT_wage = $range_time * $bookingupdate->OT_wage + $range_start_time * floatval($bookingupdate->artist->wage) - $bookingupdate->services[0]->Time * floatval($bookingupdate->artist->wage);
+                        $OT_time = $range_time ;
+                    }
+                } else {
+                    $OT_time = 0;
+                }
+
+
+                $change_time_wage  = 0;
+
+                if($bookingupdate->change_time_servies < 0) {
+                    $change_time_wage =  abs($bookingupdate->change_time_servies * floatval($bookingupdate->artist->wage) * (floatval($bookingupdate->change_service_wage)/100));
+                }
+
                 // Kiểm tra nếu artist được thanh toán theo giờ
                 if ($bookingupdate->artist->artist_pay == 1) {
-                    /*            // Kiểm tra xem phần tử có tồn tại trong mảng $summarizedData['hour'] không
-                    if (!isset($summarizedData['hour'][$key])) {
-                        // Nếu không, khởi tạo nó với giá trị ban đầu là 0
-                        $summarizedData['hour'][$key] = 0;
+
+                    if($bookingupdate->status == "Done" || $bookingupdate->status == "Partial Done")
+                    {
+                        $summarizedData['range_time'] += $bookingupdate->services[0]->Time;
+               
+                        $summarizedData['ChangeServies_time'] +=  $ChangeServies_time;
+                        
+                        $summarizedData['OT_time'] +=  $OT_time;
+
+                        $summarizedData['total_wage'] += $bookingupdate->services[0]->Time *  floatval($bookingupdate->artist->wage) + $OT_wage + $change_time_wage;
+                        $summarizedData['total_OT_wage'] += $OT_wage;
+                        $summarizedData['total_ChangeServies_wage'] +=  $change_time_wage;
+
+
+                    } if ($bookingupdate->status == "Cancel"){
+                        $summarizedData['total_wage'] += $bookingupdate->services[0]->Time * floatval($bookingupdate->artist->wage)  * (floatval($bookingupdate->cancel_wage)/100)  ;
+
+                        $summarizedData['total_Cancel_wage'] += $bookingupdate->services[0]->Time * floatval($bookingupdate->artist->wage)  * (floatval($bookingupdate->cancel_wage)/100);
+
                     }
-                    // Cộng thời gian vào số giờ */
-                    $summarizedData['range_time'] += $bookingupdate->services[0]->Time;
-                    $summarizedData['total_wage'] += $bookingupdate->services[0]->Time *  floatval($bookingupdate->artist->wage);
+
                 } else {
-                    // Kiểm tra xem key đã tồn tại trong $summarizedData['day'] chưa
-                    /*             if (!isset($summarizedData['day'][$key])) {
-                        // Nếu chưa, thì tạo key và đặt giá trị bằng 1
-                        $summarizedData['day'][$key] = 1;
-                    } */
+                    
+                if($bookingupdate->status == "Done" || $bookingupdate->status == "Partial Done")
+
                     $summarizedData['range_time'] = 1;
-                    $summarizedData['total_wage'] = floatval($bookingupdate->artist->wage);
+                    $summarizedData['total_wage'] = floatval($bookingupdate->artist->wage)   +  $OT_wage ;
+                    $summarizedData['OT_time'] +=  $OT_time;
+          
                 }
             }
+
+
         }
 
 

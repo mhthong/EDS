@@ -19,10 +19,18 @@
           <button
             class="input-group-btn custom-btn btn-16 text-center"
             type="button"
-            @click="Change"
-            :disabled="this.adminId === null"
+            @click="Change('Staff')"
+            :disabled="this.adminId === null "
           >
             Change Staff
+          </button>
+          <button
+            class="input-group-btn custom-btn btn-16 text-center"
+            type="button"
+            @click="Change('Service')"
+            :disabled="this.adminId === null || this.approvednone != 'approved'"
+          >
+            Change Service
           </button>
         </div>
         <div class="col-12">
@@ -368,7 +376,6 @@
                 type="number"
                 v-model="selectedDepositPrice"
                 :min="0"
-
               />
               <p v-if="inputError_01" class="error-message">
                 Value exceeds limit.
@@ -411,10 +418,9 @@
                 value="save"
                 class="btn btn-info"
                 @click="SubmitEvent"
-                :disabled="
-                  submitted ||
-                  this.isActive === false || 
-        (this.approved == 'approved' && this.adminId == null) ||
+                :disabled=" submitted ||
+                  this.isActive === false ||
+                  (this.approved == 'approved' && this.adminId == null) ||
                   this.inputError == true
                 "
               >
@@ -429,8 +435,8 @@
                 @click="SubmitEvent"
                 :disabled="
                   submitted ||
-                  this.isActive === false  ||
-        (this.approved == 'approved' && this.adminId == null) ||
+                  this.isActive === false ||
+                  (this.approved == 'approved' && this.adminId == null) ||
                   this.inputError == true
                 "
               >
@@ -462,7 +468,7 @@
               <select
                 class="form-control pointer-events-p"
                 v-model="selectedStatus"
-                name="status"            
+                name="status"
                 @change="checkTimeConflict"
               >
                 <option value="Waiting" selected>Waiting</option>
@@ -504,7 +510,6 @@
                       v-model="selectedDepositPrice"
                       :max="maxDepositPrice"
                       :min="0"
-      
                     />
                     <p v-if="inputError_01" class="error-message">
                       Value exceeds limit.
@@ -534,7 +539,22 @@
                   <option value="" selected>Select</option>
                   <option value="Clients" selected>Clients</option>
                   <option value="Operation">Operation</option>
+                  <option value="NoArtist">No Artist</option>
+                  <option value="NoLocation">No Location</option>
+                  <option value="ArtistRejet">Artist Rejet</option>
                 </select>
+
+                <label class="mt-3" for="">Wage Percent (%)</label>
+                <input type="number"
+                  class="form-control"
+                  name="cancel_wage"
+                  v-model="cancel_wage"
+                  min="0"
+                  max="100"
+                  required
+                >
+
+
               </div>
 
               <div class="form-group" v-if="selectedStatus === 'Refund'">
@@ -586,6 +606,36 @@
         </div>
       </div>
 
+      <div class="bg-ad-form right-sidebar mt-3" v-show="isAfterEndTime()">
+        <div class="widget meta-boxes">
+          <div class="widget-title">
+            <h4>
+              <label
+                for="status"
+                class="m-0 control-label required"
+                aria-required="true"
+                >Wage OT ($)</label
+              >
+            </h4>
+          </div>
+          <div class="widget-body p-3">
+            <div class="ui-select-wrapper form-group">
+              <div>
+                <input type="number"
+                  class="form-control"
+                  name="OT_wage"
+                  v-model="OT_wage"
+                  min="0"
+                  :disabled = "(this.adminId == null && (this.adminId !== 4 || this.adminId !== 1 || this.adminId !== 0))"
+                  required
+                >
+
+                </input>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="bg-ad-form right-sidebar mt-3">
         <div class="widget meta-boxes">
           <div class="widget-title">
@@ -923,7 +973,8 @@
     </div>
 
     <div v-if="popupVisible" class="popup">
-      <div class="popup-content col-8 col-md-6">
+
+      <div class="popup-content col-8 col-md-6" v-if="this.stepchange == 'Staff'">
         <div class="header text-center pb-4">
           <h5>Change Staff</h5>
         </div>
@@ -1030,6 +1081,65 @@
           </button>
         </div>
       </div>
+
+
+      <div class="popup-content col-8 col-md-6" v-if="this.stepchange == 'Service'">
+        <div class="header text-center pb-4">
+          <h5>Change Service</h5>
+        </div>
+
+        <div>
+          <label for="">Service</label>
+
+          <select
+            class="form-control"
+            v-model="input"
+            style="padding: 5px; min-width: 250px; margin-bottom: 1rem"
+          >
+          <option  :value="[]" selected>Selected Service</option>
+            <option
+              v-for="service in services"
+              :key="service.id" 
+              :value="{
+                id: service.id,
+                time: service.Time,
+              }"
+            >
+              {{ service.Name }}
+            </option>
+          </select>
+
+          
+
+          <label class="mt-3" for="">Wage Percent (%)</label>
+                <input type="number"
+                  class="form-control"
+                  name="cancel_wage"
+                  v-model="change_service_wage"
+                  min="0"
+                  max="100"
+                  required
+                >
+
+        </div>
+
+        <div>
+          <button
+            class="input-group-btn custom-btn btn-16 text-center"
+            type="button"
+            @click="saveData"
+            :disabled="this.adminId === null || this.input.length < 1"
+          >
+            Save
+          </button>
+          <button
+            class="input-group-btn custom-btn btn-16 text-center"
+            @click="closePopup"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
     </div>
 
     <!--      -->
@@ -1059,6 +1169,7 @@ export default {
       selectedGroupService: "",
       selectedGroupServiceServices: [],
       step: "showroom",
+      stepchange: "Staff",
       selectedServices: null,
       selectedServicesName: null,
       totalPrice: 0,
@@ -1078,7 +1189,6 @@ export default {
       apiData: [],
       artists: [],
       artistsnone: [],
-      artistshowroom: [],
       artistshowroom: [],
       formData: {
         name: "",
@@ -1148,8 +1258,14 @@ export default {
       bookingvalue: 0,
       selectedStatusNone: null,
       isactiveselectedStatusNone: false,
-      checkEmployee:false,
-      created_at:null,
+      checkEmployee: false,
+      created_at: null,
+      time_service:null,
+      service_Idsnone:null,
+      approvednone: null,
+      cancel_wage: null,
+      change_service_wage: null,
+      OT_wage: null,
       /*   selectedOption: "option1", */
     };
   },
@@ -1260,45 +1376,37 @@ export default {
   },
 
   methods: {
+    isAfterEndTime() {
+      return moment(this.endTime, 'HH:mm:ss').isAfter(moment('16:00:00', 'HH:mm:ss'));
+    },
 
     async fetchArtistsShowrooms() {
       await axios
         .get(`/api/artistshowroom`)
         .then((response) => {
           this.artistshowroom = response.data;
+          this.updateArtistshowroom(this.selectedShowroom, null);
         })
         .catch((error) => {
           console.error("Error fetching API data:", error);
         });
     },
 
-      updateArtistshowroom(showroom , artist) {
-        if (showroom !== null ) {
-          this.artists = this.artistshowroom
-            .filter(
-              (item) =>
-                parseInt(item.showroom_id) === parseInt(showroom) && item.artist.status == "published"
-            ) // Lọc ra các dữ liệu có showroom_id là 21
-            .map((item) => item.artist); // Chỉ trích xuất thông tin của artist
+    updateArtistshowroom(showroom, artist) {
+      if (showroom !== null) {
+        this.artists = this.artistshowroom
+          .filter(
+            (item) =>
+              parseInt(item.showroom_id) === parseInt(showroom) &&
+              item.artist.status == "published"
+          ) // Lọc ra các dữ liệu có showroom_id là 21
+          .map((item) => item.artist); // Chỉ trích xuất thông tin của artist
 
-            this.selectedAritst = null;
-   
-        } else {
-          this.artists = this.artistsnone;
-        }
+      } else {
+        this.artists = this.artistsnone;
+      }
 
-        if (artist !== null ) {
-          this.showrooms = this.artistshowroom
-            .filter(
-              (item) => parseInt(item.artist_id) === parseInt(artist) && item.showroom.status == "published"
-            ) // Lọc ra các dữ liệu có artist_id là 21
-            .map((item) => item.showroom); // Chỉ trích xuất thông tin của showroom
-        }else {
-          this.showrooms = this.showroomsnone;
-        }
-
-      },
-
+    },
 
     checkisactiveselectedStatus() {
       if (
@@ -1326,7 +1434,7 @@ export default {
     },
 
     async fetchArtist() {
-    await  axios
+      await axios
         .get("/api/artist")
         .then((response) => {
           this.apiDataAritst = response.data;
@@ -1336,8 +1444,8 @@ export default {
         });
     },
 
-    async  fetchapiDataParner() {
-    await  axios
+    async fetchapiDataParner() {
+      await axios
         .get("/api/parner")
         .then((response) => {
           this.apiDataParner = response.data;
@@ -1381,19 +1489,23 @@ export default {
       this.dialogEdit = false;
     },
 
-    Change() {
+    Change(stepchange) {
       this.openPopup();
+      this.stepchange = stepchange;
     },
 
     saveData() {
       // Tạo một đối tượng dữ liệu để gửi lên server
-      const postData = {
+
+      if(this.stepchange == "Staff"){
+
+        const postData = {
         Staff: this.selectedStaff,
         input: this.input,
         id: this.id,
       };
 
-
+      console.log(postData);
       // Gửi yêu cầu POST đến API để lưu dữ liệu
       axios
         .post("/api/changeStaff", postData)
@@ -1407,6 +1519,32 @@ export default {
           console.error("Error saving data:", error);
           // Xử lý lỗi nếu có
         });
+
+      } else {
+        const postData = {
+        input: this.input,
+        id: this.id,
+        service_time:this.time_service,
+        serviceId:this.service_Idsnone,
+        change_service_wage:this.change_service_wage
+      };
+
+      console.log(postData);
+
+      axios
+        .post("/api/changeServices", postData)
+        .then((response) => {
+          // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
+          this.closePopup(); // Đóng popup sau khi lưu thành công
+          this.fetchapiData_id();
+        })
+        .catch((error) => {
+          console.log(postData);
+          console.error("Error saving data:", error);
+          // Xử lý lỗi nếu có
+        });
+      }
+
     },
 
     closeImagePopupOutside(event) {
@@ -1466,15 +1604,16 @@ export default {
       }
     },
 
-    async  fetchapiData_id() {
+    async fetchapiData_id() {
       // Gọi API và cập nhật biến apiData với dữ liệu từ API
-    await  axios
+      await axios
         .get(`/api/data-bookings/${this.id}`)
         .then((response) => {
-     
           this.apiData_id = response.data;
 
-          this.created_at = moment(this.apiData_id[0].created_at).format("YYYY-MM-DD");
+          this.created_at = moment(this.apiData_id[0].created_at).format(
+            "YYYY-MM-DD"
+          );
           this.id = this.apiData_id[0].id;
           this.selectedShowroom = this.apiData_id[0].ShowroomID;
           this.Staff = this.apiData_id[0].source_name;
@@ -1482,17 +1621,28 @@ export default {
           this.GetID = this.apiData_id[0].GetID;
           this.selectedStatus = this.apiData_id[0].status;
           this.selectedStatusNone = this.apiData_id[0].status;
+
+          if (this.selectedStatus == "Unidentified") {
+            this.isActive = true;
+          } 
+
+          this.cancel_wage = this.apiData_id[0].cancel_wage;
+          this.change_service_wage= this.apiData_id[0].change_service_wage;
+          this.OT_wage = this.apiData_id[0].OT_wage;
           this.StatusPresent = this.apiData_id[0].status;
           this.selectedDate = this.apiData_id[0].date;
           this.selectedArtist = this.apiData_id[0].ArtistID;
           this.startTime = this.apiData_id[0].time;
           this.endTime = this.apiData_id[0].time_end;
           this.selectedServices = this.apiData_id[0].services[0].id;
+          this.service_Idsnone = this.apiData_id[0].services[0].id;
           this.selectedServicesName = this.apiData_id[0].services[0].Name;
+          this.time_service= this.apiData_id[0].services[0].Time;
           this.group_service =
             this.apiData_id[0].services[0].group_service.name;
           this.content = this.apiData_id[0].content;
           this.approved = this.apiData_id[0].action;
+          this.approvednone = this.apiData_id[0].action;
           this.upsale = this.apiData_id[0].price.upsale;
           this.Refund =
             this.apiData_id[0].price.Deposit_price -
@@ -1578,8 +1728,8 @@ export default {
         });
     },
 
-    async    fetchShowrooms() {
-   await   axios
+    async fetchShowrooms() {
+      await axios
         .get("/api/showrooms")
         .then((response) => {
           this.showrooms = response.data;
@@ -1590,8 +1740,8 @@ export default {
         });
     },
 
-    async  fetchGroupServices() {
-   await   axios
+    async fetchGroupServices() {
+      await axios
         .get(`/api/group-services/${this.selectedShowroom}`)
         .then((response) => {
           this.groupServices = response.data;
@@ -1618,6 +1768,7 @@ export default {
       });
 
       this.updateArtistshowroom(this.selectedShowroom, null);
+
     },
 
     fetchArtists() {
@@ -1653,8 +1804,12 @@ export default {
           `/api/date-active/${this.selectedDate}/${this.selectedShowroom}/${this.selectedArtist}`
         )
         .then((response) => {
-          // Lấy giá trị active từ API
-          this.isActive = response.data.active;
+          if (this.selectedStatus == "Unidentified") {
+            this.isActive = true;
+          } else {
+            // Lấy giá trị active từ API
+            this.isActive = response.data.active;
+          }
 
           // Kết quả true hoặc false có thể được sử dụng tùy thuộc vào logic của bạn
         })
@@ -1686,7 +1841,7 @@ export default {
     },
 
     checkTimeConflict() {
-
+      
       this.filterActiveDays();
 
       this.checkSelectedDate();
@@ -1706,28 +1861,39 @@ export default {
         selectedEndTime.getHours() >= 8 && selectedEndTime.getHours() < 20;
       // Kiểm tra xung đột thời gian cho cả startTime và endTime
       const conflict = this.filteredDays.some((schedule) => {
-      const startTime = new Date(`1970-01-01T${schedule.time}`);
-      const endTime = new Date(`1970-01-01T${schedule.time_end}`);
+        const startTime = new Date(`1970-01-01T${schedule.time}`);
+        const endTime = new Date(`1970-01-01T${schedule.time_end}`);
 
-      // Kiểm tra xem selectedStartTime và selectedEndTime nằm trong khoảng thời gian của lịch trình
-      const isStartTimeInsideSchedule = selectedStartTime >= startTime && selectedStartTime < endTime;
-      const isEndTimeInsideSchedule = selectedEndTime > startTime && selectedEndTime <= endTime;
+        // Kiểm tra xem selectedStartTime và selectedEndTime nằm trong khoảng thời gian của lịch trình
+        const isStartTimeInsideSchedule =
+          selectedStartTime >= startTime && selectedStartTime < endTime;
+        const isEndTimeInsideSchedule =
+          selectedEndTime > startTime && selectedEndTime <= endTime;
 
-      // Kiểm tra xem startTime và endTime của lịch trình nằm trong khoảng thời gian của selectedStartTime và selectedEndTime
-      const isScheduleTimeInsideSelected = startTime >= selectedStartTime && endTime <= selectedEndTime;
+        // Kiểm tra xem startTime và endTime của lịch trình nằm trong khoảng thời gian của selectedStartTime và selectedEndTime
+        const isScheduleTimeInsideSelected =
+          startTime >= selectedStartTime && endTime <= selectedEndTime;
 
-      // Kiểm tra xem selectedStartTime và selectedEndTime hoặc startTime và endTime của lịch trình có trùng nhau không
-      const isTimeEqual = selectedStartTime.getTime() === startTime.getTime() && selectedEndTime.getTime() === endTime.getTime();
+        // Kiểm tra xem selectedStartTime và selectedEndTime hoặc startTime và endTime của lịch trình có trùng nhau không
+        const isTimeEqual =
+          selectedStartTime.getTime() === startTime.getTime() &&
+          selectedEndTime.getTime() === endTime.getTime();
 
-      return isStartTimeInsideSchedule || isEndTimeInsideSchedule || isScheduleTimeInsideSelected || isTimeEqual;
-  });
+        return (
+          isStartTimeInsideSchedule ||
+          isEndTimeInsideSchedule ||
+          isScheduleTimeInsideSelected ||
+          isTimeEqual
+        );
+      });
 
-
-
-      if(this.selectedStatus == "Unidentified" && selectedStartTime < selectedEndTime ) {
+      if (
+        this.selectedStatus == "Unidentified" &&
+        selectedStartTime < selectedEndTime
+      ) {
         this.isTimeConflict = false;
         this.showAlert = false;
-  } else if (
+      } else if (
         conflict ||
         selectedStartTime >= selectedEndTime ||
         !isStartTimeValid ||
@@ -2029,8 +2195,6 @@ export default {
 
     this.manage_supers = this.$root.manage_supers;
 
-
-
     this.fetchApiData();
     this.fetchShowrooms();
     this.fetchServices();
@@ -2044,10 +2208,11 @@ export default {
     this.fetchapiDataParner();
     this.fetchArtistsShowrooms();
 
-    if(this.approved == 'approved' && this.employeeId !== null){
+
+    this.updateArtistshowroom(this.selectedShowroom, null);
+    if (this.approved == "approved" && this.employeeId !== null) {
       this.checkEmployee = true;
     }
-
   },
 };
 </script>
