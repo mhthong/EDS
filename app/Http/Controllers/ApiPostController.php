@@ -22,6 +22,7 @@ use App\Models\ServiceBooking;
 use App\Models\Group;
 use App\Models\GroupShowroom;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 
 
@@ -133,48 +134,67 @@ class ApiPostController extends Controller
         if ($check == true) {
             // Lấy dữ liệu từ request
             $showroomId = $request->input('showroomId');
-            $inputData = $request->input('inputData');
+            $endDate = $request->input('endDate');
+            $startDate = $request->input('startDate');
             $artistIds = $request->input('artistId');
 
+            $currentDate =  $startDate;
 
-            
-            // Xử lý các artistId từ request
-            foreach ($artistIds as $artistId) {
 
-                if(isset($artistId['selectedActive']) && $artistId['selectedActive'] !== "undefined") {
-                    $selectedActive = $artistId['selectedActive'];
-                } else {
-                    $selectedActive = 3; // Hoặc bất kỳ giá trị mặc định nào bạn muốn gán khi selectedActive không được định nghĩa
+            while ($currentDate <= $endDate) {
+
+                foreach ($artistIds as $artistId) {
+
+                    if(isset($artistId['selectedActive']) && $artistId['selectedActive'] !== "undefined") {
+
+                        if(isset($artistId['selectedActive']) && $artistId['selectedActive'] !== "None") {
+                            $selectedActive = $artistId['selectedActive'];
+                        } else {
+                            $selectedActive = 3; // Hoặc bất kỳ giá trị mặc định nào bạn muốn gán khi selectedActive không được định nghĩa
+                        }
+
+                        if(isset($artistId['note']) && $artistId['note'] !== "undefined") {
+                            $note = $artistId['note'];
+                        } else {
+                            $note = ""; // Hoặc bất kỳ giá trị mặc định nào bạn muốn gán khi selectedActive không được định nghĩa
+                        }
+        
+                        // Tìm kiếm giờ làm việc dựa trên showroom_schedule_id, date và artist_id
+                        $workingHour = WorkingHour::where('showroom_schedule_id', $showroomId)
+                            ->where('date', $currentDate)
+                            ->where('artist_id', $artistId['id'])
+                            ->first();
+    
+                        
+        
+                        // Nếu đã có giờ làm việc, cập nhật trạng thái active
+                        if ($workingHour) {
+                            $workingHour->active = $selectedActive;
+                            $workingHour->note = $note; 
+                            $workingHour->save();
+                        } else {
+                            // Nếu chưa có, tạo mới bản ghi giờ làm việc
+                            WorkingHour::create([
+                                'showroom_schedule_id' => $showroomId,
+                                'artist_id' =>  $artistId['id'],
+                                'note' => $note,
+                                'date' => $currentDate,
+                                'active' => $selectedActive,
+                            ]);
+                        }
+
+                        
+                    }
+
+
+
                 }
 
-                if(isset($artistId['note']) && $artistId['note'] !== "undefined") {
-                    $note = $artistId['note'];
-                } else {
-                    $note = ""; // Hoặc bất kỳ giá trị mặc định nào bạn muốn gán khi selectedActive không được định nghĩa
-                }
-
-                // Tìm kiếm giờ làm việc dựa trên showroom_schedule_id, date và artist_id
-                $workingHour = WorkingHour::where('showroom_schedule_id', $showroomId)
-                    ->where('date', $inputData)
-                    ->where('artist_id', $artistId['id'])
-                    ->first();
-
-                // Nếu đã có giờ làm việc, cập nhật trạng thái active
-                if ($workingHour) {
-                    $workingHour->active = $selectedActive;
-                    $workingHour->note = $note; 
-                    $workingHour->save();
-                } else {
-                    // Nếu chưa có, tạo mới bản ghi giờ làm việc
-                    WorkingHour::create([
-                        'showroom_schedule_id' => $showroomId,
-                        'artist_id' =>  $artistId['id'],
-                        'note' => $note,
-                        'date' => $inputData,
-                        'active' => $selectedActive,
-                    ]);
-                }
+                         // Di chuyển tới ngày tiếp theo
+            $currentDate = date('Y-m-d', strtotime($currentDate . ' +1 day'));
             }
+            // Xử lý các artistId từ request
+ 
 
             // Trả về phản hồi JSON thành công
             return response()->json(['message' => 'Data updated/created successfully']);

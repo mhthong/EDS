@@ -6,10 +6,12 @@
         style="background-color: aliceblue"
         type="button"
         @click="openPopup"
-        :disabled="  this.adminId == null &&
-        (this.manage_supers !== 0 ||
-          this.manage_supers !== 1 ||
-          this.manage_supers !== 4)"
+        :disabled="
+          this.adminId == null &&
+          (this.manage_supers !== 0 ||
+            this.manage_supers !== 1 ||
+            this.manage_supers !== 4)
+        "
       >
         Status
       </button>
@@ -24,6 +26,8 @@
         :eventRendered="onEventRendered"
         :eventSettings="eventSettings"
         :group="group"
+        @eventClick="onEventClick"
+        @eventDelete="onEventDelete"
       >
         <e-views>
           <e-view
@@ -71,20 +75,30 @@
 
             <div
               class="mb-3"
-              style="display: flex; flex-wrap: wrap; gap: 1rem"
+              style="display: flex; flex-wrap: wrap; gap: 1rem;"
               v-if="selectedShowroomPopup !== 0"
             >
-              <div style="width: 100%;" v-for="artist in artists" :key="artist.id">
+              <div
+                style="width: 100%"
+                v-for="artist in artists"
+                :key="artist.id"
+              >
                 <label class="label01 m-0" :for="'artist_' + artist.id">
-                  <div class="radio-header radio-text " style="width: 100%;">{{ artist.name }}</div>
-                  <select class="form-control" v-model="selectedActive[artist.id]">
-                    <option value="undefined" selected>Unidentified</option>
+                  <div class="radio-header radio-text" style="width: 100%">
+                    {{ artist.name }}
+                  </div>
+                  <select
+                    class="form-control"
+                    v-model="selectedActive[artist.id]"
+                  >
+                    <option value="undefined" selected>No object selection</option>
+                    <option value="None">Unidentified</option>
                     <option value="1">Active</option>
                     <option value="0">None Active</option>
                   </select>
                   <input
                     type="text"
-                    class=" form-control "
+                    class="form-control"
                     v-model="note[artist.id]"
                     placeholder="Note"
                   />
@@ -92,12 +106,28 @@
               </div>
             </div>
 
-            <input
-              class="form-control mb-3"
-              type="date"
-              v-model="popupInputData"
-              placeholder="Enter data"
-            />
+            <div class="mb-3" style="display: flex; flex-wrap: wrap; gap: 1rem">
+              <div style="width: 100%">
+                <label :for="dateRange" style="width: 100%">
+                  <date-range-picker
+                    v-model="dateRange"
+                    :id="dateRange"
+                    :locale-data="{
+                      firstDay: 1,
+                      format: 'dd-mm-yyyy',
+                    }"
+                    label="Date range"
+                    locale="en-AU"
+                    :value="dateRange"
+                    :timePicker="true"
+                    style="width: 100%"
+                  ></date-range-picker>
+                </label>
+
+
+              </div>
+            </div>
+
             <button
               class="custom-btn bnt-16"
               type="submit"
@@ -131,9 +161,16 @@ import axios from "axios";
 import { generateResourceData } from "./datasource.js";
 import { SchedulePlugin, TimelineMonth } from "@syncfusion/ej2-vue-schedule";
 import { DataManager, WebApiAdaptor } from "@syncfusion/ej2-data";
+import DateRangePicker from "vue2-daterange-picker";
+import "vue2-daterange-picker/dist/vue2-daterange-picker.css"; // Import the CSS
+import moment from "moment";
+
 Vue.use(SchedulePlugin);
 
 export default {
+  components: {
+    DateRangePicker,
+  },
   data() {
     return {
       artists: [],
@@ -155,6 +192,10 @@ export default {
       inputData: "",
       popupVisible: false,
       popupInputData: "",
+      dateRange: {
+        type: Object,
+        required: true, // Nếu cần
+      },
       currentViewStart: null,
       currentViewEnd: null,
       activeDays: [],
@@ -191,14 +232,23 @@ export default {
     schedule: [TimelineMonth],
   },
   methods: {
+
+    onEventClick(args) {
+      // Xử lý logic click sự kiện ở đây
+      console.log("Click sự kiện:", args);
+    },
+
+
     onEventRendered(args) {
       const categoryColor = args.data.CategoryColor;
       const element = args.element;
 
+      console.log(args);
       if (!element || !categoryColor) {
         return;
       }
       element.style.backgroundColor = categoryColor;
+      element.ariaDisabled = false;
     },
     updateArtistshowroom(showroom, artist) {
       if (parseInt(showroom) !== 0) {
@@ -342,11 +392,16 @@ export default {
 
         // Hiển thị mảng artistData trong console
 
+ 
+
         const postData = {
           showroomId: this.selectedShowroomPopup,
-          inputData: this.popupInputData,
+          endDate: moment(this.dateRange.endDate).format('yyyy-MM-DD'),
+          startDate: moment(this.dateRange.startDate).format('yyyy-MM-DD'),
           artistId: artistData,
         };
+
+        console.log(postData);
 
         // Gửi yêu cầu POST đến API để lưu dữ liệu
         axios
@@ -355,8 +410,8 @@ export default {
             // Thực hiện các bước cần thiết sau khi lưu dữ liệu thành công
 
             for (let artistId in this.selectedActive) {
-          this.selectedActive[artistId] = "undefined";
-        }
+              this.selectedActive[artistId] = "undefined";
+            }
 
             this.selectedStatusArtist = [];
             this.resourceData = [];

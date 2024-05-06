@@ -747,6 +747,7 @@ export default {
     loadEvents() {
       this.fetchShowroomschedule();
 
+      console.log(this.data);
       // Flatten the nested structure into a flat array of events
       const flatEvents = Object.keys(this.data).flatMap((date) =>
         Object.keys(this.data[date]).flatMap((showroomId) =>
@@ -797,6 +798,7 @@ export default {
           .map((service) => service.Name)
           .join(", ");
 
+          console.log(event);
         return {
           id: event.id,
           title: event.status,
@@ -807,6 +809,7 @@ export default {
             artist: event.artist.name,
             source: event.source_name,
             get: event.get.name,
+            price: event.price.servies_price,
             action: event.action,
             showroom: event.showroom.Name,
             services: serviceNames,
@@ -821,6 +824,8 @@ export default {
       // Assuming this.data is your data structure
       const backgroundEvents = Object.keys(this.data).flatMap((date) => {
         const dailyData = this.data[date];
+
+
         const isDayActive = Object.values(dailyData).some((showroomData) => {
           return parseInt(showroomData.dailyData.active) === 0;
         });
@@ -844,6 +849,7 @@ export default {
               artist: "none",
               source: "none",
               get: "none",
+              price: 0,
               action: "none",
               showroom: "none",
               services: "none",
@@ -886,6 +892,8 @@ export default {
 
       const currentUrl = window.location.href;
 
+
+
       return {
         html: `
           <div class="fc-content ${arg.event.title}">
@@ -895,6 +903,7 @@ export default {
             <span class="fc-status">Client : ${arg.event.extendedProps.get} </span><br>
             <span class="fc-status">${arg.event.extendedProps.showroom} </span><br>
             <span class="fc-status">${arg.event.extendedProps.services} </span><br>
+            <span class="fc-status">${arg.event.extendedProps.price} </span><br>
             <span class="fc-status">${arg.event.extendedProps.action} </span><br>
             <span class="fc-status"> ${arg.event.title}</span><br>
             <span class="fc-time">${startTime} - ${endTime}</span>

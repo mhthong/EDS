@@ -619,8 +619,10 @@ class APIBookingController extends Controller
                         ->first();
 
 
-                    if ($workingHour) {
+                    if ($workingHour && $workingHour->active == 1) {
                         $dailyData->active = $workingHour->active;
+                    } else {
+                        $dailyData->active = 0;
                     }
 
                     // Thêm dữ liệu của ngày và showroom vào mảng showroomData
@@ -2399,13 +2401,13 @@ class APIBookingController extends Controller
                     // Chuyển đổi lại thành số nguyên
                     $combinedId = bindec($combinedBinary);
 
-                    $note = $schedule->note = "" ? $schedule->note : 'N/A';
+                    $note = $schedule->note ;
 
 
                     // Tạo một mảng mới chứa dữ liệu của mục hiện tại
                     $data = [
                         'Id' => $idCounter,
-                        'Subject' => $action . "\nNote: " .   $note,
+                        'Subject' => $action . "\nNote: " . $note,
                         'StartTime' =>      $startTime,
                         'EndTime' =>        $endTime,
                         'IsAllDay' => true,

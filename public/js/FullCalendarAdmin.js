@@ -510,7 +510,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     loadEvents: function loadEvents() {
       var _this11 = this;
       this.fetchShowroomschedule();
-
+      console.log(this.data);
       // Flatten the nested structure into a flat array of events
       var flatEvents = Object.keys(this.data).flatMap(function (date) {
         return Object.keys(_this11.data[date]).flatMap(function (showroomId) {
@@ -553,6 +553,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         var serviceNames = event.services.map(function (service) {
           return service.Name;
         }).join(", ");
+        console.log(event);
         return {
           id: event.id,
           title: event.status,
@@ -563,6 +564,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
             artist: event.artist.name,
             source: event.source_name,
             get: event.get.name,
+            price: event.price.servies_price,
             action: event.action,
             showroom: event.showroom.Name,
             services: serviceNames,
@@ -596,6 +598,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
             artist: "none",
             source: "none",
             get: "none",
+            price: 0,
             action: "none",
             showroom: "none",
             services: "none",
@@ -625,7 +628,7 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
       }) : "";
       var currentUrl = window.location.href;
       return {
-        html: "\n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            <a href=\"").concat(currentUrl, "/books/").concat(arg.event.id, "/edit\" style=\"color: white\" target=\"_blank\">\n            <div class=\"fc-content-main\">\n            <span class=\"fc-status\">Booking person : ").concat(arg.event.extendedProps.source, " </span><br>\n            <span class=\"fc-status\">Client : ").concat(arg.event.extendedProps.get, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.action, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n            </a>\n          </div>\n        ")
+        html: "\n          <div class=\"fc-content ".concat(arg.event.title, "\">\n            <a href=\"").concat(currentUrl, "/books/").concat(arg.event.id, "/edit\" style=\"color: white\" target=\"_blank\">\n            <div class=\"fc-content-main\">\n            <span class=\"fc-status\">Booking person : ").concat(arg.event.extendedProps.source, " </span><br>\n            <span class=\"fc-status\">Client : ").concat(arg.event.extendedProps.get, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.showroom, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.services, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.price, " </span><br>\n            <span class=\"fc-status\">").concat(arg.event.extendedProps.action, " </span><br>\n            <span class=\"fc-status\"> ").concat(arg.event.title, "</span><br>\n            <span class=\"fc-time\">").concat(startTime, " - ").concat(endTime, "</span>\n            </div>\n            </a>\n          </div>\n        ")
       };
     }
   },
